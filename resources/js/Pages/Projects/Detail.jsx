@@ -427,7 +427,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                         {/* Left: Breadcrumbs + Title + Description + CTA (aligned identical to Welcome.jsx hero) */}
                         <div className="lg:w-[54%] xl:w-[50%] space-y-6">
                             {/* Breadcrumbs matching greeting badge styling & position */}
-                            <nav aria-label="Breadcrumb" className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 border border-blue-500/20 text-slate-300">
+                            <nav aria-label="Breadcrumb" className="inline-flex items-center gap-2 px-3 py-1 rounded-md text-xs font-semibold bg-blue-500/10 border border-blue-500/20 text-slate-300">
                                 <Link href="/" className="hover:text-white transition-colors">
                                     Home
                                 </Link>
@@ -503,7 +503,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                     {/* Left Showcase (8 Cols): Main Frame + Interactive Thumbnails */}
                     <div className="lg:col-span-8 space-y-4">
                         {/* Main Featured Image Card */}
-                        <div className="rounded-2xl border overflow-hidden bg-slate-900 border-slate-800/80 shadow-2xl relative group">
+                        <div className="rounded-lg border overflow-hidden bg-slate-900 border-slate-800/80 shadow-xl relative group">
                             <div className="aspect-[16/9] w-full bg-slate-950 flex items-center justify-center overflow-hidden">
                                 <img
                                     src={project.gallery[activeImageIdx]?.img || '/images/proj1.png'}
@@ -519,7 +519,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                                 type="button"
                                 onClick={handlePrev}
                                 aria-label="Previous image"
-                                className="w-9 h-9 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center shrink-0 shadow-xs transition-all hover:scale-105 cursor-pointer"
+                                className="w-9 h-9 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center shrink-0 shadow-xs transition-all hover:scale-105 cursor-pointer"
                             >
                                 <ChevronLeft className="w-4 h-4" />
                             </button>
@@ -532,7 +532,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                                             key={item.id}
                                             type="button"
                                             onClick={() => setActiveImageIdx(idx)}
-                                            className={`rounded-xl border overflow-hidden aspect-[16/10] relative transition-all cursor-pointer ${
+                                            className={`rounded-lg border overflow-hidden aspect-[16/10] relative transition-all cursor-pointer ${
                                                 isActive
                                                     ? 'border-blue-600 ring-2 ring-blue-500/40 shadow-md scale-102'
                                                     : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-400'
@@ -552,7 +552,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                                 type="button"
                                 onClick={handleNext}
                                 aria-label="Next image"
-                                className="w-9 h-9 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center shrink-0 shadow-xs transition-all hover:scale-105 cursor-pointer"
+                                className="w-9 h-9 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center shrink-0 shadow-xs transition-all hover:scale-105 cursor-pointer"
                             >
                                 <ChevronRight className="w-4 h-4" />
                             </button>
@@ -562,7 +562,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                     {/* Right Sidebar (4 Cols): Project Info & Quote Card */}
                     <div className="lg:col-span-4 space-y-6">
                         {/* Project Information Card */}
-                        <div className={`p-6 rounded-2xl border shadow-xs space-y-5 ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200/90'}`}>
+                        <div className={`p-6 rounded-lg border shadow-xs space-y-5 ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200/90'}`}>
                             <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                                 Project Information
                             </h2>
@@ -670,7 +670,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                         </div>
 
                         {/* Quote Card */}
-                        <div className={`p-6 rounded-2xl border relative overflow-hidden space-y-3 ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50/70 border-slate-200/80'}`}>
+                        <div className={`p-6 rounded-lg border relative overflow-hidden space-y-3 ${isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-50/70 border-slate-200/80'}`}>
                             <Quote className="w-8 h-8 text-blue-400/30" />
                             <p className="text-xs sm:text-sm italic font-medium leading-relaxed text-slate-700 dark:text-slate-300">
                                 "{project.quote}"
@@ -685,7 +685,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                 {/* ========================================================== */}
                 {/* 4. DETAILED 2-COLUMN SECTIONS (Overview, Stack, Features)   */}
                 {/* ========================================================== */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 pt-4 border-t border-slate-200/80 dark:border-slate-800">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 pt-4">
                     {/* Column 1: Overview, Key Features, Challenges */}
                     <div className="space-y-10">
                         {/* Project Overview */}
@@ -744,7 +744,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                                 {project.techStack.map((tech, tIdx) => (
                                     <div
                                         key={tIdx}
-                                        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-semibold shadow-2xs transition-all hover:scale-103 ${
+                                        className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-md border text-xs font-semibold shadow-2xs transition-all hover:scale-103 ${
                                             isDarkMode
                                                 ? 'bg-slate-900 border-slate-800 text-slate-200'
                                                 : 'bg-white border-slate-200 text-slate-700'
@@ -794,7 +794,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                 {/* ========================================================== */}
                 {/* 5. RELATED PROJECTS SECTION                               */}
                 {/* ========================================================== */}
-                <div className="pt-10 border-t border-slate-200/80 dark:border-slate-800 space-y-6">
+                <div className="pt-8 space-y-6">
                     <div className="flex items-center justify-between">
                         <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
                             Related Projects
@@ -813,13 +813,13 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                             <Link
                                 key={relProj.slug}
                                 href={`/projects/${relProj.slug}`}
-                                className={`rounded-xl border overflow-hidden p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group flex items-start gap-3.5 ${
+                                className={`rounded-lg border overflow-hidden p-3 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group flex items-start gap-3.5 ${
                                     isDarkMode
                                         ? 'bg-slate-900 border-slate-800 hover:border-blue-500/50'
                                         : 'bg-white border-slate-200/90 hover:border-blue-400'
                                 }`}
                             >
-                                <div className="w-24 h-24 rounded-lg overflow-hidden shrink-0 bg-slate-100 border border-slate-100 dark:border-slate-800">
+                                <div className="w-24 h-24 rounded-md overflow-hidden shrink-0 bg-slate-100 border border-slate-100 dark:border-slate-800">
                                     <img
                                         src={relProj.img}
                                         alt={relProj.title}
