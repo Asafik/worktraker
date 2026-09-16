@@ -211,61 +211,61 @@ export default function Login() {
                     <span className="w-6 h-1 bg-blue-500 rounded-full ml-1" />
                 </div>
 
-                {/* Center Ecosystem Canvas (Interactive 10 Connected Nodes) */}
-                <div className="relative w-full max-w-[720px] mx-auto h-[560px] my-auto select-none">
+                {/* Center Ecosystem Canvas (Interactive 10 Connected Nodes - Expanded to fill canvas) */}
+                <div className="relative w-full max-w-[1040px] xl:max-w-[1140px] 2xl:max-w-[1240px] mx-auto h-[620px] xl:h-[640px] my-auto select-none">
                     {/* Concentric Radar Rings */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[440px] h-[440px] rounded-full border border-blue-500/10 pointer-events-none" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[320px] h-[320px] rounded-full border border-blue-400/15 pointer-events-none" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] rounded-full border border-cyan-400/25 pointer-events-none animate-pulse" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-blue-500/10 pointer-events-none" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] rounded-full border border-blue-400/15 pointer-events-none" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px] h-[220px] rounded-full border border-cyan-400/25 pointer-events-none animate-pulse" />
 
                     {/* SVG Glowing Neon Connection Lines */}
                     <svg
                         className="absolute inset-0 w-full h-full pointer-events-none z-10"
-                        viewBox="0 0 720 560"
+                        viewBox="0 0 1100 620"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <defs>
                             {/* Left Gradients */}
-                            <linearGradient id="neon-node1" x1="215" y1="37" x2="310" y2="250" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node1" x1="255" y1="42" x2="495" y2="275" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#38bdf8" />
                                 <stop offset="1" stopColor="#3b82f6" />
                             </linearGradient>
-                            <linearGradient id="neon-node2" x1="215" y1="157" x2="310" y2="265" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node2" x1="242" y1="172" x2="495" y2="292" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#2dd4bf" />
                                 <stop offset="1" stopColor="#06b6d4" />
                             </linearGradient>
-                            <linearGradient id="neon-node3" x1="215" y1="277" x2="310" y2="280" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node3" x1="230" y1="310" x2="495" y2="310" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#eab308" />
                                 <stop offset="1" stopColor="#3b82f6" />
                             </linearGradient>
-                            <linearGradient id="neon-node4" x1="215" y1="397" x2="310" y2="295" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node4" x1="242" y1="448" x2="495" y2="328" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#818cf8" />
                                 <stop offset="1" stopColor="#6366f1" />
                             </linearGradient>
-                            <linearGradient id="neon-node5" x1="215" y1="517" x2="310" y2="310" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node5" x1="255" y1="578" x2="495" y2="345" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#c084fc" />
                                 <stop offset="1" stopColor="#8b5cf6" />
                             </linearGradient>
 
                             {/* Right Gradients */}
-                            <linearGradient id="neon-node6" x1="505" y1="37" x2="410" y2="250" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node6" x1="845" y1="42" x2="605" y2="275" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#34d399" />
                                 <stop offset="1" stopColor="#06b6d4" />
                             </linearGradient>
-                            <linearGradient id="neon-node7" x1="505" y1="157" x2="410" y2="265" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node7" x1="858" y1="172" x2="605" y2="292" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#60a5fa" />
                                 <stop offset="1" stopColor="#818cf8" />
                             </linearGradient>
-                            <linearGradient id="neon-node8" x1="505" y1="277" x2="410" y2="280" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node8" x1="870" y1="310" x2="605" y2="310" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#38bdf8" />
                                 <stop offset="1" stopColor="#3b82f6" />
                             </linearGradient>
-                            <linearGradient id="neon-node9" x1="505" y1="397" x2="410" y2="295" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node9" x1="858" y1="448" x2="605" y2="328" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#f472b6" />
                                 <stop offset="1" stopColor="#8b5cf6" />
                             </linearGradient>
-                            <linearGradient id="neon-node10" x1="505" y1="517" x2="410" y2="310" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node10" x1="845" y1="578" x2="605" y2="345" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#2dd4bf" />
                                 <stop offset="1" stopColor="#06b6d4" />
                             </linearGradient>
@@ -273,59 +273,59 @@ export default function Login() {
 
                         {/* Left 5 Connections */}
                         {/* 1. Projects */}
-                        <path d="M 215 37 C 275 37, 280 220, 310 250" stroke="url(#neon-node1)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="255" cy="48" r="4.5" fill="#38bdf8" stroke="#060b19" strokeWidth="2" />
+                        <path d="M 255 42 C 380 42, 430 245, 495 275" stroke="url(#neon-node1)" strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="340" cy="62" r="5" fill="#38bdf8" stroke="#060b19" strokeWidth="2" />
 
                         {/* 2. Tasks */}
-                        <path d="M 215 157 C 270 157, 275 235, 310 265" stroke="url(#neon-node2)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="260" cy="168" r="4.5" fill="#2dd4bf" stroke="#060b19" strokeWidth="2" />
+                        <path d="M 242 172 C 360 172, 420 268, 495 292" stroke="url(#neon-node2)" strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="330" cy="188" r="5" fill="#2dd4bf" stroke="#060b19" strokeWidth="2" />
 
                         {/* 3. Google Drive */}
-                        <path d="M 215 277 C 260 277, 280 280, 310 280" stroke="url(#neon-node3)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="265" cy="278" r="4.5" fill="#eab308" stroke="#060b19" strokeWidth="2" />
+                        <path d="M 230 310 C 330 310, 410 310, 495 310" stroke="url(#neon-node3)" strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="335" cy="310" r="5" fill="#eab308" stroke="#060b19" strokeWidth="2" />
 
                         {/* 4. GitHub */}
-                        <path d="M 215 397 C 270 397, 275 325, 310 295" stroke="url(#neon-node4)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="260" cy="388" r="4.5" fill="#818cf8" stroke="#060b19" strokeWidth="2" />
+                        <path d="M 242 448 C 360 448, 420 352, 495 328" stroke="url(#neon-node4)" strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="330" cy="432" r="5" fill="#818cf8" stroke="#060b19" strokeWidth="2" />
 
                         {/* 5. Notes */}
-                        <path d="M 215 517 C 275 517, 280 340, 310 310" stroke="url(#neon-node5)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="255" cy="505" r="4.5" fill="#c084fc" stroke="#060b19" strokeWidth="2" />
+                        <path d="M 255 578 C 380 578, 430 375, 495 345" stroke="url(#neon-node5)" strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="340" cy="558" r="5" fill="#c084fc" stroke="#060b19" strokeWidth="2" />
 
                         {/* Right 5 Connections */}
                         {/* 6. Calendar */}
-                        <path d="M 505 37 C 445 37, 440 220, 410 250" stroke="url(#neon-node6)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="465" cy="48" r="4.5" fill="#34d399" stroke="#060b19" strokeWidth="2" />
+                        <path d="M 845 42 C 720 42, 670 245, 605 275" stroke="url(#neon-node6)" strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="760" cy="62" r="5" fill="#34d399" stroke="#060b19" strokeWidth="2" />
 
                         {/* 7. Portfolio */}
-                        <path d="M 505 157 C 450 157, 445 235, 410 265" stroke="url(#neon-node7)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="460" cy="168" r="4.5" fill="#60a5fa" stroke="#060b19" strokeWidth="2" />
+                        <path d="M 858 172 C 740 172, 680 268, 605 292" stroke="url(#neon-node7)" strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="770" cy="188" r="5" fill="#60a5fa" stroke="#060b19" strokeWidth="2" />
 
                         {/* 8. Archive */}
-                        <path d="M 505 277 C 460 277, 440 280, 410 280" stroke="url(#neon-node8)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="455" cy="278" r="4.5" fill="#38bdf8" stroke="#060b19" strokeWidth="2" />
+                        <path d="M 870 310 C 770 310, 690 310, 605 310" stroke="url(#neon-node8)" strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="765" cy="310" r="5" fill="#38bdf8" stroke="#060b19" strokeWidth="2" />
 
                         {/* 9. Mail/Updates */}
-                        <path d="M 505 397 C 450 397, 445 325, 410 295" stroke="url(#neon-node9)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="460" cy="388" r="4.5" fill="#f472b6" stroke="#060b19" strokeWidth="2" />
+                        <path d="M 858 448 C 740 448, 680 352, 605 328" stroke="url(#neon-node9)" strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="770" cy="432" r="5" fill="#f472b6" stroke="#060b19" strokeWidth="2" />
 
                         {/* 10. And More */}
-                        <path d="M 505 517 C 445 517, 440 340, 410 310" stroke="url(#neon-node10)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="465" cy="505" r="4.5" fill="#2dd4bf" stroke="#060b19" strokeWidth="2" />
+                        <path d="M 845 578 C 720 578, 670 375, 605 345" stroke="url(#neon-node10)" strokeWidth="2.5" strokeLinecap="round" />
+                        <circle cx="760" cy="558" r="5" fill="#2dd4bf" stroke="#060b19" strokeWidth="2" />
                     </svg>
 
                     {/* ==================================================== */}
                     {/* CENTER GLOWING LOGO HUB                              */}
                     {/* ==================================================== */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
-                        <div className="w-22 h-22 sm:w-26 sm:h-26 rounded-2xl bg-gradient-to-b from-[#0e1f4d] via-[#091433] to-[#060c20] border-2 border-blue-400/60 shadow-[0_0_45px_rgba(59,130,246,0.6)] flex flex-col items-center justify-center relative group hover:scale-105 transition-all duration-300 cursor-pointer p-3">
+                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-b from-[#0e1f4d] via-[#091433] to-[#060c20] border-2 border-blue-400/60 shadow-[0_0_45px_rgba(59,130,246,0.6)] flex flex-col items-center justify-center relative group hover:scale-105 transition-all duration-300 cursor-pointer p-3">
                             {/* Inner Ambient Glow */}
                             <div className="absolute inset-0 rounded-2xl bg-blue-500/10 pointer-events-none" />
 
                             <img
                                 src="/images/logo.png"
                                 alt="WorkTrack Logo"
-                                className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-[0_0_12px_rgba(59,130,246,0.8)] relative z-10"
+                                className="w-11 h-11 sm:w-13 sm:h-13 object-contain drop-shadow-[0_0_12px_rgba(59,130,246,0.8)] relative z-10"
                             />
                             <span className="text-[11px] sm:text-xs font-extrabold text-slate-200 tracking-tight mt-1.5 select-none relative z-10">
                                 WorkTrack
@@ -341,7 +341,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('projects')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[8px] left-0 sm:left-2 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-48 sm:w-52 cursor-pointer group ${
+                        className={`absolute top-[12px] left-[10px] xl:left-[25px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
                             activeNode === 'projects' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                         }`}
                     >
@@ -362,7 +362,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('tasks')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[128px] left-0 sm:left-2 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-48 sm:w-52 cursor-pointer group ${
+                        className={`absolute top-[142px] left-0 xl:left-[10px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
                             activeNode === 'tasks' ? 'scale-103 border-emerald-400 shadow-emerald-500/20' : ''
                         }`}
                     >
@@ -383,7 +383,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('drive')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[248px] left-0 sm:left-2 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-yellow-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-48 sm:w-52 cursor-pointer group ${
+                        className={`absolute top-[272px] left-0 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-yellow-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
                             activeNode === 'drive' ? 'scale-103 border-yellow-400 shadow-yellow-500/20' : ''
                         }`}
                     >
@@ -408,7 +408,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('github')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[368px] left-0 sm:left-2 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-slate-300/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-48 sm:w-52 cursor-pointer group ${
+                        className={`absolute top-[402px] left-0 xl:left-[10px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-slate-300/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
                             activeNode === 'github' ? 'scale-103 border-slate-300 shadow-slate-500/20' : ''
                         }`}
                     >
@@ -431,7 +431,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('notes')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[488px] left-0 sm:left-2 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-purple-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-48 sm:w-52 cursor-pointer group ${
+                        className={`absolute top-[532px] left-[10px] xl:left-[25px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-purple-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
                             activeNode === 'notes' ? 'scale-103 border-purple-400 shadow-purple-500/20' : ''
                         }`}
                     >
@@ -453,7 +453,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('calendar')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[8px] right-0 sm:right-2 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-48 sm:w-52 cursor-pointer group ${
+                        className={`absolute top-[12px] right-[10px] xl:right-[25px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
                             activeNode === 'calendar' ? 'scale-103 border-emerald-400 shadow-emerald-500/20' : ''
                         }`}
                     >
@@ -474,7 +474,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('portfolio')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[128px] right-0 sm:right-2 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-48 sm:w-52 cursor-pointer group ${
+                        className={`absolute top-[142px] right-0 xl:right-[10px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
                             activeNode === 'portfolio' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                         }`}
                     >
@@ -495,7 +495,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('archive')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[248px] right-0 sm:right-2 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-48 sm:w-52 cursor-pointer group ${
+                        className={`absolute top-[272px] right-0 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
                             activeNode === 'archive' ? 'scale-103 border-cyan-400 shadow-cyan-500/20' : ''
                         }`}
                     >
@@ -516,7 +516,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('mail')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[368px] right-0 sm:right-2 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-rose-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-48 sm:w-52 cursor-pointer group ${
+                        className={`absolute top-[402px] right-0 xl:right-[10px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-rose-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
                             activeNode === 'mail' ? 'scale-103 border-rose-400 shadow-rose-500/20' : ''
                         }`}
                     >
@@ -537,7 +537,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('more')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[488px] right-0 sm:right-2 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-48 sm:w-52 cursor-pointer group ${
+                        className={`absolute top-[532px] right-[10px] xl:right-[25px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
                             activeNode === 'more' ? 'scale-103 border-cyan-400 shadow-cyan-500/20' : ''
                         }`}
                     >
