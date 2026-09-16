@@ -743,7 +743,7 @@ export default function Welcome({ initialSection = 'home' }) {
                         </div>
 
                         {/* Center: Mountain Banner Illustration (Col 5 - Pure Original Image without any card/badge wrapper) */}
-                        <div className="lg:col-span-5 flex items-center justify-center relative group">
+                        <div className="lg:col-span-5 flex items-center justify-center relative group lg:pt-7">
                             <div className="w-full relative">
                                 <img
                                     src="/images/avatar1.png"
