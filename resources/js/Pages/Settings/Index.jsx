@@ -88,7 +88,7 @@ const GoogleGIcon = ({ className }) => (
     </svg>
 );
 
-export default function SettingsPage({ userProfile, flash }) {
+export default function SettingsPage({ userProfile, integrationsStatus, flash }) {
     // Active tabs: Profile, Account & Security, Appearance, Integrations, Preferences
     const [activeTab, setActiveTab] = useState('Profile');
     const [savedToast, setSavedToast] = useState(false);
@@ -170,11 +170,12 @@ export default function SettingsPage({ userProfile, flash }) {
         const file = e.target.files?.[0];
         if (!file) return;
 
-        setUploadingAvatar(true);
         const formData = new FormData();
         formData.append('avatar', file);
 
+        setUploadingAvatar(true);
         router.post('/settings/profile/avatar', formData, {
+            forceFormData: true,
             preserveScroll: true,
             onSuccess: () => {
                 setUploadingAvatar(false);
@@ -190,25 +191,53 @@ export default function SettingsPage({ userProfile, flash }) {
     // ==========================================
     // 2. INTEGRATIONS STATE
     // ==========================================
-    const [integrations, setIntegrations] = useState({
+    const [integrations, setIntegrations] = useState(() => ({
         github: {
-            connected: true,
-            account: 'asafik',
-            accountType: 'Personal Account',
-            avatar: '/images/avatar1.png',
-            url: 'https://github.com/asafik',
-            lastSynced: '16 Sep 2025, 10:24',
+            connected: integrationsStatus?.github?.connected ?? true,
+            account: integrationsStatus?.github?.account || 'asafik',
+            accountType: integrationsStatus?.github?.accountType || 'Personal Account',
+            avatar: integrationsStatus?.github?.avatar || '/images/avatar1.png',
+            url: integrationsStatus?.github?.url || 'https://github.com/asafik',
+            lastSynced: integrationsStatus?.github?.lastSynced || '16 Sep 2025, 10:24',
             syncing: false,
         },
         googleDrive: {
-            connected: true,
-            account: 'asafik.dev@gmail.com',
-            accountType: 'Personal Account',
-            url: 'https://drive.google.com',
-            lastSynced: '15 Sep 2025, 18:10',
+            connected: integrationsStatus?.googleDrive?.connected ?? true,
+            account: integrationsStatus?.googleDrive?.account || 'ronismk7@gmail.com',
+            accountType: integrationsStatus?.googleDrive?.accountType || 'Personal Account (Google Drive)',
+            folderConfigured: integrationsStatus?.googleDrive?.folderConfigured ?? false,
+            folderId: integrationsStatus?.googleDrive?.folderId || '',
+            url: integrationsStatus?.googleDrive?.url || 'https://drive.google.com',
+            lastSynced: integrationsStatus?.googleDrive?.lastSynced || '16 Sep 2025, 21:05',
             syncing: false,
         },
-    });
+    }));
+
+    useEffect(() => {
+        if (integrationsStatus) {
+            setIntegrations({
+                github: {
+                    connected: integrationsStatus?.github?.connected ?? true,
+                    account: integrationsStatus?.github?.account || 'asafik',
+                    accountType: integrationsStatus?.github?.accountType || 'Personal Account',
+                    avatar: integrationsStatus?.github?.avatar || '/images/avatar1.png',
+                    url: integrationsStatus?.github?.url || 'https://github.com/asafik',
+                    lastSynced: integrationsStatus?.github?.lastSynced || '16 Sep 2025, 10:24',
+                    syncing: false,
+                },
+                googleDrive: {
+                    connected: integrationsStatus?.googleDrive?.connected ?? true,
+                    account: integrationsStatus?.googleDrive?.account || 'ronismk7@gmail.com',
+                    accountType: integrationsStatus?.googleDrive?.accountType || 'Personal Account (Google Drive)',
+                    folderConfigured: integrationsStatus?.googleDrive?.folderConfigured ?? false,
+                    folderId: integrationsStatus?.googleDrive?.folderId || '',
+                    url: integrationsStatus?.googleDrive?.url || 'https://drive.google.com',
+                    lastSynced: integrationsStatus?.googleDrive?.lastSynced || '16 Sep 2025, 21:05',
+                    syncing: false,
+                },
+            });
+        }
+    }, [integrationsStatus]);
 
     const [modalManage, setModalManage] = useState(null); // 'github' | 'googleDrive'
 
@@ -1243,10 +1272,17 @@ export default function SettingsPage({ userProfile, flash }) {
 
                                     {/* Badges & Actions */}
                                     <div className="flex items-center gap-2 self-start">
-                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
-                                            <CheckCircle2 className="w-3.5 h-3.5" />
-                                            <span>Connected</span>
-                                        </span>
+                                        {integrations.googleDrive.connected ? (
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
+                                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                                <span>Connected</span>
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                                                <span>Not Connected</span>
+                                            </span>
+                                        )}
                                         <button
                                             onClick={() => setModalManage('googleDrive')}
                                             className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-2xs flex items-center gap-1.5"

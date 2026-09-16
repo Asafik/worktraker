@@ -41,6 +41,10 @@ class SettingsController extends Controller
             ]);
         }
 
+        $isGoogleDriveConnected = !empty(config('services.google_drive.client_id'))
+            && !empty(config('services.google_drive.client_secret'))
+            && !empty(config('services.google_drive.refresh_token'));
+
         return Inertia::render('Settings/Index', [
             'userProfile' => [
                 'id' => $user->id,
@@ -61,6 +65,25 @@ class SettingsController extends Controller
                     'instagram' => '',
                     'facebook' => '',
                 ], (array) ($user->socials ?? [])),
+            ],
+            'integrationsStatus' => [
+                'googleDrive' => [
+                    'connected' => $isGoogleDriveConnected,
+                    'account' => 'ronismk7@gmail.com',
+                    'accountType' => 'Personal Account (Google Drive)',
+                    'folderConfigured' => !empty(config('services.google_drive.folder_id')),
+                    'folderId' => config('services.google_drive.folder_id') ?? '',
+                    'url' => 'https://drive.google.com',
+                    'lastSynced' => now()->format('d M Y, H:i'),
+                ],
+                'github' => [
+                    'connected' => true,
+                    'account' => 'asafik',
+                    'accountType' => 'Personal Account',
+                    'avatar' => '/images/avatar1.png',
+                    'url' => !empty($user->socials['github']) ? $user->socials['github'] : 'https://github.com/asafik',
+                    'lastSynced' => now()->format('d M Y, H:i'),
+                ],
             ],
             'flash' => [
                 'message' => session('message'),
