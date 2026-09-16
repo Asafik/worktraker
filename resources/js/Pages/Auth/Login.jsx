@@ -218,7 +218,7 @@ export default function Login() {
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] rounded-full border border-blue-400/15 pointer-events-none" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px] h-[220px] rounded-full border border-cyan-400/25 pointer-events-none animate-pulse" />
 
-                    {/* SVG Glowing Neon Connection Lines */}
+                    {/* SVG Glowing Neon Connection Lines with Animated Motion along Path */}
                     <svg
                         className="absolute inset-0 w-full h-full pointer-events-none z-10"
                         viewBox="0 0 1100 620"
@@ -226,6 +226,15 @@ export default function Login() {
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <defs>
+                            {/* Ambient Glow Filter for Flowing Photons */}
+                            <filter id="photon-glow" x="-50%" y="-50%" width="200%" height="200%">
+                                <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
+                                <feMerge>
+                                    <feMergeNode in="coloredBlur" />
+                                    <feMergeNode in="SourceGraphic" />
+                                </feMerge>
+                            </filter>
+
                             {/* Left Gradients */}
                             <linearGradient id="neon-node1" x1="255" y1="42" x2="495" y2="275" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#38bdf8" />
@@ -271,47 +280,321 @@ export default function Login() {
                             </linearGradient>
                         </defs>
 
-                        {/* Left 5 Connections */}
+                        {/* ==================================================== */}
+                        {/* LEFT 5 CONNECTIONS (Flowing into WorkTrack Hub)      */}
+                        {/* ==================================================== */}
                         {/* 1. Projects */}
-                        <path d="M 255 42 C 380 42, 430 245, 495 275" stroke="url(#neon-node1)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="340" cy="62" r="5" fill="#38bdf8" stroke="#060b19" strokeWidth="2" />
+                        <g>
+                            {/* Base Track */}
+                            <path
+                                d="M 255 42 C 380 42, 430 245, 495 275"
+                                stroke="url(#neon-node1)"
+                                strokeWidth={activeNode === 'projects' ? '3' : '2'}
+                                strokeOpacity={activeNode === 'projects' ? '0.9' : '0.35'}
+                                strokeLinecap="round"
+                            />
+                            {/* Animated Dash Stream */}
+                            <path
+                                d="M 255 42 C 380 42, 430 245, 495 275"
+                                stroke="url(#neon-node1)"
+                                strokeWidth="2.5"
+                                strokeDasharray="50 280"
+                                strokeLinecap="round"
+                            >
+                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.6s" repeatCount="indefinite" />
+                            </path>
+                            {/* Traveling Light Photon */}
+                            <circle r="6" fill="#38bdf8" opacity="0.45" filter="url(#photon-glow)">
+                                <animateMotion path="M 255 42 C 380 42, 430 245, 495 275" dur="2.6s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="3" fill="#ffffff" stroke="#38bdf8" strokeWidth="1.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 255 42 C 380 42, 430 245, 495 275" dur="2.6s" repeatCount="indefinite" />
+                            </circle>
+                            {/* Card Socket Anchor */}
+                            <circle cx="255" cy="42" r="3.5" fill="#38bdf8" />
+                        </g>
 
                         {/* 2. Tasks */}
-                        <path d="M 242 172 C 360 172, 420 268, 495 292" stroke="url(#neon-node2)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="330" cy="188" r="5" fill="#2dd4bf" stroke="#060b19" strokeWidth="2" />
+                        <g>
+                            {/* Base Track */}
+                            <path
+                                d="M 242 172 C 360 172, 420 268, 495 292"
+                                stroke="url(#neon-node2)"
+                                strokeWidth={activeNode === 'tasks' ? '3' : '2'}
+                                strokeOpacity={activeNode === 'tasks' ? '0.9' : '0.35'}
+                                strokeLinecap="round"
+                            />
+                            {/* Animated Dash Stream */}
+                            <path
+                                d="M 242 172 C 360 172, 420 268, 495 292"
+                                stroke="url(#neon-node2)"
+                                strokeWidth="2.5"
+                                strokeDasharray="50 280"
+                                strokeLinecap="round"
+                            >
+                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
+                            </path>
+                            {/* Traveling Light Photon */}
+                            <circle r="6" fill="#2dd4bf" opacity="0.45" filter="url(#photon-glow)">
+                                <animateMotion path="M 242 172 C 360 172, 420 268, 495 292" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="3" fill="#ffffff" stroke="#2dd4bf" strokeWidth="1.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 242 172 C 360 172, 420 268, 495 292" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
+                            </circle>
+                            {/* Card Socket Anchor */}
+                            <circle cx="242" cy="172" r="3.5" fill="#2dd4bf" />
+                        </g>
 
                         {/* 3. Google Drive */}
-                        <path d="M 230 310 C 330 310, 410 310, 495 310" stroke="url(#neon-node3)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="335" cy="310" r="5" fill="#eab308" stroke="#060b19" strokeWidth="2" />
+                        <g>
+                            {/* Base Track */}
+                            <path
+                                d="M 230 310 C 330 310, 410 310, 495 310"
+                                stroke="url(#neon-node3)"
+                                strokeWidth={activeNode === 'drive' ? '3' : '2'}
+                                strokeOpacity={activeNode === 'drive' ? '0.9' : '0.35'}
+                                strokeLinecap="round"
+                            />
+                            {/* Animated Dash Stream */}
+                            <path
+                                d="M 230 310 C 330 310, 410 310, 495 310"
+                                stroke="url(#neon-node3)"
+                                strokeWidth="2.5"
+                                strokeDasharray="50 280"
+                                strokeLinecap="round"
+                            >
+                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
+                            </path>
+                            {/* Traveling Light Photon */}
+                            <circle r="6" fill="#eab308" opacity="0.45" filter="url(#photon-glow)">
+                                <animateMotion path="M 230 310 C 330 310, 410 310, 495 310" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="3" fill="#ffffff" stroke="#eab308" strokeWidth="1.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 230 310 C 330 310, 410 310, 495 310" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
+                            </circle>
+                            {/* Card Socket Anchor */}
+                            <circle cx="230" cy="310" r="3.5" fill="#eab308" />
+                        </g>
 
                         {/* 4. GitHub */}
-                        <path d="M 242 448 C 360 448, 420 352, 495 328" stroke="url(#neon-node4)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="330" cy="432" r="5" fill="#818cf8" stroke="#060b19" strokeWidth="2" />
+                        <g>
+                            {/* Base Track */}
+                            <path
+                                d="M 242 448 C 360 448, 420 352, 495 328"
+                                stroke="url(#neon-node4)"
+                                strokeWidth={activeNode === 'github' ? '3' : '2'}
+                                strokeOpacity={activeNode === 'github' ? '0.9' : '0.35'}
+                                strokeLinecap="round"
+                            />
+                            {/* Animated Dash Stream */}
+                            <path
+                                d="M 242 448 C 360 448, 420 352, 495 328"
+                                stroke="url(#neon-node4)"
+                                strokeWidth="2.5"
+                                strokeDasharray="50 280"
+                                strokeLinecap="round"
+                            >
+                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
+                            </path>
+                            {/* Traveling Light Photon */}
+                            <circle r="6" fill="#818cf8" opacity="0.45" filter="url(#photon-glow)">
+                                <animateMotion path="M 242 448 C 360 448, 420 352, 495 328" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="3" fill="#ffffff" stroke="#818cf8" strokeWidth="1.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 242 448 C 360 448, 420 352, 495 328" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
+                            </circle>
+                            {/* Card Socket Anchor */}
+                            <circle cx="242" cy="448" r="3.5" fill="#818cf8" />
+                        </g>
 
                         {/* 5. Notes */}
-                        <path d="M 255 578 C 380 578, 430 375, 495 345" stroke="url(#neon-node5)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="340" cy="558" r="5" fill="#c084fc" stroke="#060b19" strokeWidth="2" />
+                        <g>
+                            {/* Base Track */}
+                            <path
+                                d="M 255 578 C 380 578, 430 375, 495 345"
+                                stroke="url(#neon-node5)"
+                                strokeWidth={activeNode === 'notes' ? '3' : '2'}
+                                strokeOpacity={activeNode === 'notes' ? '0.9' : '0.35'}
+                                strokeLinecap="round"
+                            />
+                            {/* Animated Dash Stream */}
+                            <path
+                                d="M 255 578 C 380 578, 430 375, 495 345"
+                                stroke="url(#neon-node5)"
+                                strokeWidth="2.5"
+                                strokeDasharray="50 280"
+                                strokeLinecap="round"
+                            >
+                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
+                            </path>
+                            {/* Traveling Light Photon */}
+                            <circle r="6" fill="#c084fc" opacity="0.45" filter="url(#photon-glow)">
+                                <animateMotion path="M 255 578 C 380 578, 430 375, 495 345" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="3" fill="#ffffff" stroke="#c084fc" strokeWidth="1.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 255 578 C 380 578, 430 375, 495 345" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
+                            </circle>
+                            {/* Card Socket Anchor */}
+                            <circle cx="255" cy="578" r="3.5" fill="#c084fc" />
+                        </g>
 
-                        {/* Right 5 Connections */}
+                        {/* ==================================================== */}
+                        {/* RIGHT 5 CONNECTIONS (Flowing into WorkTrack Hub)     */}
+                        {/* ==================================================== */}
                         {/* 6. Calendar */}
-                        <path d="M 845 42 C 720 42, 670 245, 605 275" stroke="url(#neon-node6)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="760" cy="62" r="5" fill="#34d399" stroke="#060b19" strokeWidth="2" />
+                        <g>
+                            {/* Base Track */}
+                            <path
+                                d="M 845 42 C 720 42, 670 245, 605 275"
+                                stroke="url(#neon-node6)"
+                                strokeWidth={activeNode === 'calendar' ? '3' : '2'}
+                                strokeOpacity={activeNode === 'calendar' ? '0.9' : '0.35'}
+                                strokeLinecap="round"
+                            />
+                            {/* Animated Dash Stream */}
+                            <path
+                                d="M 845 42 C 720 42, 670 245, 605 275"
+                                stroke="url(#neon-node6)"
+                                strokeWidth="2.5"
+                                strokeDasharray="50 280"
+                                strokeLinecap="round"
+                            >
+                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
+                            </path>
+                            {/* Traveling Light Photon */}
+                            <circle r="6" fill="#34d399" opacity="0.45" filter="url(#photon-glow)">
+                                <animateMotion path="M 845 42 C 720 42, 670 245, 605 275" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="3" fill="#ffffff" stroke="#34d399" strokeWidth="1.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 845 42 C 720 42, 670 245, 605 275" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
+                            </circle>
+                            {/* Card Socket Anchor */}
+                            <circle cx="845" cy="42" r="3.5" fill="#34d399" />
+                        </g>
 
                         {/* 7. Portfolio */}
-                        <path d="M 858 172 C 740 172, 680 268, 605 292" stroke="url(#neon-node7)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="770" cy="188" r="5" fill="#60a5fa" stroke="#060b19" strokeWidth="2" />
+                        <g>
+                            {/* Base Track */}
+                            <path
+                                d="M 858 172 C 740 172, 680 268, 605 292"
+                                stroke="url(#neon-node7)"
+                                strokeWidth={activeNode === 'portfolio' ? '3' : '2'}
+                                strokeOpacity={activeNode === 'portfolio' ? '0.9' : '0.35'}
+                                strokeLinecap="round"
+                            />
+                            {/* Animated Dash Stream */}
+                            <path
+                                d="M 858 172 C 740 172, 680 268, 605 292"
+                                stroke="url(#neon-node7)"
+                                strokeWidth="2.5"
+                                strokeDasharray="50 280"
+                                strokeLinecap="round"
+                            >
+                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
+                            </path>
+                            {/* Traveling Light Photon */}
+                            <circle r="6" fill="#60a5fa" opacity="0.45" filter="url(#photon-glow)">
+                                <animateMotion path="M 858 172 C 740 172, 680 268, 605 292" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="3" fill="#ffffff" stroke="#60a5fa" strokeWidth="1.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 858 172 C 740 172, 680 268, 605 292" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
+                            </circle>
+                            {/* Card Socket Anchor */}
+                            <circle cx="858" cy="172" r="3.5" fill="#60a5fa" />
+                        </g>
 
                         {/* 8. Archive */}
-                        <path d="M 870 310 C 770 310, 690 310, 605 310" stroke="url(#neon-node8)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="765" cy="310" r="5" fill="#38bdf8" stroke="#060b19" strokeWidth="2" />
+                        <g>
+                            {/* Base Track */}
+                            <path
+                                d="M 870 310 C 770 310, 690 310, 605 310"
+                                stroke="url(#neon-node8)"
+                                strokeWidth={activeNode === 'archive' ? '3' : '2'}
+                                strokeOpacity={activeNode === 'archive' ? '0.9' : '0.35'}
+                                strokeLinecap="round"
+                            />
+                            {/* Animated Dash Stream */}
+                            <path
+                                d="M 870 310 C 770 310, 690 310, 605 310"
+                                stroke="url(#neon-node8)"
+                                strokeWidth="2.5"
+                                strokeDasharray="50 280"
+                                strokeLinecap="round"
+                            >
+                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
+                            </path>
+                            {/* Traveling Light Photon */}
+                            <circle r="6" fill="#38bdf8" opacity="0.45" filter="url(#photon-glow)">
+                                <animateMotion path="M 870 310 C 770 310, 690 310, 605 310" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="3" fill="#ffffff" stroke="#38bdf8" strokeWidth="1.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 870 310 C 770 310, 690 310, 605 310" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
+                            </circle>
+                            {/* Card Socket Anchor */}
+                            <circle cx="870" cy="310" r="3.5" fill="#38bdf8" />
+                        </g>
 
                         {/* 9. Mail/Updates */}
-                        <path d="M 858 448 C 740 448, 680 352, 605 328" stroke="url(#neon-node9)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="770" cy="432" r="5" fill="#f472b6" stroke="#060b19" strokeWidth="2" />
+                        <g>
+                            {/* Base Track */}
+                            <path
+                                d="M 858 448 C 740 448, 680 352, 605 328"
+                                stroke="url(#neon-node9)"
+                                strokeWidth={activeNode === 'mail' ? '3' : '2'}
+                                strokeOpacity={activeNode === 'mail' ? '0.9' : '0.35'}
+                                strokeLinecap="round"
+                            />
+                            {/* Animated Dash Stream */}
+                            <path
+                                d="M 858 448 C 740 448, 680 352, 605 328"
+                                stroke="url(#neon-node9)"
+                                strokeWidth="2.5"
+                                strokeDasharray="50 280"
+                                strokeLinecap="round"
+                            >
+                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
+                            </path>
+                            {/* Traveling Light Photon */}
+                            <circle r="6" fill="#f472b6" opacity="0.45" filter="url(#photon-glow)">
+                                <animateMotion path="M 858 448 C 740 448, 680 352, 605 328" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="3" fill="#ffffff" stroke="#f472b6" strokeWidth="1.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 858 448 C 740 448, 680 352, 605 328" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
+                            </circle>
+                            {/* Card Socket Anchor */}
+                            <circle cx="858" cy="448" r="3.5" fill="#f472b6" />
+                        </g>
 
                         {/* 10. And More */}
-                        <path d="M 845 578 C 720 578, 670 375, 605 345" stroke="url(#neon-node10)" strokeWidth="2.5" strokeLinecap="round" />
-                        <circle cx="760" cy="558" r="5" fill="#2dd4bf" stroke="#060b19" strokeWidth="2" />
+                        <g>
+                            {/* Base Track */}
+                            <path
+                                d="M 845 578 C 720 578, 670 375, 605 345"
+                                stroke="url(#neon-node10)"
+                                strokeWidth={activeNode === 'more' ? '3' : '2'}
+                                strokeOpacity={activeNode === 'more' ? '0.9' : '0.35'}
+                                strokeLinecap="round"
+                            />
+                            {/* Animated Dash Stream */}
+                            <path
+                                d="M 845 578 C 720 578, 670 375, 605 345"
+                                stroke="url(#neon-node10)"
+                                strokeWidth="2.5"
+                                strokeDasharray="50 280"
+                                strokeLinecap="round"
+                            >
+                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
+                            </path>
+                            {/* Traveling Light Photon */}
+                            <circle r="6" fill="#2dd4bf" opacity="0.45" filter="url(#photon-glow)">
+                                <animateMotion path="M 845 578 C 720 578, 670 375, 605 345" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
+                            </circle>
+                            <circle r="3" fill="#ffffff" stroke="#2dd4bf" strokeWidth="1.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 845 578 C 720 578, 670 375, 605 345" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
+                            </circle>
+                            {/* Card Socket Anchor */}
+                            <circle cx="845" cy="578" r="3.5" fill="#2dd4bf" />
+                        </g>
                     </svg>
 
                     {/* ==================================================== */}
