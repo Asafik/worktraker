@@ -437,8 +437,8 @@ export default function Welcome({ initialSection = 'home' }) {
                         </Link>
                     </div>
 
-                    {/* 4 Cards Grid - ENTIRE CARD IS CLICKABLE WITH UNIFIED HEIGHTS */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    {/* 5 Cards Grid - ENTIRE CARD IS CLICKABLE WITH UNIFIED HEIGHTS */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4.5">
                         {[
                             {
                                 id: 1,
@@ -475,6 +475,15 @@ export default function Welcome({ initialSection = 'home' }) {
                                 tags: ['UI/UX', 'Tailwind CSS', 'Responsive'],
                                 img: '/images/proj4.png',
                                 link: '/projects/application-redesign',
+                            },
+                            {
+                                id: 5,
+                                type: 'Client Project',
+                                title: 'Company Profile & CMS',
+                                desc: 'Corporate web application with dynamic content management, lead tracking, and responsive portal.',
+                                tags: ['Laravel', 'Vue.js', 'PostgreSQL'],
+                                img: '/images/proj2.png',
+                                link: '/projects/company-profile-cms',
                             },
                         ].map((proj) => (
                             <Link
@@ -518,7 +527,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                     {proj.tags.map((tag, tIdx) => (
                                         <span
                                             key={tIdx}
-                                            className="px-2 py-0.5 rounded text-[10px] font-semibold border bg-slate-50 text-slate-600 border-slate-200/70 group-hover:border-slate-300 transition-colors"
+                                            className="px-2 py-0.5 rounded-md text-[10px] font-medium border bg-slate-50 border-slate-200/70 text-slate-600 group-hover:border-blue-200 group-hover:text-blue-600 transition-colors"
                                         >
                                             {tag}
                                         </span>
@@ -531,7 +540,7 @@ export default function Welcome({ initialSection = 'home' }) {
             </section>
 
             {/* ========================================================== */}
-            {/* 4. RECENT EXPERIENCE (Timeline with comfortable track spacing & calibrated claims) */}
+            {/* 4. RECENT EXPERIENCE (Interactive Timeline with continuous track & nodes) */}
             {/* ========================================================== */}
             <section
                 id="experience"
@@ -563,10 +572,10 @@ export default function Welcome({ initialSection = 'home' }) {
 
                     {/* Unified Timeline: Continuous Track with Stem Connectors (1:1 with reference mockup) */}
                     <div className="relative pt-2">
-                        {/* Horizontal connecting line spanning continuously across the 4-card width */}
+                        {/* Horizontal connecting line spanning continuously across the 5-card width */}
                         <div className="hidden lg:block absolute top-[15px] left-0 right-0 h-[2px] bg-[#e0e7ff] z-0 pointer-events-none" />
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4.5 relative z-10">
                             {[
                                 {
                                     date: 'Sep 2026',
@@ -587,6 +596,11 @@ export default function Welcome({ initialSection = 'home' }) {
                                     date: 'Jun 2026',
                                     title: 'System Maintenance',
                                     desc: 'Bug fixes and performance improvements.',
+                                },
+                                {
+                                    date: 'May 2026',
+                                    title: 'API & Auth Architecture',
+                                    desc: 'Implemented secure authentication, role permissions, and REST API endpoints.',
                                 },
                             ].map((item, idx) => (
                                 <div key={idx} className="flex flex-col group relative">

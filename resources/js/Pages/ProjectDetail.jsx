@@ -260,6 +260,60 @@ const projectsDatabase = {
             { id: 4, title: 'Form Verification Flow', img: '/images/proj3.png' },
         ],
     },
+    'company-profile-cms': {
+        index: '05',
+        title: 'Company Profile & CMS',
+        subtitle: 'Dynamic corporate web application with custom content management, lead tracking, and responsive portal.',
+        category: 'Web Application',
+        techHeader: 'Laravel · Vue.js · Tailwind CSS',
+        liveDemoUrl: 'https://demo-cms.asafik.dev',
+        liveDemoDisplay: 'demo-cms.asafik.dev',
+        githubUrl: 'https://github.com/asafik/company-cms',
+        githubDisplay: 'github.com/asafik/company-cms',
+        info: {
+            type: 'Client Project',
+            role: 'Full Stack Developer',
+            team: 'Solo Developer',
+            duration: 'Apr 2026 – May 2026',
+            status: 'Completed',
+            client: 'Corporate Enterprise',
+        },
+        quote: 'A powerful CMS turns company communication into an effortless growth engine.',
+        quoteAuthor: 'Asafik',
+        overview: 'Company Profile & CMS is an all-in-one web portal enabling enterprise marketing teams to publish dynamic articles, manage career listings, and capture client inquiries with detailed analytics.',
+        techStack: [
+            { name: 'Laravel', icon: 'laravel' },
+            { name: 'Vue.js', icon: 'js' },
+            { name: 'Tailwind CSS', icon: 'tailwind' },
+            { name: 'MySQL', icon: 'mysql' },
+        ],
+        keyFeatures: [
+            'Dynamic page builder with customizable sections',
+            'Rich-text article & blog publishing',
+            'Interactive lead & contact form management',
+            'SEO optimization & auto-generated sitemaps',
+            'Role-based admin access control',
+        ],
+        challenges: [
+            'Designing flexible schema for diverse content formats',
+            'Optimizing initial bundle size for fast mobile loading',
+        ],
+        contributions: [
+            'Architected Laravel backend APIs and database migrations',
+            'Created modular Vue.js components with Tailwind CSS',
+            'Configured automated email triggers and inquiry handling',
+        ],
+        results: [
+            'Reduced content publishing turnaround time by 60%',
+            'Achieved 98+ PageSpeed performance score',
+        ],
+        gallery: [
+            { id: 1, title: 'CMS Dashboard & Overview', img: '/images/proj2.png' },
+            { id: 2, title: 'Page Builder Interface', img: '/images/proj1.png' },
+            { id: 3, title: 'Lead Analytics & Reports', img: '/images/proj3.png' },
+            { id: 4, title: 'Mobile Responsive View', img: '/images/proj4.png' },
+        ],
+    },
 };
 
 const allRelatedProjects = [
