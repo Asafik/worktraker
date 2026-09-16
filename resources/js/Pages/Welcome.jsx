@@ -41,7 +41,7 @@ const InstagramIcon = ({ className }) => (
 // Tech Stack SVGs
 const LaravelSvg = ({ className }) => (
     <svg className={className} viewBox="0 0 64 64" fill="none">
-        <path d="M57.6 15.8L34.1 2.2c-1.3-.7-2.9-.7-4.2 0L6.4 15.8c-1.3.7-2.1 2.1-2.1 3.6v27.2c0 1.5.8 2.9 2.1 3.6l23.5 13.6c1.3.7 2.9.7 4.2 0l23.5-13.6c1.3-.7 2.1-2.1 2.1-3.6V19.4c0-1.5-.8-2.9-2.1-3.6z" fill="#FF2D20" opacity="0.1" />
+        <path d="M57.6 15.8L34.1 2.2c-1.3-.7-2.9-.7-4.2 0L6.4 15.8c-1.3.7-2.1 2.1-2.1 3.6v27.2c0 1.5.8 2.9 2.1 3.6l23.5 13.6c1.3.7 2.9.7 4.2 0l23.5-13.6c1.3-.7 2.1-2.1 2.1-3.6V19.4c0-1.5-.8-2.9-2.1-3.6z" fill="#FF2D20" opacity="0.15" />
         <path d="M32 6L9 19.3v26.7L32 59.3l23-13.3V19.3L32 6z" stroke="#FF2D20" strokeWidth="3" strokeLinejoin="round" />
         <path d="M32 6v26.7m0 0L9 19.3m23 13.4l23-13.4m-23 13.4v26.6" stroke="#FF2D20" strokeWidth="2.5" />
     </svg>
@@ -49,7 +49,7 @@ const LaravelSvg = ({ className }) => (
 
 const PhpSvg = ({ className }) => (
     <svg className={className} viewBox="0 0 64 64">
-        <ellipse cx="32" cy="32" rx="28" ry="18" fill="#777BB4" opacity="0.15" />
+        <ellipse cx="32" cy="32" rx="28" ry="18" fill="#777BB4" opacity="0.2" />
         <ellipse cx="32" cy="32" rx="28" ry="18" stroke="#777BB4" strokeWidth="2.5" fill="none" />
         <text x="32" y="38" textAnchor="middle" fill="#777BB4" fontSize="16" fontWeight="bold" fontFamily="sans-serif">PHP</text>
     </svg>
@@ -104,6 +104,8 @@ const FigmaSvg = ({ className }) => (
 );
 
 export default function Welcome() {
+    // Default to Light Mode per user request
+    const [isDark, setIsDark] = useState(false);
     const [contactModal, setContactModal] = useState(false);
     const [sentToast, setSentToast] = useState(false);
 
@@ -115,7 +117,9 @@ export default function Welcome() {
     };
 
     return (
-        <div className="min-h-screen bg-[#070b19] text-slate-100 font-sans selection:bg-blue-600 selection:text-white">
+        <div className={`min-h-screen font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200 ${
+            isDark ? 'bg-[#070b19] text-slate-100' : 'bg-white text-slate-900'
+        }`}>
             <Head title="Rabirts - Full Stack Web Developer" />
 
             {/* Success Toast */}
@@ -127,9 +131,9 @@ export default function Welcome() {
             )}
 
             {/* ========================================================== */}
-            {/* 1. TOP NAVBAR */}
+            {/* 1. TOP NAVBAR (Always deep navy hero bar matching mockup) */}
             {/* ========================================================== */}
-            <header className="fixed top-0 inset-x-0 z-40 bg-[#070b19]/80 backdrop-blur-md border-b border-slate-800/80">
+            <header className="fixed top-0 inset-x-0 z-40 bg-[#070b19]/90 backdrop-blur-md border-b border-slate-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
                     {/* Brand */}
                     <div className="flex items-center gap-3">
@@ -167,16 +171,22 @@ export default function Welcome() {
 
                     {/* Right CTA Actions */}
                     <div className="flex items-center gap-3">
+                        {/* Theme Toggle Button */}
                         <button
-                            title="Dark Mode Active"
-                            className="p-2 text-slate-400 hover:text-white rounded-lg transition-colors"
+                            onClick={() => setIsDark(!isDark)}
+                            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                            className="p-2 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
                         >
-                            <Moon className="w-4 h-4 text-slate-300" />
+                            {isDark ? (
+                                <Sun className="w-4 h-4 text-amber-400" />
+                            ) : (
+                                <Moon className="w-4 h-4 text-slate-300" />
+                            )}
                         </button>
 
                         <button
                             onClick={() => setContactModal(true)}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all"
+                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all cursor-pointer"
                         >
                             <Mail className="w-4 h-4" />
                             <span>Let's Talk</span>
@@ -195,11 +205,11 @@ export default function Welcome() {
             </header>
 
             {/* ========================================================== */}
-            {/* 2. HERO SECTION */}
+            {/* 2. HERO SECTION (Dark developer workstation matching mockup) */}
             {/* ========================================================== */}
             <section
                 id="home"
-                className="relative pt-28 sm:pt-36 pb-16 lg:pb-24 overflow-hidden border-b border-slate-800/60"
+                className="relative pt-28 sm:pt-36 pb-16 lg:pb-24 overflow-hidden bg-[#070b19] border-b border-slate-800/80"
             >
                 {/* Ambient Radial Gradient Glow */}
                 <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -219,21 +229,21 @@ export default function Welcome() {
                                 <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight">
                                     Rabirts
                                 </h1>
-                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-400">
+                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-indigo-500 tracking-tight">
                                     Web Developer
                                 </h2>
                             </div>
 
-                            {/* Description */}
-                            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-lg">
+                            {/* Bio Paragraph */}
+                            <p className="text-sm sm:text-base text-slate-300 max-w-lg leading-relaxed">
                                 I build web applications, improve existing systems, and enjoy turning ideas into useful and clean digital products. Always learning, always improving.
                             </p>
 
-                            {/* CTAs */}
+                            {/* Call to Actions */}
                             <div className="flex flex-wrap items-center gap-3 pt-2">
                                 <a
                                     href="#projects"
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#4f46e5] hover:bg-indigo-600 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-md shadow-indigo-600/30 transition-all hover:-translate-y-0.5"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5 cursor-pointer"
                                 >
                                     <Mail className="w-4 h-4" />
                                     <span>View My Work</span>
@@ -241,38 +251,38 @@ export default function Welcome() {
 
                                 <a
                                     href="#about"
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#121c3b] hover:bg-[#182652] text-slate-200 border border-slate-700/80 rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-800/90 hover:bg-slate-700/90 text-slate-200 border border-slate-700 rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5 cursor-pointer"
                                 >
-                                    <User className="w-4 h-4 text-slate-400" />
+                                    <User className="w-4 h-4" />
                                     <span>About Me</span>
                                 </a>
                             </div>
 
-                            {/* 4 Stats Metrics */}
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-slate-800/80">
+                            {/* 4 Quick Stats Badges */}
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-slate-800/80">
                                 <div>
-                                    <h4 className="text-xl sm:text-2xl font-extrabold text-white">6+</h4>
-                                    <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
-                                        Months Professional Experience
-                                    </p>
+                                    <span className="block text-2xl font-black text-white">6+</span>
+                                    <span className="text-[11px] text-slate-400">
+                                        Months <br />Professional Experience
+                                    </span>
                                 </div>
                                 <div>
-                                    <h4 className="text-xl sm:text-2xl font-extrabold text-white">10+</h4>
-                                    <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
-                                        Projects Worked On
-                                    </p>
+                                    <span className="block text-2xl font-black text-white">10+</span>
+                                    <span className="text-[11px] text-slate-400">
+                                        Projects <br />Worked On
+                                    </span>
                                 </div>
                                 <div>
-                                    <h4 className="text-xl sm:text-2xl font-extrabold text-white">3+</h4>
-                                    <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
-                                        Technologies Mastered
-                                    </p>
+                                    <span className="block text-2xl font-black text-white">3+</span>
+                                    <span className="text-[11px] text-slate-400">
+                                        Technologies <br />Mastered
+                                    </span>
                                 </div>
                                 <div>
-                                    <h4 className="text-xl sm:text-2xl font-extrabold text-white">100%</h4>
-                                    <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
-                                        Keep Learning Everyday
-                                    </p>
+                                    <span className="block text-2xl font-black text-white">100%</span>
+                                    <span className="text-[11px] text-slate-400">
+                                        Keep Learning <br />Everyday
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -287,7 +297,7 @@ export default function Welcome() {
                                 />
 
                                 {/* Glassmorphism floating quote card overlay */}
-                                <div className="absolute bottom-5 right-5 max-w-[220px] sm:max-w-[250px] p-4 rounded-xl bg-slate-900/70 backdrop-blur-md border border-white/10 shadow-lg space-y-1">
+                                <div className="absolute bottom-5 right-5 max-w-[220px] sm:max-w-[250px] p-4 rounded-xl bg-slate-900/80 backdrop-blur-md border border-white/10 shadow-lg space-y-1">
                                     <span className="text-blue-400 font-serif text-2xl leading-none">“</span>
                                     <p className="text-xs sm:text-sm text-slate-200 font-medium italic">
                                         A better version of me, every day.
@@ -301,27 +311,32 @@ export default function Welcome() {
             </section>
 
             {/* ========================================================== */}
-            {/* 3. FEATURED PROJECTS (Selected Works) */}
+            {/* 3. FEATURED PROJECTS (Selected Works - Default Light) */}
             {/* ========================================================== */}
-            <section id="projects" className="py-16 sm:py-20 bg-[#090e21] border-b border-slate-800/60">
+            <section
+                id="projects"
+                className={`py-16 sm:py-20 border-b transition-colors ${
+                    isDark ? 'bg-[#090e21] border-slate-800/80' : 'bg-[#fcfdfd] border-slate-200/80'
+                }`}
+            >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                     {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                         <div className="space-y-1">
-                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                                 ‹ FEATURED PROJECTS
                             </span>
-                            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-                                Selected <span className="text-blue-400">Works</span>
+                            <h2 className={`text-2xl sm:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                                Selected <span className="text-blue-600">Works</span>
                             </h2>
-                            <p className="text-xs sm:text-sm text-slate-400">
+                            <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                                 Some of the projects I've worked on, from internal systems to personal projects.
                             </p>
                         </div>
 
                         <Link
                             href="/projects"
-                            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
                         >
                             <span>View All Projects</span>
                             <ArrowRight className="w-4 h-4" />
@@ -366,32 +381,50 @@ export default function Welcome() {
                         ].map((proj) => (
                             <div
                                 key={proj.id}
-                                className="bg-[#0e1633] rounded-xl border border-slate-800/80 overflow-hidden hover:border-blue-500/50 hover:-translate-y-1 transition-all group flex flex-col justify-between shadow-lg"
+                                className={`rounded-xl border overflow-hidden hover:-translate-y-1 transition-all group flex flex-col justify-between ${
+                                    isDark
+                                        ? 'bg-[#0e1633] border-slate-800/80 shadow-lg hover:border-blue-500/50'
+                                        : 'bg-white border-slate-200 shadow-xs hover:shadow-md hover:border-blue-400'
+                                }`}
                             >
                                 <div className="space-y-3.5">
                                     {/* Thumbnail Preview with badges */}
-                                    <div className="relative h-40 bg-[#070b19] overflow-hidden border-b border-slate-800/80">
+                                    <div className="relative h-40 bg-slate-100 overflow-hidden border-b border-slate-100">
                                         <img
                                             src={proj.img}
                                             alt={proj.title}
-                                            className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
                                         />
                                         {/* Tag badge */}
-                                        <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-slate-900/80 backdrop-blur-xs text-[10px] font-semibold text-slate-300 border border-slate-700/60">
+                                        <span className={`absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-semibold border ${
+                                            isDark
+                                                ? 'bg-slate-900/80 backdrop-blur-xs text-slate-300 border-slate-700/60'
+                                                : 'bg-white/90 backdrop-blur-xs text-slate-700 border-slate-200/80 shadow-xs'
+                                        }`}>
                                             {proj.type}
                                         </span>
                                         {/* Diagonal arrow button */}
-                                        <div className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-slate-900/80 backdrop-blur-xs text-slate-300 flex items-center justify-center border border-slate-700/60 group-hover:text-blue-400 transition-colors">
+                                        <div className={`absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center border transition-colors ${
+                                            isDark
+                                                ? 'bg-slate-900/80 text-slate-300 border-slate-700/60 group-hover:text-blue-400'
+                                                : 'bg-white text-slate-700 border-slate-200 shadow-xs group-hover:text-blue-600'
+                                        }`}>
                                             <ExternalLink className="w-3.5 h-3.5" />
                                         </div>
                                     </div>
 
                                     {/* Content */}
                                     <div className="px-4 space-y-1.5">
-                                        <h3 className="font-bold text-sm sm:text-base text-white group-hover:text-blue-400 transition-colors">
+                                        <h3 className={`font-bold text-sm sm:text-base transition-colors ${
+                                            isDark
+                                                ? 'text-white group-hover:text-blue-400'
+                                                : 'text-slate-900 group-hover:text-blue-600'
+                                        }`}>
                                             {proj.title}
                                         </h3>
-                                        <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">
+                                        <p className={`text-xs line-clamp-3 leading-relaxed ${
+                                            isDark ? 'text-slate-400' : 'text-slate-500'
+                                        }`}>
                                             {proj.desc}
                                         </p>
                                     </div>
@@ -402,7 +435,11 @@ export default function Welcome() {
                                     {proj.tags.map((tag, tIdx) => (
                                         <span
                                             key={tIdx}
-                                            className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800/80 text-slate-300 border border-slate-700/60"
+                                            className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
+                                                isDark
+                                                    ? 'bg-slate-800/80 text-slate-300 border-slate-700/60'
+                                                    : 'bg-slate-100 text-slate-600 border-slate-200/70'
+                                            }`}
                                         >
                                             {tag}
                                         </span>
@@ -415,92 +452,110 @@ export default function Welcome() {
             </section>
 
             {/* ========================================================== */}
-            {/* 4. RECENT EXPERIENCE (Work Journey) */}
+            {/* 4. RECENT EXPERIENCE (Work Journey - Default Light) */}
             {/* ========================================================== */}
-            <section id="experience" className="py-16 sm:py-20 border-b border-slate-800/60">
+            <section
+                id="experience"
+                className={`py-16 sm:py-20 border-b transition-colors ${
+                    isDark ? 'bg-[#070b19] border-slate-800/80' : 'bg-white border-slate-200/80'
+                }`}
+            >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                     {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                         <div className="space-y-1">
-                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                                 ‹ WORK JOURNEY
                             </span>
-                            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                            <h2 className={`text-2xl sm:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                                 Recent Experience
                             </h2>
-                            <p className="text-xs sm:text-sm text-slate-400">
+                            <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                                 A glimpse of what I've been working on.
                             </p>
                         </div>
 
                         <Link
                             href="/portfolio"
-                            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
                         >
                             <span>View Full Timeline</span>
                             <ArrowRight className="w-4 h-4" />
                         </Link>
                     </div>
 
-                    {/* Horizontal 4-step Timeline */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {[
-                            {
-                                date: 'Sep 2026',
-                                title: 'UI/UX Redesign',
-                                desc: 'Improved interface and user experience for internal application.',
-                            },
-                            {
-                                date: 'Aug 2026',
-                                title: 'Feature Development',
-                                desc: 'Built new module and fixed several issues.',
-                            },
-                            {
-                                date: 'Jul 2026',
-                                title: 'Data Verification System',
-                                desc: 'Developed verval system with reporting features.',
-                            },
-                            {
-                                date: 'Jun 2026',
-                                title: 'System Maintenance',
-                                desc: 'Bug fixes and performance improvements.',
-                            },
-                        ].map((item, idx) => (
-                            <div
-                                key={idx}
-                                className="p-5 rounded-xl bg-[#0e1633] border border-slate-800/80 hover:border-slate-700 transition-all space-y-3 relative"
-                            >
-                                <div className="flex items-center gap-2">
-                                    <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm shadow-blue-500/50" />
-                                    <span className="text-xs font-bold text-slate-300">
-                                        {item.date}
-                                    </span>
+                    {/* Horizontal 4-step Timeline with connecting line */}
+                    <div className="relative">
+                        {/* Connecting line behind dots on large screens */}
+                        <div className="hidden lg:block absolute top-[11px] left-8 right-8 h-0.5 bg-blue-100 dark:bg-slate-800 z-0" />
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+                            {[
+                                {
+                                    date: 'Sep 2026',
+                                    title: 'UI/UX Redesign',
+                                    desc: 'Improved interface and user experience for internal application.',
+                                },
+                                {
+                                    date: 'Aug 2026',
+                                    title: 'Feature Development',
+                                    desc: 'Built new module and fixed several issues.',
+                                },
+                                {
+                                    date: 'Jul 2026',
+                                    title: 'Data Verification System',
+                                    desc: 'Developed verval system with reporting features.',
+                                },
+                                {
+                                    date: 'Jun 2026',
+                                    title: 'System Maintenance',
+                                    desc: 'Bug fixes and performance improvements.',
+                                },
+                            ].map((item, idx) => (
+                                <div
+                                    key={idx}
+                                    className={`p-5 rounded-xl border transition-all space-y-3 relative ${
+                                        isDark
+                                            ? 'bg-[#0e1633] border-slate-800/80 hover:border-slate-700'
+                                            : 'bg-white border-slate-200 shadow-xs hover:shadow-md hover:border-slate-300'
+                                    }`}
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-2.5 h-2.5 rounded-full bg-blue-600 ring-4 ring-blue-100 dark:ring-blue-950/60" />
+                                        <span className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                                            {item.date}
+                                        </span>
+                                    </div>
+                                    <h3 className={`font-bold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                                        {item.title}
+                                    </h3>
+                                    <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                                        {item.desc}
+                                    </p>
                                 </div>
-                                <h3 className="font-bold text-sm text-white">
-                                    {item.title}
-                                </h3>
-                                <p className="text-xs text-slate-400 leading-relaxed">
-                                    {item.desc}
-                                </p>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
             </section>
 
             {/* ========================================================== */}
-            {/* 5. TECH STACK (Tools I Use) */}
+            {/* 5. TECH STACK (Tools I Use - Default Light) */}
             {/* ========================================================== */}
-            <section className="py-16 sm:py-20 bg-[#090e21] border-b border-slate-800/60">
+            <section
+                className={`py-16 sm:py-20 border-b transition-colors ${
+                    isDark ? 'bg-[#090e21] border-slate-800/80' : 'bg-[#fcfdfd] border-slate-200/80'
+                }`}
+            >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                     <div className="space-y-1 text-center sm:text-left">
-                        <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                        <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                             ‹ TECH STACK
                         </span>
-                        <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                        <h2 className={`text-2xl sm:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                             Tools I Use
                         </h2>
-                        <p className="text-xs sm:text-sm text-slate-400">
+                        <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                             Technologies and tools that I work with.
                         </p>
                     </div>
@@ -521,12 +576,20 @@ export default function Welcome() {
                             return (
                                 <div
                                     key={tIdx}
-                                    className="p-4 rounded-xl bg-[#0e1633] border border-slate-800/80 hover:border-blue-500/50 flex flex-col items-center justify-center gap-2.5 transition-all hover:-translate-y-1 group"
+                                    className={`p-4 rounded-xl border flex flex-col items-center justify-center gap-2.5 transition-all hover:-translate-y-1 group ${
+                                        isDark
+                                            ? 'bg-[#0e1633] border-slate-800/80 hover:border-blue-500/50'
+                                            : 'bg-white border-slate-200 shadow-xs hover:border-blue-400 hover:shadow-md'
+                                    }`}
                                 >
                                     <div className="w-10 h-10 flex items-center justify-center">
                                         <IconComponent className="w-8 h-8 object-contain transition-transform group-hover:scale-110" />
                                     </div>
-                                    <span className="text-xs font-semibold text-slate-300 group-hover:text-white transition-colors">
+                                    <span className={`text-xs font-semibold transition-colors ${
+                                        isDark
+                                            ? 'text-slate-300 group-hover:text-white'
+                                            : 'text-slate-700 group-hover:text-slate-900'
+                                    }`}>
                                         {tool.name}
                                     </span>
                                 </div>
@@ -537,27 +600,36 @@ export default function Welcome() {
             </section>
 
             {/* ========================================================== */}
-            {/* 6. ABOUT ME (More Than Just Code) */}
+            {/* 6. ABOUT ME (More Than Just Code - Default Light) */}
             {/* ========================================================== */}
-            <section id="about" className="py-16 sm:py-20 border-b border-slate-800/60">
+            <section
+                id="about"
+                className={`py-16 sm:py-20 border-b transition-colors ${
+                    isDark ? 'bg-[#070b19] border-slate-800/80' : 'bg-white border-slate-200/80'
+                }`}
+            >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                         {/* Left: Bio & Philosophy */}
                         <div className="lg:col-span-5 space-y-4">
-                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                                 ‹ ABOUT ME
                             </span>
-                            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
-                                More Than <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Just Code</span>
+                            <h2 className={`text-2xl sm:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                                More Than <span className="text-indigo-600">Just Code</span>
                             </h2>
-                            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                                 I'm a web developer who enjoys solving problems, learning new technologies, and building things that are useful. I'm currently working while continuously improving my skills, with a focus on Laravel and modern web development.
                             </p>
 
                             <div className="pt-2">
                                 <Link
                                     href="/portfolio"
-                                    className="inline-flex items-center gap-2 px-4 py-2 border border-slate-700 bg-[#0e1633] hover:bg-[#152047] text-white rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5"
+                                    className={`inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5 ${
+                                        isDark
+                                            ? 'border-slate-700 bg-[#0e1633] hover:bg-[#152047] text-white'
+                                            : 'border-slate-300 bg-white hover:bg-slate-50 text-slate-800 shadow-xs'
+                                    }`}
                                 >
                                     <span>Learn More About Me</span>
                                     <ArrowRight className="w-4 h-4" />
@@ -567,7 +639,9 @@ export default function Welcome() {
 
                         {/* Center: Mountain Banner Illustration */}
                         <div className="lg:col-span-4 flex items-center justify-center">
-                            <div className="rounded-xl overflow-hidden border border-slate-800/80 shadow-md">
+                            <div className={`rounded-xl overflow-hidden border shadow-xs ${
+                                isDark ? 'border-slate-800/80' : 'border-slate-200'
+                            }`}>
                                 <img
                                     src="/images/about_illustration.png"
                                     alt="Same person, bigger goals"
@@ -588,12 +662,16 @@ export default function Welcome() {
                                 return (
                                     <div
                                         key={aIdx}
-                                        className="p-3 rounded-lg bg-[#0e1633] border border-slate-800/80 flex items-center gap-3 hover:border-slate-700 transition-colors"
+                                        className={`p-3 rounded-lg border flex items-center gap-3 transition-colors ${
+                                            isDark
+                                                ? 'bg-[#0e1633] border-slate-800/80 hover:border-slate-700'
+                                                : 'bg-[#f8fafc] border-slate-200/80 hover:border-slate-300'
+                                        }`}
                                     >
-                                        <div className="w-7 h-7 rounded-md bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0">
+                                        <div className="w-7 h-7 rounded-md bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
                                             <AttrIcon className="w-4 h-4" />
                                         </div>
-                                        <span className="font-semibold text-xs text-slate-200">
+                                        <span className={`font-semibold text-xs ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
                                             {attr.title}
                                         </span>
                                     </div>
@@ -605,19 +683,24 @@ export default function Welcome() {
             </section>
 
             {/* ========================================================== */}
-            {/* 7. GET IN TOUCH (Let's Connect) */}
+            {/* 7. GET IN TOUCH (Let's Connect - Default Light) */}
             {/* ========================================================== */}
-            <section id="contact" className="py-16 sm:py-20 bg-[#090e21] border-b border-slate-800/60">
+            <section
+                id="contact"
+                className={`py-16 sm:py-20 border-b transition-colors ${
+                    isDark ? 'bg-[#090e21] border-slate-800/80' : 'bg-[#fcfdfd] border-slate-200/80'
+                }`}
+            >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div className="space-y-1">
-                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                                 ‹ LET'S CONNECT
                             </span>
-                            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                            <h2 className={`text-2xl sm:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>
                                 Get In Touch
                             </h2>
-                            <p className="text-xs sm:text-sm text-slate-400">
+                            <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                                 Have a project in mind or just want to say hello? Feel free to reach out!
                             </p>
                         </div>
@@ -626,18 +709,22 @@ export default function Welcome() {
                         <div className="flex items-center gap-4">
                             <button
                                 onClick={() => setContactModal(true)}
-                                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#4f46e5] hover:bg-indigo-600 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-md shadow-indigo-600/30 transition-all hover:-translate-y-0.5"
+                                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#4f46e5] hover:bg-indigo-600 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-md shadow-indigo-600/30 transition-all hover:-translate-y-0.5 cursor-pointer"
                             >
                                 <Mail className="w-4 h-4" />
                                 <span>Send Me a Message</span>
                             </button>
 
-                            <div className="flex items-center gap-2 text-slate-400 pl-2">
+                            <div className="flex items-center gap-2 pl-2">
                                 <a
                                     href="https://github.com/asafik"
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="p-2 rounded-lg bg-[#0e1633] border border-slate-800 hover:text-white hover:border-slate-700 transition-colors"
+                                    className={`p-2 rounded-lg border transition-colors ${
+                                        isDark
+                                            ? 'bg-[#0e1633] border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
+                                            : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 shadow-xs'
+                                    }`}
                                 >
                                     <GithubIcon className="w-4 h-4" />
                                 </a>
@@ -645,7 +732,11 @@ export default function Welcome() {
                                     href="https://linkedin.com/in/asafik"
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="p-2 rounded-lg bg-[#0e1633] border border-slate-800 hover:text-blue-400 hover:border-slate-700 transition-colors"
+                                    className={`p-2 rounded-lg border transition-colors ${
+                                        isDark
+                                            ? 'bg-[#0e1633] border-slate-800 text-slate-400 hover:text-blue-400 hover:border-slate-700'
+                                            : 'bg-white border-slate-200 text-slate-600 hover:text-blue-600 hover:border-slate-300 shadow-xs'
+                                    }`}
                                 >
                                     <LinkedinIcon className="w-4 h-4" />
                                 </a>
@@ -653,7 +744,11 @@ export default function Welcome() {
                                     href="https://instagram.com"
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="p-2 rounded-lg bg-[#0e1633] border border-slate-800 hover:text-pink-400 hover:border-slate-700 transition-colors"
+                                    className={`p-2 rounded-lg border transition-colors ${
+                                        isDark
+                                            ? 'bg-[#0e1633] border-slate-800 text-slate-400 hover:text-pink-400 hover:border-slate-700'
+                                            : 'bg-white border-slate-200 text-slate-600 hover:text-pink-600 hover:border-slate-300 shadow-xs'
+                                    }`}
                                 >
                                     <InstagramIcon className="w-4 h-4" />
                                 </a>
@@ -664,11 +759,15 @@ export default function Welcome() {
             </section>
 
             {/* ========================================================== */}
-            {/* 8. FOOTER */}
+            {/* 8. FOOTER (Default Light matching mockup) */}
             {/* ========================================================== */}
-            <footer className="py-8 bg-[#070b19]">
+            <footer className={`py-8 transition-colors ${
+                isDark ? 'bg-[#070b19] text-slate-400' : 'bg-white text-slate-600'
+            }`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800/80">
+                    <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b ${
+                        isDark ? 'border-slate-800' : 'border-slate-200'
+                    }`}>
                         {/* Logo & Slogan */}
                         <div className="flex items-center gap-3">
                             <img
@@ -677,34 +776,38 @@ export default function Welcome() {
                                 className="w-6 h-6 rounded-md object-contain"
                             />
                             <div>
-                                <h3 className="font-extrabold text-sm text-white">Rabirts</h3>
-                                <p className="text-[11px] text-slate-400">
+                                <h3 className={`font-extrabold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>Rabirts</h3>
+                                <p className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                                     Building a better tomorrow, line by line.
                                 </p>
                             </div>
                         </div>
 
                         {/* Navigation Links */}
-                        <div className="flex items-center gap-6 text-xs text-slate-400">
-                            <a href="#home" className="hover:text-white transition-colors">
+                        <div className={`flex items-center gap-6 text-xs ${
+                            isDark ? 'text-slate-400' : 'text-slate-600'
+                        }`}>
+                            <a href="#home" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
                                 Home
                             </a>
-                            <a href="#projects" className="hover:text-white transition-colors">
+                            <a href="#projects" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
                                 Projects
                             </a>
-                            <a href="#experience" className="hover:text-white transition-colors">
+                            <a href="#experience" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
                                 Experience
                             </a>
-                            <a href="#about" className="hover:text-white transition-colors">
+                            <a href="#about" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
                                 About
                             </a>
-                            <a href="#contact" className="hover:text-white transition-colors">
+                            <a href="#contact" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
                                 Contact
                             </a>
                         </div>
                     </div>
 
-                    <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+                    <div className={`pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs ${
+                        isDark ? 'text-slate-500' : 'text-slate-400'
+                    }`}>
                         <p>© 2026 Rabirts. All rights reserved.</p>
                         <p>Designed for WorkTrack Portfolio Showcase</p>
                     </div>
@@ -715,16 +818,24 @@ export default function Welcome() {
             {/* CONTACT MODAL */}
             {/* ========================================================== */}
             {contactModal && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
-                    <div className="bg-[#0e1633] rounded-xl border border-slate-800 shadow-2xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                            <h3 className="text-base font-bold text-white flex items-center gap-2">
-                                <Send className="w-4 h-4 text-blue-400" />
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+                    <div className={`rounded-xl border shadow-2xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150 ${
+                        isDark ? 'bg-[#0e1633] border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                    }`}>
+                        <div className={`flex items-center justify-between pb-3 border-b ${
+                            isDark ? 'border-slate-800' : 'border-slate-200'
+                        }`}>
+                            <h3 className={`text-base font-bold flex items-center gap-2 ${
+                                isDark ? 'text-white' : 'text-slate-900'
+                            }`}>
+                                <Send className="w-4 h-4 text-blue-600" />
                                 <span>Kirim Pesan ke Rabirts</span>
                             </h3>
                             <button
                                 onClick={() => setContactModal(false)}
-                                className="text-slate-400 hover:text-white p-1"
+                                className={`p-1 cursor-pointer ${
+                                    isDark ? 'text-slate-400 hover:text-white' : 'text-slate-400 hover:text-slate-700'
+                                }`}
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -732,52 +843,76 @@ export default function Welcome() {
 
                         <form onSubmit={handleSendMessage} className="space-y-3.5">
                             <div>
-                                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                                <label className={`block text-xs font-semibold mb-1 ${
+                                    isDark ? 'text-slate-300' : 'text-slate-700'
+                                }`}>
                                     Nama Anda
                                 </label>
                                 <input
                                     type="text"
                                     placeholder="Contoh: John Doe"
-                                    className="w-full bg-[#070b19] border border-slate-700/80 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                                    className={`w-full border rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-blue-500 ${
+                                        isDark
+                                            ? 'bg-[#070b19] border-slate-700/80 text-slate-100 placeholder-slate-500'
+                                            : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
+                                    }`}
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                                <label className={`block text-xs font-semibold mb-1 ${
+                                    isDark ? 'text-slate-300' : 'text-slate-700'
+                                }`}>
                                     Email Anda
                                 </label>
                                 <input
                                     type="email"
                                     placeholder="name@example.com"
-                                    className="w-full bg-[#070b19] border border-slate-700/80 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                                    className={`w-full border rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-blue-500 ${
+                                        isDark
+                                            ? 'bg-[#070b19] border-slate-700/80 text-slate-100 placeholder-slate-500'
+                                            : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
+                                    }`}
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                                <label className={`block text-xs font-semibold mb-1 ${
+                                    isDark ? 'text-slate-300' : 'text-slate-700'
+                                }`}>
                                     Pesan / Keperluan Proyek
                                 </label>
                                 <textarea
                                     rows={3}
                                     placeholder="Ceritakan proyek atau tawaran kerja sama Anda..."
-                                    className="w-full bg-[#070b19] border border-slate-700/80 rounded-lg p-3 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none"
+                                    className={`w-full border rounded-lg p-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 resize-none ${
+                                        isDark
+                                            ? 'bg-[#070b19] border-slate-700/80 text-slate-100 placeholder-slate-500'
+                                            : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
+                                    }`}
                                     required
                                 />
                             </div>
 
-                            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+                            <div className={`flex items-center justify-end gap-2 pt-2 border-t ${
+                                isDark ? 'border-slate-800' : 'border-slate-200'
+                            }`}>
                                 <button
                                     type="button"
                                     onClick={() => setContactModal(false)}
-                                    className="px-4 py-2 border border-slate-700 rounded-lg text-xs font-semibold text-slate-400 hover:text-white"
+                                    className={`px-4 py-2 border rounded-lg text-xs font-semibold cursor-pointer ${
+                                        isDark
+                                            ? 'border-slate-700 text-slate-400 hover:text-white'
+                                            : 'border-slate-300 text-slate-600 hover:text-slate-800 hover:bg-slate-50'
+                                    }`}
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-5 py-2 bg-[#4f46e5] hover:bg-indigo-600 text-white rounded-lg text-xs font-semibold shadow-md transition-colors"
+                                    className="px-5 py-2 bg-[#4f46e5] hover:bg-indigo-600 text-white rounded-lg text-xs font-semibold shadow-md transition-colors cursor-pointer"
                                 >
                                     Kirim Sekarang
                                 </button>
