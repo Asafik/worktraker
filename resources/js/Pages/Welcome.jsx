@@ -344,7 +344,7 @@ export default function Welcome({ initialSection = 'home' }) {
                         <div className="lg:col-span-6 relative">
                             <div className="relative rounded-2xl overflow-hidden border border-slate-700/60 shadow-2xl shadow-blue-950/40 group">
                                 <img
-                                    src="/images/hero_developer.png"
+                                    src="/images/hero.png"
                                     alt="Developer Workstation"
                                     className="w-full h-auto object-cover transform group-hover:scale-102 transition-transform duration-500"
                                 />
