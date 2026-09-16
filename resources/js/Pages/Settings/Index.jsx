@@ -190,12 +190,6 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
             folderId: integrationsStatus?.googleDrive?.folderId || '',
             url: integrationsStatus?.googleDrive?.url || 'https://drive.google.com',
             lastSynced: integrationsStatus?.googleDrive?.lastSynced || '16 Sep 2025, 21:05',
-            storage: integrationsStatus?.googleDrive?.storage || {
-                used: '4.42 GB',
-                total: '15 GB',
-                percentage: 29.5,
-                available: '10.58 GB',
-            },
             syncing: false,
         },
     }));
@@ -220,12 +214,6 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                     folderId: integrationsStatus?.googleDrive?.folderId || '',
                     url: integrationsStatus?.googleDrive?.url || 'https://drive.google.com',
                     lastSynced: integrationsStatus?.googleDrive?.lastSynced || '16 Sep 2025, 21:05',
-                    storage: integrationsStatus?.googleDrive?.storage || {
-                        used: '4.42 GB',
-                        total: '15 GB',
-                        percentage: 29.5,
-                        available: '10.58 GB',
-                    },
                     syncing: false,
                 },
             });
@@ -1286,69 +1274,6 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     </div>
                                 </div>
 
-                                {/* Storage Usage Bar */}
-                                <div className="p-3.5 sm:p-4 rounded-lg bg-slate-50 dark:bg-[#081330] border border-slate-200/80 dark:border-[#1e346e] space-y-3">
-                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-bold text-slate-900 dark:text-white">Penyimpanan Akun Google</span>
-                                            <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
-                                            <span className="text-slate-500 dark:text-slate-400 text-[11px] sm:text-xs">Google Drive Quota</span>
-                                        </div>
-                                        <div className="flex items-center gap-1.5 font-semibold text-xs">
-                                            <span className="text-blue-600 dark:text-blue-400 font-bold">{integrations.googleDrive.storage?.used || '4.42 GB'}</span>
-                                            <span className="text-slate-400 font-normal text-[11px]">dari</span>
-                                            <span className="text-slate-700 dark:text-slate-200 font-bold">{integrations.googleDrive.storage?.total || '15 GB'}</span>
-                                            <span className="text-slate-500 dark:text-slate-400 font-medium text-[11px]">telah digunakan ({integrations.googleDrive.storage?.percentage || 29.5}%)</span>
-                                        </div>
-                                    </div>
-
-                                    {/* Multi-segment Progress Bar Track (Matching Google Drive Quota) */}
-                                    <div className="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden flex p-0.5">
-                                        {/* Google Drive files (blue) */}
-                                        <div
-                                            className="h-full bg-blue-500 rounded-l-full transition-all duration-500"
-                                            style={{ width: `${(integrations.googleDrive.storage?.percentage || 29.5) * 0.55}%` }}
-                                            title="Google Drive"
-                                        />
-                                        {/* Google Foto (amber/yellow) */}
-                                        <div
-                                            className="h-full bg-amber-400 transition-all duration-500 ml-0.5"
-                                            style={{ width: `${(integrations.googleDrive.storage?.percentage || 29.5) * 0.35}%` }}
-                                            title="Google Foto"
-                                        />
-                                        {/* Gmail (rose/red) */}
-                                        <div
-                                            className="h-full bg-rose-500 rounded-r-full transition-all duration-500 ml-0.5"
-                                            style={{ width: `${(integrations.googleDrive.storage?.percentage || 29.5) * 0.10}%` }}
-                                            title="Gmail"
-                                        />
-                                    </div>
-
-                                    {/* Legend matching screenshot */}
-                                    <div className="flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400 pt-0.5">
-                                        <div className="flex items-center gap-3">
-                                            <span className="flex items-center gap-1.5 font-medium">
-                                                <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" />
-                                                <span>Google Drive</span>
-                                            </span>
-                                            <span className="flex items-center gap-1.5 font-medium">
-                                                <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />
-                                                <span>Google Foto</span>
-                                            </span>
-                                            <span className="flex items-center gap-1.5 font-medium">
-                                                <span className="w-2 h-2 rounded-full bg-rose-500 inline-block" />
-                                                <span>Gmail</span>
-                                            </span>
-                                            <span className="flex items-center gap-1.5 font-medium">
-                                                <span className="w-2 h-2 rounded-full bg-slate-400 inline-block" />
-                                                <span>Lainnya</span>
-                                            </span>
-                                        </div>
-                                        <span className="text-slate-400 font-medium">
-                                            Tersedia <strong>{integrations.googleDrive.storage?.available || '10.58 GB'}</strong> ruang kosong
-                                        </span>
-                                    </div>
-                                </div>
 
                                 {/* Feature list & Connected user info */}
                                 <div className="grid grid-cols-1 md:grid-cols-12 gap-4 pt-1 items-center">
