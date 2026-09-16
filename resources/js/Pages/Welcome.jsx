@@ -546,7 +546,7 @@ export default function Welcome({ initialSection = 'home' }) {
                     {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                         <div className="space-y-1">
-                            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600">
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-md bg-indigo-50/90 text-indigo-600 text-[11px] font-bold tracking-wider">
                                 ‹ WORK JOURNEY
                             </span>
                             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -566,12 +566,12 @@ export default function Welcome({ initialSection = 'home' }) {
                         </Link>
                     </div>
 
-                    {/* Unified Timeline: Continuous Track + Cards with Dots on Top Border */}
+                    {/* Unified Timeline: Continuous Track + Cards with Dots on Top-Left Corner 1:1 with mockup */}
                     <div className="relative pt-4">
-                        {/* Horizontal connecting line spanning continuously across the entire width behind the dots */}
-                        <div className="hidden lg:block absolute top-[16px] left-0 right-0 h-[1.5px] bg-[#e0e7ff] z-0" />
+                        {/* Horizontal connecting line spanning continuously across the entire width */}
+                        <div className="hidden lg:block absolute top-[16px] left-0 right-0 h-[2px] bg-[#e0e7ff] z-10 pointer-events-none" />
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative">
                             {[
                                 {
                                     date: 'Sep 2026',
@@ -596,10 +596,10 @@ export default function Welcome({ initialSection = 'home' }) {
                             ].map((item, idx) => (
                                 <div
                                     key={idx}
-                                    className="relative pt-8 pb-7 px-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md hover:border-indigo-300 transition-all duration-300 group hover:-translate-y-1"
+                                    className="relative pt-6 pb-6 px-6 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl rounded-tl-sm bg-white border border-slate-200/80 shadow-xs hover:border-indigo-300 hover:shadow-md transition-all duration-300 group"
                                 >
-                                    {/* Solid Blue Circle Dot sitting right on top-left border on the horizontal track */}
-                                    <div className="absolute -top-[7px] left-6 w-3.5 h-3.5 rounded-full bg-[#4f46e5] ring-4 ring-white z-10 group-hover:scale-125 transition-transform" />
+                                    {/* Solid Blue Circle Dot sitting right on top-left corner on the horizontal track */}
+                                    <div className="absolute -top-[6px] -left-[6px] w-3.5 h-3.5 rounded-full bg-[#4f46e5] z-20 group-hover:scale-125 transition-transform" />
 
                                     <span className="block text-xs font-semibold text-slate-500">
                                         {item.date}
