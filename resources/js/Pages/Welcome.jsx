@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import {
     ArrowRight,
@@ -106,6 +106,9 @@ export default function Welcome({ initialSection = 'home' }) {
     const [sentToast, setSentToast] = useState(false);
     const [activeSection, setActiveSection] = useState(initialSection);
 
+    const isManualNav = useRef(false);
+    const manualNavTimeout = useRef(null);
+
     // Ensure landing page is strictly light mode (isolated from dashboard dark mode)
     useEffect(() => {
         document.documentElement.classList.remove('dark');
@@ -123,10 +126,14 @@ export default function Welcome({ initialSection = 'home' }) {
         setActiveSection(target);
 
         if (target && target !== 'home') {
+            isManualNav.current = true;
             const el = document.getElementById(target);
             if (el) {
                 setTimeout(() => {
                     el.scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(() => {
+                        isManualNav.current = false;
+                    }, 800);
                 }, 150);
             }
         }
@@ -134,9 +141,15 @@ export default function Welcome({ initialSection = 'home' }) {
         const handleHashChange = () => {
             const hash = window.location.hash.replace('#', '');
             if (hash) {
+                isManualNav.current = true;
                 setActiveSection(hash);
                 const el = document.getElementById(hash);
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth' });
+                    setTimeout(() => {
+                        isManualNav.current = false;
+                    }, 800);
+                }
             } else {
                 setActiveSection('home');
             }
@@ -146,38 +159,51 @@ export default function Welcome({ initialSection = 'home' }) {
         return () => window.removeEventListener('hashchange', handleHashChange);
     }, [initialSection]);
 
-    // Rock-solid scroll listener for scroll-spy active navbar menu
+    // Robust scroll listener for scroll-spy active navbar menu
     useEffect(() => {
         const handleScroll = () => {
+            if (isManualNav.current) return;
+
             const sectionIds = ['home', 'projects', 'experience', 'about', 'contact'];
 
-            // Bottom of the page reached? Activate 'contact'
-            if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
-                setActiveSection('contact');
-                return;
+            // Bottom of the page reached or Contact section in view?
+            const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 140;
+            const contactEl = document.getElementById('contact');
+            if (contactEl) {
+                const contactRect = contactEl.getBoundingClientRect();
+                if (atBottom || contactRect.top <= window.innerHeight * 0.55) {
+                    setActiveSection('contact');
+                    return;
+                }
             }
 
-            const scrollPos = window.scrollY + 220;
-            for (let i = sectionIds.length - 1; i >= 0; i--) {
-                const el = document.getElementById(sectionIds[i]);
+            // Check sections from top to bottom
+            let current = 'home';
+            for (const id of sectionIds) {
+                const el = document.getElementById(id);
                 if (el) {
-                    const top = el.offsetTop;
-                    if (scrollPos >= top) {
-                        setActiveSection(sectionIds[i]);
-                        break;
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top <= 240) {
+                        current = id;
                     }
                 }
             }
+            setActiveSection(current);
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const handleNavClick = (e, sectionId) => {
         e.preventDefault();
         setActiveSection(sectionId);
+        isManualNav.current = true;
+        if (manualNavTimeout.current) clearTimeout(manualNavTimeout.current);
+        manualNavTimeout.current = setTimeout(() => {
+            isManualNav.current = false;
+        }, 800);
+
         const el = document.getElementById(sectionId);
         if (el) {
             el.scrollIntoView({ behavior: 'smooth' });
@@ -304,17 +330,17 @@ export default function Welcome({ initialSection = 'home' }) {
                 </div>
 
                 {/* Floating Glassmorphism Quote Card overlaying the desk with comfortable breathing room */}
-                <div className="hidden lg:block absolute bottom-14 right-12 xl:bottom-20 xl:right-24 z-20 max-w-[240px] p-4 rounded-2xl bg-slate-950/70 backdrop-blur-md border border-white/10 shadow-2xl space-y-1 select-none pointer-events-none">
-                    <span className="text-blue-400 font-serif text-2xl leading-none">“</span>
-                    <p className="text-xs sm:text-sm text-slate-200 font-medium italic">
+                <div className="hidden lg:block absolute bottom-12 right-10 xl:bottom-16 xl:right-16 z-20 max-w-[280px] p-5 rounded-2xl bg-slate-950/80 backdrop-blur-md border border-white/15 shadow-2xl space-y-2 select-none pointer-events-none">
+                    <span className="text-blue-400 font-serif text-3xl leading-none block -mb-1">“</span>
+                    <p className="text-sm sm:text-base text-slate-100 font-medium italic leading-snug">
                         A better version of me, every day.
                     </p>
-                    <div className="w-8 h-0.5 bg-blue-500 mt-2 rounded-full" />
+                    <div className="w-10 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
                 </div>
 
                 {/* Content Container (Left Column) */}
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
-                    <div className="lg:w-[52%] xl:w-[48%] space-y-6 lg:-translate-x-12 transition-transform">
+                    <div className="lg:w-[52%] xl:w-[48%] space-y-6 transition-transform">
                         {/* Greeting Badge */}
                         <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
                             Hello, I'm
@@ -648,11 +674,35 @@ export default function Welcome({ initialSection = 'home' }) {
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-7">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                        {/* Left: Bio & Philosophy (Col 5) */}
-                        <div className="lg:col-span-5 space-y-4">
+                        {/* Left: Bio & Profile Info (Col 4) */}
+                        <div className="lg:col-span-4 space-y-4">
                             <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                                 ‹ ABOUT ME
                             </span>
+
+                            {/* Personal Profile Photo Badge */}
+                            <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-[#f8fafc] border border-slate-200/80 shadow-xs">
+                                <div className="relative shrink-0">
+                                    <img
+                                        src="/images/about_profile.jpg"
+                                        alt="Rabirts Profile"
+                                        className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover ring-2 ring-blue-500/20 shadow-sm"
+                                    />
+                                    <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full" title="Open to Opportunities" />
+                                </div>
+                                <div className="min-w-0">
+                                    <div className="flex items-center gap-1.5 mb-0.5">
+                                        <h3 className="font-extrabold text-slate-900 text-sm sm:text-base tracking-tight truncate">Rabirts</h3>
+                                        <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                                    </div>
+                                    <p className="text-xs text-blue-600 font-semibold truncate">Full Stack Web Developer</p>
+                                    <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
+                                        <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
+                                        <span>Indonesia &bull; Remote / On-site</span>
+                                    </p>
+                                </div>
+                            </div>
+
                             <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
                                 More Than <span className="text-indigo-600">Just Code</span>
                             </h2>
@@ -660,7 +710,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                 I'm a web developer who enjoys solving problems, learning new technologies, and building things that are useful. I'm currently working while continuously improving my skills, with a focus on Laravel and modern web development.
                             </p>
 
-                            <div className="pt-2">
+                            <div className="pt-1">
                                 <Link
                                     href="/portfolio"
                                     className="inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5 border-slate-300 bg-white hover:bg-slate-50 text-slate-800 shadow-xs group"
@@ -671,25 +721,25 @@ export default function Welcome({ initialSection = 'home' }) {
                             </div>
                         </div>
 
-                        {/* Center: Mountain Banner Illustration (avatar1.png + custom font typography) */}
-                        <div className="lg:col-span-4 flex items-center justify-center">
-                            <div className="w-full max-w-[460px] mx-auto relative group">
+                        {/* Center: Mountain Banner Illustration (Col 5 - Large & prominent) */}
+                        <div className="lg:col-span-5 flex items-center justify-center">
+                            <div className="w-full relative group rounded-2xl overflow-hidden bg-gradient-to-b from-blue-50/70 via-indigo-50/20 to-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col items-center justify-center min-h-[250px]">
                                 <img
                                     src="/images/avatar1.png"
                                     alt="Same person, bigger goals"
-                                    className="w-full h-auto object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-102"
+                                    className="w-full h-auto max-h-[220px] object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
                                 />
 
                                 {/* Elegant cursive handwriting text overlay */}
-                                <div className="absolute top-3 right-2 sm:top-5 sm:right-5 text-right pointer-events-none select-none">
+                                <div className="absolute top-2.5 right-3 sm:top-4 sm:right-6 text-right pointer-events-none select-none">
                                     <p
-                                        className="text-2xl sm:text-3xl font-bold text-slate-800 leading-tight tracking-wide"
+                                        className="text-base sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-slate-800 leading-tight tracking-wide"
                                         style={{ fontFamily: "'Caveat', 'Kalam', cursive" }}
                                     >
                                         Same person, <br />
                                         bigger goals.
                                     </p>
-                                    <div className="w-8 sm:w-10 h-0.5 bg-[#4338ca] ml-auto mt-1.5 rounded-full" />
+                                    <div className="w-8 sm:w-12 h-0.5 bg-[#4338ca] ml-auto mt-1 rounded-full" />
                                 </div>
                             </div>
                         </div>
