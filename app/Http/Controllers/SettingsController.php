@@ -78,12 +78,12 @@ class SettingsController extends Controller
 
                 ],
                 'github' => [
-                    'connected' => true,
-                    'account' => 'asafik',
+                    'connected'   => !empty($user->github_id),
+                    'account'     => $user->github_username ?? '',
                     'accountType' => 'Personal Account',
-                    'avatar' => '/images/avatar1.png',
-                    'url' => !empty($user->socials['github']) ? $user->socials['github'] : 'https://github.com/asafik',
-                    'lastSynced' => now()->format('d M Y, H:i'),
+                    'avatar'      => $user->github_avatar ?? '/images/avatar1.png',
+                    'url'         => $user->github_username ? 'https://github.com/' . $user->github_username : '',
+                    'lastSynced'  => $user->updated_at?->format('d M Y, H:i') ?? now()->format('d M Y, H:i'),
                 ],
             ],
             'flash' => [

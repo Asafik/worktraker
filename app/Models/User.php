@@ -22,6 +22,10 @@ use Illuminate\Notifications\Notifiable;
     'about_short',
     'signature',
     'socials',
+    'github_id',
+    'github_username',
+    'github_avatar',
+    'github_token',
 ])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable

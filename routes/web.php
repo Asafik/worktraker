@@ -63,3 +63,8 @@ Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
 Route::post('/settings/profile/avatar', [SettingsController::class, 'uploadAvatar'])->name('settings.profile.avatar');
 
+use App\Http\Controllers\GitHubController;
+
+Route::get('/auth/github', [GitHubController::class, 'redirect'])->name('github.redirect');
+Route::get('/auth/github/callback', [GitHubController::class, 'callback'])->name('github.callback');
+Route::post('/auth/github/disconnect', [GitHubController::class, 'disconnect'])->name('github.disconnect');

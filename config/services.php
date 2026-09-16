@@ -35,6 +35,12 @@ return [
         ],
     ],
 
+    'github' => [
+        'client_id'     => env('GITHUB_CLIENT_ID'),
+        'client_secret' => env('GITHUB_CLIENT_SECRET'),
+        'redirect'      => env('GITHUB_REDIRECT_URI', 'http://localhost:8000/auth/github/callback'),
+    ],
+
     'google_drive' => [
         'client_id' => env('GOOGLE_DRIVE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_DRIVE_CLIENT_SECRET'),
