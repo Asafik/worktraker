@@ -105,7 +105,7 @@ const GoogleGIcon = ({ className }) => (
 
 export default function SettingsPage() {
     // Active tabs: Profile, Account & Security, Appearance, Integrations, Preferences
-    const [activeTab, setActiveTab] = useState('Integrations');
+    const [activeTab, setActiveTab] = useState('Profile');
     const [savedToast, setSavedToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('Pengaturan berhasil disimpan!');
 
