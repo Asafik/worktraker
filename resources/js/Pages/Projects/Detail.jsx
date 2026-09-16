@@ -401,7 +401,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
             {/* ========================================================== */}
             {/* 2. HERO HEADER (Seamless layout matching Welcome.jsx hero) */}
             {/* ========================================================== */}
-            <section className="relative bg-[#070b19] text-white pt-28 sm:pt-32 pb-14 sm:pb-16 overflow-hidden border-b border-slate-800/80 min-h-[460px] lg:min-h-[500px] flex items-center">
+            <section className="relative bg-[#070b19] text-white pt-28 sm:pt-32 pb-16 sm:pb-20 overflow-hidden min-h-[440px] lg:min-h-[480px] flex items-center">
                 {/* Ambient Radial Gradient Glow */}
                 <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute top-10 left-10 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -498,7 +498,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
             {/* ========================================================== */}
             {/* 3. SHOWCASE GALLERY & PROJECT INFO SIDEBAR                 */}
             {/* ========================================================== */}
-            <main className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 pb-20 space-y-16">
+            <main className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-14 relative z-20 pb-20 space-y-16">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* Left Showcase (8 Cols): Main Frame + Interactive Thumbnails */}
                     <div className="lg:col-span-8 space-y-4">
