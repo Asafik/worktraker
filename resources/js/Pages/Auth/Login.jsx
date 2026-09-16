@@ -40,7 +40,7 @@ export default function Login() {
             {/* ========================================================== */}
             {/* LEFT SIDE: CLEAN LIGHT SIGN IN PANEL (Seamless Full White) */}
             {/* ========================================================== */}
-            <div className="w-full lg:w-[46%] xl:w-[42%] bg-white flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16 relative z-20 min-h-screen">
+            <div className="w-full lg:w-[36%] xl:w-[32%] 2xl:w-[30%] bg-white flex flex-col justify-between p-6 sm:p-8 lg:p-10 xl:p-12 relative z-20 min-h-screen shrink-0">
                 {/* Brand Logo Header */}
                 <div className="flex items-center justify-between">
                     <Link href="/" className="flex items-center gap-3 group cursor-pointer">
@@ -56,7 +56,7 @@ export default function Login() {
                 </div>
 
                 {/* Form Container (Directly on Canvas, No Card Wrapper) */}
-                <div className="max-w-[420px] w-full mx-auto my-auto py-8">
+                <div className="max-w-[380px] w-full mx-auto my-auto py-6">
                     {/* Welcome Badge */}
                     <div className="inline-block mb-3">
                         <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-100">
@@ -186,7 +186,7 @@ export default function Login() {
             {/* ========================================================== */}
             {/* RIGHT SIDE: SLEEK DARK MODE ECOSYSTEM SHOWCASE             */}
             {/* ========================================================== */}
-            <div className="hidden lg:flex lg:w-[54%] xl:w-[58%] bg-[#060b19] relative overflow-hidden flex-col justify-between p-8 xl:p-12 text-white min-h-screen">
+            <div className="hidden lg:flex lg:w-[64%] xl:w-[68%] 2xl:w-[70%] bg-[#060b19] relative overflow-hidden flex-col justify-between p-8 xl:p-12 text-white min-h-screen">
                 {/* Ambient Neon Blue & Indigo Glows */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-blue-600/15 rounded-full blur-[120px] pointer-events-none" />
                 <div className="absolute top-10 right-10 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none" />
