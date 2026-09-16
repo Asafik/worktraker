@@ -14,7 +14,7 @@ import {
 
 export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSidebarOpen }) {
     const navItems = [
-        { name: 'Dashboard', icon: LayoutDashboard, href: '/' },
+        { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
         { name: 'Projects', icon: FolderKanban, href: '/projects' },
         { name: 'Tasks', icon: CheckSquare, href: '/tasks' },
         { name: 'Notes', icon: FileText, href: '/notes' },

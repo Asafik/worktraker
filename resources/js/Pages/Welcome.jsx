@@ -1,238 +1,791 @@
 import React, { useState } from 'react';
 import { Head, Link } from '@inertiajs/react';
-import { 
-    CheckCircle2, 
-    Layers, 
-    Kanban, 
-    Users, 
-    Zap, 
-    ArrowRight, 
-    Clock, 
-    Plus,
+import {
+    ArrowRight,
+    ExternalLink,
+    Mail,
+    User,
+    Puzzle,
+    GraduationCap,
+    Briefcase,
+    MapPin,
+    Moon,
+    Sun,
+    Send,
+    CheckCircle2,
+    X,
     LayoutDashboard,
-    ShieldCheck
 } from 'lucide-react';
 
-export default function Welcome({ auth, laravelVersion, phpVersion }) {
-    // Interactive state to demonstrate React is active and working
-    const [tasks, setTasks] = useState([
-        { id: 1, title: 'Inisialisasi Laravel 13 + React', status: 'Done', priority: 'High' },
-        { id: 2, title: 'Setup Inertia.js & Tailwind CSS v4', status: 'Done', priority: 'Urgent' },
-        { id: 3, title: 'Bangun Sistem Autentikasi Custom', status: 'In Progress', priority: 'High' },
-        { id: 4, title: 'Module Project & Kanban Board', status: 'Todo', priority: 'Medium' },
-    ]);
+// Brand SVGs
+const GithubIcon = ({ className }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+        <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+    </svg>
+);
 
-    const [newTaskTitle, setNewTaskTitle] = useState('');
+const LinkedinIcon = ({ className }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+        <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z" />
+    </svg>
+);
 
-    const handleAddTask = (e) => {
+const InstagramIcon = ({ className }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+        <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+    </svg>
+);
+
+// Tech Stack SVGs
+const LaravelSvg = ({ className }) => (
+    <svg className={className} viewBox="0 0 64 64" fill="none">
+        <path d="M57.6 15.8L34.1 2.2c-1.3-.7-2.9-.7-4.2 0L6.4 15.8c-1.3.7-2.1 2.1-2.1 3.6v27.2c0 1.5.8 2.9 2.1 3.6l23.5 13.6c1.3.7 2.9.7 4.2 0l23.5-13.6c1.3-.7 2.1-2.1 2.1-3.6V19.4c0-1.5-.8-2.9-2.1-3.6z" fill="#FF2D20" opacity="0.1" />
+        <path d="M32 6L9 19.3v26.7L32 59.3l23-13.3V19.3L32 6z" stroke="#FF2D20" strokeWidth="3" strokeLinejoin="round" />
+        <path d="M32 6v26.7m0 0L9 19.3m23 13.4l23-13.4m-23 13.4v26.6" stroke="#FF2D20" strokeWidth="2.5" />
+    </svg>
+);
+
+const PhpSvg = ({ className }) => (
+    <svg className={className} viewBox="0 0 64 64">
+        <ellipse cx="32" cy="32" rx="28" ry="18" fill="#777BB4" opacity="0.15" />
+        <ellipse cx="32" cy="32" rx="28" ry="18" stroke="#777BB4" strokeWidth="2.5" fill="none" />
+        <text x="32" y="38" textAnchor="middle" fill="#777BB4" fontSize="16" fontWeight="bold" fontFamily="sans-serif">PHP</text>
+    </svg>
+);
+
+const MysqlSvg = ({ className }) => (
+    <svg className={className} viewBox="0 0 64 64">
+        <path d="M48 20c-4-4-12-6-20-4-10 2-16 10-16 18 0 10 8 16 18 16 12 0 20-8 20-16 0-3-1-6-2-8" fill="none" stroke="#00758F" strokeWidth="3" strokeLinecap="round" />
+        <path d="M36 28c4 2 8 8 6 14-2 6-8 8-12 6" fill="none" stroke="#F29111" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+);
+
+const TailwindSvg = ({ className }) => (
+    <svg className={className} viewBox="0 0 64 64" fill="none">
+        <path d="M16 28c3-6 7.5-9 13.5-9 9 0 11.5 6 16.5 6 3.5 0 6.5-1.5 9-4.5-3 6-7.5 9-13.5 9-9 0-11.5-6-16.5-6-3.5 0-6.5 1.5-9 4.5zM7 43c3-6 7.5-9 13.5-9 9 0 11.5 6 16.5 6 3.5 0 6.5-1.5 9-4.5-3 6-7.5 9-13.5 9-9 0-11.5-6-16.5-6-3.5 0-6.5 1.5-9 4.5z" fill="#06B6D4" />
+    </svg>
+);
+
+const JsSvg = ({ className }) => (
+    <svg className={className} viewBox="0 0 64 64" fill="none">
+        <rect width="48" height="48" x="8" y="8" rx="8" fill="#F7DF1E" />
+        <path d="M26 40c0 4-3 6-7 6-3 0-5.5-1.5-6.5-3.5l3.5-2c.5 1 1.5 1.5 3 1.5s2.5-.5 2.5-2V26h4.5v14zm19.5-1c-1 3-3.5 5-7.5 5-5 0-8-3-8-8s3.5-8 8-8c4 0 7 2.5 7 7v1h-10.5c.2 2 1.5 3.5 4 3.5 1.5 0 2.5-.5 3-1.5l4 1z" fill="#000" />
+    </svg>
+);
+
+const GitSvg = ({ className }) => (
+    <svg className={className} viewBox="0 0 64 64" fill="none">
+        <rect width="36" height="36" x="14" y="14" rx="6" transform="rotate(45 32 32)" fill="#F05032" />
+        <circle cx="27" cy="37" r="3.5" fill="#FFF" />
+        <circle cx="37" cy="27" r="3.5" fill="#FFF" />
+        <circle cx="43" cy="33" r="3.5" fill="#FFF" />
+        <path d="M27 37l16-4M37 27v10" stroke="#FFF" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+);
+
+const VscodeSvg = ({ className }) => (
+    <svg className={className} viewBox="0 0 64 64" fill="none">
+        <path d="M47 8l-23 20 23 28 8-4V12l-8-4z" fill="#0065A9" />
+        <path d="M47 8L31 22l-14-11-8 4v34l8 4 14-11 16 14 8-4V12l-8-4z" fill="#007ACC" />
+        <path d="M9 15l15 17-15 17V15z" fill="#1F9CF0" />
+    </svg>
+);
+
+const FigmaSvg = ({ className }) => (
+    <svg className={className} viewBox="0 0 38 57" fill="none">
+        <path d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z" fill="#1ABCFE" />
+        <path d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z" fill="#0ACF83" />
+        <path d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19z" fill="#FF7262" />
+        <path d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z" fill="#F24E1E" />
+        <path d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z" fill="#A259FF" />
+    </svg>
+);
+
+export default function Welcome() {
+    const [contactModal, setContactModal] = useState(false);
+    const [sentToast, setSentToast] = useState(false);
+
+    const handleSendMessage = (e) => {
         e.preventDefault();
-        if (!newTaskTitle.trim()) return;
-        setTasks([
-            ...tasks,
-            {
-                id: Date.now(),
-                title: newTaskTitle,
-                status: 'Todo',
-                priority: 'Medium',
-            },
-        ]);
-        setNewTaskTitle('');
-    };
-
-    const toggleStatus = (id) => {
-        setTasks(
-            tasks.map((task) => {
-                if (task.id === id) {
-                    const nextStatus = 
-                        task.status === 'Todo' ? 'In Progress' :
-                        task.status === 'In Progress' ? 'Done' : 'Todo';
-                    return { ...task, status: nextStatus };
-                }
-                return task;
-            })
-        );
+        setContactModal(false);
+        setSentToast(true);
+        setTimeout(() => setSentToast(false), 3000);
     };
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-indigo-500 selection:text-white font-sans antialiased">
-            <Head title="WorkTrack - Project & Task Manager" />
+        <div className="min-h-screen bg-[#070b19] text-slate-100 font-sans selection:bg-blue-600 selection:text-white">
+            <Head title="Rabirts - Full Stack Web Developer" />
 
-            {/* Top Navbar */}
-            <header className="border-b border-slate-800/80 bg-slate-950/70 backdrop-blur-md sticky top-0 z-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            {/* Success Toast */}
+            {sentToast && (
+                <div className="fixed top-6 right-6 z-50 flex items-center gap-2 px-4 py-3 rounded-lg bg-emerald-600 text-white text-xs sm:text-sm font-semibold shadow-xl animate-in fade-in slide-in-from-top-4 duration-200">
+                    <CheckCircle2 className="w-4 h-4" />
+                    <span>Pesan Anda berhasil terkirim! Terima kasih telah menghubungi.</span>
+                </div>
+            )}
+
+            {/* ========================================================== */}
+            {/* 1. TOP NAVBAR */}
+            {/* ========================================================== */}
+            <header className="fixed top-0 inset-x-0 z-40 bg-[#070b19]/80 backdrop-blur-md border-b border-slate-800/80">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+                    {/* Brand */}
                     <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 ring-1 ring-white/20">
-                            <Layers className="w-5 h-5 text-white" />
-                        </div>
-                        <div>
-                            <span className="text-xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
-                                WorkTrack
-                            </span>
-                            <span className="hidden sm:inline-block ml-2 text-xs font-medium px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                                v1.0
-                            </span>
-                        </div>
+                        <img
+                            src="/images/logo.png"
+                            alt="Rabirts Logo"
+                            className="w-8 h-8 rounded-lg object-contain shadow-md shadow-blue-500/20"
+                        />
+                        <span className="font-extrabold text-lg tracking-tight text-white">
+                            Rabirts
+                        </span>
                     </div>
 
+                    {/* Navigation Links */}
+                    <nav className="hidden md:flex items-center gap-8 text-xs sm:text-sm font-medium text-slate-300">
+                        <a
+                            href="#home"
+                            className="text-white font-semibold relative after:absolute after:bottom-[-20px] after:left-0 after:right-0 after:h-0.5 after:bg-blue-500"
+                        >
+                            Home
+                        </a>
+                        <a href="#projects" className="hover:text-white transition-colors">
+                            Projects
+                        </a>
+                        <a href="#experience" className="hover:text-white transition-colors">
+                            Experience
+                        </a>
+                        <a href="#about" className="hover:text-white transition-colors">
+                            About
+                        </a>
+                        <a href="#contact" className="hover:text-white transition-colors">
+                            Contact
+                        </a>
+                    </nav>
+
+                    {/* Right CTA Actions */}
                     <div className="flex items-center gap-3">
-                        <button 
-                            className="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white transition-colors"
-                            onClick={() => alert('Fitur Auth sedang dipersiapkan untuk langkah selanjutnya!')}
+                        <button
+                            title="Dark Mode Active"
+                            className="p-2 text-slate-400 hover:text-white rounded-lg transition-colors"
                         >
-                            Masuk
+                            <Moon className="w-4 h-4 text-slate-300" />
                         </button>
-                        <button 
-                            className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-500 rounded-lg shadow-md shadow-indigo-600/25 transition-all duration-200 hover:shadow-indigo-600/40 hover:-translate-y-0.5"
-                            onClick={() => alert('Fitur Register siap dibangun di tahap berikutnya!')}
+
+                        <button
+                            onClick={() => setContactModal(true)}
+                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all"
                         >
-                            Daftar Akun
+                            <Mail className="w-4 h-4" />
+                            <span>Let's Talk</span>
                         </button>
+
+                        {/* Direct link to WorkTrack Dashboard */}
+                        <Link
+                            href="/dashboard"
+                            title="Buka WorkTrack Dashboard"
+                            className="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                        >
+                            <LayoutDashboard className="w-4 h-4" />
+                        </Link>
                     </div>
                 </div>
             </header>
 
-            {/* Main Content */}
-            <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                {/* Hero Section */}
-                <div className="text-center max-w-3xl mx-auto space-y-6">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        React + Inertia + Tailwind v4 Aktif & Berjalan Lancar
-                    </div>
+            {/* ========================================================== */}
+            {/* 2. HERO SECTION */}
+            {/* ========================================================== */}
+            <section
+                id="home"
+                className="relative pt-28 sm:pt-36 pb-16 lg:pb-24 overflow-hidden border-b border-slate-800/60"
+            >
+                {/* Ambient Radial Gradient Glow */}
+                <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-10 left-10 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
 
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-tight">
-                        Kelola Proyek & Tugas dengan{' '}
-                        <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">
-                            Cepat & Presisi
-                        </span>
-                    </h1>
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+                        {/* Left Column: Bio & Action Buttons */}
+                        <div className="lg:col-span-6 space-y-6">
+                            {/* Greeting Badge */}
+                            <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                Hello, I'm
+                            </span>
 
-                    <p className="text-slate-400 text-base sm:text-lg">
-                        Dibangun dari nol dengan arsitektur bersih tanpa paket bloated. Siap untuk custom authentication, manajemen proyek, dan papan Kanban.
-                    </p>
-                </div>
-
-                {/* Interactive React Verification Card */}
-                <div className="mt-12 max-w-4xl mx-auto">
-                    <div className="bg-slate-900/90 border border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl shadow-indigo-950/40 backdrop-blur-sm">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-800/80 gap-4">
-                            <div>
-                                <div className="flex items-center gap-2 text-indigo-400 font-semibold text-sm">
-                                    <Kanban className="w-4 h-4" />
-                                    <span>Interactive React Test Preview</span>
-                                </div>
-                                <h2 className="text-xl font-bold text-white mt-1">Live Task Tracker State</h2>
-                                <p className="text-xs text-slate-400">Klik status untuk mengubah state secara realtime</p>
+                            {/* Headings */}
+                            <div className="space-y-1">
+                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight">
+                                    Rabirts
+                                </h1>
+                                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-400 to-cyan-400">
+                                    Web Developer
+                                </h2>
                             </div>
 
-                            {/* Add Task Quick Form */}
-                            <form onSubmit={handleAddTask} className="flex gap-2">
-                                <input
-                                    type="text"
-                                    placeholder="Tambah task baru..."
-                                    value={newTaskTitle}
-                                    onChange={(e) => setNewTaskTitle(e.target.value)}
-                                    className="bg-slate-950 border border-slate-700 text-sm rounded-lg px-3.5 py-2 text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all w-48 sm:w-64"
-                                />
-                                <button
-                                    type="submit"
-                                    className="bg-indigo-600 hover:bg-indigo-500 text-white px-3.5 py-2 rounded-lg text-sm font-medium flex items-center gap-1 transition-colors"
+                            {/* Description */}
+                            <p className="text-sm sm:text-base text-slate-300 leading-relaxed max-w-lg">
+                                I build web applications, improve existing systems, and enjoy turning ideas into useful and clean digital products. Always learning, always improving.
+                            </p>
+
+                            {/* CTAs */}
+                            <div className="flex flex-wrap items-center gap-3 pt-2">
+                                <a
+                                    href="#projects"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#4f46e5] hover:bg-indigo-600 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-md shadow-indigo-600/30 transition-all hover:-translate-y-0.5"
                                 >
-                                    <Plus className="w-4 h-4" />
-                                    <span>Tambah</span>
-                                </button>
-                            </form>
+                                    <Mail className="w-4 h-4" />
+                                    <span>View My Work</span>
+                                </a>
+
+                                <a
+                                    href="#about"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#121c3b] hover:bg-[#182652] text-slate-200 border border-slate-700/80 rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5"
+                                >
+                                    <User className="w-4 h-4 text-slate-400" />
+                                    <span>About Me</span>
+                                </a>
+                            </div>
+
+                            {/* 4 Stats Metrics */}
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-slate-800/80">
+                                <div>
+                                    <h4 className="text-xl sm:text-2xl font-extrabold text-white">6+</h4>
+                                    <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
+                                        Months Professional Experience
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 className="text-xl sm:text-2xl font-extrabold text-white">10+</h4>
+                                    <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
+                                        Projects Worked On
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 className="text-xl sm:text-2xl font-extrabold text-white">3+</h4>
+                                    <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
+                                        Technologies Mastered
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 className="text-xl sm:text-2xl font-extrabold text-white">100%</h4>
+                                    <p className="text-[11px] text-slate-400 leading-tight mt-0.5">
+                                        Keep Learning Everyday
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Task List */}
-                        <div className="divide-y divide-slate-800/60 mt-4">
-                            {tasks.map((task) => (
-                                <div 
-                                    key={task.id} 
-                                    className="py-3.5 flex items-center justify-between group hover:bg-slate-800/30 px-3 rounded-lg transition-colors"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <button 
-                                            onClick={() => toggleStatus(task.id)}
-                                            className="text-slate-500 hover:text-indigo-400 transition-colors"
-                                        >
-                                            <CheckCircle2 
-                                                className={`w-5 h-5 ${
-                                                    task.status === 'Done' ? 'text-emerald-400 fill-emerald-400/20' : 'text-slate-600'
-                                                }`} 
-                                            />
-                                        </button>
-                                        <span className={`text-sm font-medium ${
-                                            task.status === 'Done' ? 'line-through text-slate-500' : 'text-slate-200'
-                                        }`}>
-                                            {task.title}
+                        {/* Right Column: Workstation Illustration & Quote Card */}
+                        <div className="lg:col-span-6 relative">
+                            <div className="relative rounded-2xl overflow-hidden border border-slate-700/60 shadow-2xl shadow-blue-950/40 group">
+                                <img
+                                    src="/images/hero_developer.png"
+                                    alt="Developer Workstation"
+                                    className="w-full h-auto object-cover transform group-hover:scale-102 transition-transform duration-500"
+                                />
+
+                                {/* Glassmorphism floating quote card overlay */}
+                                <div className="absolute bottom-5 right-5 max-w-[220px] sm:max-w-[250px] p-4 rounded-xl bg-slate-900/70 backdrop-blur-md border border-white/10 shadow-lg space-y-1">
+                                    <span className="text-blue-400 font-serif text-2xl leading-none">“</span>
+                                    <p className="text-xs sm:text-sm text-slate-200 font-medium italic">
+                                        A better version of me, every day.
+                                    </p>
+                                    <div className="w-8 h-0.5 bg-blue-500 mt-2" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ========================================================== */}
+            {/* 3. FEATURED PROJECTS (Selected Works) */}
+            {/* ========================================================== */}
+            <section id="projects" className="py-16 sm:py-20 bg-[#090e21] border-b border-slate-800/60">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                    {/* Header */}
+                    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                        <div className="space-y-1">
+                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                                ‹ FEATURED PROJECTS
+                            </span>
+                            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                                Selected <span className="text-blue-400">Works</span>
+                            </h2>
+                            <p className="text-xs sm:text-sm text-slate-400">
+                                Some of the projects I've worked on, from internal systems to personal projects.
+                            </p>
+                        </div>
+
+                        <Link
+                            href="/projects"
+                            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                        >
+                            <span>View All Projects</span>
+                            <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+
+                    {/* 4 Cards Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {[
+                            {
+                                id: 1,
+                                type: 'Internal Project',
+                                title: 'Monitoring Dapur MBG',
+                                desc: 'A system for monitoring and verifying MBG kitchens, used by field officers with offline mode support.',
+                                tags: ['Laravel', 'MySQL', 'Offline Mode'],
+                                img: '/images/proj1.png',
+                            },
+                            {
+                                id: 2,
+                                type: 'Internal Project',
+                                title: 'Verval Data System',
+                                desc: 'Data verification system with role management and reporting features.',
+                                tags: ['Laravel', 'Tailwind CSS', 'DOF'],
+                                img: '/images/proj2.png',
+                            },
+                            {
+                                id: 3,
+                                type: 'Personal Project',
+                                title: 'Personal Tracker',
+                                desc: 'Track daily work, projects, and progress. Integrated with portfolio.',
+                                tags: ['Laravel', 'Filament', 'Chart.js'],
+                                img: '/images/proj3.png',
+                            },
+                            {
+                                id: 4,
+                                type: 'UI/UX Redesign',
+                                title: 'Application Redesign',
+                                desc: 'Redesigned the interface to be more modern, user-friendly, and responsive.',
+                                tags: ['UI/UX', 'Tailwind CSS', 'Responsive'],
+                                img: '/images/proj4.png',
+                            },
+                        ].map((proj) => (
+                            <div
+                                key={proj.id}
+                                className="bg-[#0e1633] rounded-xl border border-slate-800/80 overflow-hidden hover:border-blue-500/50 hover:-translate-y-1 transition-all group flex flex-col justify-between shadow-lg"
+                            >
+                                <div className="space-y-3.5">
+                                    {/* Thumbnail Preview with badges */}
+                                    <div className="relative h-40 bg-[#070b19] overflow-hidden border-b border-slate-800/80">
+                                        <img
+                                            src={proj.img}
+                                            alt={proj.title}
+                                            className="w-full h-full object-cover opacity-90 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+                                        />
+                                        {/* Tag badge */}
+                                        <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md bg-slate-900/80 backdrop-blur-xs text-[10px] font-semibold text-slate-300 border border-slate-700/60">
+                                            {proj.type}
                                         </span>
+                                        {/* Diagonal arrow button */}
+                                        <div className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-slate-900/80 backdrop-blur-xs text-slate-300 flex items-center justify-center border border-slate-700/60 group-hover:text-blue-400 transition-colors">
+                                            <ExternalLink className="w-3.5 h-3.5" />
+                                        </div>
                                     </div>
 
-                                    <div className="flex items-center gap-2">
-                                        <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                                            task.priority === 'Urgent' ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20' :
-                                            task.priority === 'High' ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' :
-                                            'bg-slate-800 text-slate-400 border border-slate-700'
-                                        }`}>
-                                            {task.priority}
-                                        </span>
-
-                                        <button
-                                            onClick={() => toggleStatus(task.id)}
-                                            className={`text-xs px-2.5 py-1 rounded-full font-medium cursor-pointer transition-all ${
-                                                task.status === 'Done' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                                                task.status === 'In Progress' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' :
-                                                'bg-slate-800 text-slate-400 border border-slate-700'
-                                            }`}
-                                        >
-                                            {task.status}
-                                        </button>
+                                    {/* Content */}
+                                    <div className="px-4 space-y-1.5">
+                                        <h3 className="font-bold text-sm sm:text-base text-white group-hover:text-blue-400 transition-colors">
+                                            {proj.title}
+                                        </h3>
+                                        <p className="text-xs text-slate-400 line-clamp-3 leading-relaxed">
+                                            {proj.desc}
+                                        </p>
                                     </div>
                                 </div>
-                            ))}
+
+                                {/* Tags footer */}
+                                <div className="p-4 pt-3 flex flex-wrap gap-1.5">
+                                    {proj.tags.map((tag, tIdx) => (
+                                        <span
+                                            key={tIdx}
+                                            className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-800/80 text-slate-300 border border-slate-700/60"
+                                        >
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ========================================================== */}
+            {/* 4. RECENT EXPERIENCE (Work Journey) */}
+            {/* ========================================================== */}
+            <section id="experience" className="py-16 sm:py-20 border-b border-slate-800/60">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                    {/* Header */}
+                    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                        <div className="space-y-1">
+                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                                ‹ WORK JOURNEY
+                            </span>
+                            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                                Recent Experience
+                            </h2>
+                            <p className="text-xs sm:text-sm text-slate-400">
+                                A glimpse of what I've been working on.
+                            </p>
+                        </div>
+
+                        <Link
+                            href="/portfolio"
+                            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-400 hover:text-blue-300 transition-colors"
+                        >
+                            <span>View Full Timeline</span>
+                            <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+
+                    {/* Horizontal 4-step Timeline */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {[
+                            {
+                                date: 'Sep 2026',
+                                title: 'UI/UX Redesign',
+                                desc: 'Improved interface and user experience for internal application.',
+                            },
+                            {
+                                date: 'Aug 2026',
+                                title: 'Feature Development',
+                                desc: 'Built new module and fixed several issues.',
+                            },
+                            {
+                                date: 'Jul 2026',
+                                title: 'Data Verification System',
+                                desc: 'Developed verval system with reporting features.',
+                            },
+                            {
+                                date: 'Jun 2026',
+                                title: 'System Maintenance',
+                                desc: 'Bug fixes and performance improvements.',
+                            },
+                        ].map((item, idx) => (
+                            <div
+                                key={idx}
+                                className="p-5 rounded-xl bg-[#0e1633] border border-slate-800/80 hover:border-slate-700 transition-all space-y-3 relative"
+                            >
+                                <div className="flex items-center gap-2">
+                                    <div className="w-2.5 h-2.5 rounded-full bg-blue-500 shadow-sm shadow-blue-500/50" />
+                                    <span className="text-xs font-bold text-slate-300">
+                                        {item.date}
+                                    </span>
+                                </div>
+                                <h3 className="font-bold text-sm text-white">
+                                    {item.title}
+                                </h3>
+                                <p className="text-xs text-slate-400 leading-relaxed">
+                                    {item.desc}
+                                </p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ========================================================== */}
+            {/* 5. TECH STACK (Tools I Use) */}
+            {/* ========================================================== */}
+            <section className="py-16 sm:py-20 bg-[#090e21] border-b border-slate-800/60">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                    <div className="space-y-1 text-center sm:text-left">
+                        <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                            ‹ TECH STACK
+                        </span>
+                        <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                            Tools I Use
+                        </h2>
+                        <p className="text-xs sm:text-sm text-slate-400">
+                            Technologies and tools that I work with.
+                        </p>
+                    </div>
+
+                    {/* 8 Tool cards */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3.5">
+                        {[
+                            { name: 'Laravel', icon: LaravelSvg },
+                            { name: 'PHP', icon: PhpSvg },
+                            { name: 'MySQL', icon: MysqlSvg },
+                            { name: 'Tailwind CSS', icon: TailwindSvg },
+                            { name: 'JavaScript', icon: JsSvg },
+                            { name: 'Git', icon: GitSvg },
+                            { name: 'VS Code', icon: VscodeSvg },
+                            { name: 'Figma', icon: FigmaSvg },
+                        ].map((tool, tIdx) => {
+                            const IconComponent = tool.icon;
+                            return (
+                                <div
+                                    key={tIdx}
+                                    className="p-4 rounded-xl bg-[#0e1633] border border-slate-800/80 hover:border-blue-500/50 flex flex-col items-center justify-center gap-2.5 transition-all hover:-translate-y-1 group"
+                                >
+                                    <div className="w-10 h-10 flex items-center justify-center">
+                                        <IconComponent className="w-8 h-8 object-contain transition-transform group-hover:scale-110" />
+                                    </div>
+                                    <span className="text-xs font-semibold text-slate-300 group-hover:text-white transition-colors">
+                                        {tool.name}
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            {/* ========================================================== */}
+            {/* 6. ABOUT ME (More Than Just Code) */}
+            {/* ========================================================== */}
+            <section id="about" className="py-16 sm:py-20 border-b border-slate-800/60">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        {/* Left: Bio & Philosophy */}
+                        <div className="lg:col-span-5 space-y-4">
+                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                                ‹ ABOUT ME
+                            </span>
+                            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                                More Than <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Just Code</span>
+                            </h2>
+                            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                I'm a web developer who enjoys solving problems, learning new technologies, and building things that are useful. I'm currently working while continuously improving my skills, with a focus on Laravel and modern web development.
+                            </p>
+
+                            <div className="pt-2">
+                                <Link
+                                    href="/portfolio"
+                                    className="inline-flex items-center gap-2 px-4 py-2 border border-slate-700 bg-[#0e1633] hover:bg-[#152047] text-white rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5"
+                                >
+                                    <span>Learn More About Me</span>
+                                    <ArrowRight className="w-4 h-4" />
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* Center: Mountain Banner Illustration */}
+                        <div className="lg:col-span-4 flex items-center justify-center">
+                            <div className="rounded-xl overflow-hidden border border-slate-800/80 shadow-md">
+                                <img
+                                    src="/images/about_illustration.png"
+                                    alt="Same person, bigger goals"
+                                    className="w-full h-auto object-contain max-h-[190px]"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Right: 4 Attribute Pills */}
+                        <div className="lg:col-span-3 space-y-2.5">
+                            {[
+                                { title: 'Problem Solver', icon: Puzzle },
+                                { title: 'Continuous Learner', icon: GraduationCap },
+                                { title: 'Open to Opportunities', icon: Briefcase },
+                                { title: 'Based in Indonesia', icon: MapPin },
+                            ].map((attr, aIdx) => {
+                                const AttrIcon = attr.icon;
+                                return (
+                                    <div
+                                        key={aIdx}
+                                        className="p-3 rounded-lg bg-[#0e1633] border border-slate-800/80 flex items-center gap-3 hover:border-slate-700 transition-colors"
+                                    >
+                                        <div className="w-7 h-7 rounded-md bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0">
+                                            <AttrIcon className="w-4 h-4" />
+                                        </div>
+                                        <span className="font-semibold text-xs text-slate-200">
+                                            {attr.title}
+                                        </span>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
+            </section>
 
-                {/* Features Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
-                    <div className="bg-slate-900/50 border border-slate-800/80 rounded-xl p-6 hover:border-indigo-500/40 transition-colors">
-                        <div className="w-10 h-10 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center mb-4 border border-indigo-500/20">
-                            <Kanban className="w-5 h-5" />
+            {/* ========================================================== */}
+            {/* 7. GET IN TOUCH (Let's Connect) */}
+            {/* ========================================================== */}
+            <section id="contact" className="py-16 sm:py-20 bg-[#090e21] border-b border-slate-800/60">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div className="space-y-1">
+                            <span className="text-xs font-bold uppercase tracking-wider text-blue-400">
+                                ‹ LET'S CONNECT
+                            </span>
+                            <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
+                                Get In Touch
+                            </h2>
+                            <p className="text-xs sm:text-sm text-slate-400">
+                                Have a project in mind or just want to say hello? Feel free to reach out!
+                            </p>
                         </div>
-                        <h3 className="text-base font-semibold text-white mb-2">Kanban Board Interaktif</h3>
-                        <p className="text-sm text-slate-400 leading-relaxed">
-                            Organisir alur kerja tim dengan drag-and-drop kolom status dari Todo hingga Done.
-                        </p>
-                    </div>
 
-                    <div className="bg-slate-900/50 border border-slate-800/80 rounded-xl p-6 hover:border-indigo-500/40 transition-colors">
-                        <div className="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center mb-4 border border-purple-500/20">
-                            <ShieldCheck className="w-5 h-5" />
-                        </div>
-                        <h3 className="text-base font-semibold text-white mb-2">Custom Auth dari Nol</h3>
-                        <p className="text-sm text-slate-400 leading-relaxed">
-                            Sistem otentikasi kustom yang ramping, aman, dan mudah dimodifikasi tanpa starter kit berlebih.
-                        </p>
-                    </div>
+                        {/* Right Action & Socials */}
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => setContactModal(true)}
+                                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#4f46e5] hover:bg-indigo-600 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-md shadow-indigo-600/30 transition-all hover:-translate-y-0.5"
+                            >
+                                <Mail className="w-4 h-4" />
+                                <span>Send Me a Message</span>
+                            </button>
 
-                    <div className="bg-slate-900/50 border border-slate-800/80 rounded-xl p-6 hover:border-indigo-500/40 transition-colors">
-                        <div className="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center mb-4 border border-emerald-500/20">
-                            <Zap className="w-5 h-5" />
+                            <div className="flex items-center gap-2 text-slate-400 pl-2">
+                                <a
+                                    href="https://github.com/asafik"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="p-2 rounded-lg bg-[#0e1633] border border-slate-800 hover:text-white hover:border-slate-700 transition-colors"
+                                >
+                                    <GithubIcon className="w-4 h-4" />
+                                </a>
+                                <a
+                                    href="https://linkedin.com/in/asafik"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="p-2 rounded-lg bg-[#0e1633] border border-slate-800 hover:text-blue-400 hover:border-slate-700 transition-colors"
+                                >
+                                    <LinkedinIcon className="w-4 h-4" />
+                                </a>
+                                <a
+                                    href="https://instagram.com"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="p-2 rounded-lg bg-[#0e1633] border border-slate-800 hover:text-pink-400 hover:border-slate-700 transition-colors"
+                                >
+                                    <InstagramIcon className="w-4 h-4" />
+                                </a>
+                            </div>
                         </div>
-                        <h3 className="text-base font-semibold text-white mb-2">Performa Cepat</h3>
-                        <p className="text-sm text-slate-400 leading-relaxed">
-                            Single Page Application (SPA) responsif didukung Inertia.js dan rendering Tailwind CSS v4.
-                        </p>
                     </div>
                 </div>
-            </main>
+            </section>
 
-            {/* Footer */}
-            <footer className="border-t border-slate-900 py-6 text-center text-xs text-slate-500">
-                <p>WorkTrack &bull; Laravel {laravelVersion || '13'} + React 19 + Inertia.js + Tailwind CSS</p>
+            {/* ========================================================== */}
+            {/* 8. FOOTER */}
+            {/* ========================================================== */}
+            <footer className="py-8 bg-[#070b19]">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-800/80">
+                        {/* Logo & Slogan */}
+                        <div className="flex items-center gap-3">
+                            <img
+                                src="/images/logo.png"
+                                alt="Rabirts"
+                                className="w-6 h-6 rounded-md object-contain"
+                            />
+                            <div>
+                                <h3 className="font-extrabold text-sm text-white">Rabirts</h3>
+                                <p className="text-[11px] text-slate-400">
+                                    Building a better tomorrow, line by line.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Navigation Links */}
+                        <div className="flex items-center gap-6 text-xs text-slate-400">
+                            <a href="#home" className="hover:text-white transition-colors">
+                                Home
+                            </a>
+                            <a href="#projects" className="hover:text-white transition-colors">
+                                Projects
+                            </a>
+                            <a href="#experience" className="hover:text-white transition-colors">
+                                Experience
+                            </a>
+                            <a href="#about" className="hover:text-white transition-colors">
+                                About
+                            </a>
+                            <a href="#contact" className="hover:text-white transition-colors">
+                                Contact
+                            </a>
+                        </div>
+                    </div>
+
+                    <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+                        <p>© 2026 Rabirts. All rights reserved.</p>
+                        <p>Designed for WorkTrack Portfolio Showcase</p>
+                    </div>
+                </div>
             </footer>
+
+            {/* ========================================================== */}
+            {/* CONTACT MODAL */}
+            {/* ========================================================== */}
+            {contactModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm">
+                    <div className="bg-[#0e1633] rounded-xl border border-slate-800 shadow-2xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+                        <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                            <h3 className="text-base font-bold text-white flex items-center gap-2">
+                                <Send className="w-4 h-4 text-blue-400" />
+                                <span>Kirim Pesan ke Rabirts</span>
+                            </h3>
+                            <button
+                                onClick={() => setContactModal(false)}
+                                className="text-slate-400 hover:text-white p-1"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSendMessage} className="space-y-3.5">
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                                    Nama Anda
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Contoh: John Doe"
+                                    className="w-full bg-[#070b19] border border-slate-700/80 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                                    Email Anda
+                                </label>
+                                <input
+                                    type="email"
+                                    placeholder="name@example.com"
+                                    className="w-full bg-[#070b19] border border-slate-700/80 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                                    Pesan / Keperluan Proyek
+                                </label>
+                                <textarea
+                                    rows={3}
+                                    placeholder="Ceritakan proyek atau tawaran kerja sama Anda..."
+                                    className="w-full bg-[#070b19] border border-slate-700/80 rounded-lg p-3 text-xs sm:text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none"
+                                    required
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+                                <button
+                                    type="button"
+                                    onClick={() => setContactModal(false)}
+                                    className="px-4 py-2 border border-slate-700 rounded-lg text-xs font-semibold text-slate-400 hover:text-white"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-5 py-2 bg-[#4f46e5] hover:bg-indigo-600 text-white rounded-lg text-xs font-semibold shadow-md transition-colors"
+                                >
+                                    Kirim Sekarang
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
