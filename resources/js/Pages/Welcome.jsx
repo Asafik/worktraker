@@ -444,14 +444,14 @@ export default function Welcome({ initialSection = 'home' }) {
                         </Link>
                     </div>
 
-                    {/* 4 Cards Grid - ENTIRE CARD IS CLICKABLE */}
+                    {/* 4 Cards Grid - ENTIRE CARD IS CLICKABLE WITH UNIFIED HEIGHTS */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                         {[
                             {
                                 id: 1,
                                 type: 'Internal Project',
                                 title: 'Monitoring Dapur MBG',
-                                desc: 'A system for monitoring and verifying MBG kitchens, used by field officers with offline mode support.',
+                                desc: 'Monitoring and verification system for MBG kitchens, supporting field officers with offline sync mode.',
                                 tags: ['Laravel', 'MySQL', 'Offline Mode'],
                                 img: '/images/proj1.png',
                                 link: '/projects',
@@ -460,7 +460,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                 id: 2,
                                 type: 'Internal Project',
                                 title: 'Verval Data System',
-                                desc: 'Data verification system with role management and reporting features.',
+                                desc: 'Data verification portal with role-based access management, approval workflows, and audit reporting.',
                                 tags: ['Laravel', 'Tailwind CSS', 'DOF'],
                                 img: '/images/proj2.png',
                                 link: '/projects',
@@ -469,7 +469,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                 id: 3,
                                 type: 'Personal Project',
                                 title: 'Personal Tracker',
-                                desc: 'Track daily work, projects, and progress. Integrated with portfolio.',
+                                desc: 'Personal productivity tracker with daily work logging, progress analytics, and portfolio integration.',
                                 tags: ['Laravel', 'Filament', 'Chart.js'],
                                 img: '/images/proj3.png',
                                 link: '/projects',
@@ -478,7 +478,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                 id: 4,
                                 type: 'UI/UX Redesign',
                                 title: 'Application Redesign',
-                                desc: 'Redesigned the interface to be more modern, user-friendly, and responsive.',
+                                desc: 'Modern application interface redesign focused on clean component hierarchy, usability, and responsive layout.',
                                 tags: ['UI/UX', 'Tailwind CSS', 'Responsive'],
                                 img: '/images/proj4.png',
                                 link: '/projects',
@@ -487,11 +487,11 @@ export default function Welcome({ initialSection = 'home' }) {
                             <Link
                                 key={proj.id}
                                 href={proj.link}
-                                className="rounded-xl border overflow-hidden transition-all duration-300 group flex flex-col justify-between bg-white border-slate-200 shadow-xs hover:shadow-xl hover:border-blue-400/90 hover:-translate-y-1.5 cursor-pointer block text-left"
+                                className="rounded-xl border overflow-hidden transition-all duration-300 group flex flex-col justify-between h-full bg-white border-slate-200 shadow-xs hover:shadow-xl hover:border-blue-400/90 hover:-translate-y-1.5 cursor-pointer block text-left"
                             >
-                                <div className="space-y-3.5">
+                                <div className="flex-1 flex flex-col">
                                     {/* Thumbnail Preview with badges */}
-                                    <div className="relative h-40 bg-slate-100 overflow-hidden border-b border-slate-100">
+                                    <div className="relative h-40 bg-slate-100 overflow-hidden border-b border-slate-100 shrink-0">
                                         <img
                                             src={proj.img}
                                             alt={proj.title}
@@ -507,19 +507,21 @@ export default function Welcome({ initialSection = 'home' }) {
                                         </div>
                                     </div>
 
-                                    {/* Content */}
-                                    <div className="px-4 space-y-1.5">
-                                        <h3 className="font-bold text-sm sm:text-base transition-colors text-slate-900 group-hover:text-blue-600">
-                                            {proj.title}
-                                        </h3>
-                                        <p className="text-xs line-clamp-3 leading-relaxed text-slate-500">
-                                            {proj.desc}
-                                        </p>
+                                    {/* Content with standardized heights for equal alignment across row */}
+                                    <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
+                                        <div className="space-y-1.5">
+                                            <h3 className="font-bold text-sm sm:text-base transition-colors text-slate-900 group-hover:text-blue-600 min-h-[1.5rem] line-clamp-1">
+                                                {proj.title}
+                                            </h3>
+                                            <p className="text-xs leading-relaxed text-slate-500 min-h-[3.6rem] line-clamp-3">
+                                                {proj.desc}
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
 
-                                {/* Tags footer */}
-                                <div className="p-4 pt-3 flex flex-wrap gap-1.5">
+                                {/* Tags footer pinned at the bottom */}
+                                <div className="p-4 pt-0 pb-3.5 flex flex-wrap gap-1.5 mt-auto border-t border-slate-100/70 pt-3">
                                     {proj.tags.map((tag, tIdx) => (
                                         <span
                                             key={tIdx}
@@ -536,7 +538,7 @@ export default function Welcome({ initialSection = 'home' }) {
             </section>
 
             {/* ========================================================== */}
-            {/* 4. RECENT EXPERIENCE (1:1 with mockup screenshot) */}
+            {/* 4. RECENT EXPERIENCE (Timeline with comfortable track spacing & calibrated claims) */}
             {/* ========================================================== */}
             <section
                 id="experience"
@@ -566,50 +568,60 @@ export default function Welcome({ initialSection = 'home' }) {
                         </Link>
                     </div>
 
-                    {/* Unified Timeline: Continuous Track + Cards with Dots on Top-Left Corner 1:1 with mockup */}
-                    <div className="relative pt-4">
+                    {/* Unified Timeline: Continuous Track with Breathing Space to Cards */}
+                    <div className="relative pt-2">
                         {/* Horizontal connecting line spanning continuously across the entire width */}
-                        <div className="hidden lg:block absolute top-[16px] left-0 right-0 h-[2px] bg-[#e0e7ff] z-10 pointer-events-none" />
+                        <div className="hidden lg:block absolute top-[11px] left-3 right-3 h-[2px] bg-[#e0e7ff] z-0" />
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
                             {[
                                 {
                                     date: 'Sep 2026',
                                     title: 'UI/UX Redesign',
-                                    desc: 'Improved interface and user experience for internal application.',
+                                    desc: 'Revamped the interface and improved user experience for internal application modules.',
                                 },
                                 {
                                     date: 'Aug 2026',
                                     title: 'Feature Development',
-                                    desc: 'Built new module and fixed several issues.',
+                                    desc: 'Contributed to frontend module development and resolved workflow UI issues.',
                                 },
                                 {
                                     date: 'Jul 2026',
                                     title: 'Data Verification System',
-                                    desc: 'Developed verval system with reporting features.',
+                                    desc: 'Developed the UI and frontend reporting features for a data verification system.',
                                 },
                                 {
                                     date: 'Jun 2026',
                                     title: 'System Maintenance',
-                                    desc: 'Bug fixes and performance improvements.',
+                                    desc: 'Handled frontend bug fixes, UI maintenance, and performance improvements.',
                                 },
                             ].map((item, idx) => (
-                                <div
-                                    key={idx}
-                                    className="relative pt-6 pb-6 px-6 rounded-tr-2xl rounded-br-2xl rounded-bl-2xl rounded-tl-sm bg-white border border-slate-200/80 shadow-xs hover:border-indigo-300 hover:shadow-md transition-all duration-300 group"
-                                >
-                                    {/* Solid Blue Circle Dot sitting right on top-left corner on the horizontal track */}
-                                    <div className="absolute -top-[6px] -left-[6px] w-3.5 h-3.5 rounded-full bg-[#4f46e5] z-20 group-hover:scale-125 transition-transform" />
+                                <div key={idx} className="flex flex-col group">
+                                    {/* Milestone Node on the Timeline Line with breathing room */}
+                                    <div className="hidden lg:flex items-center mb-3.5">
+                                        <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center border border-indigo-100 shadow-xs group-hover:scale-110 transition-transform">
+                                            <div className="w-3 h-3 rounded-full bg-[#4f46e5] group-hover:scale-110 transition-transform" />
+                                        </div>
+                                    </div>
 
-                                    <span className="block text-xs font-semibold text-slate-500">
-                                        {item.date}
-                                    </span>
-                                    <h3 className="font-extrabold text-sm sm:text-base text-slate-900 mt-2 group-hover:text-indigo-600 transition-colors">
-                                        {item.title}
-                                    </h3>
-                                    <p className="text-xs text-slate-500 leading-relaxed mt-1.5">
-                                        {item.desc}
-                                    </p>
+                                    {/* Experience Card with breathing room below the timeline line */}
+                                    <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs hover:border-indigo-300 hover:shadow-md transition-all duration-300 flex-1 flex flex-col justify-between group-hover:-translate-y-1">
+                                        <div>
+                                            <div className="flex items-center justify-between">
+                                                <span className="text-xs font-semibold text-slate-500">
+                                                    {item.date}
+                                                </span>
+                                                {/* Mobile-only dot indicator */}
+                                                <div className="lg:hidden w-2.5 h-2.5 rounded-full bg-[#4f46e5]" />
+                                            </div>
+                                            <h3 className="font-extrabold text-sm sm:text-base text-slate-900 mt-2.5 group-hover:text-indigo-600 transition-colors">
+                                                {item.title}
+                                            </h3>
+                                            <p className="text-xs text-slate-500 leading-relaxed mt-2">
+                                                {item.desc}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             ))}
                         </div>
