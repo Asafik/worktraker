@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import React, { useState, useEffect } from 'react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import {
     Home,
@@ -23,250 +23,44 @@ import {
     X,
     Cloud,
     FileCode,
+    Loader2,
 } from 'lucide-react';
 
-export default function ArchivePage() {
+export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl = 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69', flash = {} }) {
     const [selectedTab, setSelectedTab] = useState('All'); // All, Projects, Backups, Others
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedId, setSelectedId] = useState(1);
+    const [selectedId, setSelectedId] = useState(() => initialArchives.length > 0 ? initialArchives[0].id : 1);
     const [checkedIds, setCheckedIds] = useState([]);
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
     const [uploadName, setUploadName] = useState('');
+    const [uploadProjectName, setUploadProjectName] = useState('');
     const [uploadCategory, setUploadCategory] = useState('Project');
-    const [uploadSize, setUploadSize] = useState('25 MB');
     const [uploadDesc, setUploadDesc] = useState('');
+    const [uploadNotes, setUploadNotes] = useState('');
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [toastMessage, setToastMessage] = useState(flash?.message || null);
 
-    // Full 12 Archives Mock Data matching design 1:1
-    const [archives, setArchives] = useState([
-        {
-            id: 1,
-            name: 'Company Website',
-            subtitle: 'Source code + assets (Laravel)',
-            category: 'Project',
-            typeBadge: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-            icon: Folder,
-            iconColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400',
-            size: '124 MB',
-            archivedAt: '16 Sep 2025 10:42',
-            tags: ['Laravel', 'Website'],
-            description:
-                'Project website company profile yang dibangun menggunakan Laravel. Berisi source code, asset, dan file konfigurasi.',
-            fileType: 'ZIP',
-            storageLocation: 'Google Drive',
-            storageConnected: true,
-            detailTags: ['Laravel', 'Website', 'Company', 'Source Code'],
-            notes: 'Arsip ini berisi versi terakhir sebelum refactor struktur folder. Bisa digunakan sebagai backup jika terjadi error.',
-        },
-        {
-            id: 2,
-            name: 'Mobile App v1.0',
-            subtitle: 'Full source code (React Native)',
-            category: 'Project',
-            typeBadge: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-            icon: Folder,
-            iconColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400',
-            size: '98 MB',
-            archivedAt: '14 Sep 2025 14:27',
-            tags: ['React Native', 'Mobile'],
-            description:
-                'Source code aplikasi mobile iOS dan Android menggunakan React Native & Expo. Siap dipublikasikan ke production.',
-            fileType: 'ZIP',
-            storageLocation: 'Google Drive',
-            storageConnected: true,
-            detailTags: ['React Native', 'Mobile', 'iOS', 'Android'],
-            notes: 'Versi rilis 1.0 yang sudah stabil dan lolos audit Play Store & App Store.',
-        },
-        {
-            id: 3,
-            name: 'Admin Dashboard Backup',
-            subtitle: 'Backup sebelum update UI',
-            category: 'Backup',
-            typeBadge: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40',
-            icon: Folder,
-            iconColor: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400',
-            size: '56 MB',
-            archivedAt: '10 Sep 2025 09:15',
-            tags: ['Backup', 'Admin'],
-            description:
-                'Snapshot penuh database dan codebase dashboard admin sebelum pembaruan arsitektur antarmuka.',
-            fileType: 'TAR.GZ',
-            storageLocation: 'AWS S3',
-            storageConnected: true,
-            detailTags: ['Backup', 'Admin', 'Dashboard', 'Database'],
-            notes: 'Simpan minimal 6 bulan untuk kepatuhan audit keamanan data.',
-        },
-        {
-            id: 4,
-            name: 'API Integration',
-            subtitle: 'Documentation + Postman collection',
-            category: 'Other',
-            typeBadge: 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40',
-            icon: FileText,
-            iconColor: 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400',
-            size: '12 MB',
-            archivedAt: '08 Sep 2025 16:30',
-            tags: ['API', 'Postman'],
-            description:
-                'Koleksi environment Postman dan dokumentasi endpoint OpenAPI 3.0 untuk integrasi backend.',
-            fileType: 'JSON',
-            storageLocation: 'Google Drive',
-            storageConnected: true,
-            detailTags: ['API', 'Postman', 'OpenAPI', 'Documentation'],
-            notes: 'Termasuk mock server testing environment untuk keperluan staging.',
-        },
-        {
-            id: 5,
-            name: 'UI/UX Redesign',
-            subtitle: 'Design files (Figma export)',
-            category: 'Project',
-            typeBadge: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-            icon: Layers,
-            iconColor: 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400',
-            size: '43 MB',
-            archivedAt: '05 Sep 2025 11:20',
-            tags: ['Figma', 'Design'],
-            description:
-                'Aset desain UI kit dan wireframe Figma untuk revamping alur kerja utama aplikasi.',
-            fileType: 'FIG / ZIP',
-            storageLocation: 'Google Drive',
-            storageConnected: true,
-            detailTags: ['Figma', 'Design', 'UI Kit', 'Tokens'],
-            notes: 'Komponen master telah disinkronkan ke design tokens frontend.',
-        },
-        {
-            id: 6,
-            name: 'Laravel Project Old',
-            subtitle: 'Versi sebelum refactor',
-            category: 'Backup',
-            typeBadge: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40',
-            icon: Folder,
-            iconColor: 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400',
-            size: '87 MB',
-            archivedAt: '28 Aug 2025 20:10',
-            tags: ['Laravel', 'Old Version'],
-            description:
-                'Arsip monolitik versi lawas sebelum dipisah ke arsitektur modul modern.',
-            fileType: 'ZIP',
-            storageLocation: 'Google Drive',
-            storageConnected: true,
-            detailTags: ['Laravel', 'Legacy', 'Old Version'],
-            notes: 'Arsip cadangan jika modul v2 memerlukan referensi controller lama.',
-        },
-        {
-            id: 7,
-            name: 'Portfolio Website',
-            subtitle: 'Complete project files',
-            category: 'Project',
-            typeBadge: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-            icon: Folder,
-            iconColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400',
-            size: '62 MB',
-            archivedAt: '22 Aug 2025 15:45',
-            tags: ['Portfolio', 'Website'],
-            description:
-                'File statis build dan source kode Next.js portofolio kreatif dengan animasi terintegrasi.',
-            fileType: 'ZIP',
-            storageLocation: 'Google Drive',
-            storageConnected: true,
-            detailTags: ['Portfolio', 'Website', 'Next.js'],
-            notes: 'Termasuk aset video showcase interaktif dan demonstrasi studi kasus.',
-        },
-        {
-            id: 8,
-            name: 'Database Dump',
-            subtitle: 'SQL file (local)',
-            category: 'Other',
-            typeBadge: 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40',
-            icon: FileText,
-            iconColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400',
-            size: '18 MB',
-            archivedAt: '18 Aug 2025 10:12',
-            tags: ['Database', 'SQL'],
-            description:
-                'Dump database PostgreSQL lokal dengan seeders data pengujian lengkap untuk environment dev.',
-            fileType: 'SQL.GZ',
-            storageLocation: 'Local Server',
-            storageConnected: true,
-            detailTags: ['Database', 'SQL', 'PostgreSQL'],
-            notes: 'Berisi data mockup uji coba, bebas dari data rahasia produksi.',
-        },
-        {
-            id: 9,
-            name: 'Research & Learning',
-            subtitle: 'Material dan referensi',
-            category: 'Other',
-            typeBadge: 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40',
-            icon: FileText,
-            iconColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400',
-            size: '9 MB',
-            archivedAt: '12 Aug 2025 13:40',
-            tags: ['Learning', 'Reference'],
-            description:
-                'Kumpulan whitepaper, artikel riset, dan panduan best practice arsitektur sistem.',
-            fileType: 'PDF / MD',
-            storageLocation: 'Google Drive',
-            storageConnected: true,
-            detailTags: ['Learning', 'Reference', 'Architecture'],
-            notes: 'Bahan referensi internal tim riset dan benchmarking performa.',
-        },
-        {
-            id: 10,
-            name: 'Laravel Template',
-            subtitle: 'Reusable component',
-            category: 'Project',
-            typeBadge: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-            icon: Folder,
-            iconColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400',
-            size: '31 MB',
-            archivedAt: '05 Aug 2025 17:22',
-            tags: ['Laravel', 'Template'],
-            description:
-                'Starter kit boilerplate Laravel + Inertia React yang siap pakai untuk akselerasi proyek baru.',
-            fileType: 'ZIP',
-            storageLocation: 'Google Drive',
-            storageConnected: true,
-            detailTags: ['Laravel', 'Template', 'Boilerplate'],
-            notes: 'Sudah terpasang autentikasi, layout responsif, dan dark mode preset.',
-        },
-        {
-            id: 11,
-            name: 'Meeting Notes (PDF)',
-            subtitle: 'Catatan penting',
-            category: 'Other',
-            typeBadge: 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40',
-            icon: FileText,
-            iconColor: 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400',
-            size: '4 MB',
-            archivedAt: '01 Aug 2025 09:30',
-            tags: ['Meeting', 'PDF'],
-            description:
-                'Risalah rapat tahunan penetapan sasaran strategis roadmap produk kuartal 3 dan 4.',
-            fileType: 'PDF',
-            storageLocation: 'Google Drive',
-            storageConnected: true,
-            detailTags: ['Meeting', 'PDF', 'Roadmap'],
-            notes: 'Telah diverifikasi dan ditandatangani oleh pemangku kepentingan.',
-        },
-        {
-            id: 12,
-            name: 'Old Screenshots',
-            subtitle: 'Tangkapan layar project lama',
-            category: 'Backup',
-            typeBadge: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40',
-            icon: Folder,
-            iconColor: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400',
-            size: '16 MB',
-            archivedAt: '25 Jul 2025 21:15',
-            tags: ['Screenshot', 'Archive'],
-            description:
-                'Dokumentasi visual perkembangan antarmuka aplikasi dari versi purwarupa awal hingga terkini.',
-            fileType: 'ZIP',
-            storageLocation: 'Google Drive',
-            storageConnected: true,
-            detailTags: ['Screenshot', 'Archive', 'UI History'],
-            notes: 'Berguna untuk perbandingan retrospektif desain dan materi presentasi.',
-        },
-    ]);
+    // Synchronize archives from Inertia props
+    const [archives, setArchives] = useState(initialArchives);
+
+    useEffect(() => {
+        if (initialArchives && initialArchives.length > 0) {
+            setArchives(initialArchives);
+            if (!initialArchives.some(a => a.id === selectedId)) {
+                setSelectedId(initialArchives[0].id);
+            }
+        }
+    }, [initialArchives]);
+
+    useEffect(() => {
+        if (flash?.message) {
+            setToastMessage(flash.message);
+            const timer = setTimeout(() => setToastMessage(null), 4000);
+            return () => clearTimeout(timer);
+        }
+    }, [flash]);
+
 
     // Active selected archive item for right column preview
     const activeArchive = archives.find((a) => a.id === selectedId) || archives[0];
@@ -313,50 +107,57 @@ export default function ArchivePage() {
     };
 
     // Delete active archive
+    // Delete active archive with real SQLite & Google Drive deletion
     const handleDeleteArchive = (id) => {
-        if (confirm(`Yakin ingin menghapus arsip "${activeArchive.name}"?`)) {
-            const remaining = archives.filter((a) => a.id !== id);
-            setArchives(remaining);
-            if (selectedId === id && remaining.length > 0) {
-                setSelectedId(remaining[0].id);
-            }
+        if (!confirm(`Yakin ingin menghapus arsip "${activeArchive?.name || 'ini'}"? File akan dihapus dari Google Drive & database.`)) {
+            return;
         }
+
+        router.delete(`/archive/${id}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                const remaining = archives.filter((a) => a.id !== id);
+                setArchives(remaining);
+                if (remaining.length > 0) {
+                    setSelectedId(remaining[0].id);
+                }
+            },
+        });
     };
 
-    // Quick upload modal handler
+    // Real upload submit to Google Drive and SQLite
     const handleUploadSubmit = (e) => {
         e.preventDefault();
         if (!uploadName.trim()) return;
 
-        const newArchive = {
-            id: Date.now(),
-            name: uploadName,
-            subtitle: uploadDesc || 'Uploaded archive file',
-            category: uploadCategory,
-            typeBadge:
-                uploadCategory === 'Project'
-                    ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40'
-                    : uploadCategory === 'Backup'
-                    ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40'
-                    : 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40',
-            icon: Folder,
-            iconColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400',
-            size: uploadSize,
-            archivedAt: 'Baru saja',
-            tags: ['Archive', uploadCategory],
-            description: uploadDesc || 'File arsip baru berhasil diunggah ke penyimpanan.',
-            fileType: 'ZIP',
-            storageLocation: 'Google Drive',
-            storageConnected: true,
-            detailTags: ['Archive', uploadCategory],
-            notes: 'Diunggah baru saja melalui panel arsip.',
-        };
+        setIsSubmitting(true);
+        const formData = new FormData();
+        formData.append('name', uploadName);
+        formData.append('projectName', uploadProjectName);
+        formData.append('category', uploadCategory);
+        formData.append('description', uploadDesc);
+        formData.append('notes', uploadNotes);
+        if (selectedFile) {
+            formData.append('file', selectedFile);
+        }
 
-        setArchives([newArchive, ...archives]);
-        setSelectedId(newArchive.id);
-        setIsUploadModalOpen(false);
-        setUploadName('');
-        setUploadDesc('');
+        router.post('/archive', formData, {
+            forceFormData: true,
+            preserveScroll: true,
+            onSuccess: () => {
+                setIsSubmitting(false);
+                setIsUploadModalOpen(false);
+                setUploadName('');
+                setUploadProjectName('');
+                setUploadDesc('');
+                setUploadNotes('');
+                setSelectedFile(null);
+            },
+            onError: (err) => {
+                setIsSubmitting(false);
+                alert('Gagal mengunggah arsip ke Google Drive: ' + (Object.values(err)[0] || 'Terjadi kesalahan.'));
+            },
+        });
     };
 
     return (
@@ -786,19 +587,39 @@ export default function ArchivePage() {
                                 </button>
 
                                 <button
-                                    onClick={() => window.open('https://drive.google.com', '_blank')}
-                                    className="w-full py-2.5 bg-white dark:bg-[#0e1d47] hover:bg-slate-50 dark:hover:bg-[#122352] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs"
+                                    onClick={() => {
+                                        if (activeArchive?.googleDriveDownloadLink) {
+                                            window.open(activeArchive.googleDriveDownloadLink, '_blank');
+                                        } else {
+                                            window.open(googleDriveFolderUrl, '_blank');
+                                        }
+                                    }}
+                                    className="w-full py-2.5 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all cursor-pointer"
+                                >
+                                    <Download className="w-4 h-4" />
+                                    <span>Download dari Drive</span>
+                                </button>
+
+                                <button
+                                    onClick={() => {
+                                        if (activeArchive?.googleDriveViewLink) {
+                                            window.open(activeArchive.googleDriveViewLink, '_blank');
+                                        } else {
+                                            window.open(googleDriveFolderUrl, '_blank');
+                                        }
+                                    }}
+                                    className="w-full py-2.5 bg-white dark:bg-[#0e1d47] hover:bg-slate-50 dark:hover:bg-[#122352] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer"
                                 >
                                     <ExternalLink className="w-4 h-4" />
-                                    <span>Open in Google Drive</span>
+                                    <span>Buka di Google Drive</span>
                                 </button>
 
                                 <button
                                     onClick={() => handleDeleteArchive(activeArchive.id)}
-                                    className="w-full py-2.5 bg-white dark:bg-[#0e1d47] hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs"
+                                    className="w-full py-2.5 bg-white dark:bg-[#0e1d47] hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer"
                                 >
                                     <Trash2 className="w-4 h-4" />
-                                    <span>Delete Archive</span>
+                                    <span>Hapus Arsip</span>
                                 </button>
                             </div>
                         </div>
@@ -806,16 +627,32 @@ export default function ArchivePage() {
                 </div>
             </div>
 
-            {/* Upload Modal */}
+            {/* Toast Notification */}
+            {toastMessage && (
+                <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-lg bg-emerald-600 text-white shadow-lg text-xs sm:text-sm font-semibold animate-in fade-in slide-in-from-bottom-5">
+                    <Check className="w-4 h-4 shrink-0" />
+                    <span>{toastMessage}</span>
+                </div>
+            )}
+
+            {/* Upload Modal (Upload directly to Google Drive folder) */}
             {isUploadModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-lg p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
                         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                                Upload Arsip Baru
-                            </h3>
+                            <div>
+                                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <span>Simpan Arsip ke Google Drive</span>
+                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/60">
+                                        Google Drive
+                                    </span>
+                                </h3>
+                                <p className="text-xs text-slate-400 mt-0.5">
+                                    File disimpan di cloud folder Google Drive, metadata tersimpan di SQLite.
+                                </p>
+                            </div>
                             <button
-                                onClick={() => setIsUploadModalOpen(false)}
+                                onClick={() => !isSubmitting && setIsUploadModalOpen(false)}
                                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
                             >
                                 <X className="w-5 h-5" />
@@ -823,21 +660,35 @@ export default function ArchivePage() {
                         </div>
 
                         <form onSubmit={handleUploadSubmit} className="space-y-3.5">
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Nama Arsip
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Contoh: Production Backup, Design Asset..."
-                                    value={uploadName}
-                                    onChange={(e) => setUploadName(e.target.value)}
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
-                                    required
-                                />
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                        Nama Arsip <span className="text-rose-500">*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Contoh: Company Website v2"
+                                        value={uploadName}
+                                        onChange={(e) => setUploadName(e.target.value)}
+                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                        required
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                        Nama Project
+                                    </label>
+                                    <input
+                                        type="text"
+                                        placeholder="Contoh: WorkTrack System"
+                                        value={uploadProjectName}
+                                        onChange={(e) => setUploadProjectName(e.target.value)}
+                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                    />
+                                </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                                         Kategori
@@ -855,15 +706,12 @@ export default function ArchivePage() {
 
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Ukuran Perkiraan
+                                        Folder Tujuan
                                     </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Contoh: 50 MB"
-                                        value={uploadSize}
-                                        onChange={(e) => setUploadSize(e.target.value)}
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:border-blue-500"
-                                    />
+                                    <div className="flex items-center gap-1.5 px-3 py-2 rounded-md bg-slate-100 dark:bg-[#0c183b] border border-slate-200/80 dark:border-[#1e346e] text-xs text-slate-600 dark:text-slate-300">
+                                        <Cloud className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                                        <span className="truncate">Folder: 1LZwvt7...--69</span>
+                                    </div>
                                 </div>
                             </div>
 
@@ -880,28 +728,85 @@ export default function ArchivePage() {
                                 />
                             </div>
 
-                            {/* Dropzone mock */}
-                            <div className="p-4 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-lg text-center cursor-pointer hover:border-blue-500 transition-colors">
-                                <Upload className="w-6 h-6 text-slate-400 mx-auto mb-1.5" />
-                                <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
-                                    Drag & drop file di sini, atau <span className="text-blue-600 dark:text-blue-400 underline">telusuri</span>
-                                </p>
-                                <p className="text-[10px] text-slate-400 mt-1">Mendukung ZIP, TAR, SQL, PDF hingga 500MB</p>
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                    Catatan Tambahan (Notes)
+                                </label>
+                                <input
+                                    type="text"
+                                    placeholder="Contoh: Versi final sebelum rilis production"
+                                    value={uploadNotes}
+                                    onChange={(e) => setUploadNotes(e.target.value)}
+                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                />
+                            </div>
+
+                            {/* Real File Input Dropzone */}
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                    Pilih File untuk Diunggah ke Google Drive
+                                </label>
+                                <label className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg cursor-pointer bg-[#f8fafc] dark:bg-[#0c183b] transition-all">
+                                    <input
+                                        type="file"
+                                        className="hidden"
+                                        onChange={(e) => {
+                                            if (e.target.files && e.target.files[0]) {
+                                                setSelectedFile(e.target.files[0]);
+                                                if (!uploadName) {
+                                                    setUploadName(e.target.files[0].name.replace(/\.[^/.]+$/, ''));
+                                                }
+                                            }
+                                        }}
+                                    />
+                                    <Upload className="w-6 h-6 text-blue-500 mb-1.5" />
+                                    {selectedFile ? (
+                                        <div className="text-center">
+                                            <p className="text-xs font-bold text-slate-900 dark:text-white">
+                                                {selectedFile.name}
+                                            </p>
+                                            <p className="text-[11px] text-slate-400 mt-0.5">
+                                                {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • Siap dikirim ke Google Drive
+                                            </p>
+                                        </div>
+                                    ) : (
+                                        <div className="text-center">
+                                            <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                                                Klik untuk memilih file dari komputer Anda
+                                            </p>
+                                            <p className="text-[10px] text-slate-400 mt-1">
+                                                Mendukung ZIP, TAR, SQL, PDF, DOCX, dll
+                                            </p>
+                                        </div>
+                                    )}
+                                </label>
                             </div>
 
                             <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
                                 <button
                                     type="button"
+                                    disabled={isSubmitting}
                                     onClick={() => setIsUploadModalOpen(false)}
-                                    className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors"
+                                    className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors disabled:opacity-50 cursor-pointer"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-colors"
+                                    disabled={isSubmitting}
+                                    className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-colors flex items-center gap-2 disabled:opacity-75 cursor-pointer"
                                 >
-                                    Simpan Arsip
+                                    {isSubmitting ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" />
+                                            <span>Mengunggah ke Drive...</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Cloud className="w-4 h-4" />
+                                            <span>Simpan ke Google Drive</span>
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </form>

@@ -47,9 +47,11 @@ Route::get('/calendar', function () {
     return Inertia::render('Calendar/Index');
 })->name('calendar');
 
-Route::get('/archive', function () {
-    return Inertia::render('Archive/Index');
-})->name('archive');
+use App\Http\Controllers\ArchiveController;
+
+Route::get('/archive', [ArchiveController::class, 'index'])->name('archive');
+Route::post('/archive', [ArchiveController::class, 'store'])->name('archive.store');
+Route::delete('/archive/{id}', [ArchiveController::class, 'destroy'])->name('archive.destroy');
 
 Route::get('/portfolio', function () {
     return Inertia::render('Portfolio/Index');
