@@ -55,7 +55,9 @@ Route::get('/portfolio', function () {
     return Inertia::render('Portfolio/Index');
 })->name('portfolio');
 
-Route::get('/settings', function () {
-    return Inertia::render('Settings/Index');
-})->name('settings');
+use App\Http\Controllers\SettingsController;
+
+Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
+Route::post('/settings/profile/avatar', [SettingsController::class, 'uploadAvatar'])->name('settings.profile.avatar');
 

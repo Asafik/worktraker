@@ -15,11 +15,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'asafik.dev@gmail.com'],
+            [
+                'name' => 'Asafik',
+                'password' => bcrypt('password'),
+                'role' => 'Full Stack Developer',
+                'location' => 'Indonesia',
+                'bio' => 'I build modern web applications and turn ideas into reality. Focused on clean code, simple design, and meaningful impact.',
+                'website' => 'https://asafik.dev',
+                'avatar' => '/images/avatar1.png',
+                'about_short' => 'Web developer with a passion for building useful applications. Always learning and exploring new technologies.',
+                'signature' => "Best regards,\nAsafik",
+                'socials' => [
+                    'github' => 'https://github.com/asafik',
+                    'linkedin' => 'https://linkedin.com/in/asafik',
+                    'website' => 'https://asafik.dev',
+                    'x' => '',
+                    'instagram' => '',
+                    'facebook' => '',
+                ],
+            ]
+        );
     }
 }

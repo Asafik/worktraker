@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import React, { useState, useRef, useEffect } from 'react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import {
     Home,
@@ -55,9 +55,9 @@ const InstagramIcon = ({ className }) => (
     </svg>
 );
 
-const YoutubeIcon = ({ className }) => (
+const FacebookIcon = ({ className }) => (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
     </svg>
 );
 
@@ -103,11 +103,14 @@ const GoogleGIcon = ({ className }) => (
     </svg>
 );
 
-export default function SettingsPage() {
+export default function SettingsPage({ userProfile, flash }) {
     // Active tabs: Profile, Account & Security, Appearance, Integrations, Preferences
     const [activeTab, setActiveTab] = useState('Profile');
     const [savedToast, setSavedToast] = useState(false);
     const [toastMessage, setToastMessage] = useState('Pengaturan berhasil disimpan!');
+    const [saving, setSaving] = useState(false);
+    const [uploadingAvatar, setUploadingAvatar] = useState(false);
+    const avatarInputRef = useRef(null);
 
     const triggerSave = (msg = 'Pengaturan berhasil disimpan!') => {
         setToastMessage(msg);
@@ -116,28 +119,88 @@ export default function SettingsPage() {
     };
 
     // ==========================================
-    // 1. PROFILE STATE
+    // 1. PROFILE STATE (Loaded from SQLite)
     // ==========================================
-    const [profile, setProfile] = useState({
-        fullName: 'Asafik',
-        email: 'asafik.dev@gmail.com',
-        role: 'Full Stack Developer',
-        location: 'Indonesia',
-        bio: 'I build modern web applications and turn ideas into reality. Focused on clean code, simple design, and meaningful impact.',
-        website: 'https://asafik.dev',
-        avatar: '/images/avatar1.png',
-        aboutShort:
-            'Web developer with a passion for building useful applications. Always learning and exploring new technologies.',
-        signature: 'Best regards,\nAsafik',
+    const [profile, setProfile] = useState(() => ({
+        fullName: userProfile?.fullName || 'Asafik',
+        email: userProfile?.email || 'asafik.dev@gmail.com',
+        role: userProfile?.role || 'Full Stack Developer',
+        location: userProfile?.location || 'Indonesia',
+        bio: userProfile?.bio || '',
+        website: userProfile?.website || '',
+        avatar: userProfile?.avatar || '/images/avatar1.png',
+        aboutShort: userProfile?.aboutShort || '',
+        signature: userProfile?.signature || '',
         socials: {
-            github: 'https://github.com/asafik',
-            linkedin: 'https://linkedin.com/in/asafik',
-            website: 'https://asafik.dev',
-            x: '',
-            instagram: '',
-            youtube: '',
+            github: userProfile?.socials?.github || '',
+            linkedin: userProfile?.socials?.linkedin || '',
+            website: userProfile?.socials?.website || '',
+            x: userProfile?.socials?.x || '',
+            instagram: userProfile?.socials?.instagram || '',
+            facebook: userProfile?.socials?.facebook || '',
         },
-    });
+    }));
+
+    useEffect(() => {
+        if (userProfile) {
+            setProfile({
+                fullName: userProfile.fullName || '',
+                email: userProfile.email || '',
+                role: userProfile.role || '',
+                location: userProfile.location || '',
+                bio: userProfile.bio || '',
+                website: userProfile.website || '',
+                avatar: userProfile.avatar || '/images/avatar1.png',
+                aboutShort: userProfile.aboutShort || '',
+                signature: userProfile.signature || '',
+                socials: {
+                    github: userProfile.socials?.github || '',
+                    linkedin: userProfile.socials?.linkedin || '',
+                    website: userProfile.socials?.website || '',
+                    x: userProfile.socials?.x || '',
+                    instagram: userProfile.socials?.instagram || '',
+                    facebook: userProfile.socials?.facebook || '',
+                },
+            });
+        }
+    }, [userProfile]);
+
+    const handleSaveProfile = (e) => {
+        if (e) e.preventDefault();
+        setSaving(true);
+        router.post('/settings/profile', profile, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setSaving(false);
+                triggerSave('Profil berhasil disimpan ke database SQLite!');
+            },
+            onError: () => {
+                setSaving(false);
+                triggerSave('Terjadi kesalahan saat menyimpan profil.');
+            },
+        });
+    };
+
+    const handleAvatarSelect = (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploadingAvatar(true);
+        const formData = new FormData();
+        formData.append('avatar', file);
+
+        router.post('/settings/profile/avatar', formData, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setUploadingAvatar(false);
+                triggerSave('Foto profil berhasil diperbarui!');
+            },
+            onError: () => {
+                setUploadingAvatar(false);
+                triggerSave('Gagal mengunggah foto. Pastikan format gambar valid (maks 2MB).');
+            },
+        });
+    };
 
     // ==========================================
     // 2. INTEGRATIONS STATE
@@ -300,6 +363,15 @@ export default function SettingsPage() {
                                 </p>
                             </div>
 
+                            {/* Hidden file input for avatar upload */}
+                            <input
+                                type="file"
+                                ref={avatarInputRef}
+                                onChange={handleAvatarSelect}
+                                accept="image/jpeg,image/png,image/webp,image/svg+xml"
+                                className="hidden"
+                            />
+
                             {/* Avatar & Display Role */}
                             <div className="flex items-center gap-4 pt-1">
                                 <div className="relative">
@@ -310,10 +382,16 @@ export default function SettingsPage() {
                                     />
                                     <button
                                         type="button"
+                                        onClick={() => avatarInputRef.current?.click()}
+                                        disabled={uploadingAvatar}
                                         title="Change Photo"
-                                        className="absolute bottom-0 right-0 w-7 h-7 bg-[#2563eb] hover:bg-blue-600 text-white rounded-full border-2 border-white dark:border-[#0e1d47] flex items-center justify-center shadow-xs transition-colors"
+                                        className="absolute bottom-0 right-0 w-7 h-7 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-full border-2 border-white dark:border-[#0e1d47] flex items-center justify-center shadow-xs transition-colors cursor-pointer"
                                     >
-                                        <Camera className="w-3.5 h-3.5" />
+                                        {uploadingAvatar ? (
+                                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                        ) : (
+                                            <Camera className="w-3.5 h-3.5" />
+                                        )}
                                     </button>
                                 </div>
 
@@ -332,7 +410,7 @@ export default function SettingsPage() {
                             </div>
 
                             {/* Profile Form Fields */}
-                            <form onSubmit={(e) => { e.preventDefault(); triggerSave(); }} className="space-y-4 pt-2">
+                            <form onSubmit={handleSaveProfile} className="space-y-4 pt-2">
                                 <div>
                                     <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                                         Full Name
@@ -424,9 +502,17 @@ export default function SettingsPage() {
                                 <div className="flex justify-end pt-2">
                                     <button
                                         type="submit"
-                                        className="px-5 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-all"
+                                        disabled={saving}
+                                        className="px-5 py-2 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-2 cursor-pointer"
                                     >
-                                        Save Changes
+                                        {saving ? (
+                                            <>
+                                                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                                <span>Saving...</span>
+                                            </>
+                                        ) : (
+                                            <span>Save Changes</span>
+                                        )}
                                     </button>
                                 </div>
                             </form>
@@ -586,26 +672,44 @@ export default function SettingsPage() {
                                         />
                                     </div>
 
-                                    {/* YouTube */}
+                                    {/* Facebook */}
                                     <div className="relative flex items-center">
-                                        <div className="absolute left-3 text-rose-600 dark:text-rose-400">
-                                            <YoutubeIcon className="w-4 h-4" />
+                                        <div className="absolute left-3 text-blue-600 dark:text-blue-400">
+                                            <FacebookIcon className="w-4 h-4" />
                                         </div>
                                         <input
                                             type="text"
-                                            value={profile.socials.youtube}
+                                            value={profile.socials.facebook}
                                             onChange={(e) =>
                                                 setProfile({
                                                     ...profile,
                                                     socials: {
                                                         ...profile.socials,
-                                                        youtube: e.target.value,
+                                                        facebook: e.target.value,
                                                     },
                                                 })
                                             }
-                                            placeholder="https://youtube.com/username"
+                                            placeholder="https://facebook.com/username"
                                             className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md pl-9 pr-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder:text-slate-400/80 focus:outline-none focus:border-blue-500"
                                         />
+                                    </div>
+
+                                    <div className="flex justify-end pt-2">
+                                        <button
+                                            type="button"
+                                            onClick={handleSaveProfile}
+                                            disabled={saving}
+                                            className="px-4 py-1.5 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-md text-xs font-semibold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                                        >
+                                            {saving ? (
+                                                <>
+                                                    <RefreshCw className="w-3 h-3 animate-spin" />
+                                                    <span>Saving...</span>
+                                                </>
+                                            ) : (
+                                                <span>Save Links</span>
+                                            )}
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -664,7 +768,7 @@ export default function SettingsPage() {
                                             <InstagramIcon className="w-3.5 h-3.5" />
                                         </span>
                                         <span className="p-1.5 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer">
-                                            <YoutubeIcon className="w-3.5 h-3.5" />
+                                            <FacebookIcon className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                                         </span>
                                     </div>
 
@@ -694,12 +798,15 @@ export default function SettingsPage() {
                                     </p>
                                 </div>
 
-                                <div className="border-2 border-dashed border-slate-200 dark:border-[#243e80] rounded-lg p-6 text-center hover:border-blue-500 dark:hover:border-blue-500 transition-colors cursor-pointer bg-slate-50/50 dark:bg-[#0c183b]/50">
-                                    <UploadCloud className="w-8 h-8 text-blue-500 mx-auto stroke-[1.8]" />
+                                <div
+                                    onClick={() => avatarInputRef.current?.click()}
+                                    className="border-2 border-dashed border-slate-200 dark:border-[#243e80] rounded-lg p-6 text-center hover:border-blue-500 dark:hover:border-blue-500 transition-colors cursor-pointer bg-slate-50/50 dark:bg-[#0c183b]/50 group"
+                                >
+                                    <UploadCloud className="w-8 h-8 text-blue-500 group-hover:scale-110 transition-transform mx-auto stroke-[1.8]" />
                                     <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 mt-2">
-                                        Drag and drop an image here
+                                        {uploadingAvatar ? 'Mengunggah foto...' : 'Drag and drop an image here'}
                                     </p>
-                                    <p className="text-xs text-blue-600 dark:text-blue-400 font-medium cursor-pointer hover:underline">
+                                    <p className="text-xs text-blue-600 dark:text-blue-400 font-medium hover:underline">
                                         or click to browse
                                     </p>
                                     <p className="text-[10px] text-slate-400 mt-2">
@@ -759,6 +866,24 @@ export default function SettingsPage() {
                                     <div className="text-right text-[11px] text-slate-400 mt-0.5 font-medium">
                                         {profile.signature.length}/100
                                     </div>
+                                </div>
+
+                                <div className="flex justify-end pt-1">
+                                    <button
+                                        type="button"
+                                        onClick={handleSaveProfile}
+                                        disabled={saving}
+                                        className="px-4 py-1.5 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-md text-xs font-semibold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                                    >
+                                        {saving ? (
+                                            <>
+                                                <RefreshCw className="w-3 h-3 animate-spin" />
+                                                <span>Saving...</span>
+                                            </>
+                                        ) : (
+                                            <span>Save Changes</span>
+                                        )}
+                                    </button>
                                 </div>
                             </div>
 
