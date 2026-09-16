@@ -344,54 +344,57 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
             {/* ========================================================== */}
             <header className="fixed top-0 inset-x-0 z-50 bg-[#070b19]/90 backdrop-blur-md border-b border-slate-800">
                 <div className="max-w-[1360px] mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
-                    {/* Brand */}
-                    <Link
-                        href="/"
-                        className="flex items-center gap-3 cursor-pointer group"
-                    >
-                        <img
-                            src="/images/logo.png"
-                            alt="Rabirts Logo"
-                            className="w-8 h-8 rounded-lg object-contain shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform"
-                        />
-                        <span className="font-extrabold text-lg tracking-tight text-white">
-                            Rabirts
-                        </span>
-                    </Link>
-
-                    {/* Navigation Links with dynamic active underline */}
-                    <nav className="hidden md:flex items-center gap-8 text-xs sm:text-sm font-medium">
+                    {/* Brand & Nav Links grouped and shifted to align with Hero */}
+                    <div className="flex items-center gap-8 lg:gap-10 transition-transform lg:-translate-x-16 xl:-translate-x-24 2xl:-translate-x-28">
+                        {/* Brand */}
                         <Link
                             href="/"
-                            className="text-slate-300 hover:text-white transition-colors py-1"
+                            className="flex items-center gap-3 cursor-pointer group"
                         >
-                            Home
+                            <img
+                                src="/images/logo.png"
+                                alt="Rabirts Logo"
+                                className="w-8 h-8 rounded-lg object-contain shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform"
+                            />
+                            <span className="font-extrabold text-lg tracking-tight text-white">
+                                Rabirts
+                            </span>
                         </Link>
-                        <Link
-                            href="/#projects"
-                            className="relative transition-colors py-1 text-white font-semibold after:absolute after:bottom-[-20px] after:left-0 after:right-0 after:h-0.5 after:bg-blue-500"
-                        >
-                            Projects
-                        </Link>
-                        <Link
-                            href="/#experience"
-                            className="text-slate-300 hover:text-white transition-colors py-1"
-                        >
-                            Experience
-                        </Link>
-                        <Link
-                            href="/#about"
-                            className="text-slate-300 hover:text-white transition-colors py-1"
-                        >
-                            About
-                        </Link>
-                        <Link
-                            href="/#contact"
-                            className="text-slate-300 hover:text-white transition-colors py-1"
-                        >
-                            Contact
-                        </Link>
-                    </nav>
+
+                        {/* Navigation Links with dynamic active underline */}
+                        <nav className="hidden md:flex items-center gap-8 text-xs sm:text-sm font-medium">
+                            <Link
+                                href="/"
+                                className="text-slate-300 hover:text-white transition-colors py-1"
+                            >
+                                Home
+                            </Link>
+                            <Link
+                                href="/#projects"
+                                className="relative transition-colors py-1 text-white font-semibold after:absolute after:bottom-[-20px] after:left-0 after:right-0 after:h-0.5 after:bg-blue-500"
+                            >
+                                Projects
+                            </Link>
+                            <Link
+                                href="/#experience"
+                                className="text-slate-300 hover:text-white transition-colors py-1"
+                            >
+                                Experience
+                            </Link>
+                            <Link
+                                href="/#about"
+                                className="text-slate-300 hover:text-white transition-colors py-1"
+                            >
+                                About
+                            </Link>
+                            <Link
+                                href="/#contact"
+                                className="text-slate-300 hover:text-white transition-colors py-1"
+                            >
+                                Contact
+                            </Link>
+                        </nav>
+                    </div>
 
                     {/* Right CTA Actions */}
                     <div className="flex items-center gap-3">
