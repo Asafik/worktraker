@@ -686,16 +686,16 @@ export default function Welcome({ initialSection = 'home' }) {
                 id="about"
                 className="py-14 sm:py-16 bg-white"
             >
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 space-y-7">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-                        {/* Left: Bio & Profile Info (Col 4) */}
-                        <div className="lg:col-span-4 flex flex-col justify-center space-y-4">
-                            <div>
-                                <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                                    ‹ ABOUT ME
-                                </span>
-                            </div>
+                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 space-y-6">
+                    <div className="space-y-1">
+                        <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                            ‹ ABOUT ME
+                        </span>
+                    </div>
 
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                        {/* Left: Bio & Profile Info (Col 4) */}
+                        <div className="lg:col-span-4 space-y-4">
                             {/* Profile Card & Bio grouped tightly as one unified narrative */}
                             <div className="space-y-3.5">
                                 {/* Personal Profile Photo Badge */}
@@ -742,8 +742,8 @@ export default function Welcome({ initialSection = 'home' }) {
                             </div>
                         </div>
 
-                        {/* Center: Mountain Banner Illustration (Col 5 - Centered with entire About section) */}
-                        <div className="lg:col-span-5 flex items-center justify-center h-full">
+                        {/* Center: Mountain Banner Illustration (Col 5 - Top-aligned with Profile Card) */}
+                        <div className="lg:col-span-5">
                             <div className="w-full relative group rounded-2xl overflow-hidden bg-gradient-to-b from-blue-50/70 via-indigo-50/20 to-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col items-center justify-center min-h-[260px]">
                                 <img
                                     src="/images/avatar1.png"
