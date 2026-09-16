@@ -624,7 +624,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('projects')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[15px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
+                        className={`absolute top-[15px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
                             activeNode === 'projects' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                         }`}
                     >
@@ -647,7 +647,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('tasks')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[135px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
+                        className={`absolute top-[135px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
                             activeNode === 'tasks' ? 'scale-103 border-emerald-400 shadow-emerald-500/20' : ''
                         }`}
                     >
@@ -670,7 +670,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('drive')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[263px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-yellow-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
+                        className={`absolute top-[263px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-yellow-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
                             activeNode === 'drive' ? 'scale-103 border-yellow-400 shadow-yellow-500/20' : ''
                         }`}
                     >
@@ -697,7 +697,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('github')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[391px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-slate-300/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
+                        className={`absolute top-[391px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-slate-300/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
                             activeNode === 'github' ? 'scale-103 border-slate-300 shadow-slate-500/20' : ''
                         }`}
                     >
@@ -722,7 +722,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('notes')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[511px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-purple-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
+                        className={`absolute top-[511px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-purple-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
                             activeNode === 'notes' ? 'scale-103 border-purple-400 shadow-purple-500/20' : ''
                         }`}
                     >
@@ -746,7 +746,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('calendar')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[15px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
+                        className={`absolute top-[15px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
                             activeNode === 'calendar' ? 'scale-103 border-emerald-400 shadow-emerald-500/20' : ''
                         }`}
                     >
@@ -769,7 +769,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('portfolio')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[135px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
+                        className={`absolute top-[135px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
                             activeNode === 'portfolio' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                         }`}
                     >
@@ -792,7 +792,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('archive')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[263px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
+                        className={`absolute top-[263px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
                             activeNode === 'archive' ? 'scale-103 border-cyan-400 shadow-cyan-500/20' : ''
                         }`}
                     >
@@ -815,7 +815,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('mail')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[391px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-rose-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
+                        className={`absolute top-[391px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-rose-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
                             activeNode === 'mail' ? 'scale-103 border-rose-400 shadow-rose-500/20' : ''
                         }`}
                     >
@@ -838,7 +838,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('more')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[511px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
+                        className={`absolute top-[511px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
                             activeNode === 'more' ? 'scale-103 border-cyan-400 shadow-cyan-500/20' : ''
                         }`}
                     >
