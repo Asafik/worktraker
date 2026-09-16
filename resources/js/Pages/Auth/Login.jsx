@@ -40,23 +40,23 @@ export default function Login() {
             {/* ========================================================== */}
             {/* LEFT SIDE: CLEAN LIGHT SIGN IN PANEL                       */}
             {/* ========================================================== */}
-            <div className="w-full lg:w-[46%] xl:w-[42%] bg-white flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16 relative z-20 min-h-screen">
-                {/* Brand Logo Header */}
-                <div className="flex items-center justify-between">
-                    <Link href="/" className="flex items-center gap-3 group cursor-pointer">
-                        <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-blue-600 via-blue-500 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/25 group-hover:scale-105 transition-transform">
-                            <span className="text-white font-black text-base tracking-tighter select-none">
-                                W
+            <div className="w-full lg:w-[46%] xl:w-[42%] bg-[#f8fafc] flex flex-col justify-between p-4 sm:p-8 lg:p-10 xl:p-14 relative z-20 min-h-screen">
+                {/* Form Card Container */}
+                <div className="max-w-[440px] w-full mx-auto my-auto bg-white rounded-3xl p-7 sm:p-9 shadow-xl shadow-slate-200/60 border border-slate-100/90">
+                    {/* Brand Logo Header */}
+                    <div className="flex items-center justify-between mb-8">
+                        <Link href="/" className="flex items-center gap-3 group cursor-pointer">
+                            <img
+                                src="/images/logo.png"
+                                alt="WorkTrack Logo"
+                                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-contain shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform"
+                            />
+                            <span className="font-extrabold text-xl text-slate-900 tracking-tight">
+                                WorkTrack
                             </span>
-                        </div>
-                        <span className="font-extrabold text-xl text-slate-900 tracking-tight">
-                            WorkTrack
-                        </span>
-                    </Link>
-                </div>
+                        </Link>
+                    </div>
 
-                {/* Form Container */}
-                <div className="max-w-[420px] w-full mx-auto my-auto py-8">
                     {/* Welcome Badge */}
                     <div className="inline-block mb-3">
                         <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-100">
@@ -373,14 +373,16 @@ export default function Login() {
                     {/* CENTER GLOWING LOGO HUB                              */}
                     {/* ==================================================== */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
-                        <div className="w-22 h-22 sm:w-26 sm:h-26 rounded-2xl bg-gradient-to-b from-[#0e1f4d] via-[#091433] to-[#060c20] border-2 border-blue-400/60 shadow-[0_0_45px_rgba(59,130,246,0.6)] flex flex-col items-center justify-center relative group hover:scale-105 transition-all duration-300 cursor-pointer">
+                        <div className="w-22 h-22 sm:w-26 sm:h-26 rounded-2xl bg-gradient-to-b from-[#0e1f4d] via-[#091433] to-[#060c20] border-2 border-blue-400/60 shadow-[0_0_45px_rgba(59,130,246,0.6)] flex flex-col items-center justify-center relative group hover:scale-105 transition-all duration-300 cursor-pointer p-3">
                             {/* Inner Ambient Glow */}
                             <div className="absolute inset-0 rounded-2xl bg-blue-500/10 pointer-events-none" />
 
-                            <span className="text-transparent bg-gradient-to-tr from-cyan-400 via-blue-400 to-indigo-300 bg-clip-text font-black text-3xl sm:text-4xl tracking-tighter drop-shadow-md select-none">
-                                W
-                            </span>
-                            <span className="text-[11px] sm:text-xs font-extrabold text-slate-200 tracking-tight mt-1 select-none">
+                            <img
+                                src="/images/logo.png"
+                                alt="WorkTrack Logo"
+                                className="w-10 h-10 sm:w-12 sm:h-12 object-contain drop-shadow-[0_0_12px_rgba(59,130,246,0.8)] relative z-10"
+                            />
+                            <span className="text-[11px] sm:text-xs font-extrabold text-slate-200 tracking-tight mt-1.5 select-none relative z-10">
                                 WorkTrack
                             </span>
                         </div>
