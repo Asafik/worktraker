@@ -63,7 +63,7 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
 
 
     // Active selected archive item for right column preview
-    const activeArchive = archives.find((a) => a.id === selectedId) || archives[0];
+    const activeArchive = archives.find((a) => a.id === selectedId) || archives[0] || null;
 
     // Filter logic
     const filteredArchives = archives.filter((item) => {
@@ -74,9 +74,11 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
             (selectedTab === 'Others' && item.category === 'Other');
 
         const matchesSearch =
-            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.subtitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.tags.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
+            (item.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (item.subtitle || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (Array.isArray(item.tags) ? item.tags : Object.values(item.tags || [])).some((t) =>
+                (t || '').toLowerCase().includes(searchQuery.toLowerCase())
+            );
 
         return matchesTab && matchesSearch;
     });
@@ -280,9 +282,10 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
                                     </thead>
                                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
                                         {filteredArchives.map((item) => {
-                                            const Icon = item.icon;
+                                            const Icon = item.icon || Folder;
                                             const isSelected = item.id === selectedId;
                                             const isChecked = checkedIds.includes(item.id);
+                                            const iconColor = item.iconColor || 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400';
 
                                             return (
                                                 <tr
@@ -311,7 +314,7 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
                                                     <td className="py-3.5 px-4">
                                                         <div className="flex items-center gap-3">
                                                             <div
-                                                                className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 ${item.iconColor}`}
+                                                                className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 ${iconColor}`}
                                                             >
                                                                 <Icon className="w-4.5 h-4.5" />
                                                             </div>
@@ -348,16 +351,16 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
 
                                                     {/* Archived At */}
                                                     <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 text-xs whitespace-nowrap">
-                                                        <div>{item.archivedAt.split(' ').slice(0, 3).join(' ')}</div>
+                                                        <div>{(item.archivedAt || '').split(' ').slice(0, 3).join(' ')}</div>
                                                         <div className="text-[11px] text-slate-400">
-                                                            {item.archivedAt.split(' ').slice(3).join(' ')}
+                                                            {(item.archivedAt || '').split(' ').slice(3).join(' ')}
                                                         </div>
                                                     </td>
 
                                                     {/* Tags */}
                                                     <td className="py-3.5 px-4">
                                                         <div className="flex flex-wrap items-center gap-1.5">
-                                                            {item.tags.map((tag, idx) => (
+                                                            {(Array.isArray(item.tags) ? item.tags : Object.values(item.tags || [])).map((tag, idx) => (
                                                                 <span
                                                                     key={idx}
                                                                     className="px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40 whitespace-nowrap"
@@ -448,178 +451,183 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
 
                     {/* Right Column (4 cols): Archive Detail Panel */}
                     <div className="lg:col-span-4 space-y-5">
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-5">
-                            {/* Card Header: Icon + Title + Badge + Subtitle */}
-                            <div className="flex items-start gap-3.5">
-                                <div className="w-11 h-11 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                                    <Folder className="w-5 h-5" />
-                                </div>
-                                <div className="min-w-0 flex-1">
-                                    <div className="flex items-center gap-2">
-                                        <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white truncate">
-                                            {activeArchive.name}
-                                        </h2>
-                                        <span
-                                            className={`text-xs font-semibold px-2 py-0.5 rounded-md shrink-0 ${activeArchive.typeBadge}`}
-                                        >
-                                            {activeArchive.category}
-                                        </span>
+                        {activeArchive ? (
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-5">
+                                {/* Card Header: Icon + Title + Badge + Subtitle */}
+                                <div className="flex items-start gap-3.5">
+                                    <div className="w-11 h-11 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                                        <Folder className="w-5 h-5" />
                                     </div>
-                                    <p className="text-xs text-slate-400 dark:text-slate-400 font-medium mt-0.5">
-                                        {activeArchive.subtitle}
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Description */}
-                            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                                {activeArchive.description}
-                            </p>
-
-                            {/* Metadata Key-Value List */}
-                            <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 text-xs sm:text-sm">
-                                {/* Size */}
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                                        <HardDrive className="w-4 h-4 text-slate-400" />
-                                        <span>Size</span>
-                                    </div>
-                                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                                        {activeArchive.size}
-                                    </span>
-                                </div>
-
-                                {/* Archived At */}
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                                        <Calendar className="w-4 h-4 text-slate-400" />
-                                        <span>Archived At</span>
-                                    </div>
-                                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                                        {activeArchive.archivedAt}
-                                    </span>
-                                </div>
-
-                                {/* File Type */}
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                                        <FileCode className="w-4 h-4 text-slate-400" />
-                                        <span>File Type</span>
-                                    </div>
-                                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                                        {activeArchive.fileType}
-                                    </span>
-                                </div>
-
-                                {/* Storage Location */}
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                                        <Cloud className="w-4 h-4 text-slate-400" />
-                                        <span>Storage Location</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5">
-                                        <span className="font-semibold text-slate-800 dark:text-slate-200">
-                                            {activeArchive.storageLocation}
-                                        </span>
-                                        {activeArchive.storageConnected && (
-                                            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40">
-                                                Connected
+                                    <div className="min-w-0 flex-1">
+                                        <div className="flex items-center gap-2">
+                                            <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white truncate">
+                                                {activeArchive.name}
+                                            </h2>
+                                            <span
+                                                className={`text-xs font-semibold px-2 py-0.5 rounded-md shrink-0 ${activeArchive.typeBadge || 'bg-blue-50 text-blue-600'}`}
+                                            >
+                                                {activeArchive.category}
                                             </span>
-                                        )}
+                                        </div>
+                                        <p className="text-xs text-slate-400 dark:text-slate-400 font-medium mt-0.5">
+                                            {activeArchive.subtitle}
+                                        </p>
                                     </div>
                                 </div>
-                            </div>
 
-                            {/* Tags Section */}
-                            <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2">
-                                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
-                                    <Tag className="w-3.5 h-3.5 text-slate-400" />
-                                    <span>Tags</span>
-                                </div>
-                                <div className="flex flex-wrap items-center gap-1.5">
-                                    {(Array.isArray(activeArchive?.detailTags)
-                                        ? activeArchive.detailTags
-                                        : Object.values(activeArchive?.detailTags || [])
-                                    ).map((t, idx) => (
-                                        <span
-                                            key={idx}
-                                            className="px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40"
-                                        >
-                                            {t}
+                                {/* Description */}
+                                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                                    {activeArchive.description}
+                                </p>
+
+                                {/* Metadata Key-Value List */}
+                                <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 text-xs sm:text-sm">
+                                    {/* Size */}
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                                            <HardDrive className="w-4 h-4 text-slate-400" />
+                                            <span>Size</span>
+                                        </div>
+                                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                                            {activeArchive.size}
                                         </span>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Notes Section */}
-                            <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2">
-                                <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
-                                    <div className="flex items-center gap-1.5">
-                                        <FileText className="w-3.5 h-3.5 text-slate-400" />
-                                        <span>Notes</span>
                                     </div>
+
+                                    {/* Archived At */}
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                                            <Calendar className="w-4 h-4 text-slate-400" />
+                                            <span>Archived At</span>
+                                        </div>
+                                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                                            {activeArchive.archivedAt}
+                                        </span>
+                                    </div>
+
+                                    {/* File Type */}
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                                            <FileCode className="w-4 h-4 text-slate-400" />
+                                            <span>File Type</span>
+                                        </div>
+                                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                                            {activeArchive.fileType}
+                                        </span>
+                                    </div>
+
+                                    {/* Storage Location */}
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                                            <Cloud className="w-4 h-4 text-slate-400" />
+                                            <span>Storage Location</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="font-semibold text-slate-800 dark:text-slate-200">
+                                                {activeArchive.storageLocation}
+                                            </span>
+                                            {activeArchive.storageConnected && (
+                                                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40">
+                                                    Connected
+                                                </span>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Tags Section */}
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2">
+                                    <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                        <Tag className="w-3.5 h-3.5 text-slate-400" />
+                                        <span>Tags</span>
+                                    </div>
+                                    <div className="flex flex-wrap items-center gap-1.5">
+                                        {(Array.isArray(activeArchive?.detailTags)
+                                            ? activeArchive.detailTags
+                                            : Object.values(activeArchive?.detailTags || [])
+                                        ).map((t, idx) => (
+                                            <span
+                                                key={idx}
+                                                className="px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40"
+                                            >
+                                                {t}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Notes Section */}
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2">
+                                    <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                        <div className="flex items-center gap-1.5">
+                                            <FileText className="w-3.5 h-3.5 text-slate-400" />
+                                            <span>Notes</span>
+                                        </div>
+                                        <button
+                                            onClick={() => {
+                                                const newNote = prompt('Edit catatan:', activeArchive.notes);
+                                                if (newNote !== null) {
+                                                    setArchives(
+                                                        archives.map((a) =>
+                                                            a.id === activeArchive.id ? { ...a, notes: newNote } : a
+                                                        )
+                                                    );
+                                                }
+                                            }}
+                                            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                                        >
+                                            <Edit3 className="w-3.5 h-3.5" />
+                                        </button>
+                                    </div>
+                                    <div className="p-3 bg-slate-50 dark:bg-[#0c183b] rounded-lg text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border border-slate-100 dark:border-slate-800/80">
+                                        {activeArchive.notes || 'Tidak ada catatan.'}
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons */}
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2.5">
                                     <button
                                         onClick={() => {
-                                            const newNote = prompt('Edit catatan:', activeArchive.notes);
-                                            if (newNote !== null) {
-                                                setArchives(
-                                                    archives.map((a) =>
-                                                        a.id === activeArchive.id ? { ...a, notes: newNote } : a
-                                                    )
-                                                );
+                                            if (activeArchive?.googleDriveDownloadLink) {
+                                                window.open(activeArchive.googleDriveDownloadLink, '_blank');
+                                            } else {
+                                                window.open(googleDriveFolderUrl, '_blank');
                                             }
                                         }}
-                                        className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                                        className="w-full py-2.5 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all cursor-pointer"
                                     >
-                                        <Edit3 className="w-3.5 h-3.5" />
+                                        <Download className="w-4 h-4" />
+                                        <span>Download dari Drive</span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => {
+                                            if (activeArchive?.googleDriveViewLink) {
+                                                window.open(activeArchive.googleDriveViewLink, '_blank');
+                                            } else {
+                                                window.open(googleDriveFolderUrl, '_blank');
+                                            }
+                                        }}
+                                        className="w-full py-2.5 bg-white dark:bg-[#0e1d47] hover:bg-slate-50 dark:hover:bg-[#122352] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer"
+                                    >
+                                        <ExternalLink className="w-4 h-4" />
+                                        <span>Buka di Google Drive</span>
+                                    </button>
+
+                                    <button
+                                        onClick={() => handleDeleteArchive(activeArchive.id)}
+                                        className="w-full py-2.5 bg-white dark:bg-[#0e1d47] hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer"
+                                    >
+                                        <Trash2 className="w-4 h-4" />
+                                        <span>Hapus Arsip</span>
                                     </button>
                                 </div>
-                                <div className="p-3 bg-slate-50 dark:bg-[#0c183b] rounded-lg text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border border-slate-100 dark:border-slate-800/80">
-                                    {activeArchive.notes}
-                                </div>
                             </div>
-
-                            {/* Action Buttons */}
-                            <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2.5">
-
-
-                                <button
-                                    onClick={() => {
-                                        if (activeArchive?.googleDriveDownloadLink) {
-                                            window.open(activeArchive.googleDriveDownloadLink, '_blank');
-                                        } else {
-                                            window.open(googleDriveFolderUrl, '_blank');
-                                        }
-                                    }}
-                                    className="w-full py-2.5 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all cursor-pointer"
-                                >
-                                    <Download className="w-4 h-4" />
-                                    <span>Download dari Drive</span>
-                                </button>
-
-                                <button
-                                    onClick={() => {
-                                        if (activeArchive?.googleDriveViewLink) {
-                                            window.open(activeArchive.googleDriveViewLink, '_blank');
-                                        } else {
-                                            window.open(googleDriveFolderUrl, '_blank');
-                                        }
-                                    }}
-                                    className="w-full py-2.5 bg-white dark:bg-[#0e1d47] hover:bg-slate-50 dark:hover:bg-[#122352] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer"
-                                >
-                                    <ExternalLink className="w-4 h-4" />
-                                    <span>Buka di Google Drive</span>
-                                </button>
-
-                                <button
-                                    onClick={() => handleDeleteArchive(activeArchive.id)}
-                                    className="w-full py-2.5 bg-white dark:bg-[#0e1d47] hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer"
-                                >
-                                    <Trash2 className="w-4 h-4" />
-                                    <span>Hapus Arsip</span>
-                                </button>
+                        ) : (
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-8 text-center text-slate-400 text-xs sm:text-sm shadow-xs">
+                                <Folder className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-2" />
+                                <p>Pilih salah satu arsip dari tabel untuk melihat detailnya.</p>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>
