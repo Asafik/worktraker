@@ -211,24 +211,24 @@ export default function Login() {
                     <span className="w-6 h-1 bg-blue-500 rounded-full ml-1" />
                 </div>
 
-                {/* Center Ecosystem Canvas (Interactive 10 Connected Nodes - Expanded to fill canvas) */}
-                <div className="relative w-full max-w-[1040px] xl:max-w-[1140px] 2xl:max-w-[1240px] mx-auto h-[620px] xl:h-[640px] my-auto select-none">
+                {/* Center Ecosystem Canvas (Interactive 10 Connected Nodes) */}
+                <div className="relative w-full max-w-[1000px] xl:max-w-[1080px] 2xl:max-w-[1140px] mx-auto h-[580px] my-auto select-none">
                     {/* Concentric Radar Rings */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[540px] h-[540px] rounded-full border border-blue-500/10 pointer-events-none" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[380px] h-[380px] rounded-full border border-blue-400/15 pointer-events-none" />
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[220px] h-[220px] rounded-full border border-cyan-400/25 pointer-events-none animate-pulse" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full border border-blue-500/10 pointer-events-none" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] h-[360px] rounded-full border border-blue-400/15 pointer-events-none" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[210px] h-[210px] rounded-full border border-cyan-400/25 pointer-events-none animate-pulse" />
 
-                    {/* SVG Glowing Neon Connection Lines with Animated Motion along Path */}
+                    {/* SVG Glowing Neon Connection Lines (Thick, Seamlessly Attached to Cards) */}
                     <svg
                         className="absolute inset-0 w-full h-full pointer-events-none z-10"
-                        viewBox="0 0 1100 620"
+                        viewBox="0 0 1000 580"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <defs>
                             {/* Ambient Glow Filter for Flowing Photons */}
                             <filter id="photon-glow" x="-50%" y="-50%" width="200%" height="200%">
-                                <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
+                                <feGaussianBlur stdDeviation="4" result="coloredBlur" />
                                 <feMerge>
                                     <feMergeNode in="coloredBlur" />
                                     <feMergeNode in="SourceGraphic" />
@@ -236,45 +236,45 @@ export default function Login() {
                             </filter>
 
                             {/* Left Gradients */}
-                            <linearGradient id="neon-node1" x1="255" y1="42" x2="495" y2="275" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node1" x1="170" y1="43" x2="490" y2="260" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#38bdf8" />
                                 <stop offset="1" stopColor="#3b82f6" />
                             </linearGradient>
-                            <linearGradient id="neon-node2" x1="242" y1="172" x2="495" y2="292" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node2" x1="170" y1="163" x2="490" y2="275" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#2dd4bf" />
                                 <stop offset="1" stopColor="#06b6d4" />
                             </linearGradient>
-                            <linearGradient id="neon-node3" x1="230" y1="310" x2="495" y2="310" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#eab308" />
+                            <linearGradient id="neon-node3" x1="170" y1="290" x2="490" y2="290" gradientUnits="userSpaceOnUse">
+                                <stop stopColor="#facc15" />
                                 <stop offset="1" stopColor="#3b82f6" />
                             </linearGradient>
-                            <linearGradient id="neon-node4" x1="242" y1="448" x2="495" y2="328" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node4" x1="170" y1="418" x2="490" y2="305" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#818cf8" />
                                 <stop offset="1" stopColor="#6366f1" />
                             </linearGradient>
-                            <linearGradient id="neon-node5" x1="255" y1="578" x2="495" y2="345" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node5" x1="170" y1="538" x2="490" y2="320" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#c084fc" />
                                 <stop offset="1" stopColor="#8b5cf6" />
                             </linearGradient>
 
                             {/* Right Gradients */}
-                            <linearGradient id="neon-node6" x1="845" y1="42" x2="605" y2="275" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node6" x1="830" y1="43" x2="510" y2="260" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#34d399" />
                                 <stop offset="1" stopColor="#06b6d4" />
                             </linearGradient>
-                            <linearGradient id="neon-node7" x1="858" y1="172" x2="605" y2="292" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node7" x1="830" y1="163" x2="510" y2="275" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#60a5fa" />
                                 <stop offset="1" stopColor="#818cf8" />
                             </linearGradient>
-                            <linearGradient id="neon-node8" x1="870" y1="310" x2="605" y2="310" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node8" x1="830" y1="290" x2="510" y2="290" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#38bdf8" />
                                 <stop offset="1" stopColor="#3b82f6" />
                             </linearGradient>
-                            <linearGradient id="neon-node9" x1="858" y1="448" x2="605" y2="328" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node9" x1="830" y1="418" x2="510" y2="305" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#f472b6" />
                                 <stop offset="1" stopColor="#8b5cf6" />
                             </linearGradient>
-                            <linearGradient id="neon-node10" x1="845" y1="578" x2="605" y2="345" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node10" x1="830" y1="538" x2="510" y2="320" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#2dd4bf" />
                                 <stop offset="1" stopColor="#06b6d4" />
                             </linearGradient>
@@ -285,157 +285,157 @@ export default function Login() {
                         {/* ==================================================== */}
                         {/* 1. Projects */}
                         <g>
-                            {/* Base Track */}
+                            {/* Base Bold Cable */}
                             <path
-                                d="M 255 42 C 380 42, 430 245, 495 275"
+                                d="M 170 43 C 260 43, 380 230, 490 260"
                                 stroke="url(#neon-node1)"
-                                strokeWidth={activeNode === 'projects' ? '3' : '2'}
-                                strokeOpacity={activeNode === 'projects' ? '0.9' : '0.35'}
+                                strokeWidth={activeNode === 'projects' ? '5' : '3.5'}
+                                strokeOpacity={activeNode === 'projects' ? '1' : '0.65'}
                                 strokeLinecap="round"
                             />
-                            {/* Animated Dash Stream */}
+                            {/* Animated Pulse Stream */}
                             <path
-                                d="M 255 42 C 380 42, 430 245, 495 275"
+                                d="M 170 43 C 260 43, 380 230, 490 260"
                                 stroke="url(#neon-node1)"
-                                strokeWidth="2.5"
-                                strokeDasharray="50 280"
+                                strokeWidth="4"
+                                strokeDasharray="60 300"
                                 strokeLinecap="round"
                             >
-                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.6s" repeatCount="indefinite" />
+                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.6s" repeatCount="indefinite" />
                             </path>
+                            {/* Mid-Cable Ambient Node */}
+                            <circle cx="330" cy="115" r="4.5" fill="#38bdf8" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
-                            <circle r="6" fill="#38bdf8" opacity="0.45" filter="url(#photon-glow)">
-                                <animateMotion path="M 255 42 C 380 42, 430 245, 495 275" dur="2.6s" repeatCount="indefinite" />
+                            <circle r="7.5" fill="#38bdf8" opacity="0.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 170 43 C 260 43, 380 230, 490 260" dur="2.6s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3" fill="#ffffff" stroke="#38bdf8" strokeWidth="1.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 255 42 C 380 42, 430 245, 495 275" dur="2.6s" repeatCount="indefinite" />
+                            <circle r="3.5" fill="#ffffff" stroke="#38bdf8" strokeWidth="2" filter="url(#photon-glow)">
+                                <animateMotion path="M 170 43 C 260 43, 380 230, 490 260" dur="2.6s" repeatCount="indefinite" />
                             </circle>
-                            {/* Card Socket Anchor */}
-                            <circle cx="255" cy="42" r="3.5" fill="#38bdf8" />
                         </g>
 
                         {/* 2. Tasks */}
                         <g>
-                            {/* Base Track */}
+                            {/* Base Bold Cable */}
                             <path
-                                d="M 242 172 C 360 172, 420 268, 495 292"
+                                d="M 170 163 C 250 163, 370 255, 490 275"
                                 stroke="url(#neon-node2)"
-                                strokeWidth={activeNode === 'tasks' ? '3' : '2'}
-                                strokeOpacity={activeNode === 'tasks' ? '0.9' : '0.35'}
+                                strokeWidth={activeNode === 'tasks' ? '5' : '3.5'}
+                                strokeOpacity={activeNode === 'tasks' ? '1' : '0.65'}
                                 strokeLinecap="round"
                             />
-                            {/* Animated Dash Stream */}
+                            {/* Animated Pulse Stream */}
                             <path
-                                d="M 242 172 C 360 172, 420 268, 495 292"
+                                d="M 170 163 C 250 163, 370 255, 490 275"
                                 stroke="url(#neon-node2)"
-                                strokeWidth="2.5"
-                                strokeDasharray="50 280"
+                                strokeWidth="4"
+                                strokeDasharray="60 300"
                                 strokeLinecap="round"
                             >
-                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
+                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
                             </path>
+                            {/* Mid-Cable Ambient Node */}
+                            <circle cx="325" cy="205" r="4.5" fill="#2dd4bf" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
-                            <circle r="6" fill="#2dd4bf" opacity="0.45" filter="url(#photon-glow)">
-                                <animateMotion path="M 242 172 C 360 172, 420 268, 495 292" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
+                            <circle r="7.5" fill="#2dd4bf" opacity="0.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 170 163 C 250 163, 370 255, 490 275" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3" fill="#ffffff" stroke="#2dd4bf" strokeWidth="1.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 242 172 C 360 172, 420 268, 495 292" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
+                            <circle r="3.5" fill="#ffffff" stroke="#2dd4bf" strokeWidth="2" filter="url(#photon-glow)">
+                                <animateMotion path="M 170 163 C 250 163, 370 255, 490 275" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
                             </circle>
-                            {/* Card Socket Anchor */}
-                            <circle cx="242" cy="172" r="3.5" fill="#2dd4bf" />
                         </g>
 
                         {/* 3. Google Drive */}
                         <g>
-                            {/* Base Track */}
+                            {/* Base Bold Cable */}
                             <path
-                                d="M 230 310 C 330 310, 410 310, 495 310"
+                                d="M 170 290 C 260 290, 380 290, 490 290"
                                 stroke="url(#neon-node3)"
-                                strokeWidth={activeNode === 'drive' ? '3' : '2'}
-                                strokeOpacity={activeNode === 'drive' ? '0.9' : '0.35'}
+                                strokeWidth={activeNode === 'drive' ? '5' : '3.5'}
+                                strokeOpacity={activeNode === 'drive' ? '1' : '0.65'}
                                 strokeLinecap="round"
                             />
-                            {/* Animated Dash Stream */}
+                            {/* Animated Pulse Stream */}
                             <path
-                                d="M 230 310 C 330 310, 410 310, 495 310"
+                                d="M 170 290 C 260 290, 380 290, 490 290"
                                 stroke="url(#neon-node3)"
-                                strokeWidth="2.5"
-                                strokeDasharray="50 280"
+                                strokeWidth="4"
+                                strokeDasharray="60 300"
                                 strokeLinecap="round"
                             >
-                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
+                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
                             </path>
+                            {/* Mid-Cable Ambient Node */}
+                            <circle cx="330" cy="290" r="4.5" fill="#facc15" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
-                            <circle r="6" fill="#eab308" opacity="0.45" filter="url(#photon-glow)">
-                                <animateMotion path="M 230 310 C 330 310, 410 310, 495 310" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
+                            <circle r="7.5" fill="#facc15" opacity="0.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 170 290 C 260 290, 380 290, 490 290" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3" fill="#ffffff" stroke="#eab308" strokeWidth="1.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 230 310 C 330 310, 410 310, 495 310" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
+                            <circle r="3.5" fill="#ffffff" stroke="#facc15" strokeWidth="2" filter="url(#photon-glow)">
+                                <animateMotion path="M 170 290 C 260 290, 380 290, 490 290" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
                             </circle>
-                            {/* Card Socket Anchor */}
-                            <circle cx="230" cy="310" r="3.5" fill="#eab308" />
                         </g>
 
                         {/* 4. GitHub */}
                         <g>
-                            {/* Base Track */}
+                            {/* Base Bold Cable */}
                             <path
-                                d="M 242 448 C 360 448, 420 352, 495 328"
+                                d="M 170 418 C 250 418, 370 325, 490 305"
                                 stroke="url(#neon-node4)"
-                                strokeWidth={activeNode === 'github' ? '3' : '2'}
-                                strokeOpacity={activeNode === 'github' ? '0.9' : '0.35'}
+                                strokeWidth={activeNode === 'github' ? '5' : '3.5'}
+                                strokeOpacity={activeNode === 'github' ? '1' : '0.65'}
                                 strokeLinecap="round"
                             />
-                            {/* Animated Dash Stream */}
+                            {/* Animated Pulse Stream */}
                             <path
-                                d="M 242 448 C 360 448, 420 352, 495 328"
+                                d="M 170 418 C 250 418, 370 325, 490 305"
                                 stroke="url(#neon-node4)"
-                                strokeWidth="2.5"
-                                strokeDasharray="50 280"
+                                strokeWidth="4"
+                                strokeDasharray="60 300"
                                 strokeLinecap="round"
                             >
-                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
+                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
                             </path>
+                            {/* Mid-Cable Ambient Node */}
+                            <circle cx="325" cy="375" r="4.5" fill="#818cf8" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
-                            <circle r="6" fill="#818cf8" opacity="0.45" filter="url(#photon-glow)">
-                                <animateMotion path="M 242 448 C 360 448, 420 352, 495 328" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
+                            <circle r="7.5" fill="#818cf8" opacity="0.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 170 418 C 250 418, 370 325, 490 305" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3" fill="#ffffff" stroke="#818cf8" strokeWidth="1.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 242 448 C 360 448, 420 352, 495 328" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
+                            <circle r="3.5" fill="#ffffff" stroke="#818cf8" strokeWidth="2" filter="url(#photon-glow)">
+                                <animateMotion path="M 170 418 C 250 418, 370 325, 490 305" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
                             </circle>
-                            {/* Card Socket Anchor */}
-                            <circle cx="242" cy="448" r="3.5" fill="#818cf8" />
                         </g>
 
                         {/* 5. Notes */}
                         <g>
-                            {/* Base Track */}
+                            {/* Base Bold Cable */}
                             <path
-                                d="M 255 578 C 380 578, 430 375, 495 345"
+                                d="M 170 538 C 260 538, 380 350, 490 320"
                                 stroke="url(#neon-node5)"
-                                strokeWidth={activeNode === 'notes' ? '3' : '2'}
-                                strokeOpacity={activeNode === 'notes' ? '0.9' : '0.35'}
+                                strokeWidth={activeNode === 'notes' ? '5' : '3.5'}
+                                strokeOpacity={activeNode === 'notes' ? '1' : '0.65'}
                                 strokeLinecap="round"
                             />
-                            {/* Animated Dash Stream */}
+                            {/* Animated Pulse Stream */}
                             <path
-                                d="M 255 578 C 380 578, 430 375, 495 345"
+                                d="M 170 538 C 260 538, 380 350, 490 320"
                                 stroke="url(#neon-node5)"
-                                strokeWidth="2.5"
-                                strokeDasharray="50 280"
+                                strokeWidth="4"
+                                strokeDasharray="60 300"
                                 strokeLinecap="round"
                             >
-                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
+                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
                             </path>
+                            {/* Mid-Cable Ambient Node */}
+                            <circle cx="330" cy="465" r="4.5" fill="#c084fc" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
-                            <circle r="6" fill="#c084fc" opacity="0.45" filter="url(#photon-glow)">
-                                <animateMotion path="M 255 578 C 380 578, 430 375, 495 345" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
+                            <circle r="7.5" fill="#c084fc" opacity="0.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 170 538 C 260 538, 380 350, 490 320" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3" fill="#ffffff" stroke="#c084fc" strokeWidth="1.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 255 578 C 380 578, 430 375, 495 345" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
+                            <circle r="3.5" fill="#ffffff" stroke="#c084fc" strokeWidth="2" filter="url(#photon-glow)">
+                                <animateMotion path="M 170 538 C 260 538, 380 350, 490 320" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
                             </circle>
-                            {/* Card Socket Anchor */}
-                            <circle cx="255" cy="578" r="3.5" fill="#c084fc" />
                         </g>
 
                         {/* ==================================================== */}
@@ -443,157 +443,157 @@ export default function Login() {
                         {/* ==================================================== */}
                         {/* 6. Calendar */}
                         <g>
-                            {/* Base Track */}
+                            {/* Base Bold Cable */}
                             <path
-                                d="M 845 42 C 720 42, 670 245, 605 275"
+                                d="M 830 43 C 740 43, 620 230, 510 260"
                                 stroke="url(#neon-node6)"
-                                strokeWidth={activeNode === 'calendar' ? '3' : '2'}
-                                strokeOpacity={activeNode === 'calendar' ? '0.9' : '0.35'}
+                                strokeWidth={activeNode === 'calendar' ? '5' : '3.5'}
+                                strokeOpacity={activeNode === 'calendar' ? '1' : '0.65'}
                                 strokeLinecap="round"
                             />
-                            {/* Animated Dash Stream */}
+                            {/* Animated Pulse Stream */}
                             <path
-                                d="M 845 42 C 720 42, 670 245, 605 275"
+                                d="M 830 43 C 740 43, 620 230, 510 260"
                                 stroke="url(#neon-node6)"
-                                strokeWidth="2.5"
-                                strokeDasharray="50 280"
+                                strokeWidth="4"
+                                strokeDasharray="60 300"
                                 strokeLinecap="round"
                             >
-                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
+                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
                             </path>
+                            {/* Mid-Cable Ambient Node */}
+                            <circle cx="670" cy="115" r="4.5" fill="#34d399" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
-                            <circle r="6" fill="#34d399" opacity="0.45" filter="url(#photon-glow)">
-                                <animateMotion path="M 845 42 C 720 42, 670 245, 605 275" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
+                            <circle r="7.5" fill="#34d399" opacity="0.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 830 43 C 740 43, 620 230, 510 260" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3" fill="#ffffff" stroke="#34d399" strokeWidth="1.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 845 42 C 720 42, 670 245, 605 275" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
+                            <circle r="3.5" fill="#ffffff" stroke="#34d399" strokeWidth="2" filter="url(#photon-glow)">
+                                <animateMotion path="M 830 43 C 740 43, 620 230, 510 260" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
                             </circle>
-                            {/* Card Socket Anchor */}
-                            <circle cx="845" cy="42" r="3.5" fill="#34d399" />
                         </g>
 
                         {/* 7. Portfolio */}
                         <g>
-                            {/* Base Track */}
+                            {/* Base Bold Cable */}
                             <path
-                                d="M 858 172 C 740 172, 680 268, 605 292"
+                                d="M 830 163 C 750 163, 630 255, 510 275"
                                 stroke="url(#neon-node7)"
-                                strokeWidth={activeNode === 'portfolio' ? '3' : '2'}
-                                strokeOpacity={activeNode === 'portfolio' ? '0.9' : '0.35'}
+                                strokeWidth={activeNode === 'portfolio' ? '5' : '3.5'}
+                                strokeOpacity={activeNode === 'portfolio' ? '1' : '0.65'}
                                 strokeLinecap="round"
                             />
-                            {/* Animated Dash Stream */}
+                            {/* Animated Pulse Stream */}
                             <path
-                                d="M 858 172 C 740 172, 680 268, 605 292"
+                                d="M 830 163 C 750 163, 630 255, 510 275"
                                 stroke="url(#neon-node7)"
-                                strokeWidth="2.5"
-                                strokeDasharray="50 280"
+                                strokeWidth="4"
+                                strokeDasharray="60 300"
                                 strokeLinecap="round"
                             >
-                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
+                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
                             </path>
+                            {/* Mid-Cable Ambient Node */}
+                            <circle cx="675" cy="205" r="4.5" fill="#60a5fa" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
-                            <circle r="6" fill="#60a5fa" opacity="0.45" filter="url(#photon-glow)">
-                                <animateMotion path="M 858 172 C 740 172, 680 268, 605 292" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
+                            <circle r="7.5" fill="#60a5fa" opacity="0.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 830 163 C 750 163, 630 255, 510 275" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3" fill="#ffffff" stroke="#60a5fa" strokeWidth="1.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 858 172 C 740 172, 680 268, 605 292" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
+                            <circle r="3.5" fill="#ffffff" stroke="#60a5fa" strokeWidth="2" filter="url(#photon-glow)">
+                                <animateMotion path="M 830 163 C 750 163, 630 255, 510 275" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
                             </circle>
-                            {/* Card Socket Anchor */}
-                            <circle cx="858" cy="172" r="3.5" fill="#60a5fa" />
                         </g>
 
                         {/* 8. Archive */}
                         <g>
-                            {/* Base Track */}
+                            {/* Base Bold Cable */}
                             <path
-                                d="M 870 310 C 770 310, 690 310, 605 310"
+                                d="M 830 290 C 740 290, 620 290, 510 290"
                                 stroke="url(#neon-node8)"
-                                strokeWidth={activeNode === 'archive' ? '3' : '2'}
-                                strokeOpacity={activeNode === 'archive' ? '0.9' : '0.35'}
+                                strokeWidth={activeNode === 'archive' ? '5' : '3.5'}
+                                strokeOpacity={activeNode === 'archive' ? '1' : '0.65'}
                                 strokeLinecap="round"
                             />
-                            {/* Animated Dash Stream */}
+                            {/* Animated Pulse Stream */}
                             <path
-                                d="M 870 310 C 770 310, 690 310, 605 310"
+                                d="M 830 290 C 740 290, 620 290, 510 290"
                                 stroke="url(#neon-node8)"
-                                strokeWidth="2.5"
-                                strokeDasharray="50 280"
+                                strokeWidth="4"
+                                strokeDasharray="60 300"
                                 strokeLinecap="round"
                             >
-                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
+                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
                             </path>
+                            {/* Mid-Cable Ambient Node */}
+                            <circle cx="670" cy="290" r="4.5" fill="#38bdf8" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
-                            <circle r="6" fill="#38bdf8" opacity="0.45" filter="url(#photon-glow)">
-                                <animateMotion path="M 870 310 C 770 310, 690 310, 605 310" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
+                            <circle r="7.5" fill="#38bdf8" opacity="0.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 830 290 C 740 290, 620 290, 510 290" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3" fill="#ffffff" stroke="#38bdf8" strokeWidth="1.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 870 310 C 770 310, 690 310, 605 310" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
+                            <circle r="3.5" fill="#ffffff" stroke="#38bdf8" strokeWidth="2" filter="url(#photon-glow)">
+                                <animateMotion path="M 830 290 C 740 290, 620 290, 510 290" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
                             </circle>
-                            {/* Card Socket Anchor */}
-                            <circle cx="870" cy="310" r="3.5" fill="#38bdf8" />
                         </g>
 
                         {/* 9. Mail/Updates */}
                         <g>
-                            {/* Base Track */}
+                            {/* Base Bold Cable */}
                             <path
-                                d="M 858 448 C 740 448, 680 352, 605 328"
+                                d="M 830 418 C 750 418, 630 325, 510 305"
                                 stroke="url(#neon-node9)"
-                                strokeWidth={activeNode === 'mail' ? '3' : '2'}
-                                strokeOpacity={activeNode === 'mail' ? '0.9' : '0.35'}
+                                strokeWidth={activeNode === 'mail' ? '5' : '3.5'}
+                                strokeOpacity={activeNode === 'mail' ? '1' : '0.65'}
                                 strokeLinecap="round"
                             />
-                            {/* Animated Dash Stream */}
+                            {/* Animated Pulse Stream */}
                             <path
-                                d="M 858 448 C 740 448, 680 352, 605 328"
+                                d="M 830 418 C 750 418, 630 325, 510 305"
                                 stroke="url(#neon-node9)"
-                                strokeWidth="2.5"
-                                strokeDasharray="50 280"
+                                strokeWidth="4"
+                                strokeDasharray="60 300"
                                 strokeLinecap="round"
                             >
-                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
+                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
                             </path>
+                            {/* Mid-Cable Ambient Node */}
+                            <circle cx="675" cy="375" r="4.5" fill="#f472b6" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
-                            <circle r="6" fill="#f472b6" opacity="0.45" filter="url(#photon-glow)">
-                                <animateMotion path="M 858 448 C 740 448, 680 352, 605 328" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
+                            <circle r="7.5" fill="#f472b6" opacity="0.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 830 418 C 750 418, 630 325, 510 305" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3" fill="#ffffff" stroke="#f472b6" strokeWidth="1.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 858 448 C 740 448, 680 352, 605 328" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
+                            <circle r="3.5" fill="#ffffff" stroke="#f472b6" strokeWidth="2" filter="url(#photon-glow)">
+                                <animateMotion path="M 830 418 C 750 418, 630 325, 510 305" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
                             </circle>
-                            {/* Card Socket Anchor */}
-                            <circle cx="858" cy="448" r="3.5" fill="#f472b6" />
                         </g>
 
                         {/* 10. And More */}
                         <g>
-                            {/* Base Track */}
+                            {/* Base Bold Cable */}
                             <path
-                                d="M 845 578 C 720 578, 670 375, 605 345"
+                                d="M 830 538 C 740 538, 620 350, 510 320"
                                 stroke="url(#neon-node10)"
-                                strokeWidth={activeNode === 'more' ? '3' : '2'}
-                                strokeOpacity={activeNode === 'more' ? '0.9' : '0.35'}
+                                strokeWidth={activeNode === 'more' ? '5' : '3.5'}
+                                strokeOpacity={activeNode === 'more' ? '1' : '0.65'}
                                 strokeLinecap="round"
                             />
-                            {/* Animated Dash Stream */}
+                            {/* Animated Pulse Stream */}
                             <path
-                                d="M 845 578 C 720 578, 670 375, 605 345"
+                                d="M 830 538 C 740 538, 620 350, 510 320"
                                 stroke="url(#neon-node10)"
-                                strokeWidth="2.5"
-                                strokeDasharray="50 280"
+                                strokeWidth="4"
+                                strokeDasharray="60 300"
                                 strokeLinecap="round"
                             >
-                                <animate attributeName="stroke-dashoffset" from="330" to="0" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
+                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
                             </path>
+                            {/* Mid-Cable Ambient Node */}
+                            <circle cx="670" cy="465" r="4.5" fill="#2dd4bf" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
-                            <circle r="6" fill="#2dd4bf" opacity="0.45" filter="url(#photon-glow)">
-                                <animateMotion path="M 845 578 C 720 578, 670 375, 605 345" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
+                            <circle r="7.5" fill="#2dd4bf" opacity="0.5" filter="url(#photon-glow)">
+                                <animateMotion path="M 830 538 C 740 538, 620 350, 510 320" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3" fill="#ffffff" stroke="#2dd4bf" strokeWidth="1.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 845 578 C 720 578, 670 375, 605 345" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
+                            <circle r="3.5" fill="#ffffff" stroke="#2dd4bf" strokeWidth="2" filter="url(#photon-glow)">
+                                <animateMotion path="M 830 538 C 740 538, 620 350, 510 320" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
                             </circle>
-                            {/* Card Socket Anchor */}
-                            <circle cx="845" cy="578" r="3.5" fill="#2dd4bf" />
                         </g>
                     </svg>
 
@@ -601,7 +601,7 @@ export default function Login() {
                     {/* CENTER GLOWING LOGO HUB                              */}
                     {/* ==================================================== */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
-                        <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl bg-gradient-to-b from-[#0e1f4d] via-[#091433] to-[#060c20] border-2 border-blue-400/60 shadow-[0_0_45px_rgba(59,130,246,0.6)] flex flex-col items-center justify-center relative group hover:scale-105 transition-all duration-300 cursor-pointer p-3">
+                        <div className="w-24 h-24 sm:w-26 sm:h-26 rounded-2xl bg-gradient-to-b from-[#0e1f4d] via-[#091433] to-[#060c20] border-2 border-blue-400/60 shadow-[0_0_45px_rgba(59,130,246,0.6)] flex flex-col items-center justify-center relative group hover:scale-105 transition-all duration-300 cursor-pointer p-3">
                             {/* Inner Ambient Glow */}
                             <div className="absolute inset-0 rounded-2xl bg-blue-500/10 pointer-events-none" />
 
@@ -617,14 +617,14 @@ export default function Login() {
                     </div>
 
                     {/* ==================================================== */}
-                    {/* 10 CONNECTED NODES (Dark Glassmorphic Style)          */}
+                    {/* 10 CONNECTED NODES (Solid & Clean Glassmorphism)      */}
                     {/* ==================================================== */}
                     {/* LEFT COLUMN (5 Nodes) */}
                     {/* 1. Projects */}
                     <div
                         onMouseEnter={() => setActiveNode('projects')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[12px] left-[10px] xl:left-[25px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
+                        className={`absolute top-[15px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
                             activeNode === 'projects' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                         }`}
                     >
@@ -639,13 +639,15 @@ export default function Login() {
                                 Plan and organize
                             </p>
                         </div>
+                        {/* Hardware Cable Port Socket */}
+                        <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-blue-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(59,130,246,0.8)] z-30" />
                     </div>
 
                     {/* 2. Tasks */}
                     <div
                         onMouseEnter={() => setActiveNode('tasks')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[142px] left-0 xl:left-[10px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
+                        className={`absolute top-[135px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
                             activeNode === 'tasks' ? 'scale-103 border-emerald-400 shadow-emerald-500/20' : ''
                         }`}
                     >
@@ -660,13 +662,15 @@ export default function Login() {
                                 Get things done
                             </p>
                         </div>
+                        {/* Hardware Cable Port Socket */}
+                        <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-emerald-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(16,185,129,0.8)] z-30" />
                     </div>
 
                     {/* 3. Google Drive */}
                     <div
                         onMouseEnter={() => setActiveNode('drive')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[272px] left-0 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-yellow-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
+                        className={`absolute top-[263px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-yellow-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
                             activeNode === 'drive' ? 'scale-103 border-yellow-400 shadow-yellow-500/20' : ''
                         }`}
                     >
@@ -685,13 +689,15 @@ export default function Login() {
                                 Access your files
                             </p>
                         </div>
+                        {/* Hardware Cable Port Socket */}
+                        <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-amber-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(251,191,36,0.8)] z-30" />
                     </div>
 
                     {/* 4. GitHub */}
                     <div
                         onMouseEnter={() => setActiveNode('github')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[402px] left-0 xl:left-[10px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-slate-300/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
+                        className={`absolute top-[391px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-slate-300/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
                             activeNode === 'github' ? 'scale-103 border-slate-300 shadow-slate-500/20' : ''
                         }`}
                     >
@@ -708,13 +714,15 @@ export default function Login() {
                                 Sync your code
                             </p>
                         </div>
+                        {/* Hardware Cable Port Socket */}
+                        <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-indigo-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(129,140,248,0.8)] z-30" />
                     </div>
 
                     {/* 5. Notes */}
                     <div
                         onMouseEnter={() => setActiveNode('notes')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[532px] left-[10px] xl:left-[25px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-purple-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
+                        className={`absolute top-[511px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-purple-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
                             activeNode === 'notes' ? 'scale-103 border-purple-400 shadow-purple-500/20' : ''
                         }`}
                     >
@@ -729,6 +737,8 @@ export default function Login() {
                                 All your notes & ideas
                             </p>
                         </div>
+                        {/* Hardware Cable Port Socket */}
+                        <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-purple-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(168,85,247,0.8)] z-30" />
                     </div>
 
                     {/* RIGHT COLUMN (5 Nodes) */}
@@ -736,7 +746,7 @@ export default function Login() {
                     <div
                         onMouseEnter={() => setActiveNode('calendar')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[12px] right-[10px] xl:right-[25px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
+                        className={`absolute top-[15px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
                             activeNode === 'calendar' ? 'scale-103 border-emerald-400 shadow-emerald-500/20' : ''
                         }`}
                     >
@@ -751,13 +761,15 @@ export default function Login() {
                                 Plan your schedule
                             </p>
                         </div>
+                        {/* Hardware Cable Port Socket */}
+                        <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(52,211,153,0.8)] z-30" />
                     </div>
 
                     {/* 7. Portfolio */}
                     <div
                         onMouseEnter={() => setActiveNode('portfolio')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[142px] right-0 xl:right-[10px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
+                        className={`absolute top-[135px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
                             activeNode === 'portfolio' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                         }`}
                     >
@@ -772,13 +784,15 @@ export default function Login() {
                                 Track your progress
                             </p>
                         </div>
+                        {/* Hardware Cable Port Socket */}
+                        <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-blue-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(59,130,246,0.8)] z-30" />
                     </div>
 
                     {/* 8. Archive */}
                     <div
                         onMouseEnter={() => setActiveNode('archive')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[272px] right-0 z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
+                        className={`absolute top-[263px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
                             activeNode === 'archive' ? 'scale-103 border-cyan-400 shadow-cyan-500/20' : ''
                         }`}
                     >
@@ -793,13 +807,15 @@ export default function Login() {
                                 Keep everything safe
                             </p>
                         </div>
+                        {/* Hardware Cable Port Socket */}
+                        <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-cyan-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(6,182,212,0.8)] z-30" />
                     </div>
 
                     {/* 9. Mail / Updates */}
                     <div
                         onMouseEnter={() => setActiveNode('mail')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[402px] right-0 xl:right-[10px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-rose-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
+                        className={`absolute top-[391px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-rose-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
                             activeNode === 'mail' ? 'scale-103 border-rose-400 shadow-rose-500/20' : ''
                         }`}
                     >
@@ -814,13 +830,15 @@ export default function Login() {
                                 Important alerts
                             </p>
                         </div>
+                        {/* Hardware Cable Port Socket */}
+                        <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-rose-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(244,63,94,0.8)] z-30" />
                     </div>
 
                     {/* 10. And More */}
                     <div
                         onMouseEnter={() => setActiveNode('more')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[532px] right-[10px] xl:right-[25px] z-20 bg-[#0d1838]/85 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-50 sm:w-56 xl:w-60 cursor-pointer group ${
+                        className={`absolute top-[511px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group relative ${
                             activeNode === 'more' ? 'scale-103 border-cyan-400 shadow-cyan-500/20' : ''
                         }`}
                     >
@@ -835,6 +853,8 @@ export default function Login() {
                                 Connect your tools
                             </p>
                         </div>
+                        {/* Hardware Cable Port Socket */}
+                        <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-teal-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(45,212,191,0.8)] z-30" />
                     </div>
                 </div>
 
