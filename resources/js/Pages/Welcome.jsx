@@ -694,26 +694,26 @@ export default function Welcome({ initialSection = 'home' }) {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-                        {/* Left: Bio & Profile Info (Col 4) */}
+                        {/* Left: Bio & Profile Info (Col 4 - Clean, no card box) */}
                         <div className="lg:col-span-4 space-y-4">
-                            {/* Profile Card & Bio grouped tightly as one unified narrative */}
-                            <div className="space-y-3.5">
-                                {/* Personal Profile Photo Badge */}
-                                <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-[#f8fafc] border border-slate-200/80 shadow-xs">
+                            {/* Profile Info & Bio grouped naturally */}
+                            <div className="space-y-4">
+                                {/* Personal Profile Photo (Clean without card container) */}
+                                <div className="flex items-center gap-3.5 py-1">
                                     <div className="relative shrink-0">
                                         <img
                                             src="/images/about_profile.jpg"
                                             alt="Rabirts Profile"
-                                            className="w-13 h-13 sm:w-14 sm:h-14 rounded-xl object-cover ring-2 ring-blue-500/20 shadow-sm"
+                                            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover ring-2 ring-blue-500/20 shadow-sm"
                                         />
                                         <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full" title="Open to Opportunities" />
                                     </div>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-1.5 mb-0.5">
-                                            <h3 className="font-extrabold text-slate-900 text-sm sm:text-base tracking-tight truncate">Rabirts</h3>
+                                            <h3 className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight truncate">Rabirts</h3>
                                             <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
                                         </div>
-                                        <p className="text-xs text-blue-600 font-semibold truncate">Full Stack Web Developer</p>
+                                        <p className="text-xs sm:text-sm text-blue-600 font-semibold truncate">Full Stack Web Developer</p>
                                         <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
                                             <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
                                             <span>Indonesia &bull; Remote / On-site</span>
@@ -731,7 +731,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                 </div>
                             </div>
 
-                            <div className="pt-0.5">
+                            <div className="pt-1">
                                 <Link
                                     href="/portfolio"
                                     className="inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5 border-slate-300 bg-white hover:bg-slate-50 text-slate-800 shadow-xs group"
@@ -742,17 +742,17 @@ export default function Welcome({ initialSection = 'home' }) {
                             </div>
                         </div>
 
-                        {/* Center: Mountain Banner Illustration (Col 5 - Top-aligned with Profile Card) */}
-                        <div className="lg:col-span-5">
-                            <div className="w-full relative group rounded-2xl overflow-hidden bg-gradient-to-b from-blue-50/70 via-indigo-50/20 to-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col items-center justify-center min-h-[260px]">
+                        {/* Center: Mountain Banner Illustration (Col 5 - Pure Original Image without any card/badge wrapper) */}
+                        <div className="lg:col-span-5 flex items-center justify-center relative group">
+                            <div className="w-full relative">
                                 <img
                                     src="/images/avatar1.png"
                                     alt="Same person, bigger goals"
-                                    className="w-full h-auto max-h-[220px] object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
+                                    className="w-full h-auto max-h-[280px] object-contain transition-transform duration-500 group-hover:scale-103"
                                 />
 
                                 {/* Elegant cursive handwriting text overlay */}
-                                <div className="absolute top-2.5 right-3 sm:top-4 sm:right-6 text-right pointer-events-none select-none">
+                                <div className="absolute top-2 right-2 sm:top-3 sm:right-4 text-right pointer-events-none select-none">
                                     <p
                                         className="text-base sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-slate-800 leading-tight tracking-wide"
                                         style={{ fontFamily: "'Caveat', 'Kalam', cursive" }}
