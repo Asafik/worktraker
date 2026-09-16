@@ -765,8 +765,8 @@ export default function Welcome({ initialSection = 'home' }) {
                             </div>
                         </div>
 
-                        {/* Right: 4 Attribute Pills (Col 3) */}
-                        <div className="lg:col-span-3 space-y-2.5">
+                        {/* Right: 4 Attribute Items (Col 3 - Clean Minimalist List without card box) */}
+                        <div className="lg:col-span-3 flex flex-col justify-center space-y-3">
                             {[
                                 { title: 'Problem Solver', icon: Puzzle },
                                 { title: 'Continuous Learner', icon: GraduationCap },
@@ -777,12 +777,12 @@ export default function Welcome({ initialSection = 'home' }) {
                                 return (
                                     <div
                                         key={aIdx}
-                                        className="p-3.5 rounded-xl border flex items-center gap-3.5 transition-all duration-200 bg-[#f8fafc] border-slate-200/80 hover:border-blue-300 hover:bg-white hover:shadow-xs group"
+                                        className="flex items-center gap-3 group py-1 transition-colors"
                                     >
-                                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all duration-200">
                                             <AttrIcon className="w-4 h-4" />
                                         </div>
-                                        <span className="font-semibold text-xs text-slate-800 group-hover:text-slate-900">
+                                        <span className="font-semibold text-xs text-slate-700 group-hover:text-blue-600 transition-colors">
                                             {attr.title}
                                         </span>
                                     </div>
