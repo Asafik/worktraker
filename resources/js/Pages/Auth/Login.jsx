@@ -303,8 +303,6 @@ export default function Login() {
                             >
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.6s" repeatCount="indefinite" />
                             </path>
-                            {/* Mid-Cable Ambient Node */}
-                            <circle cx="330" cy="115" r="4.5" fill="#38bdf8" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
                             <circle r="7.5" fill="#38bdf8" opacity="0.5" filter="url(#photon-glow)">
                                 <animateMotion path="M 170 43 C 260 43, 380 230, 490 260" dur="2.6s" repeatCount="indefinite" />
@@ -334,8 +332,6 @@ export default function Login() {
                             >
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
                             </path>
-                            {/* Mid-Cable Ambient Node */}
-                            <circle cx="325" cy="205" r="4.5" fill="#2dd4bf" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
                             <circle r="7.5" fill="#2dd4bf" opacity="0.5" filter="url(#photon-glow)">
                                 <animateMotion path="M 170 163 C 250 163, 370 255, 490 275" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
@@ -365,8 +361,6 @@ export default function Login() {
                             >
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
                             </path>
-                            {/* Mid-Cable Ambient Node */}
-                            <circle cx="330" cy="290" r="4.5" fill="#facc15" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
                             <circle r="7.5" fill="#facc15" opacity="0.5" filter="url(#photon-glow)">
                                 <animateMotion path="M 170 290 C 260 290, 380 290, 490 290" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
@@ -396,8 +390,6 @@ export default function Login() {
                             >
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
                             </path>
-                            {/* Mid-Cable Ambient Node */}
-                            <circle cx="325" cy="375" r="4.5" fill="#818cf8" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
                             <circle r="7.5" fill="#818cf8" opacity="0.5" filter="url(#photon-glow)">
                                 <animateMotion path="M 170 418 C 250 418, 370 325, 490 305" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
@@ -427,8 +419,6 @@ export default function Login() {
                             >
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
                             </path>
-                            {/* Mid-Cable Ambient Node */}
-                            <circle cx="330" cy="465" r="4.5" fill="#c084fc" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
                             <circle r="7.5" fill="#c084fc" opacity="0.5" filter="url(#photon-glow)">
                                 <animateMotion path="M 170 538 C 260 538, 380 350, 490 320" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
@@ -461,8 +451,6 @@ export default function Login() {
                             >
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
                             </path>
-                            {/* Mid-Cable Ambient Node */}
-                            <circle cx="670" cy="115" r="4.5" fill="#34d399" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
                             <circle r="7.5" fill="#34d399" opacity="0.5" filter="url(#photon-glow)">
                                 <animateMotion path="M 830 43 C 740 43, 620 230, 510 260" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
@@ -492,8 +480,6 @@ export default function Login() {
                             >
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
                             </path>
-                            {/* Mid-Cable Ambient Node */}
-                            <circle cx="675" cy="205" r="4.5" fill="#60a5fa" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
                             <circle r="7.5" fill="#60a5fa" opacity="0.5" filter="url(#photon-glow)">
                                 <animateMotion path="M 830 163 C 750 163, 630 255, 510 275" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
@@ -523,8 +509,6 @@ export default function Login() {
                             >
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
                             </path>
-                            {/* Mid-Cable Ambient Node */}
-                            <circle cx="670" cy="290" r="4.5" fill="#38bdf8" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
                             <circle r="7.5" fill="#38bdf8" opacity="0.5" filter="url(#photon-glow)">
                                 <animateMotion path="M 830 290 C 740 290, 620 290, 510 290" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
@@ -554,8 +538,6 @@ export default function Login() {
                             >
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
                             </path>
-                            {/* Mid-Cable Ambient Node */}
-                            <circle cx="675" cy="375" r="4.5" fill="#f472b6" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
                             <circle r="7.5" fill="#f472b6" opacity="0.5" filter="url(#photon-glow)">
                                 <animateMotion path="M 830 418 C 750 418, 630 325, 510 305" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
@@ -585,8 +567,6 @@ export default function Login() {
                             >
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
                             </path>
-                            {/* Mid-Cable Ambient Node */}
-                            <circle cx="670" cy="465" r="4.5" fill="#2dd4bf" stroke="#060b19" strokeWidth="1.5" />
                             {/* Traveling Light Photon */}
                             <circle r="7.5" fill="#2dd4bf" opacity="0.5" filter="url(#photon-glow)">
                                 <animateMotion path="M 830 538 C 740 538, 620 350, 510 320" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
