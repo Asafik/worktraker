@@ -418,63 +418,66 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
             {/* ========================================================== */}
             {/* 2. HERO HEADER (Seamlessly blended background image matching main page) */}
             {/* ========================================================== */}
-            <section className="relative bg-[#070b19] text-white pt-28 sm:pt-32 pb-20 overflow-hidden border-b border-slate-800/80 min-h-[380px] flex items-center">
+            <section className="relative bg-[#070b19] text-white pt-28 sm:pt-32 pb-14 sm:pb-16 overflow-hidden border-b border-slate-800/80 min-h-[480px] lg:min-h-[520px] flex items-center">
                 {/* Ambient Radial Gradient Glow */}
                 <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute top-10 left-10 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
 
-                {/* Seamless Edge-to-Edge Developer Workstation Image on the right */}
-                <div className="absolute top-0 right-0 bottom-0 w-full lg:w-[58%] xl:w-[52%] pointer-events-none overflow-hidden select-none z-0">
+                {/* Seamless Edge-to-Edge Developer Workstation Image on the right (matching main page) */}
+                <div className="absolute top-10 sm:top-14 lg:top-12 right-0 bottom-0 w-full lg:w-[60%] xl:w-[57%] pointer-events-none overflow-hidden select-none z-0">
                     <img
                         src="/images/hero.png"
                         alt="Developer Workstation"
-                        className="w-full h-full object-cover object-[right_top] lg:object-[90%_top] opacity-60"
+                        className="w-full h-full object-cover object-[right_top] lg:object-[90%_top]"
                     />
                     {/* Seamless Gradient Fade: left edge dissolves smoothly into the #070b19 background */}
                     <div className="absolute inset-y-0 left-0 w-36 sm:w-56 lg:w-72 bg-gradient-to-r from-[#070b19] via-[#070b19]/80 to-transparent" />
-                    {/* Darken overlay so text remains perfectly legible */}
-                    <div className="absolute inset-0 bg-[#070b19]/40 backdrop-blur-xs" />
+                    {/* Mobile darken overlay so text remains perfectly legible on small screens */}
+                    <div className="lg:hidden absolute inset-0 bg-[#070b19]/85 backdrop-blur-xs" />
                     {/* Top & Bottom seamless fades */}
-                    <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#070b19] to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#070b19] to-transparent" />
+                    <div className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-[#070b19] via-[#070b19]/50 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#070b19] to-transparent" />
                 </div>
 
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 relative z-10">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                {/* Content Container (Left Column matching Welcome.jsx layout) */}
+                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 w-full relative z-10">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
                         {/* Left: Breadcrumbs + Title + Description + CTA */}
-                        <div className="space-y-4 max-w-3xl">
-                            {/* Breadcrumbs */}
-                            <div className="flex items-center gap-2 text-xs font-medium text-slate-400">
-                                <Link href="/" className="hover:text-blue-400 transition-colors">
+                        <div className="lg:w-[54%] xl:w-[50%] space-y-6 transition-transform">
+                            {/* Breadcrumb Badge */}
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                                <Link href="/" className="hover:text-blue-300 transition-colors">
                                     Home
                                 </Link>
-                                <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                                <Link href="/#projects" className="hover:text-blue-400 transition-colors">
+                                <ChevronRight className="w-3.5 h-3.5 text-blue-400/60 shrink-0" />
+                                <Link href="/#projects" className="hover:text-blue-300 transition-colors">
                                     Projects
                                 </Link>
-                                <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                                <span className="text-slate-200 font-semibold truncate">
+                                <ChevronRight className="w-3.5 h-3.5 text-blue-400/60 shrink-0" />
+                                <span className="text-white font-semibold truncate max-w-[200px]">
                                     {project.title}
                                 </span>
                             </div>
 
-                            {/* Project Title */}
-                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
-                                {project.title}
-                            </h1>
+                            {/* Project Title matching Welcome.jsx typography */}
+                            <div className="space-y-1">
+                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                                    {project.title}
+                                </h1>
+                            </div>
 
-                            {/* Subtitle */}
-                            <p className="text-sm sm:text-base text-slate-400 leading-relaxed max-w-2xl">
+                            {/* Subtitle / Bio Paragraph */}
+                            <p className="text-sm sm:text-base text-slate-300 max-w-lg leading-relaxed">
                                 {project.subtitle}
                             </p>
 
-                            {/* Actions */}
-                            <div className="flex flex-wrap items-center gap-3 pt-2">
+                            {/* Call to Actions matching Welcome.jsx buttons */}
+                            <div className="flex flex-wrap items-center gap-3 pt-1">
                                 <a
                                     href={project.liveDemoUrl}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition-all hover:-translate-y-0.5"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5 cursor-pointer"
                                 >
                                     <ExternalLink className="w-4 h-4" />
                                     <span>View Live Demo</span>
@@ -484,7 +487,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                                     href={project.githubUrl}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 transition-all hover:-translate-y-0.5"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-800/90 hover:bg-slate-700/90 text-slate-200 border border-slate-700 rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5 cursor-pointer"
                                 >
                                     <GithubIcon className="w-4 h-4" />
                                     <span>View on GitHub</span>
@@ -493,15 +496,15 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                         </div>
 
                         {/* Right: Big Index / Meta Counter */}
-                        <div className="lg:text-right flex flex-row lg:flex-col items-baseline lg:items-end justify-between lg:justify-center border-t lg:border-t-0 border-slate-800/80 pt-4 lg:pt-0">
-                            <span className="text-5xl sm:text-6xl font-black tracking-tight text-slate-200/90 select-none">
+                        <div className="lg:text-right shrink-0 select-none z-10 flex flex-row lg:flex-col items-baseline lg:items-end justify-between border-t lg:border-t-0 border-slate-800/80 pt-4 lg:pt-0">
+                            <span className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white/90 block">
                                 / {project.index}
                             </span>
-                            <div className="mt-1">
-                                <span className="block text-xs font-semibold text-slate-300">
+                            <div className="mt-1 space-y-0.5">
+                                <span className="block text-xs sm:text-sm font-semibold text-slate-200">
                                     {project.category}
                                 </span>
-                                <span className="block text-[11px] text-slate-500 mt-0.5">
+                                <span className="block text-xs text-slate-400">
                                     {project.techHeader}
                                 </span>
                             </div>
@@ -513,7 +516,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
             {/* ========================================================== */}
             {/* 3. SHOWCASE GALLERY & PROJECT INFO SIDEBAR                 */}
             {/* ========================================================== */}
-            <main className="max-w-[1360px] mx-auto px-4 sm:px-6 -mt-8 relative z-20 pb-20 space-y-16">
+            <main className="max-w-[1360px] mx-auto px-4 sm:px-6 pt-10 sm:pt-14 pb-20 space-y-16">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* Left Showcase (8 Cols): Main Frame + Interactive Thumbnails */}
                     <div className="lg:col-span-8 space-y-4">
