@@ -43,63 +43,6 @@ class ArchiveController extends Controller
             ];
         });
 
-        // If no records yet in DB, provide standard defaults
-        if ($archives->isEmpty()) {
-            $defaultArchives = [
-                [
-                    'name' => 'Company Website',
-                    'project_name' => 'Company Profile 2026',
-                    'category' => 'Project',
-                    'file_name' => 'company-website.zip',
-                    'file_type' => 'ZIP',
-                    'size' => '124 MB',
-                    'size_bytes' => 130023424,
-                    'google_drive_file_id' => 'mock_1',
-                    'google_drive_view_link' => 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69',
-                    'google_drive_download_link' => 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69',
-                    'description' => 'Project website company profile yang dibangun menggunakan Laravel. Berisi source code, asset, dan file konfigurasi.',
-                    'notes' => 'Arsip ini tersimpan di Google Drive folder WorkTrack.',
-                    'tags' => ['Laravel', 'Website'],
-                ],
-                [
-                    'name' => 'Mobile App v1.0',
-                    'project_name' => 'Mobile Tracker App',
-                    'category' => 'Project',
-                    'file_name' => 'mobile-app-v1.zip',
-                    'file_type' => 'ZIP',
-                    'size' => '98 MB',
-                    'size_bytes' => 102760448,
-                    'google_drive_file_id' => 'mock_2',
-                    'google_drive_view_link' => 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69',
-                    'google_drive_download_link' => 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69',
-                    'description' => 'Source code aplikasi mobile iOS dan Android menggunakan React Native & Expo.',
-                    'notes' => 'Versi rilis 1.0 yang sudah stabil dan lolos audit.',
-                    'tags' => ['React Native', 'Mobile'],
-                ],
-                [
-                    'name' => 'Admin Dashboard Backup',
-                    'project_name' => 'WorkTrack Core',
-                    'category' => 'Backup',
-                    'file_name' => 'admin-backup.tar.gz',
-                    'file_type' => 'TAR.GZ',
-                    'size' => '56 MB',
-                    'size_bytes' => 58720256,
-                    'google_drive_file_id' => 'mock_3',
-                    'google_drive_view_link' => 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69',
-                    'google_drive_download_link' => 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69',
-                    'description' => 'Snapshot penuh database dan codebase dashboard admin sebelum pembaruan.',
-                    'notes' => 'Backup rutin tersimpan di Google Drive.',
-                    'tags' => ['Backup', 'Admin'],
-                ],
-            ];
-
-            foreach ($defaultArchives as $def) {
-                Archive::create($def);
-            }
-
-            return $this->index();
-        }
-
         return Inertia::render('Archive/Index', [
             'initialArchives' => $archives,
             'googleDriveFolderUrl' => 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69',
