@@ -242,7 +242,7 @@ export default function Welcome({ initialSection = 'home' }) {
             {/* 1. TOP NAVBAR (Deep navy bar matching mockup with active indicator) */}
             {/* ========================================================== */}
             <header className="fixed top-0 inset-x-0 z-40 bg-[#070b19]/90 backdrop-blur-md border-b border-slate-800">
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
+                <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
                     {/* Left: Brand */}
                     <div className="flex-1 flex items-center justify-start">
                         <a
@@ -332,8 +332,8 @@ export default function Welcome({ initialSection = 'home' }) {
                 </div>
 
                 {/* Content Container */}
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 w-full relative z-10">
-                    <div className="lg:w-[52%] xl:w-[48%] space-y-6 transition-transform lg:-translate-x-20 xl:-translate-x-28 2xl:-translate-x-32">
+                <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+                    <div className="lg:w-[50%] xl:w-[46%] space-y-6">
                         {/* Greeting Badge */}
                         <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
                             Hello, I'm
@@ -413,7 +413,7 @@ export default function Welcome({ initialSection = 'home' }) {
                 id="projects"
                 className="py-14 sm:py-16 bg-white"
             >
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 space-y-7">
+                <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 space-y-7">
                     {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                         <div className="space-y-1">
@@ -537,7 +537,7 @@ export default function Welcome({ initialSection = 'home' }) {
                 id="experience"
                 className="py-14 sm:py-16 bg-white"
             >
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 space-y-8">
+                <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                     {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                         <div className="space-y-1">
@@ -627,7 +627,7 @@ export default function Welcome({ initialSection = 'home' }) {
             {/* 5. TECH STACK (Tools I Use) */}
             {/* ========================================================== */}
             <section className="pt-12 sm:pt-14 pb-8 sm:pb-10 bg-white">
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 space-y-7">
+                <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 space-y-7">
                     <div className="space-y-1 text-center sm:text-left">
                         <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                             ‹ TECH STACK
@@ -678,7 +678,7 @@ export default function Welcome({ initialSection = 'home' }) {
                 id="about"
                 className="py-14 sm:py-16 bg-white"
             >
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 space-y-6">
+                <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
                     <div className="space-y-1">
                         <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                             ‹ ABOUT ME
@@ -794,7 +794,7 @@ export default function Welcome({ initialSection = 'home' }) {
                 id="contact"
                 className="py-14 sm:py-18 border-b bg-[#fcfdfd] border-slate-200/80"
             >
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6">
+                <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
                         <div className="space-y-2.5 max-w-2xl">
                             <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
@@ -867,7 +867,7 @@ export default function Welcome({ initialSection = 'home' }) {
             {/* 8. FOOTER */}
             {/* ========================================================== */}
             <footer className="py-8 bg-white text-slate-600">
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6">
+                <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
                         {/* Logo & Slogan */}
                         <div className="flex items-center gap-3">
