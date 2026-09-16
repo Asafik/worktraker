@@ -38,25 +38,25 @@ export default function Login() {
             <Head title="Sign In - WorkTrack" />
 
             {/* ========================================================== */}
-            {/* LEFT SIDE: CLEAN LIGHT SIGN IN PANEL                       */}
+            {/* LEFT SIDE: CLEAN LIGHT SIGN IN PANEL (Seamless Full White) */}
             {/* ========================================================== */}
-            <div className="w-full lg:w-[46%] xl:w-[42%] bg-[#f8fafc] flex flex-col justify-between p-4 sm:p-8 lg:p-10 xl:p-14 relative z-20 min-h-screen">
-                {/* Form Card Container */}
-                <div className="max-w-[440px] w-full mx-auto my-auto bg-white rounded-3xl p-7 sm:p-9 shadow-xl shadow-slate-200/60 border border-slate-100/90">
-                    {/* Brand Logo Header */}
-                    <div className="flex items-center justify-between mb-8">
-                        <Link href="/" className="flex items-center gap-3 group cursor-pointer">
-                            <img
-                                src="/images/logo.png"
-                                alt="WorkTrack Logo"
-                                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-contain shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform"
-                            />
-                            <span className="font-extrabold text-xl text-slate-900 tracking-tight">
-                                WorkTrack
-                            </span>
-                        </Link>
-                    </div>
+            <div className="w-full lg:w-[46%] xl:w-[42%] bg-white flex flex-col justify-between p-6 sm:p-10 lg:p-12 xl:p-16 relative z-20 min-h-screen">
+                {/* Brand Logo Header */}
+                <div className="flex items-center justify-between">
+                    <Link href="/" className="flex items-center gap-3 group cursor-pointer">
+                        <img
+                            src="/images/logo.png"
+                            alt="WorkTrack Logo"
+                            className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-contain shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform"
+                        />
+                        <span className="font-extrabold text-xl text-slate-900 tracking-tight">
+                            WorkTrack
+                        </span>
+                    </Link>
+                </div>
 
+                {/* Form Container (Directly on Canvas, No Card Wrapper) */}
+                <div className="max-w-[420px] w-full mx-auto my-auto py-8">
                     {/* Welcome Badge */}
                     <div className="inline-block mb-3">
                         <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-100">
