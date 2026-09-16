@@ -339,9 +339,9 @@ export default function Welcome({ initialSection = 'home' }) {
                     <div className="w-10 h-0.5 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full" />
                 </div>
 
-                {/* Content Container (Left Column) */}
+                {/* Content Container (Left Column shifted to the left) */}
                 <div className="max-w-[1360px] mx-auto px-4 sm:px-6 w-full relative z-10">
-                    <div className="lg:w-[52%] xl:w-[48%] space-y-6 transition-transform">
+                    <div className="lg:w-[52%] xl:w-[48%] space-y-6 transition-transform lg:-translate-x-10 xl:-translate-x-14">
                         {/* Greeting Badge */}
                         <span className="inline-block px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
                             Hello, I'm
