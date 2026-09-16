@@ -111,47 +111,68 @@ export default function Welcome({ initialSection = 'home' }) {
         document.documentElement.classList.remove('dark');
     }, []);
 
-    // Initial section scroll handling (e.g. if arriving via /about or hash)
+    // Initial section scroll and hash handling
     useEffect(() => {
-        const target = initialSection || (window.location.hash ? window.location.hash.replace('#', '') : 'home');
+        const getTargetSection = () => {
+            if (initialSection && initialSection !== 'home') return initialSection;
+            if (window.location.hash) return window.location.hash.replace('#', '');
+            return 'home';
+        };
+
+        const target = getTargetSection();
+        setActiveSection(target);
+
         if (target && target !== 'home') {
             const el = document.getElementById(target);
             if (el) {
                 setTimeout(() => {
                     el.scrollIntoView({ behavior: 'smooth' });
-                    setActiveSection(target);
                 }, 150);
             }
         }
+
+        const handleHashChange = () => {
+            const hash = window.location.hash.replace('#', '');
+            if (hash) {
+                setActiveSection(hash);
+                const el = document.getElementById(hash);
+                if (el) el.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                setActiveSection('home');
+            }
+        };
+
+        window.addEventListener('hashchange', handleHashChange);
+        return () => window.removeEventListener('hashchange', handleHashChange);
     }, [initialSection]);
 
-    // Scroll Spy using IntersectionObserver to update active menu indicator
+    // Rock-solid scroll listener for scroll-spy active navbar menu
     useEffect(() => {
-        const sections = ['home', 'projects', 'experience', 'about', 'contact'];
-        const observers = [];
+        const handleScroll = () => {
+            const sectionIds = ['home', 'projects', 'experience', 'about', 'contact'];
 
-        const observerCallback = (entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    setActiveSection(entry.target.id);
+            // Bottom of the page reached? Activate 'contact'
+            if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 100) {
+                setActiveSection('contact');
+                return;
+            }
+
+            const scrollPos = window.scrollY + 220;
+            for (let i = sectionIds.length - 1; i >= 0; i--) {
+                const el = document.getElementById(sectionIds[i]);
+                if (el) {
+                    const top = el.offsetTop;
+                    if (scrollPos >= top) {
+                        setActiveSection(sectionIds[i]);
+                        break;
+                    }
                 }
-            });
+            }
         };
 
-        const observerOptions = {
-            root: null,
-            rootMargin: '-20% 0px -55% 0px',
-            threshold: 0.1,
-        };
-
-        const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-        sections.forEach((id) => {
-            const el = document.getElementById(id);
-            if (el) observer.observe(el);
-        });
-
-        return () => observer.disconnect();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll();
+        return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     const handleNavClick = (e, sectionId) => {
@@ -256,9 +277,6 @@ export default function Welcome({ initialSection = 'home' }) {
             </header>
 
             {/* ========================================================== */}
-            {/* 2. HERO SECTION (Compacted spacing, tight transition to projects) */}
-            {/* ========================================================== */}
-            {/* ========================================================== */}
             {/* 2. HERO SECTION (Seamlessly blended background image matching mockup 1:1) */}
             {/* ========================================================== */}
             <section
@@ -269,24 +287,24 @@ export default function Welcome({ initialSection = 'home' }) {
                 <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute top-10 left-10 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
 
-                {/* Seamless Edge-to-Edge Developer Workstation Image on the right */}
-                <div className="absolute top-0 right-0 bottom-0 w-full lg:w-[60%] xl:w-[57%] pointer-events-none overflow-hidden select-none z-0">
+                {/* Seamless Edge-to-Edge Developer Workstation Image on the right (shifted down so posters are not cropped) */}
+                <div className="absolute top-10 sm:top-14 lg:top-12 right-0 bottom-0 w-full lg:w-[60%] xl:w-[57%] pointer-events-none overflow-hidden select-none z-0">
                     <img
                         src="/images/hero.png"
                         alt="Developer Workstation"
-                        className="w-full h-full object-cover object-[center_right] lg:object-right"
+                        className="w-full h-full object-cover object-[right_top] lg:object-[90%_top]"
                     />
                     {/* Seamless Gradient Fade: left edge dissolves smoothly into the #070b19 background */}
                     <div className="absolute inset-y-0 left-0 w-36 sm:w-56 lg:w-72 bg-gradient-to-r from-[#070b19] via-[#070b19]/80 to-transparent" />
                     {/* Mobile darken overlay so text remains perfectly legible on small screens */}
                     <div className="lg:hidden absolute inset-0 bg-[#070b19]/85 backdrop-blur-xs" />
                     {/* Top & Bottom seamless fades */}
-                    <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#070b19] via-[#070b19]/60 to-transparent" />
+                    <div className="absolute inset-x-0 top-0 h-14 bg-gradient-to-b from-[#070b19] via-[#070b19]/50 to-transparent" />
                     <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#070b19] to-transparent" />
                 </div>
 
-                {/* Floating Glassmorphism Quote Card overlaying the desk */}
-                <div className="hidden lg:block absolute bottom-10 right-8 xl:bottom-14 xl:right-16 z-20 max-w-[240px] p-4 rounded-2xl bg-slate-950/70 backdrop-blur-md border border-white/10 shadow-2xl space-y-1 select-none pointer-events-none">
+                {/* Floating Glassmorphism Quote Card overlaying the desk with comfortable breathing room */}
+                <div className="hidden lg:block absolute bottom-14 right-12 xl:bottom-20 xl:right-24 z-20 max-w-[240px] p-4 rounded-2xl bg-slate-950/70 backdrop-blur-md border border-white/10 shadow-2xl space-y-1 select-none pointer-events-none">
                     <span className="text-blue-400 font-serif text-2xl leading-none">“</span>
                     <p className="text-xs sm:text-sm text-slate-200 font-medium italic">
                         A better version of me, every day.
