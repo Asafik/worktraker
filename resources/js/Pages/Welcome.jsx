@@ -418,7 +418,7 @@ export default function Welcome({ initialSection = 'home' }) {
             {/* ========================================================== */}
             <section
                 id="projects"
-                className="py-14 sm:py-16 border-b bg-[#fcfdfd] border-slate-200/80"
+                className="py-14 sm:py-16 bg-white"
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-7">
                     {/* Header */}
@@ -542,7 +542,7 @@ export default function Welcome({ initialSection = 'home' }) {
             {/* ========================================================== */}
             <section
                 id="experience"
-                className="py-14 sm:py-16 border-b bg-white border-slate-200/80"
+                className="py-14 sm:py-16 bg-white"
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                     {/* Header */}
@@ -632,7 +632,7 @@ export default function Welcome({ initialSection = 'home' }) {
             {/* ========================================================== */}
             {/* 5. TECH STACK (Tools I Use) */}
             {/* ========================================================== */}
-            <section className="py-14 sm:py-16 border-b bg-[#fcfdfd] border-slate-200/80">
+            <section className="py-14 sm:py-16 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-7">
                     <div className="space-y-1 text-center sm:text-left">
                         <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
@@ -682,7 +682,7 @@ export default function Welcome({ initialSection = 'home' }) {
             {/* ========================================================== */}
             <section
                 id="about"
-                className="py-14 sm:py-16 border-b bg-white border-slate-200/80"
+                className="py-14 sm:py-16 bg-white"
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-7">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
