@@ -5,6 +5,9 @@ import {
     ExternalLink,
     Mail,
     User,
+    Puzzle,
+    GraduationCap,
+    Briefcase,
     MapPin,
     Send,
     CheckCircle2,
@@ -677,31 +680,31 @@ export default function Welcome({ initialSection = 'home' }) {
             </section>
 
             {/* ========================================================== */}
-            {/* 6. ABOUT ME (Clean 2-column layout with top-aligned illustration) */}
+            {/* 6. ABOUT ME (Generous illustration proportion matching mockup) */}
             {/* ========================================================== */}
             <section
                 id="about"
                 className="py-14 sm:py-16 bg-white"
             >
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 space-y-6">
-                    <div>
-                        <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                            ‹ ABOUT ME
-                        </span>
-                    </div>
+                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 space-y-7">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                        {/* Left: Bio & Profile Info (Col 4) */}
+                        <div className="lg:col-span-4 flex flex-col justify-center space-y-4">
+                            <div>
+                                <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                                    ‹ ABOUT ME
+                                </span>
+                            </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
-                        {/* Left: Bio & Profile Info (Col 5) */}
-                        <div className="lg:col-span-5 space-y-4">
-                            {/* Profile Card & Bio grouped tightly */}
+                            {/* Profile Card & Bio grouped tightly as one unified narrative */}
                             <div className="space-y-3.5">
                                 {/* Personal Profile Photo Badge */}
-                                <div className="flex items-center gap-3.5 p-3.5 rounded-2xl bg-[#f8fafc] border border-slate-200/80 shadow-xs">
+                                <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-[#f8fafc] border border-slate-200/80 shadow-xs">
                                     <div className="relative shrink-0">
                                         <img
                                             src="/images/about_profile.jpg"
                                             alt="Rabirts Profile"
-                                            className="w-14 h-14 rounded-xl object-cover ring-2 ring-blue-500/20 shadow-sm"
+                                            className="w-13 h-13 sm:w-14 sm:h-14 rounded-xl object-cover ring-2 ring-blue-500/20 shadow-sm"
                                         />
                                         <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full" title="Open to Opportunities" />
                                     </div>
@@ -728,7 +731,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                 </div>
                             </div>
 
-                            <div className="pt-1">
+                            <div className="pt-0.5">
                                 <Link
                                     href="/portfolio"
                                     className="inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5 border-slate-300 bg-white hover:bg-slate-50 text-slate-800 shadow-xs group"
@@ -739,27 +742,52 @@ export default function Welcome({ initialSection = 'home' }) {
                             </div>
                         </div>
 
-                        {/* Right: Mountain Banner Illustration (Col 7 - Aligned at top with profile card) */}
-                        <div className="lg:col-span-7">
-                            <div className="w-full relative group rounded-2xl overflow-hidden bg-gradient-to-b from-blue-50/70 via-indigo-50/20 to-white border border-slate-200/80 p-6 sm:p-8 shadow-xs flex flex-col items-center justify-center min-h-[280px] lg:min-h-[300px]">
+                        {/* Center: Mountain Banner Illustration (Col 5 - Centered with entire About section) */}
+                        <div className="lg:col-span-5 flex items-center justify-center h-full">
+                            <div className="w-full relative group rounded-2xl overflow-hidden bg-gradient-to-b from-blue-50/70 via-indigo-50/20 to-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col items-center justify-center min-h-[260px]">
                                 <img
                                     src="/images/avatar1.png"
                                     alt="Same person, bigger goals"
-                                    className="w-full h-auto max-h-[250px] object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
+                                    className="w-full h-auto max-h-[220px] object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
                                 />
 
                                 {/* Elegant cursive handwriting text overlay */}
-                                <div className="absolute top-4 right-4 sm:top-6 sm:right-8 text-right pointer-events-none select-none">
+                                <div className="absolute top-2.5 right-3 sm:top-4 sm:right-6 text-right pointer-events-none select-none">
                                     <p
-                                        className="text-lg sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-slate-800 leading-tight tracking-wide"
+                                        className="text-base sm:text-2xl lg:text-3xl xl:text-4xl font-bold text-slate-800 leading-tight tracking-wide"
                                         style={{ fontFamily: "'Caveat', 'Kalam', cursive" }}
                                     >
                                         Same person, <br />
                                         bigger goals.
                                     </p>
-                                    <div className="w-8 sm:w-12 h-0.5 bg-[#4338ca] ml-auto mt-1.5 rounded-full" />
+                                    <div className="w-8 sm:w-12 h-0.5 bg-[#4338ca] ml-auto mt-1 rounded-full" />
                                 </div>
                             </div>
+                        </div>
+
+                        {/* Right: 4 Attribute Pills (Col 3) */}
+                        <div className="lg:col-span-3 space-y-2.5">
+                            {[
+                                { title: 'Problem Solver', icon: Puzzle },
+                                { title: 'Continuous Learner', icon: GraduationCap },
+                                { title: 'Open to Opportunities', icon: Briefcase },
+                                { title: 'Based in Indonesia', icon: MapPin },
+                            ].map((attr, aIdx) => {
+                                const AttrIcon = attr.icon;
+                                return (
+                                    <div
+                                        key={aIdx}
+                                        className="p-3.5 rounded-xl border flex items-center gap-3.5 transition-all duration-200 bg-[#f8fafc] border-slate-200/80 hover:border-blue-300 hover:bg-white hover:shadow-xs group"
+                                    >
+                                        <div className="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                            <AttrIcon className="w-4 h-4" />
+                                        </div>
+                                        <span className="font-semibold text-xs text-slate-800 group-hover:text-slate-900">
+                                            {attr.title}
+                                        </span>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
@@ -784,6 +812,17 @@ export default function Welcome({ initialSection = 'home' }) {
                             <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
                                 Have a project in mind, need help improving an existing system, or just want to say hello? I'm always excited to connect, exchange ideas, and explore how we can work together.
                             </p>
+                            <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-500">
+                                <span className="inline-flex items-center gap-1.5">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                    Available for freelance & full-time roles
+                                </span>
+                                <span className="hidden sm:inline text-slate-300">&bull;</span>
+                                <span className="inline-flex items-center gap-1.5">
+                                    <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                    Fast response within 24 hours
+                                </span>
+                            </div>
                         </div>
 
                         {/* Right Action & Socials */}
