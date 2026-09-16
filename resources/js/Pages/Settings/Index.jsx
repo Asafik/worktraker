@@ -67,26 +67,7 @@ const XIcon = ({ className }) => (
     </svg>
 );
 
-const GoogleDriveIcon = ({ className }) => (
-    <svg className={className} viewBox="0 0 87.3 78" fill="none">
-        <path d="M6.6 66.85l3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8H0c0 1.55.4 3.1 1.2 4.5l5.4 9.35z" fill="#0066DA" />
-        <path d="M43.65 25L29.9 1.2C28.55 2 27.4 3.1 26.6 4.5L1.2 48.5c-.8 1.4-1.2 2.95-1.2 4.5h27.5L43.65 25z" fill="#00AC47" />
-        <path d="M73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5H59.8l5.95 10.3 7.8 13.5z" fill="#EA4335" />
-        <path d="M43.65 25L57.4 1.2c-1.35-.8-2.9-1.2-4.5-1.2H34.4c-1.6 0-3.15.4-4.5 1.2l13.75 23.8z" fill="#00832D" />
-        <path d="M59.8 53H27.5L13.75 76.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.4 4.5-1.2L59.8 53z" fill="#2684FC" />
-        <path d="M73.4 26.5l-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3L43.65 25l16.15 28H87.3c0-1.55-.4-3.1-1.2-4.5l-12.7-22z" fill="#FFBA00" />
-    </svg>
-);
 
-
-const GoogleGIcon = ({ className }) => (
-    <svg className={className} viewBox="0 0 24 24">
-        <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z" />
-        <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.26v3.15C3.25 21.37 7.31 24 12 24z" />
-        <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.26C.46 8.19 0 10.03 0 12s.46 3.81 1.26 5.42l4.02-3.15z" />
-        <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.25 2.63 1.26 6.58l4.02 3.15c.95-2.83 3.6-4.98 6.72-4.98z" />
-    </svg>
-);
 
 export default function SettingsPage({ userProfile, integrationsStatus, flash }) {
     // Active tabs: Profile, Account & Security, Appearance, Integrations, Preferences
@@ -1312,7 +1293,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     <div className="md:col-span-4 flex flex-col items-start md:items-end justify-center space-y-1">
                                         <div className="flex items-center gap-2.5">
                                             <div className="w-8 h-8 rounded-full bg-white dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] flex items-center justify-center shadow-2xs">
-                                                <GoogleGIcon className="w-4 h-4" />
+                                                <img src="/images/svg/google.svg" alt="Google" className="w-4 h-4" />
                                             </div>
                                             <div className="text-left">
                                                 <h4 className="font-bold text-xs text-slate-900 dark:text-white truncate max-w-[150px]">
