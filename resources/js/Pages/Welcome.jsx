@@ -486,20 +486,20 @@ export default function Welcome({ initialSection = 'home' }) {
             </section>
 
             {/* ========================================================== */}
-            {/* 4. RECENT EXPERIENCE (Visually unified timeline dots & lines) */}
+            {/* 4. RECENT EXPERIENCE (1:1 with mockup screenshot) */}
             {/* ========================================================== */}
             <section
                 id="experience"
                 className="py-14 sm:py-16 border-b bg-white border-slate-200/80"
             >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-7">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                     {/* Header */}
                     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                         <div className="space-y-1">
-                            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600">
                                 ‹ WORK JOURNEY
                             </span>
-                            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
                                 Recent Experience
                             </h2>
                             <p className="text-xs sm:text-sm text-slate-500">
@@ -509,17 +509,17 @@ export default function Welcome({ initialSection = 'home' }) {
 
                         <Link
                             href="/portfolio"
-                            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors group"
+                            className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors group"
                         >
                             <span>View Full Timeline</span>
                             <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                         </Link>
                     </div>
 
-                    {/* Unified Timeline: Continuous Track + Connected Steps */}
-                    <div className="relative pt-2">
-                        {/* Horizontal connecting track line across the 4 steps */}
-                        <div className="hidden lg:block absolute top-[15px] left-7 right-7 h-0.5 bg-blue-100 z-0" />
+                    {/* Unified Timeline: Continuous Track + Cards with Dots on Top Border */}
+                    <div className="relative pt-4">
+                        {/* Horizontal connecting line spanning continuously across the entire width behind the dots */}
+                        <div className="hidden lg:block absolute top-[16px] left-0 right-0 h-[1.5px] bg-[#e0e7ff] z-0" />
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
                             {[
@@ -544,26 +544,22 @@ export default function Welcome({ initialSection = 'home' }) {
                                     desc: 'Bug fixes and performance improvements.',
                                 },
                             ].map((item, idx) => (
-                                <div key={idx} className="flex flex-col group">
-                                    {/* Timeline Node Header: Dot on the horizontal line + vertical stem */}
-                                    <div className="flex items-center gap-2 pb-2.5">
-                                        <div className="w-3.5 h-3.5 rounded-full bg-blue-600 ring-4 ring-blue-50 flex items-center justify-center shadow-xs group-hover:scale-125 group-hover:ring-blue-100 transition-all duration-200">
-                                            <div className="w-1 h-1 rounded-full bg-white" />
-                                        </div>
-                                        <span className="text-xs font-bold text-slate-500 group-hover:text-blue-600 transition-colors">
-                                            {item.date}
-                                        </span>
-                                    </div>
+                                <div
+                                    key={idx}
+                                    className="relative pt-8 pb-7 px-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-md hover:border-indigo-300 transition-all duration-300 group hover:-translate-y-1"
+                                >
+                                    {/* Solid Blue Circle Dot sitting right on top-left border on the horizontal track */}
+                                    <div className="absolute -top-[7px] left-6 w-3.5 h-3.5 rounded-full bg-[#4f46e5] ring-4 ring-white z-10 group-hover:scale-125 transition-transform" />
 
-                                    {/* Card Content directly connected beneath the dot */}
-                                    <div className="flex-1 p-5 rounded-xl border bg-white border-slate-200/90 shadow-xs hover:shadow-md hover:border-blue-400/80 transition-all duration-300 space-y-2 group-hover:-translate-y-1">
-                                        <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-blue-600 transition-colors">
-                                            {item.title}
-                                        </h3>
-                                        <p className="text-xs leading-relaxed text-slate-500">
-                                            {item.desc}
-                                        </p>
-                                    </div>
+                                    <span className="block text-xs font-semibold text-slate-500">
+                                        {item.date}
+                                    </span>
+                                    <h3 className="font-extrabold text-sm sm:text-base text-slate-900 mt-2 group-hover:text-indigo-600 transition-colors">
+                                        {item.title}
+                                    </h3>
+                                    <p className="text-xs text-slate-500 leading-relaxed mt-1.5">
+                                        {item.desc}
+                                    </p>
                                 </div>
                             ))}
                         </div>
