@@ -647,14 +647,26 @@ export default function Welcome({ initialSection = 'home' }) {
                             </div>
                         </div>
 
-                        {/* Center: Mountain Banner Illustration (Col 4 - Large proportion, seamless blend) */}
+                        {/* Center: Mountain Banner Illustration (avatar1.png + custom font typography) */}
                         <div className="lg:col-span-4 flex items-center justify-center">
-                            <div className="w-full flex items-center justify-center group">
+                            <div className="w-full max-w-[460px] mx-auto relative group">
                                 <img
-                                    src="/images/about_illustration.png"
+                                    src="/images/avatar1.png"
                                     alt="Same person, bigger goals"
-                                    className="w-full max-w-[380px] sm:max-w-[420px] h-auto object-contain mix-blend-multiply drop-shadow-xs transition-transform duration-500 group-hover:scale-103"
+                                    className="w-full h-auto object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-102"
                                 />
+
+                                {/* Elegant cursive handwriting text overlay */}
+                                <div className="absolute top-3 right-2 sm:top-5 sm:right-5 text-right pointer-events-none select-none">
+                                    <p
+                                        className="text-2xl sm:text-3xl font-bold text-slate-800 leading-tight tracking-wide"
+                                        style={{ fontFamily: "'Caveat', 'Kalam', cursive" }}
+                                    >
+                                        Same person, <br />
+                                        bigger goals.
+                                    </p>
+                                    <div className="w-8 sm:w-10 h-0.5 bg-[#4338ca] ml-auto mt-1.5 rounded-full" />
+                                </div>
                             </div>
                         </div>
 
