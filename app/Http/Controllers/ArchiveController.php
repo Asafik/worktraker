@@ -35,7 +35,7 @@ class ArchiveController extends Controller
                 'fileType' => $a->file_type ?: 'ZIP',
                 'storageLocation' => 'Google Drive',
                 'storageConnected' => true,
-                'detailTags' => array_unique(array_merge([$a->category, 'Google Drive'], (array) ($a->tags ?: []))),
+                'detailTags' => array_values(array_unique(array_merge([$a->category, 'Google Drive'], (array) ($a->tags ?: [])))),
                 'notes' => $a->notes ?: 'Tersimpan di folder Google Drive WorkTrack.',
                 'googleDriveFileId' => $a->google_drive_file_id,
                 'googleDriveViewLink' => $a->google_drive_view_link,

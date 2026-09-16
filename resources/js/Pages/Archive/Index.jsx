@@ -537,7 +537,10 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
                                     <span>Tags</span>
                                 </div>
                                 <div className="flex flex-wrap items-center gap-1.5">
-                                    {activeArchive.detailTags.map((t, idx) => (
+                                    {(Array.isArray(activeArchive?.detailTags)
+                                        ? activeArchive.detailTags
+                                        : Object.values(activeArchive?.detailTags || [])
+                                    ).map((t, idx) => (
                                         <span
                                             key={idx}
                                             className="px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40"
@@ -578,13 +581,7 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
 
                             {/* Action Buttons */}
                             <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 space-y-2.5">
-                                <button
-                                    onClick={() => alert(`Mengunduh ${activeArchive.name}...`)}
-                                    className="w-full py-2.5 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 shadow-sm hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all"
-                                >
-                                    <Download className="w-4 h-4" />
-                                    <span>Download File</span>
-                                </button>
+
 
                                 <button
                                     onClick={() => {
