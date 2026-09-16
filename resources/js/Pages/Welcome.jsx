@@ -455,7 +455,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                 desc: 'Monitoring and verification system for MBG kitchens, supporting field officers with offline sync mode.',
                                 tags: ['Laravel', 'MySQL', 'Offline Mode'],
                                 img: '/images/proj1.png',
-                                link: '/projects',
+                                link: '/projects/monitoring-dapur-mbg',
                             },
                             {
                                 id: 2,
@@ -464,7 +464,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                 desc: 'Data verification portal with role-based access management, approval workflows, and audit reporting.',
                                 tags: ['Laravel', 'Tailwind CSS', 'DOF'],
                                 img: '/images/proj2.png',
-                                link: '/projects',
+                                link: '/projects/verval-data-system',
                             },
                             {
                                 id: 3,
@@ -473,7 +473,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                 desc: 'Personal productivity tracker with daily work logging, progress analytics, and portfolio integration.',
                                 tags: ['Laravel', 'Filament', 'Chart.js'],
                                 img: '/images/proj3.png',
-                                link: '/projects',
+                                link: '/projects/personal-tracker',
                             },
                             {
                                 id: 4,
@@ -482,7 +482,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                 desc: 'Modern application interface redesign focused on clean component hierarchy, usability, and responsive layout.',
                                 tags: ['UI/UX', 'Tailwind CSS', 'Responsive'],
                                 img: '/images/proj4.png',
-                                link: '/projects',
+                                link: '/projects/application-redesign',
                             },
                         ].map((proj) => (
                             <Link

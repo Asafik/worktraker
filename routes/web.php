@@ -27,6 +27,10 @@ Route::get('/projects', function () {
     return Inertia::render('Projects');
 })->name('projects');
 
+Route::get('/projects/{slug}', function ($slug) {
+    return Inertia::render('ProjectDetail', ['slug' => $slug]);
+})->name('projects.show');
+
 Route::get('/tasks', function () {
     return Inertia::render('Tasks');
 })->name('tasks');
