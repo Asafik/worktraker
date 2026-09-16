@@ -416,12 +416,28 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
             </header>
 
             {/* ========================================================== */}
-            {/* 2. HERO HEADER (Dark Backdrop matching user mockup)       */}
+            {/* 2. HERO HEADER (Seamlessly blended background image matching main page) */}
             {/* ========================================================== */}
-            <section className="relative bg-[#070b19] text-white pt-28 sm:pt-32 pb-16 overflow-hidden border-b border-slate-800/80">
-                {/* Background ambient lighting and subtle tech grid */}
-                <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:24px_24px]" />
-                <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 blur-3xl pointer-events-none" />
+            <section className="relative bg-[#070b19] text-white pt-28 sm:pt-32 pb-20 overflow-hidden border-b border-slate-800/80 min-h-[380px] flex items-center">
+                {/* Ambient Radial Gradient Glow */}
+                <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute top-10 left-10 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
+
+                {/* Seamless Edge-to-Edge Developer Workstation Image on the right */}
+                <div className="absolute top-0 right-0 bottom-0 w-full lg:w-[58%] xl:w-[52%] pointer-events-none overflow-hidden select-none z-0">
+                    <img
+                        src="/images/hero.png"
+                        alt="Developer Workstation"
+                        className="w-full h-full object-cover object-[right_top] lg:object-[90%_top] opacity-60"
+                    />
+                    {/* Seamless Gradient Fade: left edge dissolves smoothly into the #070b19 background */}
+                    <div className="absolute inset-y-0 left-0 w-36 sm:w-56 lg:w-72 bg-gradient-to-r from-[#070b19] via-[#070b19]/80 to-transparent" />
+                    {/* Darken overlay so text remains perfectly legible */}
+                    <div className="absolute inset-0 bg-[#070b19]/40 backdrop-blur-xs" />
+                    {/* Top & Bottom seamless fades */}
+                    <div className="absolute inset-x-0 top-0 h-16 bg-gradient-to-b from-[#070b19] to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#070b19] to-transparent" />
+                </div>
 
                 <div className="max-w-[1360px] mx-auto px-4 sm:px-6 relative z-10">
                     <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
