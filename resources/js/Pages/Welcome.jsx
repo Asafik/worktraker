@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, Link } from '@inertiajs/react';
 import {
     ArrowRight,
@@ -9,8 +9,6 @@ import {
     GraduationCap,
     Briefcase,
     MapPin,
-    Moon,
-    Sun,
     Send,
     CheckCircle2,
     X,
@@ -104,10 +102,13 @@ const FigmaSvg = ({ className }) => (
 );
 
 export default function Welcome() {
-    // Default to Light Mode per user request
-    const [isDark, setIsDark] = useState(false);
     const [contactModal, setContactModal] = useState(false);
     const [sentToast, setSentToast] = useState(false);
+
+    // Ensure front page is ALWAYS in clean Light Mode and NEVER affected by dashboard dark mode
+    useEffect(() => {
+        document.documentElement.classList.remove('dark');
+    }, []);
 
     const handleSendMessage = (e) => {
         e.preventDefault();
@@ -117,9 +118,7 @@ export default function Welcome() {
     };
 
     return (
-        <div className={`min-h-screen font-sans selection:bg-blue-600 selection:text-white transition-colors duration-200 ${
-            isDark ? 'bg-[#070b19] text-slate-100' : 'bg-white text-slate-900'
-        }`}>
+        <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-600 selection:text-white">
             <Head title="Rabirts - Full Stack Web Developer" />
 
             {/* Success Toast */}
@@ -131,7 +130,7 @@ export default function Welcome() {
             )}
 
             {/* ========================================================== */}
-            {/* 1. TOP NAVBAR (Always deep navy hero bar matching mockup) */}
+            {/* 1. TOP NAVBAR (Deep navy hero bar matching mockup) */}
             {/* ========================================================== */}
             <header className="fixed top-0 inset-x-0 z-40 bg-[#070b19]/90 backdrop-blur-md border-b border-slate-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
@@ -171,19 +170,6 @@ export default function Welcome() {
 
                     {/* Right CTA Actions */}
                     <div className="flex items-center gap-3">
-                        {/* Theme Toggle Button */}
-                        <button
-                            onClick={() => setIsDark(!isDark)}
-                            title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
-                            className="p-2 text-slate-400 hover:text-white rounded-lg transition-colors cursor-pointer"
-                        >
-                            {isDark ? (
-                                <Sun className="w-4 h-4 text-amber-400" />
-                            ) : (
-                                <Moon className="w-4 h-4 text-slate-300" />
-                            )}
-                        </button>
-
                         <button
                             onClick={() => setContactModal(true)}
                             className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all cursor-pointer"
@@ -311,13 +297,11 @@ export default function Welcome() {
             </section>
 
             {/* ========================================================== */}
-            {/* 3. FEATURED PROJECTS (Selected Works - Default Light) */}
+            {/* 3. FEATURED PROJECTS (Selected Works) */}
             {/* ========================================================== */}
             <section
                 id="projects"
-                className={`py-16 sm:py-20 border-b transition-colors ${
-                    isDark ? 'bg-[#090e21] border-slate-800/80' : 'bg-[#fcfdfd] border-slate-200/80'
-                }`}
+                className="py-16 sm:py-20 border-b bg-[#fcfdfd] border-slate-200/80"
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                     {/* Header */}
@@ -326,10 +310,10 @@ export default function Welcome() {
                             <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                                 ‹ FEATURED PROJECTS
                             </span>
-                            <h2 className={`text-2xl sm:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
                                 Selected <span className="text-blue-600">Works</span>
                             </h2>
-                            <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                            <p className="text-xs sm:text-sm text-slate-500">
                                 Some of the projects I've worked on, from internal systems to personal projects.
                             </p>
                         </div>
@@ -381,11 +365,7 @@ export default function Welcome() {
                         ].map((proj) => (
                             <div
                                 key={proj.id}
-                                className={`rounded-xl border overflow-hidden hover:-translate-y-1 transition-all group flex flex-col justify-between ${
-                                    isDark
-                                        ? 'bg-[#0e1633] border-slate-800/80 shadow-lg hover:border-blue-500/50'
-                                        : 'bg-white border-slate-200 shadow-xs hover:shadow-md hover:border-blue-400'
-                                }`}
+                                className="rounded-xl border overflow-hidden hover:-translate-y-1 transition-all group flex flex-col justify-between bg-white border-slate-200 shadow-xs hover:shadow-md hover:border-blue-400"
                             >
                                 <div className="space-y-3.5">
                                     {/* Thumbnail Preview with badges */}
@@ -396,35 +376,21 @@ export default function Welcome() {
                                             className="w-full h-full object-cover group-hover:scale-105 transition-all duration-300"
                                         />
                                         {/* Tag badge */}
-                                        <span className={`absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-semibold border ${
-                                            isDark
-                                                ? 'bg-slate-900/80 backdrop-blur-xs text-slate-300 border-slate-700/60'
-                                                : 'bg-white/90 backdrop-blur-xs text-slate-700 border-slate-200/80 shadow-xs'
-                                        }`}>
+                                        <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-md text-[10px] font-semibold border bg-white/90 backdrop-blur-xs text-slate-700 border-slate-200/80 shadow-xs">
                                             {proj.type}
                                         </span>
                                         {/* Diagonal arrow button */}
-                                        <div className={`absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center border transition-colors ${
-                                            isDark
-                                                ? 'bg-slate-900/80 text-slate-300 border-slate-700/60 group-hover:text-blue-400'
-                                                : 'bg-white text-slate-700 border-slate-200 shadow-xs group-hover:text-blue-600'
-                                        }`}>
+                                        <div className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center border transition-colors bg-white text-slate-700 border-slate-200 shadow-xs group-hover:text-blue-600">
                                             <ExternalLink className="w-3.5 h-3.5" />
                                         </div>
                                     </div>
 
                                     {/* Content */}
                                     <div className="px-4 space-y-1.5">
-                                        <h3 className={`font-bold text-sm sm:text-base transition-colors ${
-                                            isDark
-                                                ? 'text-white group-hover:text-blue-400'
-                                                : 'text-slate-900 group-hover:text-blue-600'
-                                        }`}>
+                                        <h3 className="font-bold text-sm sm:text-base transition-colors text-slate-900 group-hover:text-blue-600">
                                             {proj.title}
                                         </h3>
-                                        <p className={`text-xs line-clamp-3 leading-relaxed ${
-                                            isDark ? 'text-slate-400' : 'text-slate-500'
-                                        }`}>
+                                        <p className="text-xs line-clamp-3 leading-relaxed text-slate-500">
                                             {proj.desc}
                                         </p>
                                     </div>
@@ -435,11 +401,7 @@ export default function Welcome() {
                                     {proj.tags.map((tag, tIdx) => (
                                         <span
                                             key={tIdx}
-                                            className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${
-                                                isDark
-                                                    ? 'bg-slate-800/80 text-slate-300 border-slate-700/60'
-                                                    : 'bg-slate-100 text-slate-600 border-slate-200/70'
-                                            }`}
+                                            className="px-2 py-0.5 rounded text-[10px] font-semibold border bg-slate-100 text-slate-600 border-slate-200/70"
                                         >
                                             {tag}
                                         </span>
@@ -452,13 +414,11 @@ export default function Welcome() {
             </section>
 
             {/* ========================================================== */}
-            {/* 4. RECENT EXPERIENCE (Work Journey - Default Light) */}
+            {/* 4. RECENT EXPERIENCE (Work Journey) */}
             {/* ========================================================== */}
             <section
                 id="experience"
-                className={`py-16 sm:py-20 border-b transition-colors ${
-                    isDark ? 'bg-[#070b19] border-slate-800/80' : 'bg-white border-slate-200/80'
-                }`}
+                className="py-16 sm:py-20 border-b bg-white border-slate-200/80"
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                     {/* Header */}
@@ -467,10 +427,10 @@ export default function Welcome() {
                             <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                                 ‹ WORK JOURNEY
                             </span>
-                            <h2 className={`text-2xl sm:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
                                 Recent Experience
                             </h2>
-                            <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                            <p className="text-xs sm:text-sm text-slate-500">
                                 A glimpse of what I've been working on.
                             </p>
                         </div>
@@ -487,7 +447,7 @@ export default function Welcome() {
                     {/* Horizontal 4-step Timeline with connecting line */}
                     <div className="relative">
                         {/* Connecting line behind dots on large screens */}
-                        <div className="hidden lg:block absolute top-[11px] left-8 right-8 h-0.5 bg-blue-100 dark:bg-slate-800 z-0" />
+                        <div className="hidden lg:block absolute top-[11px] left-8 right-8 h-0.5 bg-blue-100 z-0" />
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
                             {[
@@ -514,22 +474,18 @@ export default function Welcome() {
                             ].map((item, idx) => (
                                 <div
                                     key={idx}
-                                    className={`p-5 rounded-xl border transition-all space-y-3 relative ${
-                                        isDark
-                                            ? 'bg-[#0e1633] border-slate-800/80 hover:border-slate-700'
-                                            : 'bg-white border-slate-200 shadow-xs hover:shadow-md hover:border-slate-300'
-                                    }`}
+                                    className="p-5 rounded-xl border transition-all space-y-3 relative bg-white border-slate-200 shadow-xs hover:shadow-md hover:border-slate-300"
                                 >
                                     <div className="flex items-center gap-2">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-blue-600 ring-4 ring-blue-100 dark:ring-blue-950/60" />
-                                        <span className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                                        <div className="w-2.5 h-2.5 rounded-full bg-blue-600 ring-4 ring-blue-100" />
+                                        <span className="text-xs font-bold text-slate-600">
                                             {item.date}
                                         </span>
                                     </div>
-                                    <h3 className={`font-bold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                                    <h3 className="font-bold text-sm text-slate-900">
                                         {item.title}
                                     </h3>
-                                    <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                                    <p className="text-xs leading-relaxed text-slate-500">
                                         {item.desc}
                                     </p>
                                 </div>
@@ -540,22 +496,18 @@ export default function Welcome() {
             </section>
 
             {/* ========================================================== */}
-            {/* 5. TECH STACK (Tools I Use - Default Light) */}
+            {/* 5. TECH STACK (Tools I Use) */}
             {/* ========================================================== */}
-            <section
-                className={`py-16 sm:py-20 border-b transition-colors ${
-                    isDark ? 'bg-[#090e21] border-slate-800/80' : 'bg-[#fcfdfd] border-slate-200/80'
-                }`}
-            >
+            <section className="py-16 sm:py-20 border-b bg-[#fcfdfd] border-slate-200/80">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                     <div className="space-y-1 text-center sm:text-left">
                         <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                             ‹ TECH STACK
                         </span>
-                        <h2 className={`text-2xl sm:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                        <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
                             Tools I Use
                         </h2>
-                        <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                        <p className="text-xs sm:text-sm text-slate-500">
                             Technologies and tools that I work with.
                         </p>
                     </div>
@@ -576,20 +528,12 @@ export default function Welcome() {
                             return (
                                 <div
                                     key={tIdx}
-                                    className={`p-4 rounded-xl border flex flex-col items-center justify-center gap-2.5 transition-all hover:-translate-y-1 group ${
-                                        isDark
-                                            ? 'bg-[#0e1633] border-slate-800/80 hover:border-blue-500/50'
-                                            : 'bg-white border-slate-200 shadow-xs hover:border-blue-400 hover:shadow-md'
-                                    }`}
+                                    className="p-4 rounded-xl border flex flex-col items-center justify-center gap-2.5 transition-all hover:-translate-y-1 group bg-white border-slate-200 shadow-xs hover:border-blue-400 hover:shadow-md"
                                 >
                                     <div className="w-10 h-10 flex items-center justify-center">
                                         <IconComponent className="w-8 h-8 object-contain transition-transform group-hover:scale-110" />
                                     </div>
-                                    <span className={`text-xs font-semibold transition-colors ${
-                                        isDark
-                                            ? 'text-slate-300 group-hover:text-white'
-                                            : 'text-slate-700 group-hover:text-slate-900'
-                                    }`}>
+                                    <span className="text-xs font-semibold transition-colors text-slate-700 group-hover:text-slate-900">
                                         {tool.name}
                                     </span>
                                 </div>
@@ -600,13 +544,11 @@ export default function Welcome() {
             </section>
 
             {/* ========================================================== */}
-            {/* 6. ABOUT ME (More Than Just Code - Default Light) */}
+            {/* 6. ABOUT ME (More Than Just Code) */}
             {/* ========================================================== */}
             <section
                 id="about"
-                className={`py-16 sm:py-20 border-b transition-colors ${
-                    isDark ? 'bg-[#070b19] border-slate-800/80' : 'bg-white border-slate-200/80'
-                }`}
+                className="py-16 sm:py-20 border-b bg-white border-slate-200/80"
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
@@ -615,21 +557,17 @@ export default function Welcome() {
                             <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                                 ‹ ABOUT ME
                             </span>
-                            <h2 className={`text-2xl sm:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
                                 More Than <span className="text-indigo-600">Just Code</span>
                             </h2>
-                            <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                            <p className="text-xs sm:text-sm leading-relaxed text-slate-600">
                                 I'm a web developer who enjoys solving problems, learning new technologies, and building things that are useful. I'm currently working while continuously improving my skills, with a focus on Laravel and modern web development.
                             </p>
 
                             <div className="pt-2">
                                 <Link
                                     href="/portfolio"
-                                    className={`inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5 ${
-                                        isDark
-                                            ? 'border-slate-700 bg-[#0e1633] hover:bg-[#152047] text-white'
-                                            : 'border-slate-300 bg-white hover:bg-slate-50 text-slate-800 shadow-xs'
-                                    }`}
+                                    className="inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5 border-slate-300 bg-white hover:bg-slate-50 text-slate-800 shadow-xs"
                                 >
                                     <span>Learn More About Me</span>
                                     <ArrowRight className="w-4 h-4" />
@@ -639,9 +577,7 @@ export default function Welcome() {
 
                         {/* Center: Mountain Banner Illustration */}
                         <div className="lg:col-span-4 flex items-center justify-center">
-                            <div className={`rounded-xl overflow-hidden border shadow-xs ${
-                                isDark ? 'border-slate-800/80' : 'border-slate-200'
-                            }`}>
+                            <div className="rounded-xl overflow-hidden border shadow-xs border-slate-200">
                                 <img
                                     src="/images/about_illustration.png"
                                     alt="Same person, bigger goals"
@@ -662,16 +598,12 @@ export default function Welcome() {
                                 return (
                                     <div
                                         key={aIdx}
-                                        className={`p-3 rounded-lg border flex items-center gap-3 transition-colors ${
-                                            isDark
-                                                ? 'bg-[#0e1633] border-slate-800/80 hover:border-slate-700'
-                                                : 'bg-[#f8fafc] border-slate-200/80 hover:border-slate-300'
-                                        }`}
+                                        className="p-3 rounded-lg border flex items-center gap-3 transition-colors bg-[#f8fafc] border-slate-200/80 hover:border-slate-300"
                                     >
                                         <div className="w-7 h-7 rounded-md bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
                                             <AttrIcon className="w-4 h-4" />
                                         </div>
-                                        <span className={`font-semibold text-xs ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
+                                        <span className="font-semibold text-xs text-slate-800">
                                             {attr.title}
                                         </span>
                                     </div>
@@ -683,13 +615,11 @@ export default function Welcome() {
             </section>
 
             {/* ========================================================== */}
-            {/* 7. GET IN TOUCH (Let's Connect - Default Light) */}
+            {/* 7. GET IN TOUCH (Let's Connect) */}
             {/* ========================================================== */}
             <section
                 id="contact"
-                className={`py-16 sm:py-20 border-b transition-colors ${
-                    isDark ? 'bg-[#090e21] border-slate-800/80' : 'bg-[#fcfdfd] border-slate-200/80'
-                }`}
+                className="py-16 sm:py-20 border-b bg-[#fcfdfd] border-slate-200/80"
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -697,10 +627,10 @@ export default function Welcome() {
                             <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                                 ‹ LET'S CONNECT
                             </span>
-                            <h2 className={`text-2xl sm:text-3xl font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
                                 Get In Touch
                             </h2>
-                            <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                            <p className="text-xs sm:text-sm text-slate-500">
                                 Have a project in mind or just want to say hello? Feel free to reach out!
                             </p>
                         </div>
@@ -720,11 +650,7 @@ export default function Welcome() {
                                     href="https://github.com/asafik"
                                     target="_blank"
                                     rel="noreferrer"
-                                    className={`p-2 rounded-lg border transition-colors ${
-                                        isDark
-                                            ? 'bg-[#0e1633] border-slate-800 text-slate-400 hover:text-white hover:border-slate-700'
-                                            : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 shadow-xs'
-                                    }`}
+                                    className="p-2 rounded-lg border transition-colors bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 shadow-xs"
                                 >
                                     <GithubIcon className="w-4 h-4" />
                                 </a>
@@ -732,11 +658,7 @@ export default function Welcome() {
                                     href="https://linkedin.com/in/asafik"
                                     target="_blank"
                                     rel="noreferrer"
-                                    className={`p-2 rounded-lg border transition-colors ${
-                                        isDark
-                                            ? 'bg-[#0e1633] border-slate-800 text-slate-400 hover:text-blue-400 hover:border-slate-700'
-                                            : 'bg-white border-slate-200 text-slate-600 hover:text-blue-600 hover:border-slate-300 shadow-xs'
-                                    }`}
+                                    className="p-2 rounded-lg border transition-colors bg-white border-slate-200 text-slate-600 hover:text-blue-600 hover:border-slate-300 shadow-xs"
                                 >
                                     <LinkedinIcon className="w-4 h-4" />
                                 </a>
@@ -744,11 +666,7 @@ export default function Welcome() {
                                     href="https://instagram.com"
                                     target="_blank"
                                     rel="noreferrer"
-                                    className={`p-2 rounded-lg border transition-colors ${
-                                        isDark
-                                            ? 'bg-[#0e1633] border-slate-800 text-slate-400 hover:text-pink-400 hover:border-slate-700'
-                                            : 'bg-white border-slate-200 text-slate-600 hover:text-pink-600 hover:border-slate-300 shadow-xs'
-                                    }`}
+                                    className="p-2 rounded-lg border transition-colors bg-white border-slate-200 text-slate-600 hover:text-pink-600 hover:border-slate-300 shadow-xs"
                                 >
                                     <InstagramIcon className="w-4 h-4" />
                                 </a>
@@ -759,15 +677,11 @@ export default function Welcome() {
             </section>
 
             {/* ========================================================== */}
-            {/* 8. FOOTER (Default Light matching mockup) */}
+            {/* 8. FOOTER */}
             {/* ========================================================== */}
-            <footer className={`py-8 transition-colors ${
-                isDark ? 'bg-[#070b19] text-slate-400' : 'bg-white text-slate-600'
-            }`}>
+            <footer className="py-8 bg-white text-slate-600">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b ${
-                        isDark ? 'border-slate-800' : 'border-slate-200'
-                    }`}>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-slate-200">
                         {/* Logo & Slogan */}
                         <div className="flex items-center gap-3">
                             <img
@@ -776,38 +690,34 @@ export default function Welcome() {
                                 className="w-6 h-6 rounded-md object-contain"
                             />
                             <div>
-                                <h3 className={`font-extrabold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>Rabirts</h3>
-                                <p className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                                <h3 className="font-extrabold text-sm text-slate-900">Rabirts</h3>
+                                <p className="text-[11px] text-slate-500">
                                     Building a better tomorrow, line by line.
                                 </p>
                             </div>
                         </div>
 
                         {/* Navigation Links */}
-                        <div className={`flex items-center gap-6 text-xs ${
-                            isDark ? 'text-slate-400' : 'text-slate-600'
-                        }`}>
-                            <a href="#home" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
+                        <div className="flex items-center gap-6 text-xs text-slate-600">
+                            <a href="#home" className="transition-colors hover:text-slate-900">
                                 Home
                             </a>
-                            <a href="#projects" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
+                            <a href="#projects" className="transition-colors hover:text-slate-900">
                                 Projects
                             </a>
-                            <a href="#experience" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
+                            <a href="#experience" className="transition-colors hover:text-slate-900">
                                 Experience
                             </a>
-                            <a href="#about" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
+                            <a href="#about" className="transition-colors hover:text-slate-900">
                                 About
                             </a>
-                            <a href="#contact" className={`transition-colors ${isDark ? 'hover:text-white' : 'hover:text-slate-900'}`}>
+                            <a href="#contact" className="transition-colors hover:text-slate-900">
                                 Contact
                             </a>
                         </div>
                     </div>
 
-                    <div className={`pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs ${
-                        isDark ? 'text-slate-500' : 'text-slate-400'
-                    }`}>
+                    <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
                         <p>© 2026 Rabirts. All rights reserved.</p>
                         <p>Designed for WorkTrack Portfolio Showcase</p>
                     </div>
@@ -819,23 +729,15 @@ export default function Welcome() {
             {/* ========================================================== */}
             {contactModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-                    <div className={`rounded-xl border shadow-2xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150 ${
-                        isDark ? 'bg-[#0e1633] border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-                    }`}>
-                        <div className={`flex items-center justify-between pb-3 border-b ${
-                            isDark ? 'border-slate-800' : 'border-slate-200'
-                        }`}>
-                            <h3 className={`text-base font-bold flex items-center gap-2 ${
-                                isDark ? 'text-white' : 'text-slate-900'
-                            }`}>
+                    <div className="rounded-xl border shadow-2xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150 bg-white border-slate-200 text-slate-900">
+                        <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+                            <h3 className="text-base font-bold flex items-center gap-2 text-slate-900">
                                 <Send className="w-4 h-4 text-blue-600" />
                                 <span>Kirim Pesan ke Rabirts</span>
                             </h3>
                             <button
                                 onClick={() => setContactModal(false)}
-                                className={`p-1 cursor-pointer ${
-                                    isDark ? 'text-slate-400 hover:text-white' : 'text-slate-400 hover:text-slate-700'
-                                }`}
+                                className="p-1 cursor-pointer text-slate-400 hover:text-slate-700"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -843,70 +745,46 @@ export default function Welcome() {
 
                         <form onSubmit={handleSendMessage} className="space-y-3.5">
                             <div>
-                                <label className={`block text-xs font-semibold mb-1 ${
-                                    isDark ? 'text-slate-300' : 'text-slate-700'
-                                }`}>
+                                <label className="block text-xs font-semibold mb-1 text-slate-700">
                                     Nama Anda
                                 </label>
                                 <input
                                     type="text"
                                     placeholder="Contoh: John Doe"
-                                    className={`w-full border rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-blue-500 ${
-                                        isDark
-                                            ? 'bg-[#070b19] border-slate-700/80 text-slate-100 placeholder-slate-500'
-                                            : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
-                                    }`}
+                                    className="w-full border rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-blue-500 bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className={`block text-xs font-semibold mb-1 ${
-                                    isDark ? 'text-slate-300' : 'text-slate-700'
-                                }`}>
+                                <label className="block text-xs font-semibold mb-1 text-slate-700">
                                     Email Anda
                                 </label>
                                 <input
                                     type="email"
                                     placeholder="name@example.com"
-                                    className={`w-full border rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-blue-500 ${
-                                        isDark
-                                            ? 'bg-[#070b19] border-slate-700/80 text-slate-100 placeholder-slate-500'
-                                            : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
-                                    }`}
+                                    className="w-full border rounded-lg px-3 py-2 text-xs sm:text-sm focus:outline-none focus:border-blue-500 bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className={`block text-xs font-semibold mb-1 ${
-                                    isDark ? 'text-slate-300' : 'text-slate-700'
-                                }`}>
+                                <label className="block text-xs font-semibold mb-1 text-slate-700">
                                     Pesan / Keperluan Proyek
                                 </label>
                                 <textarea
                                     rows={3}
                                     placeholder="Ceritakan proyek atau tawaran kerja sama Anda..."
-                                    className={`w-full border rounded-lg p-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 resize-none ${
-                                        isDark
-                                            ? 'bg-[#070b19] border-slate-700/80 text-slate-100 placeholder-slate-500'
-                                            : 'bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400'
-                                    }`}
+                                    className="w-full border rounded-lg p-3 text-xs sm:text-sm focus:outline-none focus:border-blue-500 resize-none bg-slate-50 border-slate-300 text-slate-900 placeholder-slate-400"
                                     required
                                 />
                             </div>
 
-                            <div className={`flex items-center justify-end gap-2 pt-2 border-t ${
-                                isDark ? 'border-slate-800' : 'border-slate-200'
-                            }`}>
+                            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-200">
                                 <button
                                     type="button"
                                     onClick={() => setContactModal(false)}
-                                    className={`px-4 py-2 border rounded-lg text-xs font-semibold cursor-pointer ${
-                                        isDark
-                                            ? 'border-slate-700 text-slate-400 hover:text-white'
-                                            : 'border-slate-300 text-slate-600 hover:text-slate-800 hover:bg-slate-50'
-                                    }`}
+                                    className="px-4 py-2 border rounded-lg text-xs font-semibold cursor-pointer border-slate-300 text-slate-600 hover:text-slate-800 hover:bg-slate-50"
                                 >
                                     Batal
                                 </button>
