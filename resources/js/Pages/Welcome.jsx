@@ -13,6 +13,7 @@ import {
     CheckCircle2,
     X,
     LayoutDashboard,
+    Clock,
 } from 'lucide-react';
 
 // Brand SVGs
@@ -633,7 +634,7 @@ export default function Welcome({ initialSection = 'home' }) {
             {/* ========================================================== */}
             {/* 5. TECH STACK (Tools I Use) */}
             {/* ========================================================== */}
-            <section className="py-14 sm:py-16 bg-white">
+            <section className="pt-12 sm:pt-14 pb-8 sm:pb-10 bg-white">
                 <div className="max-w-[1360px] mx-auto px-4 sm:px-6 space-y-7">
                     <div className="space-y-1 text-center sm:text-left">
                         <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
@@ -688,42 +689,49 @@ export default function Welcome({ initialSection = 'home' }) {
                 <div className="max-w-[1360px] mx-auto px-4 sm:px-6 space-y-7">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                         {/* Left: Bio & Profile Info (Col 4) */}
-                        <div className="lg:col-span-4 space-y-4">
-                            <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-                                ‹ ABOUT ME
-                            </span>
+                        <div className="lg:col-span-4 flex flex-col justify-center space-y-4">
+                            <div>
+                                <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
+                                    ‹ ABOUT ME
+                                </span>
+                            </div>
 
-                            {/* Personal Profile Photo Badge */}
-                            <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-[#f8fafc] border border-slate-200/80 shadow-xs">
-                                <div className="relative shrink-0">
-                                    <img
-                                        src="/images/about_profile.jpg"
-                                        alt="Rabirts Profile"
-                                        className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover ring-2 ring-blue-500/20 shadow-sm"
-                                    />
-                                    <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full" title="Open to Opportunities" />
-                                </div>
-                                <div className="min-w-0">
-                                    <div className="flex items-center gap-1.5 mb-0.5">
-                                        <h3 className="font-extrabold text-slate-900 text-sm sm:text-base tracking-tight truncate">Rabirts</h3>
-                                        <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                            {/* Profile Card & Bio grouped tightly as one unified narrative */}
+                            <div className="space-y-3.5">
+                                {/* Personal Profile Photo Badge */}
+                                <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-[#f8fafc] border border-slate-200/80 shadow-xs">
+                                    <div className="relative shrink-0">
+                                        <img
+                                            src="/images/about_profile.jpg"
+                                            alt="Rabirts Profile"
+                                            className="w-13 h-13 sm:w-14 sm:h-14 rounded-xl object-cover ring-2 ring-blue-500/20 shadow-sm"
+                                        />
+                                        <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full" title="Open to Opportunities" />
                                     </div>
-                                    <p className="text-xs text-blue-600 font-semibold truncate">Full Stack Web Developer</p>
-                                    <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
-                                        <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
-                                        <span>Indonesia &bull; Remote / On-site</span>
+                                    <div className="min-w-0">
+                                        <div className="flex items-center gap-1.5 mb-0.5">
+                                            <h3 className="font-extrabold text-slate-900 text-sm sm:text-base tracking-tight truncate">Rabirts</h3>
+                                            <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                                        </div>
+                                        <p className="text-xs text-blue-600 font-semibold truncate">Full Stack Web Developer</p>
+                                        <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
+                                            <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
+                                            <span>Indonesia &bull; Remote / On-site</span>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                                        More Than <span className="text-indigo-600">Just Code</span>
+                                    </h2>
+                                    <p className="text-xs sm:text-sm leading-relaxed text-slate-600">
+                                        I'm a web developer who enjoys solving problems, learning new technologies, and building things that are useful. I'm currently working while continuously improving my skills, with a focus on Laravel and modern web development.
                                     </p>
                                 </div>
                             </div>
 
-                            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
-                                More Than <span className="text-indigo-600">Just Code</span>
-                            </h2>
-                            <p className="text-xs sm:text-sm leading-relaxed text-slate-600">
-                                I'm a web developer who enjoys solving problems, learning new technologies, and building things that are useful. I'm currently working while continuously improving my skills, with a focus on Laravel and modern web development.
-                            </p>
-
-                            <div className="pt-1">
+                            <div className="pt-0.5">
                                 <Link
                                     href="/portfolio"
                                     className="inline-flex items-center gap-2 px-4 py-2 border rounded-lg text-xs sm:text-sm font-semibold transition-all hover:-translate-y-0.5 border-slate-300 bg-white hover:bg-slate-50 text-slate-800 shadow-xs group"
@@ -734,9 +742,9 @@ export default function Welcome({ initialSection = 'home' }) {
                             </div>
                         </div>
 
-                        {/* Center: Mountain Banner Illustration (Col 5 - Large & prominent) */}
-                        <div className="lg:col-span-5 flex items-center justify-center">
-                            <div className="w-full relative group rounded-2xl overflow-hidden bg-gradient-to-b from-blue-50/70 via-indigo-50/20 to-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col items-center justify-center min-h-[250px]">
+                        {/* Center: Mountain Banner Illustration (Col 5 - Centered with entire About section) */}
+                        <div className="lg:col-span-5 flex items-center justify-center h-full">
+                            <div className="w-full relative group rounded-2xl overflow-hidden bg-gradient-to-b from-blue-50/70 via-indigo-50/20 to-white border border-slate-200/80 p-4 sm:p-6 shadow-xs flex flex-col items-center justify-center min-h-[260px]">
                                 <img
                                     src="/images/avatar1.png"
                                     alt="Same person, bigger goals"
@@ -790,38 +798,50 @@ export default function Welcome({ initialSection = 'home' }) {
             {/* ========================================================== */}
             <section
                 id="contact"
-                className="py-14 sm:py-16 border-b bg-[#fcfdfd] border-slate-200/80"
+                className="py-14 sm:py-18 border-b bg-[#fcfdfd] border-slate-200/80"
             >
                 <div className="max-w-[1360px] mx-auto px-4 sm:px-6">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                        <div className="space-y-1">
+                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                        <div className="space-y-2.5 max-w-2xl">
                             <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
                                 ‹ LET'S CONNECT
                             </span>
-                            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 tracking-tight">
                                 Get In Touch
                             </h2>
-                            <p className="text-xs sm:text-sm text-slate-500">
-                                Have a project in mind or just want to say hello? Feel free to reach out!
+                            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+                                Have a project in mind, need help improving an existing system, or just want to say hello? I'm always excited to connect, exchange ideas, and explore how we can work together.
                             </p>
+                            <div className="flex flex-wrap items-center gap-4 pt-1 text-xs text-slate-500">
+                                <span className="inline-flex items-center gap-1.5">
+                                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                                    Available for freelance & full-time roles
+                                </span>
+                                <span className="hidden sm:inline text-slate-300">&bull;</span>
+                                <span className="inline-flex items-center gap-1.5">
+                                    <Clock className="w-3.5 h-3.5 text-slate-400" />
+                                    Fast response within 24 hours
+                                </span>
+                            </div>
                         </div>
 
                         {/* Right Action & Socials */}
-                        <div className="flex items-center gap-4">
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-4 shrink-0">
                             <button
                                 onClick={() => setContactModal(true)}
-                                className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#4f46e5] hover:bg-indigo-600 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-md shadow-indigo-600/30 transition-all hover:-translate-y-0.5 cursor-pointer active:translate-y-0"
+                                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#4f46e5] hover:bg-indigo-600 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-md shadow-indigo-600/30 transition-all hover:-translate-y-0.5 cursor-pointer active:translate-y-0"
                             >
                                 <Mail className="w-4 h-4" />
                                 <span>Send Me a Message</span>
                             </button>
 
-                            <div className="flex items-center gap-2 pl-2">
+                            <div className="flex items-center gap-2">
                                 <a
                                     href="https://github.com/asafik"
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="p-2 rounded-lg border transition-all bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
+                                    title="GitHub @asafik"
+                                    className="p-2.5 rounded-xl border transition-all bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
                                 >
                                     <GithubIcon className="w-4 h-4" />
                                 </a>
@@ -829,7 +849,8 @@ export default function Welcome({ initialSection = 'home' }) {
                                     href="https://linkedin.com/in/asafik"
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="p-2 rounded-lg border transition-all bg-white border-slate-200 text-slate-600 hover:text-blue-600 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
+                                    title="LinkedIn"
+                                    className="p-2.5 rounded-xl border transition-all bg-white border-slate-200 text-slate-600 hover:text-blue-600 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
                                 >
                                     <LinkedinIcon className="w-4 h-4" />
                                 </a>
@@ -837,7 +858,8 @@ export default function Welcome({ initialSection = 'home' }) {
                                     href="https://instagram.com"
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="p-2 rounded-lg border transition-all bg-white border-slate-200 text-slate-600 hover:text-pink-600 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
+                                    title="Instagram"
+                                    className="p-2.5 rounded-xl border transition-all bg-white border-slate-200 text-slate-600 hover:text-pink-600 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
                                 >
                                     <InstagramIcon className="w-4 h-4" />
                                 </a>
@@ -869,17 +891,48 @@ export default function Welcome({ initialSection = 'home' }) {
                         </div>
 
                         {/* Navigation Links */}
-                        <div className="flex items-center gap-6 text-xs text-slate-600">
+                        <div className="flex flex-wrap items-center gap-6 text-xs text-slate-600">
                             {navItems.map((item) => (
                                 <a
                                     key={item.id}
                                     href={`#${item.id}`}
                                     onClick={(e) => handleNavClick(e, item.id)}
-                                    className="transition-colors hover:text-slate-900"
+                                    className="transition-colors hover:text-slate-900 font-medium"
                                 >
                                     {item.label}
                                 </a>
                             ))}
+                        </div>
+
+                        {/* Social Icons in Footer */}
+                        <div className="flex items-center gap-3 text-slate-500">
+                            <a
+                                href="https://github.com/asafik"
+                                target="_blank"
+                                rel="noreferrer"
+                                title="GitHub @asafik"
+                                className="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition-colors"
+                            >
+                                <GithubIcon className="w-4 h-4" />
+                            </a>
+                            <a
+                                href="https://linkedin.com/in/asafik"
+                                target="_blank"
+                                rel="noreferrer"
+                                title="LinkedIn"
+                                className="p-1.5 rounded-lg hover:bg-slate-100 hover:text-blue-600 transition-colors"
+                            >
+                                <LinkedinIcon className="w-4 h-4" />
+                            </a>
+                            <a
+                                href="https://instagram.com"
+                                target="_blank"
+                                rel="noreferrer"
+                                title="Instagram"
+                                className="p-1.5 rounded-lg hover:bg-slate-100 hover:text-pink-600 transition-colors"
+                            >
+                                <InstagramIcon className="w-4 h-4" />
+                            </a>
                         </div>
                     </div>
 
