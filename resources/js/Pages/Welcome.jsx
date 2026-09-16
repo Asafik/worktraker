@@ -14,6 +14,7 @@ import {
     X,
     Clock,
 } from 'lucide-react';
+import LandingNavbar from '@/Components/LandingNavbar';
 
 // Brand SVGs
 const GithubIcon = ({ className }) => (
@@ -239,61 +240,13 @@ export default function Welcome({ initialSection = 'home' }) {
             )}
 
             {/* ========================================================== */}
-            {/* 1. TOP NAVBAR (Deep navy bar matching mockup with active indicator) */}
+            {/* 1. TOP NAVBAR (Shared Reusable LandingNavbar Component)   */}
             {/* ========================================================== */}
-            <header className="fixed top-0 inset-x-0 z-40 bg-[#070b19]/90 backdrop-blur-md border-b border-slate-800">
-                <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-                    {/* Left: Brand */}
-                    <div className="flex-1 flex items-center justify-start">
-                        <a
-                            href="#home"
-                            onClick={(e) => handleNavClick(e, 'home')}
-                            className="flex items-center gap-3 cursor-pointer group"
-                        >
-                            <img
-                                src="/images/logo.png"
-                                alt="Rabirts Logo"
-                                className="w-8 h-8 rounded-lg object-contain shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform"
-                            />
-                            <span className="font-extrabold text-lg tracking-tight text-white">
-                                Rabirts
-                            </span>
-                        </a>
-                    </div>
-
-                    {/* Center: Navigation Links strictly centered */}
-                    <nav className="hidden md:flex items-center justify-center gap-8 text-xs sm:text-sm font-medium">
-                        {navItems.map((item) => {
-                            const isActive = activeSection === item.id;
-                            return (
-                                <a
-                                    key={item.id}
-                                    href={`#${item.id}`}
-                                    onClick={(e) => handleNavClick(e, item.id)}
-                                    className={`relative transition-colors py-1 ${
-                                        isActive
-                                            ? 'text-white font-semibold after:absolute after:bottom-[-20px] after:left-0 after:right-0 after:h-0.5 after:bg-blue-500'
-                                            : 'text-slate-300 hover:text-white'
-                                    }`}
-                                >
-                                    {item.label}
-                                </a>
-                            );
-                        })}
-                    </nav>
-
-                    {/* Right: CTA Actions */}
-                    <div className="flex-1 flex items-center justify-end">
-                        <button
-                            onClick={() => setContactModal(true)}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
-                        >
-                            <Mail className="w-4 h-4" />
-                            <span>Let's Talk</span>
-                        </button>
-                    </div>
-                </div>
-            </header>
+            <LandingNavbar
+                activeSection={activeSection}
+                onNavClick={handleNavClick}
+                onContactClick={() => setContactModal(true)}
+            />
 
             {/* ========================================================== */}
             {/* 2. HERO SECTION (Seamlessly blended background image matching mockup 1:1) */}

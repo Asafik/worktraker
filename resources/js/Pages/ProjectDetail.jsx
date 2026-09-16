@@ -24,6 +24,7 @@ import {
     Smartphone,
     MapPin,
 } from 'lucide-react';
+import LandingNavbar from '@/Components/LandingNavbar';
 
 const GithubIcon = ({ className = 'w-4 h-4' }) => (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -393,78 +394,14 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
             <Head title={`${project.title} - Rabirts`} />
 
             {/* ========================================================== */}
-            {/* 1. TOP NAVBAR (Deep navy bar matching main page exactly)   */}
+            {/* 1. TOP NAVBAR (Shared Reusable LandingNavbar Component)   */}
             {/* ========================================================== */}
-            <header className="fixed top-0 inset-x-0 z-50 bg-[#070b19]/90 backdrop-blur-md border-b border-slate-800">
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
-                    {/* Left: Brand */}
-                    <div className="flex-1 flex items-center justify-start">
-                        <Link
-                            href="/"
-                            className="flex items-center gap-3 cursor-pointer group"
-                        >
-                            <img
-                                src="/images/logo.png"
-                                alt="Rabirts Logo"
-                                className="w-8 h-8 rounded-lg object-contain shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform"
-                            />
-                            <span className="font-extrabold text-lg tracking-tight text-white">
-                                Rabirts
-                            </span>
-                        </Link>
-                    </div>
-
-                    {/* Center: Navigation Links strictly centered */}
-                    <nav className="hidden md:flex items-center justify-center gap-8 text-xs sm:text-sm font-medium">
-                        <Link
-                            href="/"
-                            className="text-slate-300 hover:text-white transition-colors py-1"
-                        >
-                            Home
-                        </Link>
-                        <Link
-                            href="/#projects"
-                            className="relative transition-colors py-1 text-white font-semibold after:absolute after:bottom-[-20px] after:left-0 after:right-0 after:h-0.5 after:bg-blue-500"
-                        >
-                            Projects
-                        </Link>
-                        <Link
-                            href="/#experience"
-                            className="text-slate-300 hover:text-white transition-colors py-1"
-                        >
-                            Experience
-                        </Link>
-                        <Link
-                            href="/#about"
-                            className="text-slate-300 hover:text-white transition-colors py-1"
-                        >
-                            About
-                        </Link>
-                        <Link
-                            href="/#contact"
-                            className="text-slate-300 hover:text-white transition-colors py-1"
-                        >
-                            Contact
-                        </Link>
-                    </nav>
-
-                    {/* Right: CTA Actions */}
-                    <div className="flex-1 flex items-center justify-end">
-                        <Link
-                            href="/#contact"
-                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
-                        >
-                            <Mail className="w-4 h-4" />
-                            <span>Let's Talk</span>
-                        </Link>
-                    </div>
-                </div>
-            </header>
+            <LandingNavbar activeSection="projects" />
 
             {/* ========================================================== */}
-            {/* 2. HERO HEADER (Clean compact size with workstation backdrop) */}
+            {/* 2. HERO HEADER (Seamless layout matching Welcome.jsx hero) */}
             {/* ========================================================== */}
-            <section className="relative bg-[#070b19] text-white pt-24 sm:pt-28 pb-14 sm:pb-16 overflow-hidden border-b border-slate-800/80 min-h-[360px] flex items-center">
+            <section className="relative bg-[#070b19] text-white pt-28 sm:pt-32 pb-14 sm:pb-16 overflow-hidden border-b border-slate-800/80 min-h-[460px] lg:min-h-[500px] flex items-center">
                 {/* Ambient Radial Gradient Glow */}
                 <div className="absolute top-1/4 right-0 w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute top-10 left-10 w-[400px] h-[400px] bg-indigo-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -485,42 +422,44 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                     <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#070b19] to-transparent" />
                 </div>
 
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 relative z-10 w-full">
-                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-                        {/* Left: Breadcrumbs + Title + Description + CTA */}
-                        <div className="space-y-4 max-w-2xl">
-                            {/* Breadcrumbs */}
-                            <div className="flex items-center gap-2 text-xs font-medium text-slate-400">
-                                <Link href="/" className="hover:text-blue-400 transition-colors">
+                <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+                    <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8">
+                        {/* Left: Breadcrumbs + Title + Description + CTA (aligned identical to Welcome.jsx hero) */}
+                        <div className="lg:w-[54%] xl:w-[50%] space-y-6">
+                            {/* Breadcrumbs matching greeting badge styling & position */}
+                            <nav aria-label="Breadcrumb" className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 border border-blue-500/20 text-slate-300">
+                                <Link href="/" className="hover:text-white transition-colors">
                                     Home
                                 </Link>
-                                <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                                <Link href="/#projects" className="hover:text-blue-400 transition-colors">
+                                <ChevronRight className="w-3 h-3 text-slate-500 shrink-0" />
+                                <Link href="/#projects" className="hover:text-white transition-colors">
                                     Projects
                                 </Link>
-                                <ChevronRight className="w-3.5 h-3.5 text-slate-600 shrink-0" />
-                                <span className="text-slate-200 font-semibold truncate">
+                                <ChevronRight className="w-3 h-3 text-slate-500 shrink-0" />
+                                <span className="text-blue-400 font-medium truncate max-w-[200px] sm:max-w-none">
                                     {project.title}
                                 </span>
+                            </nav>
+
+                            {/* Headings */}
+                            <div className="space-y-1">
+                                <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white tracking-tight leading-tight">
+                                    {project.title}
+                                </h1>
                             </div>
 
-                            {/* Project Title */}
-                            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight">
-                                {project.title}
-                            </h1>
-
                             {/* Subtitle */}
-                            <p className="text-sm sm:text-base text-slate-300 leading-relaxed">
+                            <p className="text-sm sm:text-base text-slate-300 max-w-xl leading-relaxed">
                                 {project.subtitle}
                             </p>
 
                             {/* Actions */}
-                            <div className="flex flex-wrap items-center gap-3 pt-2">
+                            <div className="flex flex-wrap items-center gap-3 pt-1">
                                 <a
                                     href={project.liveDemoUrl}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-600/30 transition-all hover:-translate-y-0.5"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-lg shadow-blue-500/25 transition-all hover:-translate-y-0.5 cursor-pointer"
                                 >
                                     <ExternalLink className="w-4 h-4" />
                                     <span>View Live Demo</span>
@@ -530,7 +469,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
                                     href={project.githubUrl}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 transition-all hover:-translate-y-0.5"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 transition-all hover:-translate-y-0.5 cursor-pointer"
                                 >
                                     <GithubIcon className="w-4 h-4" />
                                     <span>View on GitHub</span>
@@ -540,14 +479,14 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
 
                         {/* Right: Big Index / Meta Counter */}
                         <div className="lg:text-right shrink-0 select-none z-10 flex flex-row lg:flex-col items-baseline lg:items-end justify-between border-t lg:border-t-0 border-slate-800/80 pt-4 lg:pt-0">
-                            <span className="text-5xl sm:text-6xl font-black tracking-tight text-slate-200/90 select-none">
+                            <span className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white/90 select-none">
                                 / {project.index}
                             </span>
-                            <div className="mt-1">
-                                <span className="block text-xs font-semibold text-slate-300">
+                            <div className="mt-2">
+                                <span className="inline-block px-2.5 py-1 rounded-md text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
                                     {project.category}
                                 </span>
-                                <span className="block text-[11px] text-slate-500 mt-0.5">
+                                <span className="block text-xs text-slate-400 mt-1.5 font-medium">
                                     {project.techHeader}
                                 </span>
                             </div>
@@ -559,7 +498,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
             {/* ========================================================== */}
             {/* 3. SHOWCASE GALLERY & PROJECT INFO SIDEBAR                 */}
             {/* ========================================================== */}
-            <main className="max-w-[1360px] mx-auto px-4 sm:px-6 -mt-8 relative z-20 pb-20 space-y-16">
+            <main className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-20 pb-20 space-y-16">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     {/* Left Showcase (8 Cols): Main Frame + Interactive Thumbnails */}
                     <div className="lg:col-span-8 space-y-4">
@@ -919,7 +858,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
             {/* 6. FOOTER (Matching user mockup)                           */}
             {/* ========================================================== */}
             <footer className="border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950 py-10">
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div className="max-w-[1580px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
                     <div className="space-y-1 text-center sm:text-left">
                         <div className="flex items-center justify-center sm:justify-start gap-2.5">
                             <div className="w-7 h-7 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-black text-white text-xs">
