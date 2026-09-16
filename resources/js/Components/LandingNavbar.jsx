@@ -70,12 +70,19 @@ export default function LandingNavbar({
                 </nav>
 
                 {/* Right: CTA Actions */}
-                <div className="flex-1 flex items-center justify-end">
+                <div className="flex-1 flex items-center justify-end gap-3 sm:gap-4">
+                    <Link
+                        href="/login"
+                        className="text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-colors py-1"
+                    >
+                        Sign In
+                    </Link>
+
                     {onContactClick ? (
                         <button
                             type="button"
                             onClick={onContactClick}
-                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
+                            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
                         >
                             <Mail className="w-4 h-4" />
                             <span>Let's Talk</span>
@@ -83,7 +90,7 @@ export default function LandingNavbar({
                     ) : (
                         <Link
                             href="/#contact"
-                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
+                            className="inline-flex items-center gap-1.5 px-3.5 sm:px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
                         >
                             <Mail className="w-4 h-4" />
                             <span>Let's Talk</span>

@@ -19,6 +19,10 @@ Route::get('/contact', function () {
     return Inertia::render('Welcome/Index', ['initialSection' => 'contact']);
 })->name('contact');
 
+Route::get('/login', function () {
+    return Inertia::render('Auth/Login');
+})->name('login');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard/Index');
 })->name('dashboard');
