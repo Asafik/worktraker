@@ -568,44 +568,45 @@ export default function Welcome({ initialSection = 'home' }) {
                         </Link>
                     </div>
 
-                    {/* Unified Timeline: Continuous Track with Breathing Space to Cards */}
+                    {/* Unified Timeline: Continuous Track with Stem Connectors (1:1 with reference mockup) */}
                     <div className="relative pt-2">
-                        {/* Horizontal connecting line spanning continuously across the entire width */}
-                        <div className="hidden lg:block absolute top-[11px] left-3 right-3 h-[2px] bg-[#e0e7ff] z-0" />
+                        {/* Horizontal connecting line spanning continuously across the 4-card width */}
+                        <div className="hidden lg:block absolute top-[15px] left-0 right-0 h-[2px] bg-[#e0e7ff] z-0 pointer-events-none" />
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 relative z-10">
                             {[
                                 {
                                     date: 'Sep 2026',
                                     title: 'UI/UX Redesign',
-                                    desc: 'Revamped the interface and improved user experience for internal application modules.',
+                                    desc: 'Improved interface and user experience for internal application.',
                                 },
                                 {
                                     date: 'Aug 2026',
                                     title: 'Feature Development',
-                                    desc: 'Contributed to frontend module development and resolved workflow UI issues.',
+                                    desc: 'Built new module and fixed several issues.',
                                 },
                                 {
                                     date: 'Jul 2026',
                                     title: 'Data Verification System',
-                                    desc: 'Developed the UI and frontend reporting features for a data verification system.',
+                                    desc: 'Developed verval system with reporting features.',
                                 },
                                 {
                                     date: 'Jun 2026',
                                     title: 'System Maintenance',
-                                    desc: 'Handled frontend bug fixes, UI maintenance, and performance improvements.',
+                                    desc: 'Bug fixes and performance improvements.',
                                 },
                             ].map((item, idx) => (
-                                <div key={idx} className="flex flex-col group">
-                                    {/* Milestone Node on the Timeline Line with breathing room */}
-                                    <div className="hidden lg:flex items-center mb-3.5">
-                                        <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center border border-indigo-100 shadow-xs group-hover:scale-110 transition-transform">
-                                            <div className="w-3 h-3 rounded-full bg-[#4f46e5] group-hover:scale-110 transition-transform" />
-                                        </div>
+                                <div key={idx} className="flex flex-col group relative">
+                                    {/* Desktop Milestone Node: Solid indigo dot + vertical connector stem to card */}
+                                    <div className="hidden lg:block relative z-10 h-6">
+                                        {/* Solid Indigo Dot centered on the card's left border axis (x=0) */}
+                                        <div className="absolute top-0 -left-[7px] w-3.5 h-3.5 rounded-full bg-[#4f46e5] group-hover:scale-125 transition-transform duration-200 shadow-xs" />
+                                        {/* Vertical Stem connecting Dot to Card's Top-Left Corner */}
+                                        <div className="absolute top-[14px] -left-[1px] w-[2px] h-[10px] bg-[#e0e7ff] group-hover:bg-indigo-400 transition-colors duration-200" />
                                     </div>
 
-                                    {/* Experience Card with 12px radius matching Selected Works */}
-                                    <div className="p-6 rounded-xl bg-white border border-slate-200/80 shadow-xs hover:border-indigo-300 hover:shadow-md transition-all duration-300 flex-1 flex flex-col justify-between group-hover:-translate-y-1">
+                                    {/* Experience Card: 12px radius, top-left connects seamlessly with the timeline stem */}
+                                    <div className="p-6 rounded-xl lg:rounded-tl-none bg-white border border-slate-200/80 shadow-xs group-hover:border-indigo-300 group-hover:shadow-md transition-all duration-300 flex-1 flex flex-col justify-between">
                                         <div>
                                             <div className="flex items-center justify-between">
                                                 <span className="text-xs font-semibold text-slate-500">
