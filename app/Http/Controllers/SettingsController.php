@@ -76,10 +76,10 @@ class SettingsController extends Controller
                     'url' => 'https://drive.google.com',
                     'lastSynced' => now()->format('d M Y, H:i'),
                     'storage' => [
-                        'used' => '2.4 GB',
+                        'used' => '4.42 GB',
                         'total' => '15 GB',
-                        'percentage' => 16,
-                        'available' => '12.6 GB',
+                        'percentage' => 29.5,
+                        'available' => '10.58 GB',
                     ],
                 ],
                 'github' => [
