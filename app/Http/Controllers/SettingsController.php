@@ -75,6 +75,12 @@ class SettingsController extends Controller
                     'folderId' => config('services.google_drive.folder_id') ?? '',
                     'url' => 'https://drive.google.com',
                     'lastSynced' => now()->format('d M Y, H:i'),
+                    'storage' => [
+                        'used' => '2.4 GB',
+                        'total' => '15 GB',
+                        'percentage' => 16,
+                        'available' => '12.6 GB',
+                    ],
                 ],
                 'github' => [
                     'connected' => true,

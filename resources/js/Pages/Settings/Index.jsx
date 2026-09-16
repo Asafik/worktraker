@@ -190,6 +190,12 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
             folderId: integrationsStatus?.googleDrive?.folderId || '',
             url: integrationsStatus?.googleDrive?.url || 'https://drive.google.com',
             lastSynced: integrationsStatus?.googleDrive?.lastSynced || '16 Sep 2025, 21:05',
+            storage: integrationsStatus?.googleDrive?.storage || {
+                used: '2.4 GB',
+                total: '15 GB',
+                percentage: 16,
+                available: '12.6 GB',
+            },
             syncing: false,
         },
     }));
@@ -214,6 +220,12 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                     folderId: integrationsStatus?.googleDrive?.folderId || '',
                     url: integrationsStatus?.googleDrive?.url || 'https://drive.google.com',
                     lastSynced: integrationsStatus?.googleDrive?.lastSynced || '16 Sep 2025, 21:05',
+                    storage: integrationsStatus?.googleDrive?.storage || {
+                        used: '2.4 GB',
+                        total: '15 GB',
+                        percentage: 16,
+                        available: '12.6 GB',
+                    },
                     syncing: false,
                 },
             });
@@ -1271,6 +1283,39 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                             <SettingsIcon className="w-3.5 h-3.5 text-slate-500" />
                                             <span>Manage</span>
                                         </button>
+                                    </div>
+                                </div>
+
+                                {/* Storage Usage Bar */}
+                                <div className="p-3.5 sm:p-4 rounded-lg bg-slate-50 dark:bg-[#081330] border border-slate-200/80 dark:border-[#1e346e] space-y-2.5">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs">
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-bold text-slate-900 dark:text-white">Kapasitas Cloud Storage</span>
+                                            <span className="text-slate-300 dark:text-slate-600 hidden sm:inline">•</span>
+                                            <span className="text-slate-500 dark:text-slate-400 text-[11px] sm:text-xs">Google Drive Quota</span>
+                                        </div>
+                                        <div className="flex items-center gap-1.5 font-semibold text-xs">
+                                            <span className="text-blue-600 dark:text-blue-400 font-bold">{integrations.googleDrive.storage?.used || '2.4 GB'}</span>
+                                            <span className="text-slate-400 font-normal text-[11px]">terpakai dari</span>
+                                            <span className="text-slate-700 dark:text-slate-200 font-bold">{integrations.googleDrive.storage?.total || '15 GB'}</span>
+                                            <span className="text-slate-500 dark:text-slate-400 font-medium text-[11px]">({integrations.googleDrive.storage?.percentage || 16}%)</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Progress Bar Track */}
+                                    <div className="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden p-0.5">
+                                        <div
+                                            className="h-full rounded-full bg-gradient-to-r from-blue-500 via-indigo-500 to-emerald-500 transition-all duration-500 ease-out shadow-xs"
+                                            style={{ width: `${Math.min(100, integrations.googleDrive.storage?.percentage || 16)}%` }}
+                                        />
+                                    </div>
+
+                                    <div className="flex items-center justify-between text-[11px] text-slate-400 pt-0.5">
+                                        <span>Tersedia <strong>{integrations.googleDrive.storage?.available || '12.6 GB'}</strong> ruang kosong</span>
+                                        <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold text-[11px]">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block" />
+                                            Kapasitas Aman
+                                        </span>
                                     </div>
                                 </div>
 
