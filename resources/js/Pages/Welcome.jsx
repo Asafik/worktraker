@@ -765,8 +765,9 @@ export default function Welcome({ initialSection = 'home' }) {
                             </div>
                         </div>
 
-                        {/* Right: 4 Attribute Items (Col 3 - Clean Minimalist List without card box) */}
-                        <div className="lg:col-span-3 flex flex-col justify-center space-y-3">
+                        {/* Right: 4 Attribute Items (Col 3 - Flush with right container edge matching Figma card above) */}
+                        <div className="lg:col-span-3 flex flex-col justify-center items-start lg:items-end">
+                            <div className="space-y-3.5 w-full sm:w-auto lg:ml-auto">
                             {[
                                 { title: 'Problem Solver', icon: Puzzle },
                                 { title: 'Continuous Learner', icon: GraduationCap },
@@ -788,6 +789,7 @@ export default function Welcome({ initialSection = 'home' }) {
                                     </div>
                                 );
                             })}
+                            </div>
                         </div>
                     </div>
                 </div>
