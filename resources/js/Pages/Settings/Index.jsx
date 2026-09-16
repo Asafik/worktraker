@@ -78,21 +78,6 @@ const GoogleDriveIcon = ({ className }) => (
     </svg>
 );
 
-const FigmaIcon = ({ className }) => (
-    <svg className={className} viewBox="0 0 38 57" fill="none">
-        <path d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z" fill="#1ABCFE" />
-        <path d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z" fill="#0ACF83" />
-        <path d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19z" fill="#FF7262" />
-        <path d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z" fill="#F24E1E" />
-        <path d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z" fill="#A259FF" />
-    </svg>
-);
-
-const NotionIcon = ({ className }) => (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M4.459 4.208c.746.606 1.026.56 2.428.466l13.215-.793c.28 0 .047-.28-.046-.326L17.86 1.768c-.42-.326-.98-.7-2.054-.607L3.106 2.19c-.466.046-.56.28-.373.466l1.726 1.552zm.746 3.545v13.528c0 .84.42 1.12 1.306 1.073l14.475-.84c.886-.046.98-.56.98-1.166V6.96c0-.607-.233-.886-.793-.84l-15.174.887c-.606.046-.794.28-.794.746zm13.447.886c.093.42 0 .84-.42.887l-.933.14v10.31c-.606.326-1.166.466-1.633.466-.793 0-1.026-.233-1.633-1.026l-4.806-7.512v7.186l1.4.327c.093.42-.14.84-.56.84l-3.36.186c-.093-.42.14-.84.56-.84l1.12-.234V8.921l-1.4-.14c-.094-.42.14-.84.607-.84l3.5.047 5.087 7.792V8.921l-1.306-.187c-.094-.42.233-.84.653-.84l3.127.14c.046 0 .093.047.093.093z" />
-    </svg>
-);
 
 const GoogleGIcon = ({ className }) => (
     <svg className={className} viewBox="0 0 24 24">
@@ -223,16 +208,9 @@ export default function SettingsPage({ userProfile, flash }) {
             lastSynced: '15 Sep 2025, 18:10',
             syncing: false,
         },
-        figma: {
-            connected: false,
-        },
-        notion: {
-            connected: false,
-        },
     });
 
     const [modalManage, setModalManage] = useState(null); // 'github' | 'googleDrive'
-    const [modalConnect, setModalConnect] = useState(null); // 'figma' | 'notion'
 
     const handleSync = (key, name) => {
         setIntegrations((prev) => ({
@@ -1152,8 +1130,8 @@ export default function SettingsPage({ userProfile, flash }) {
                                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                                     {/* Icon & Title */}
                                     <div className="flex items-start gap-4">
-                                        <div className="w-12 h-12 rounded-full bg-[#181717] text-white flex items-center justify-center p-2.5 shadow-xs shrink-0">
-                                            <GithubIcon className="w-7 h-7" />
+                                        <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center p-2.5 shadow-xs shrink-0">
+                                            <img src="/images/svg/github.svg" alt="GitHub" className="w-7 h-7 brightness-0 invert" />
                                         </div>
                                         <div className="space-y-1">
                                             <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -1250,8 +1228,8 @@ export default function SettingsPage({ userProfile, flash }) {
                                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                                     {/* Icon & Title */}
                                     <div className="flex items-start gap-4">
-                                        <div className="w-12 h-12 rounded-lg bg-white dark:bg-[#0c183b] border border-slate-200/80 dark:border-slate-800 flex items-center justify-center p-2.5 shadow-2xs shrink-0">
-                                            <GoogleDriveIcon className="w-7 h-7" />
+                                        <div className="w-12 h-12 rounded-xl bg-white dark:bg-[#0c183b] border border-slate-200/80 dark:border-slate-800 flex items-center justify-center p-2.5 shadow-2xs shrink-0">
+                                            <img src="/images/svg/google_drive.svg" alt="Google Drive" className="w-7 h-7 object-contain" />
                                         </div>
                                         <div className="space-y-1">
                                             <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -1340,104 +1318,6 @@ export default function SettingsPage({ userProfile, flash }) {
                                     </button>
                                 </div>
                             </div>
-
-                            {/* 3. Figma Card */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
-                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                                    {/* Icon & Title */}
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-12 h-12 rounded-lg bg-white dark:bg-[#0c183b] border border-slate-200/80 dark:border-slate-800 flex items-center justify-center p-2.5 shadow-2xs shrink-0">
-                                            <FigmaIcon className="w-6 h-6" />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                                Figma
-                                            </h3>
-                                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-md">
-                                                Connect Figma to link your design files with projects.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Badges & Actions */}
-                                    <div className="flex items-center gap-2 self-start">
-                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-slate-700">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                                            <span>Not Connected</span>
-                                        </span>
-                                        <button
-                                            onClick={() => setModalConnect('figma')}
-                                            className="px-4 py-1.5 rounded-md bg-[#2563eb] hover:bg-blue-600 text-xs font-semibold text-white shadow-xs transition-colors flex items-center gap-1.5"
-                                        >
-                                            <Link2 className="w-3.5 h-3.5" />
-                                            <span>Connect</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Feature list */}
-                                <div className="space-y-1.5 pt-1">
-                                    {[
-                                        'Link design files to projects',
-                                        'Quick access to your designs',
-                                        'Showcase design process in portfolio',
-                                    ].map((feat, i) => (
-                                        <div key={i} className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                                            <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5]" />
-                                            <span>{feat}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* 4. Notion Card */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
-                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                                    {/* Icon & Title */}
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-12 h-12 rounded-lg bg-white dark:bg-[#0c183b] border border-slate-200/80 dark:border-slate-800 flex items-center justify-center p-2.5 shadow-2xs shrink-0 text-slate-900 dark:text-white">
-                                            <NotionIcon className="w-7 h-7" />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                                Notion
-                                            </h3>
-                                            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed max-w-md">
-                                                Connect Notion to import notes or documentation.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Badges & Actions */}
-                                    <div className="flex items-center gap-2 self-start">
-                                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 border border-slate-200/60 dark:border-slate-700">
-                                            <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
-                                            <span>Not Connected</span>
-                                        </span>
-                                        <button
-                                            onClick={() => setModalConnect('notion')}
-                                            className="px-4 py-1.5 rounded-md bg-[#2563eb] hover:bg-blue-600 text-xs font-semibold text-white shadow-xs transition-colors flex items-center gap-1.5"
-                                        >
-                                            <Link2 className="w-3.5 h-3.5" />
-                                            <span>Connect</span>
-                                        </button>
-                                    </div>
-                                </div>
-
-                                {/* Feature list */}
-                                <div className="space-y-1.5 pt-1">
-                                    {[
-                                        'Import notes to your projects',
-                                        'Keep documentation in sync',
-                                        'Manage knowledge base',
-                                    ].map((feat, i) => (
-                                        <div key={i} className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                                            <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5]" />
-                                            <span>{feat}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
                         </div>
 
                         {/* Right Column (4 cols): About Integrations, Recommended Setup, Need Help */}
@@ -1504,13 +1384,13 @@ export default function SettingsPage({ userProfile, flash }) {
                                         },
                                         {
                                             step: 3,
-                                            title: 'Link your design tools',
-                                            desc: 'Connect Figma to showcase your design process.',
+                                            title: 'Auto Cloud Sync',
+                                            desc: 'Keep code repositories and project cloud files updated.',
                                         },
                                         {
                                             step: 4,
                                             title: 'Start building!',
-                                            desc: 'Your workflow is now more organized and powerful.',
+                                            desc: 'Your workflow is now connected and streamlined.',
                                         },
                                     ].map((s) => (
                                         <div key={s.step} className="flex items-start gap-3">
@@ -1720,64 +1600,6 @@ export default function SettingsPage({ userProfile, flash }) {
                 </div>
             )}
 
-            {/* ================================================================ */}
-            {/* MODAL: CONNECT INTEGRATION */}
-            {/* ================================================================ */}
-            {modalConnect && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                Hubungkan ke {modalConnect === 'figma' ? 'Figma' : 'Notion'}
-                            </h3>
-                            <button
-                                onClick={() => setModalConnect(null)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        <div className="space-y-3">
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
-                                Masukkan Personal Access Token atau API Key untuk mengotorisasi WorkTrack mengakses workspace {modalConnect === 'figma' ? 'Figma' : 'Notion'} Anda.
-                            </p>
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Access Token
-                                </label>
-                                <input
-                                    type="password"
-                                    placeholder={modalConnect === 'figma' ? 'figd_...' : 'secret_...'}
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                            <button
-                                onClick={() => setModalConnect(null)}
-                                className="px-4 py-1.5 border border-slate-200 dark:border-[#243e80] rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300"
-                            >
-                                Batal
-                            </button>
-                            <button
-                                onClick={() => {
-                                    setIntegrations((prev) => ({
-                                        ...prev,
-                                        [modalConnect]: { connected: true },
-                                    }));
-                                    setModalConnect(null);
-                                    triggerSave(`${modalConnect === 'figma' ? 'Figma' : 'Notion'} berhasil terhubung!`);
-                                }}
-                                className="px-4 py-1.5 bg-[#2563eb] text-white rounded-md text-xs font-semibold shadow-xs"
-                            >
-                                Hubungkan Sekarang
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </>
     );
 }
