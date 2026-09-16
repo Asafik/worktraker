@@ -23,6 +23,7 @@ import {
     Code2,
     Smartphone,
     MapPin,
+    LayoutDashboard,
 } from 'lucide-react';
 
 const GithubIcon = ({ className = 'w-4 h-4' }) => (
@@ -336,62 +337,79 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
 
     return (
         <div className={`min-h-screen font-sans antialiased transition-colors ${isDarkMode ? 'bg-slate-950 text-slate-100' : 'bg-white text-slate-800'}`}>
-            <Head title={`${project.title} - Case Study | Asafik`} />
+            <Head title={`${project.title} - Rabirts`} />
 
             {/* ========================================================== */}
-            {/* 1. TOP NAVBAR (Matching Asafik Brand)                     */}
+            {/* 1. TOP NAVBAR (Deep navy bar matching main page exactly)   */}
             {/* ========================================================== */}
-            <header className="sticky top-0 z-50 backdrop-blur-md bg-slate-950/90 border-b border-slate-800/80 text-white">
-                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-                    {/* Brand Logo */}
-                    <Link href="/" className="flex items-center gap-2.5 group">
-                        <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-black text-white text-lg shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform">
-                            A
-                        </div>
-                        <span className="font-extrabold text-lg tracking-tight text-white group-hover:text-blue-400 transition-colors">
-                            Asafik
+            <header className="fixed top-0 inset-x-0 z-50 bg-[#070b19]/90 backdrop-blur-md border-b border-slate-800">
+                <div className="max-w-[1360px] mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
+                    {/* Brand */}
+                    <Link
+                        href="/"
+                        className="flex items-center gap-3 cursor-pointer group"
+                    >
+                        <img
+                            src="/images/logo.png"
+                            alt="Rabirts Logo"
+                            className="w-8 h-8 rounded-lg object-contain shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform"
+                        />
+                        <span className="font-extrabold text-lg tracking-tight text-white">
+                            Rabirts
                         </span>
                     </Link>
 
-                    {/* Navigation Menu */}
-                    <nav className="hidden md:flex items-center gap-7 text-xs font-medium text-slate-300">
-                        <Link href="/" className="hover:text-white transition-colors">
+                    {/* Navigation Links with dynamic active underline */}
+                    <nav className="hidden md:flex items-center gap-8 text-xs sm:text-sm font-medium">
+                        <Link
+                            href="/"
+                            className="text-slate-300 hover:text-white transition-colors py-1"
+                        >
                             Home
                         </Link>
                         <Link
                             href="/#projects"
-                            className="text-white font-bold relative after:absolute after:-bottom-1 after:left-0 after:right-0 after:h-0.5 after:bg-blue-500 after:rounded-full"
+                            className="relative transition-colors py-1 text-white font-semibold after:absolute after:bottom-[-20px] after:left-0 after:right-0 after:h-0.5 after:bg-blue-500"
                         >
                             Projects
                         </Link>
-                        <Link href="/#experience" className="hover:text-white transition-colors">
+                        <Link
+                            href="/#experience"
+                            className="text-slate-300 hover:text-white transition-colors py-1"
+                        >
                             Experience
                         </Link>
-                        <Link href="/#about" className="hover:text-white transition-colors">
+                        <Link
+                            href="/#about"
+                            className="text-slate-300 hover:text-white transition-colors py-1"
+                        >
                             About
                         </Link>
-                        <Link href="/#contact" className="hover:text-white transition-colors">
+                        <Link
+                            href="/#contact"
+                            className="text-slate-300 hover:text-white transition-colors py-1"
+                        >
                             Contact
                         </Link>
                     </nav>
 
-                    {/* Right Actions */}
+                    {/* Right CTA Actions */}
                     <div className="flex items-center gap-3">
-                        <button
-                            type="button"
-                            onClick={() => setIsDarkMode(!isDarkMode)}
-                            aria-label="Toggle theme"
-                            className="w-9 h-9 rounded-lg border border-slate-800 bg-slate-900/60 text-slate-300 hover:text-white hover:bg-slate-800 flex items-center justify-center transition-all cursor-pointer"
-                        >
-                            {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-                        </button>
-
                         <Link
                             href="/#contact"
-                            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/25 transition-all hover:-translate-y-0.5"
+                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
                         >
-                            <Mail className="w-3.5 h-3.5" />
+                            <Mail className="w-4 h-4" />
                             <span>Let's Talk</span>
+                        </Link>
+
+                        {/* Direct link to WorkTrack Dashboard */}
+                        <Link
+                            href="/dashboard"
+                            title="Buka WorkTrack Dashboard"
+                            className="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
+                        >
+                            <LayoutDashboard className="w-4 h-4" />
                         </Link>
                     </div>
                 </div>
@@ -400,7 +418,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg' }) {
             {/* ========================================================== */}
             {/* 2. HERO HEADER (Dark Backdrop matching user mockup)       */}
             {/* ========================================================== */}
-            <section className="relative bg-slate-950 text-white pt-10 pb-16 overflow-hidden border-b border-slate-800/80">
+            <section className="relative bg-[#070b19] text-white pt-28 sm:pt-32 pb-16 overflow-hidden border-b border-slate-800/80">
                 {/* Background ambient lighting and subtle tech grid */}
                 <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:24px_24px]" />
                 <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 blur-3xl pointer-events-none" />
