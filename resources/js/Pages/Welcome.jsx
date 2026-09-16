@@ -12,7 +12,6 @@ import {
     Send,
     CheckCircle2,
     X,
-    LayoutDashboard,
     Clock,
 } from 'lucide-react';
 
@@ -284,7 +283,7 @@ export default function Welcome({ initialSection = 'home' }) {
                     </nav>
 
                     {/* Right: CTA Actions */}
-                    <div className="flex-1 flex items-center justify-end gap-3">
+                    <div className="flex-1 flex items-center justify-end">
                         <button
                             onClick={() => setContactModal(true)}
                             className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#4338ca] hover:bg-indigo-600 text-white text-xs sm:text-sm font-semibold rounded-lg shadow-sm hover:shadow-indigo-500/30 transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
@@ -292,15 +291,6 @@ export default function Welcome({ initialSection = 'home' }) {
                             <Mail className="w-4 h-4" />
                             <span>Let's Talk</span>
                         </button>
-
-                        {/* Direct link to WorkTrack Dashboard */}
-                        <Link
-                            href="/dashboard"
-                            title="Buka WorkTrack Dashboard"
-                            className="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white transition-colors"
-                        >
-                            <LayoutDashboard className="w-4 h-4" />
-                        </Link>
                     </div>
                 </div>
             </header>
