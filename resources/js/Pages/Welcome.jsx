@@ -604,8 +604,8 @@ export default function Welcome({ initialSection = 'home' }) {
                                         </div>
                                     </div>
 
-                                    {/* Experience Card with breathing room below the timeline line */}
-                                    <div className="p-6 rounded-2xl bg-white border border-slate-200/80 shadow-xs hover:border-indigo-300 hover:shadow-md transition-all duration-300 flex-1 flex flex-col justify-between group-hover:-translate-y-1">
+                                    {/* Experience Card with 12px radius matching Selected Works */}
+                                    <div className="p-6 rounded-xl bg-white border border-slate-200/80 shadow-xs hover:border-indigo-300 hover:shadow-md transition-all duration-300 flex-1 flex flex-col justify-between group-hover:-translate-y-1">
                                         <div>
                                             <div className="flex items-center justify-between">
                                                 <span className="text-xs font-semibold text-slate-500">
