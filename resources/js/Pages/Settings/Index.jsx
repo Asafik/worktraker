@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
+import CustomSelect from '@/Components/CustomSelect';
+import Toggle from '@/Components/Toggle';
 import {
     Home,
     Camera,
@@ -1643,36 +1645,36 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                                         Bahasa Aplikasi
                                     </label>
-                                    <select
+                                    <CustomSelect
                                         value={preferences.language}
-                                        onChange={(e) =>
-                                            setPreferences({ ...preferences, language: e.target.value })
-                                        }
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100"
-                                    >
-                                        <option value="id">Bahasa Indonesia</option>
-                                        <option value="en">English (US)</option>
-                                    </select>
+                                        onChange={(val) => {
+                                            setPreferences({ ...preferences, language: val });
+                                        }}
+                                        options={[
+                                            { value: 'id', label: 'Bahasa Indonesia' },
+                                            { value: 'en', label: 'English (US)' },
+                                        ]}
+                                    />
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                                         Zona Waktu
                                     </label>
-                                    <select
+                                    <CustomSelect
                                         value={preferences.timezone}
-                                        onChange={(e) =>
-                                            setPreferences({ ...preferences, timezone: e.target.value })
-                                        }
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100"
-                                    >
-                                        <option value="Asia/Jakarta">Asia/Jakarta (WIB, GMT+7)</option>
-                                        <option value="Asia/Makassar">Asia/Makassar (WITA, GMT+8)</option>
-                                        <option value="Asia/Jayapura">Asia/Jayapura (WIT, GMT+9)</option>
-                                    </select>
+                                        onChange={(val) => {
+                                            setPreferences({ ...preferences, timezone: val });
+                                        }}
+                                        options={[
+                                            { value: 'Asia/Jakarta', label: 'Asia/Jakarta (WIB, GMT+7)' },
+                                            { value: 'Asia/Makassar', label: 'Asia/Makassar (WITA, GMT+8)' },
+                                            { value: 'Asia/Jayapura', label: 'Asia/Jayapura (WIT, GMT+9)' },
+                                        ]}
+                                    />
                                 </div>
                             </div>
 
@@ -1695,25 +1697,24 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                 ].map((n) => (
                                     <div
                                         key={n.key}
-                                        className="flex items-center justify-between py-1"
+                                        className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800/40 last:border-b-0"
                                     >
-                                        <div>
+                                        <div className="pr-4">
                                             <h5 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">
                                                 {n.title}
                                             </h5>
-                                            <p className="text-xs text-slate-400">{n.desc}</p>
+                                            <p className="text-xs text-slate-400 mt-0.5">{n.desc}</p>
                                         </div>
-                                        <input
-                                            type="checkbox"
-                                            checked={preferences[n.key]}
-                                            onChange={(e) => {
+                                        <Toggle
+                                            checked={!!preferences[n.key]}
+                                            onChange={(checked) => {
                                                 setPreferences({
                                                     ...preferences,
-                                                    [n.key]: e.target.checked,
+                                                    [n.key]: checked,
                                                 });
                                                 triggerSave();
                                             }}
-                                            className="rounded text-blue-600 focus:ring-0 w-4 h-4 cursor-pointer"
+                                            ariaLabel={n.title}
                                         />
                                     </div>
                                 ))}
