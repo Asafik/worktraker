@@ -26,6 +26,8 @@ import {
     Pencil,
     GitCommit,
     Trash2,
+    Lock,
+    Building2,
 } from 'lucide-react';
 import LandingNavbar from '@/Components/LandingNavbar';
 
@@ -364,15 +366,19 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
               techHeader: (dbProject.tech_stack || []).join(' · ') || 'Web Project',
               liveDemoUrl: dbProject.live_url || '',
               liveDemoDisplay: dbProject.live_url ? dbProject.live_url.replace(/^https?:\/\//, '') : '',
-              githubUrl: dbProject.github_repo_url || '',
+              githubUrl: dbProject.hide_github_link ? '' : (dbProject.github_repo_url || ''),
               githubDisplay: dbProject.github_repo_name || '',
+              hideGithubLink: Boolean(dbProject.hide_github_link),
+              companyName: dbProject.company_name || '',
+              roleName: dbProject.role || 'Frontend Developer',
+              ownershipType: dbProject.ownership_type || 'Company',
               info: {
-                  type: dbProject.category || 'Web Application',
-                  role: 'Developer',
+                  type: dbProject.ownership_type ? `${dbProject.ownership_type} Project` : (dbProject.category || 'Web Application'),
+                  role: dbProject.role || 'Frontend Developer',
                   team: dbProject.project_type === 'Team' ? 'Team Collaboration' : 'Solo Developer',
                   duration: `${dbProject.start_date || 'Mulai'} – ${dbProject.due_date || 'Selesai'}`,
                   status: dbProject.status,
-                  client: dbProject.github_repo_name ? `GitHub: ${dbProject.github_repo_name}` : 'Internal Project',
+                  client: dbProject.company_name ? dbProject.company_name : (dbProject.ownership_type === 'Personal' ? 'Proyek Pribadi' : (dbProject.github_repo_name ? `GitHub: ${dbProject.github_repo_name}` : 'Internal Project')),
               },
               quote: 'Setiap baris kode membawa kemajuan nyata untuk solusi digital.',
               quoteAuthor: 'Developer',
@@ -529,16 +535,26 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
                                     </a>
                                 )}
 
-                                {project.githubUrl && (
-                                    <a
-                                        href={project.githubUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 transition-all hover:-translate-y-0.5 cursor-pointer"
+                                {project.hideGithubLink ? (
+                                    <div
+                                        className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-slate-900/80 text-slate-300 border border-slate-700/80 select-none shadow-xs"
+                                        title="Repositori bersifat privat milik perusahaan"
                                     >
-                                        <GithubIcon className="w-4 h-4" />
-                                        <span>View on GitHub</span>
-                                    </a>
+                                        <Lock className="w-3.5 h-3.5 text-amber-400" />
+                                        <span>Private Repo (Internal PT)</span>
+                                    </div>
+                                ) : (
+                                    project.githubUrl && (
+                                        <a
+                                            href={project.githubUrl}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-slate-900/90 hover:bg-slate-800 text-slate-200 border border-slate-700/80 transition-all hover:-translate-y-0.5 cursor-pointer"
+                                        >
+                                            <GithubIcon className="w-4 h-4" />
+                                            <span>View on GitHub</span>
+                                        </a>
+                                    )
                                 )}
 
                                 {dbProject && (
@@ -727,14 +743,23 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
                                         <GithubIcon className="w-4 h-4 text-slate-400" />
                                         <span>Repository</span>
                                     </div>
-                                    <a
-                                        href={project.githubUrl}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900 text-blue-600 dark:text-blue-400 transition-colors"
-                                    >
-                                        <span>{project.githubDisplay}</span>
-                                    </a>
+                                    {project.hideGithubLink ? (
+                                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/50">
+                                            <Lock className="w-3 h-3" />
+                                            <span>Private PT</span>
+                                        </span>
+                                    ) : project.githubUrl ? (
+                                        <a
+                                            href={project.githubUrl}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/60 dark:hover:bg-blue-900 text-blue-600 dark:text-blue-400 transition-colors"
+                                        >
+                                            <span>{project.githubDisplay}</span>
+                                        </a>
+                                    ) : (
+                                        <span className="text-slate-400 text-xs">-</span>
+                                    )}
                                 </div>
 
                                 {/* Live Demo */}
@@ -890,16 +915,25 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
                                 <div>
                                     <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                         <span>5 Commit Terakhir</span>
-                                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
-                                            Live GitHub
-                                        </span>
+                                        {project.hideGithubLink ? (
+                                            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-50 text-amber-600 dark:bg-amber-950 dark:text-amber-400 border border-amber-200 dark:border-amber-800 flex items-center gap-1">
+                                                <Lock className="w-2.5 h-2.5" />
+                                                <span>Bukti Pengerjaan (Private)</span>
+                                            </span>
+                                        ) : (
+                                            <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+                                                Live GitHub
+                                            </span>
+                                        )}
                                     </h3>
                                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                                        Aktivitas pengerjaan terbaru dari repository <span className="font-mono font-semibold text-blue-600 dark:text-blue-400">{project.githubDisplay || 'GitHub'}</span>
+                                        {project.hideGithubLink
+                                            ? 'Aktivitas 5 commit terakhir sebagai bukti kontribusi pengerjaan. Tautan repositori publik disembunyikan untuk menjaga kerahasiaan perusahaan.'
+                                            : <>Aktivitas pengerjaan terbaru dari repository <span className="font-mono font-semibold text-blue-600 dark:text-blue-400">{project.githubDisplay || 'GitHub'}</span></>}
                                     </p>
                                 </div>
                             </div>
-                            {project.githubUrl && (
+                            {project.githubUrl && !project.hideGithubLink && (
                                 <a
                                     href={`${project.githubUrl}/commits`}
                                     target="_blank"
@@ -919,14 +953,20 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
                                         {/* Timeline dot */}
                                         <div className="absolute -left-6 top-1.5 w-3 h-3 rounded-full border-2 border-white dark:border-slate-900 bg-blue-600 group-hover:scale-125 transition-transform" />
                                         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-4">
-                                            <a
-                                                href={c.url}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-xs sm:text-sm font-medium text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2"
-                                            >
-                                                {c.message}
-                                            </a>
+                                            {project.hideGithubLink ? (
+                                                <p className="text-xs sm:text-sm font-medium text-slate-900 dark:text-white line-clamp-2">
+                                                    {c.message}
+                                                </p>
+                                            ) : (
+                                                <a
+                                                    href={c.url}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    className="text-xs sm:text-sm font-medium text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2"
+                                                >
+                                                    {c.message}
+                                                </a>
+                                            )}
                                             <div className="flex items-center gap-2 shrink-0 text-[11px] text-slate-400">
                                                 <span className="font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300 font-semibold">{c.sha}</span>
                                                 <span>•</span>

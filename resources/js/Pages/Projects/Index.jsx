@@ -36,6 +36,7 @@ import {
     Users,
     User as UserIcon,
     Trash2,
+    Building2,
 } from 'lucide-react';
 
 const GithubIcon = ({ className }) => (
@@ -400,14 +401,35 @@ export default function Projects({
                                                     >
                                                         {item.name}
                                                     </Link>
-                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
                                                         <span className="text-xs text-slate-400 dark:text-slate-400">
                                                             {item.category || 'General'}
                                                         </span>
+                                                        {item.company_name ? (
+                                                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md border border-blue-200/70 dark:border-blue-800/60">
+                                                                <Building2 className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                                                                <span>{item.company_name}</span>
+                                                            </span>
+                                                        ) : item.ownership_type === 'Personal' ? (
+                                                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/70 dark:border-emerald-800/60">
+                                                                <span>Personal</span>
+                                                            </span>
+                                                        ) : null}
+                                                        {item.role && (
+                                                            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                                                                • {item.role}
+                                                            </span>
+                                                        )}
                                                         {item.github_repo_name && (
                                                             <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-500 dark:text-slate-400">
                                                                 <GithubIcon className="w-3 h-3" />
                                                                 <span>{item.github_repo_name}</span>
+                                                            </span>
+                                                        )}
+                                                        {item.hide_github_link && (
+                                                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-900/50" title="Repo Private PT (Tautan disembunyikan)">
+                                                                <Lock className="w-2.5 h-2.5" />
+                                                                <span>Private PT</span>
                                                             </span>
                                                         )}
                                                     </div>
@@ -613,6 +635,27 @@ export default function Projects({
                                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
                                         {p.description || 'Tidak ada deskripsi'}
                                     </p>
+                                    {(p.company_name || p.role || p.hide_github_link) && (
+                                        <div className="flex items-center gap-1.5 flex-wrap mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                                            {p.company_name && (
+                                                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-1.5 py-0.5 rounded border border-blue-100 dark:border-blue-900/40">
+                                                    <Building2 className="w-2.5 h-2.5" />
+                                                    <span>{p.company_name}</span>
+                                                </span>
+                                            )}
+                                            {p.role && (
+                                                <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">
+                                                    {p.role}
+                                                </span>
+                                            )}
+                                            {p.hide_github_link && (
+                                                <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-1 py-0.5 rounded border border-amber-200 dark:border-amber-900/40" title="Repo Private PT">
+                                                    <Lock className="w-2 h-2" />
+                                                    <span>Private</span>
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -660,6 +703,27 @@ export default function Projects({
                                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
                                         {p.description || 'Tidak ada deskripsi'}
                                     </p>
+                                    {(p.company_name || p.role || p.hide_github_link) && (
+                                        <div className="flex items-center gap-1.5 flex-wrap mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                                            {p.company_name && (
+                                                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-1.5 py-0.5 rounded border border-blue-100 dark:border-blue-900/40">
+                                                    <Building2 className="w-2.5 h-2.5" />
+                                                    <span>{p.company_name}</span>
+                                                </span>
+                                            )}
+                                            {p.role && (
+                                                <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">
+                                                    {p.role}
+                                                </span>
+                                            )}
+                                            {p.hide_github_link && (
+                                                <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-1 py-0.5 rounded border border-amber-200 dark:border-amber-900/40" title="Repo Private PT">
+                                                    <Lock className="w-2 h-2" />
+                                                    <span>Private</span>
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
                                     {p.tech_stack && p.tech_stack.length > 0 && (
                                         <div className="flex flex-wrap gap-1 mt-2">
                                             {p.tech_stack.slice(0, 3).map((t, ti) => (
@@ -716,6 +780,27 @@ export default function Projects({
                                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
                                         {p.description || 'Tidak ada deskripsi'}
                                     </p>
+                                    {(p.company_name || p.role || p.hide_github_link) && (
+                                        <div className="flex items-center gap-1.5 flex-wrap mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                                            {p.company_name && (
+                                                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-1.5 py-0.5 rounded border border-blue-100 dark:border-blue-900/40">
+                                                    <Building2 className="w-2.5 h-2.5" />
+                                                    <span>{p.company_name}</span>
+                                                </span>
+                                            )}
+                                            {p.role && (
+                                                <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">
+                                                    {p.role}
+                                                </span>
+                                            )}
+                                            {p.hide_github_link && (
+                                                <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-1 py-0.5 rounded border border-amber-200 dark:border-amber-900/40" title="Repo Private PT">
+                                                    <Lock className="w-2 h-2" />
+                                                    <span>Private</span>
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>
@@ -763,6 +848,27 @@ export default function Projects({
                                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
                                         {p.description || 'Tidak ada deskripsi'}
                                     </p>
+                                    {(p.company_name || p.role || p.hide_github_link) && (
+                                        <div className="flex items-center gap-1.5 flex-wrap mt-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+                                            {p.company_name && (
+                                                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60 px-1.5 py-0.5 rounded border border-blue-100 dark:border-blue-900/40">
+                                                    <Building2 className="w-2.5 h-2.5" />
+                                                    <span>{p.company_name}</span>
+                                                </span>
+                                            )}
+                                            {p.role && (
+                                                <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400">
+                                                    {p.role}
+                                                </span>
+                                            )}
+                                            {p.hide_github_link && (
+                                                <span className="inline-flex items-center gap-0.5 text-[9px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-1 py-0.5 rounded border border-amber-200 dark:border-amber-900/40" title="Repo Private PT">
+                                                    <Lock className="w-2 h-2" />
+                                                    <span>Private</span>
+                                                </span>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                             ))}
                         </div>

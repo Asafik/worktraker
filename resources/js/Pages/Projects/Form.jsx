@@ -19,6 +19,10 @@ import {
     Clock,
     Sparkles,
     Trash2,
+    Building2,
+    Briefcase,
+    Lock,
+    Shield,
 } from 'lucide-react';
 
 const GithubIcon = ({ className = 'w-4 h-4' }) => (
@@ -49,6 +53,9 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
 
     // Form fields
     const [name, setName] = useState(isEdit ? project.name : (prefill.name || ''));
+    const [companyName, setCompanyName] = useState(isEdit ? (project.company_name || '') : (prefill.company_name || ''));
+    const [ownershipType, setOwnershipType] = useState(isEdit ? (project.ownership_type || 'Company') : (prefill.ownership_type || 'Company'));
+    const [role, setRole] = useState(isEdit ? (project.role || 'Frontend Developer') : (prefill.role || 'Frontend Developer'));
     const [description, setDescription] = useState(isEdit ? (project.description || '') : (prefill.description || ''));
     const [category, setCategory] = useState(isEdit ? project.category : (prefill.category || 'Web Development'));
     const [projectType, setProjectType] = useState(isEdit ? project.project_type : (prefill.project_type || 'Solo'));
@@ -56,6 +63,7 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
     const [liveUrl, setLiveUrl] = useState(isEdit ? (project.live_url || '') : '');
     const [startDate, setStartDate] = useState(isEdit ? (project.start_date || '') : '');
     const [dueDate, setDueDate] = useState(isEdit ? (project.due_date || '') : '');
+    const [hideGithubLink, setHideGithubLink] = useState(isEdit ? Boolean(project.hide_github_link) : false);
 
     // GitHub Repo info
     const [githubRepoId, setGithubRepoId] = useState(isEdit ? (project.github_repo_id || '') : (prefill.github_repo_id || ''));
@@ -150,6 +158,9 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
 
         const formData = new FormData();
         formData.append('name', name);
+        formData.append('company_name', companyName);
+        formData.append('ownership_type', ownershipType);
+        formData.append('role', role);
         formData.append('description', description);
         formData.append('category', category);
         formData.append('project_type', projectType);
@@ -157,6 +168,7 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
         formData.append('live_url', liveUrl);
         formData.append('start_date', startDate);
         formData.append('due_date', dueDate);
+        formData.append('hide_github_link', hideGithubLink ? '1' : '0');
 
         if (githubRepoId) formData.append('github_repo_id', githubRepoId);
         if (githubRepoName) formData.append('github_repo_name', githubRepoName);
@@ -294,13 +306,120 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     placeholder="Contoh: Sistem Informasi Kepegawaian (SIMPEG)"
-                                    className="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-[#0a1533] border border-slate-200 dark:border-[#1e346e] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-slate-900 dark:text-white"
+                                    className="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-[#0a1533] border border-slate-200 dark:border-[#1e346e] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
                                 />
                                 {errors.name && <p className="text-xs text-rose-500 font-medium">{errors.name}</p>}
                             </div>
 
+                            {/* Asal / Kepemilikan Proyek */}
+                            <div className="md:col-span-2 space-y-1.5">
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+                                    Asal / Kepemilikan Proyek
+                                </label>
+                                <div className="grid grid-cols-3 gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setOwnershipType('Company');
+                                            if (!companyName || companyName === 'Personal Project') setCompanyName('PT ');
+                                        }}
+                                        className={`py-2.5 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                                            ownershipType === 'Company'
+                                                ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                                : 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-slate-100 dark:hover:bg-slate-800'
+                                        }`}
+                                    >
+                                        <Building2 className="w-3.5 h-3.5 shrink-0" />
+                                        <span>Kantor / PT</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setOwnershipType('Client');
+                                            if (companyName === 'Personal Project') setCompanyName('');
+                                        }}
+                                        className={`py-2.5 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                                            ownershipType === 'Client'
+                                                ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                                : 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-slate-100 dark:hover:bg-slate-800'
+                                        }`}
+                                    >
+                                        <Briefcase className="w-3.5 h-3.5 shrink-0" />
+                                        <span>Klien / Jasa</span>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setOwnershipType('Personal');
+                                            setCompanyName('Personal Project');
+                                        }}
+                                        className={`py-2.5 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                                            ownershipType === 'Personal'
+                                                ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                                : 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-slate-100 dark:hover:bg-slate-800'
+                                        }`}
+                                    >
+                                        <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                                        <span>Pribadi</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Nama PT / Instansi / Klien */}
+                            <div className="md:col-span-2 space-y-1.5">
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center justify-between">
+                                    <span>{ownershipType === 'Company' ? 'Nama Perusahaan / PT' : (ownershipType === 'Client' ? 'Nama Klien / Instansi' : 'Nama Pemilik Proyek')}</span>
+                                    <span className="text-[11px] text-slate-400 font-normal lowercase">misal: PT Codelabs Poliwangi</span>
+                                </label>
+                                <div className="relative">
+                                    <Building2 className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                    <input
+                                        type="text"
+                                        value={companyName}
+                                        onChange={(e) => setCompanyName(e.target.value)}
+                                        placeholder={ownershipType === 'Company' ? 'Contoh: PT Telkom Indonesia' : 'Contoh: Klien UMKM / Proyek Pribadi'}
+                                        className="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 dark:bg-[#0a1533] border border-slate-200 dark:border-[#1e346e] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-slate-900 dark:text-white"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Peran / Role Anda */}
+                            <div className="md:col-span-2 space-y-1.5">
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center justify-between">
+                                    <span>Peran / Role Anda di Proyek Ini</span>
+                                    <span className="text-[11px] text-blue-600 dark:text-blue-400 font-medium">Klik pilihan cepat di bawah</span>
+                                </label>
+                                <div className="relative">
+                                    <UserIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                    <input
+                                        type="text"
+                                        value={role}
+                                        onChange={(e) => setRole(e.target.value)}
+                                        placeholder="Contoh: Frontend Developer, Web Developer"
+                                        className="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 dark:bg-[#0a1533] border border-slate-200 dark:border-[#1e346e] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
+                                    />
+                                </div>
+                                {/* Preset Chips */}
+                                <div className="flex flex-wrap gap-1.5 pt-0.5">
+                                    {['Frontend Developer', 'Web Developer', 'Backend Developer', 'Full Stack Developer'].map((preset) => (
+                                        <button
+                                            key={preset}
+                                            type="button"
+                                            onClick={() => setRole(preset)}
+                                            className={`text-[11px] px-2.5 py-0.5 rounded-md font-semibold transition-colors cursor-pointer ${
+                                                role === preset
+                                                    ? 'bg-blue-600 text-white shadow-2xs'
+                                                    : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'
+                                            }`}
+                                        >
+                                            {preset}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
                             {/* Category */}
-                            <div className="space-y-1.5">
+                            <div className="md:col-span-1 space-y-1.5">
                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                                     Kategori Proyek
                                 </label>
@@ -318,7 +437,7 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                             </div>
 
                             {/* Project Type (Solo vs Team) */}
-                            <div className="space-y-1.5">
+                            <div className="md:col-span-1 space-y-1.5">
                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                                     Tipe Pengerjaan
                                 </label>
@@ -326,7 +445,7 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                                     <button
                                         type="button"
                                         onClick={() => setProjectType('Solo')}
-                                        className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                                        className={`py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
                                             projectType === 'Solo'
                                                 ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                                                 : 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -338,7 +457,7 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                                     <button
                                         type="button"
                                         onClick={() => setProjectType('Team')}
-                                        className={`py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                                        className={`py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
                                             projectType === 'Team'
                                                 ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                                                 : 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -351,11 +470,11 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                             </div>
 
                             {/* Status Pengerjaan */}
-                            <div className="md:col-span-2 lg:col-span-4 space-y-1.5">
+                            <div className="md:col-span-2 space-y-1.5">
                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                                     Status Proyek
                                 </label>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                     {STATUS_OPTIONS.map((opt) => {
                                         const isSelected = status === opt.value;
                                         return (
@@ -363,7 +482,7 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                                                 key={opt.value}
                                                 type="button"
                                                 onClick={() => setStatus(opt.value)}
-                                                className={`py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 border transition-all ${
+                                                className={`py-2.5 px-2 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
                                                     isSelected
                                                         ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-slate-900 dark:border-white shadow-xs'
                                                         : 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -397,7 +516,7 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                                     URL Demo / Live Web (Opsional)
                                 </label>
                                 <div className="relative">
-                                    <Globe className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                                    <Globe className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                                     <input
                                         type="url"
                                         value={liveUrl}
@@ -430,6 +549,26 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                                     onChange={(e) => setDueDate(e.target.value)}
                                     className="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-[#0a1533] border border-slate-200 dark:border-[#1e346e] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-slate-900 dark:text-white"
                                 />
+                            </div>
+
+                            {/* Privasi GitHub Repo (Untuk Repo Private / Milik PT) */}
+                            <div className="md:col-span-2 lg:col-span-4 p-4 rounded-xl bg-slate-50 dark:bg-[#0a1533] border border-slate-200/80 dark:border-[#1e346e] flex items-start gap-3">
+                                <input
+                                    type="checkbox"
+                                    id="hide_github_link"
+                                    checked={hideGithubLink}
+                                    onChange={(e) => setHideGithubLink(e.target.checked)}
+                                    className="mt-0.5 w-4 h-4 text-blue-600 rounded border-slate-300 dark:border-slate-700 focus:ring-blue-500 cursor-pointer"
+                                />
+                                <label htmlFor="hide_github_link" className="text-xs space-y-1 cursor-pointer select-none">
+                                    <span className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                                        <Lock className="w-3.5 h-3.5 text-amber-500" />
+                                        <span>Sembunyikan Tautan GitHub Publik (Repository Private / Milik PT)</span>
+                                    </span>
+                                    <p className="text-slate-500 dark:text-slate-400">
+                                        Timeline 5 commit terakhir tetap ditampilkan di halaman detail sebagai bukti pengerjaan Anda, namun tautan klik langsung ke GitHub dimatikan agar kode repositori perusahaan tetap aman.
+                                    </p>
+                                </label>
                             </div>
                         </div>
                     </div>

@@ -16,6 +16,9 @@ class Project extends Model
         'slug',
         'description',
         'category',
+        'company_name',
+        'ownership_type',
+        'role',
         'project_type',
         'status',
         'tech_stack',
@@ -23,16 +26,18 @@ class Project extends Model
         'github_repo_id',
         'github_repo_name',
         'github_repo_url',
+        'hide_github_link',
         'live_url',
         'start_date',
         'due_date',
     ];
 
     protected $casts = [
-        'tech_stack' => 'array',
-        'images'     => 'array',
-        'start_date' => 'date:Y-m-d',
-        'due_date'   => 'date:Y-m-d',
+        'tech_stack'        => 'array',
+        'images'            => 'array',
+        'hide_github_link'  => 'boolean',
+        'start_date'        => 'date:Y-m-d',
+        'due_date'          => 'date:Y-m-d',
     ];
 
     /**
