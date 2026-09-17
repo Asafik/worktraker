@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { usePage } from '@inertiajs/react';
 import Sidebar from '@/Components/Sidebar';
 import Navbar from '@/Components/Navbar';
 
 export default function DashboardLayout({ children, activePage = 'Dashboard', user }) {
+    const { auth } = usePage().props;
+    const currentUser = user || auth?.user;
     const [sidebarOpen, setSidebarOpen] = useState(false);
 
     // Persistent dark mode state
@@ -42,9 +45,9 @@ export default function DashboardLayout({ children, activePage = 'Dashboard', us
                     setSidebarOpen={setSidebarOpen}
                     darkMode={darkMode}
                     setDarkMode={setDarkMode}
-                    userName={user?.name}
-                    userRole={user?.role}
-                    userAvatar={user?.avatar}
+                    userName={currentUser?.name}
+                    userRole={currentUser?.role}
+                    userAvatar={currentUser?.avatar}
                 />
 
                 {/* Page Content */}
