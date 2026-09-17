@@ -27,13 +27,16 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard/Index');
 })->name('dashboard');
 
-Route::get('/projects', function () {
-    return Inertia::render('Projects/Index');
-})->name('projects');
+use App\Http\Controllers\ProjectController;
 
-Route::get('/projects/{slug}', function ($slug) {
-    return Inertia::render('Projects/Detail', ['slug' => $slug]);
-})->name('projects.show');
+Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
+Route::get('/projects/create', [ProjectController::class, 'create'])->name('projects.create');
+Route::post('/projects', [ProjectController::class, 'store'])->name('projects.store');
+Route::get('/projects/github/repositories', [ProjectController::class, 'getGitHubRepositories'])->name('projects.github.repos');
+Route::get('/projects/{id}/edit', [ProjectController::class, 'edit'])->name('projects.edit');
+Route::post('/projects/{id}', [ProjectController::class, 'update'])->name('projects.update');
+Route::delete('/projects/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
+Route::get('/projects/{slug}', [ProjectController::class, 'show'])->name('projects.show');
 
 Route::get('/tasks', function () {
     return Inertia::render('Tasks/Index');

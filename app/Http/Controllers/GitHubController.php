@@ -31,7 +31,7 @@ class GitHubController extends Controller
         $params = http_build_query([
             'client_id'    => $this->clientId,
             'redirect_uri' => $this->redirectUri,
-            'scope'        => 'user read:user user:email',
+            'scope'        => 'read:user user:email repo read:org',
             'state'        => $state,
         ]);
 

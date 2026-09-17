@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import {
     Home,
@@ -24,117 +24,47 @@ import {
     FileText,
     Layers,
     ChevronLeft,
+    GitBranch,
+    Lock,
+    Globe,
+    Star,
+    GitFork,
+    ExternalLink,
+    RefreshCw,
+    X,
+    Check,
+    Users,
+    User as UserIcon,
 } from 'lucide-react';
 
-export default function Projects() {
+const GithubIcon = ({ className }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+        <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+    </svg>
+);
+
+export default function Projects({
+    projects: initialProjects = [],
+    stats = { total: 0, active: 0, completed: 0, on_hold: 0 },
+    isGitHubConnected = false,
+    githubUsername = '',
+}) {
     // Filter & Search state
     const [searchQuery, setSearchQuery] = useState('');
     const [statusFilter, setStatusFilter] = useState('All');
     const [categoryFilter, setCategoryFilter] = useState('All');
     const [viewMode, setViewMode] = useState('table'); // 'table', 'board', 'list'
 
-    // Mock projects data
-    const [projects, setProjects] = useState([
-        {
-            id: 1,
-            name: 'Company Website',
-            category: 'Web Development',
-            description: 'Modern company profile website with CMS.',
-            icon: Monitor,
-            iconBg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400',
-            team: [
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&auto=format&fit=crop&q=80',
-                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&auto=format&fit=crop&q=80',
-                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&auto=format&fit=crop&q=80',
-            ],
-            extraTeam: 2,
-            status: 'In Progress',
-            progress: 70,
-            dueDate: '12 Sep 2025',
-        },
-        {
-            id: 2,
-            name: 'Mobile App',
-            category: 'Mobile Development',
-            description: 'Mobile app for internal team.',
-            icon: Smartphone,
-            iconBg: 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400',
-            team: [
-                'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&auto=format&fit=crop&q=80',
-                'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=60&auto=format&fit=crop&q=80',
-                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&auto=format&fit=crop&q=80',
-            ],
-            extraTeam: 0,
-            status: 'In Progress',
-            progress: 45,
-            dueDate: '28 Sep 2025',
-        },
-        {
-            id: 3,
-            name: 'Admin Dashboard',
-            category: 'Web Development',
-            description: 'Internal dashboard for data management.',
-            icon: LayoutDashboard,
-            iconBg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400',
-            team: [
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&auto=format&fit=crop&q=80',
-                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&auto=format&fit=crop&q=80',
-            ],
-            extraTeam: 0,
-            status: 'Completed',
-            progress: 100,
-            dueDate: '05 Sep 2025',
-        },
-        {
-            id: 4,
-            name: 'API Integration',
-            category: 'Backend',
-            description: 'Integrate with third-party services (API).',
-            icon: Link2,
-            iconBg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400',
-            team: [
-                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&auto=format&fit=crop&q=80',
-                'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=60&auto=format&fit=crop&q=80',
-            ],
-            extraTeam: 0,
-            status: 'In Progress',
-            progress: 60,
-            dueDate: '20 Sep 2025',
-        },
-        {
-            id: 5,
-            name: 'UI/UX Redesign',
-            category: 'Design',
-            description: 'Improve UI/UX for better user experience.',
-            icon: Palette,
-            iconBg: 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400',
-            team: [
-                'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=60&auto=format&fit=crop&q=80',
-                'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=60&auto=format&fit=crop&q=80',
-            ],
-            extraTeam: 0,
-            status: 'On Hold',
-            progress: 30,
-            dueDate: '25 Sep 2025',
-        },
-        {
-            id: 6,
-            name: 'Documentation',
-            category: 'Documentation',
-            description: 'Create technical and user documentation.',
-            icon: FileText,
-            iconBg: 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400',
-            team: [
-                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=60&auto=format&fit=crop&q=80',
-                'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=60&auto=format&fit=crop&q=80',
-                'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=60&auto=format&fit=crop&q=80',
-            ],
-            extraTeam: 0,
-            status: 'Not Started',
-            progress: 0,
-            dueDate: '30 Sep 2025',
-        },
-    ]);
+    // GitHub Repos Modal state
+    const [isRepoModalOpen, setIsRepoModalOpen] = useState(false);
+    const [repos, setRepos] = useState([]);
+    const [loadingRepos, setLoadingRepos] = useState(false);
+    const [repoError, setRepoError] = useState(null);
+    const [repoSearch, setRepoSearch] = useState('');
+    const [repoFilterType, setRepoFilterType] = useState('all'); // 'all', 'personal', 'collab'
+
+    // Projects data from DB
+    const projects = initialProjects;
 
     // Filter logic
     const filteredProjects = projects.filter((item) => {
@@ -144,6 +74,42 @@ export default function Projects() {
         const matchesStatus = statusFilter === 'All' || item.status === statusFilter;
         const matchesCategory = categoryFilter === 'All' || item.category === categoryFilter;
         return matchesSearch && matchesStatus && matchesCategory;
+    });
+
+    // Fetch GitHub Repositories function
+    const fetchRepositories = async () => {
+        setIsRepoModalOpen(true);
+        if (repos.length > 0) return; // already loaded
+
+        setLoadingRepos(true);
+        setRepoError(null);
+
+        try {
+            const res = await fetch('/projects/github/repositories');
+            const data = await res.json();
+
+            if (!res.ok || !data.success) {
+                setRepoError(data.message || 'Gagal memuat repositori dari GitHub.');
+            } else {
+                setRepos(data.repos || []);
+            }
+        } catch (err) {
+            setRepoError('Terjadi kesalahan jaringan saat mengambil repositori.');
+        } finally {
+            setLoadingRepos(false);
+        }
+    };
+
+    // Filter GitHub Repos
+    const filteredRepos = repos.filter((r) => {
+        const matchesQuery =
+            r.name.toLowerCase().includes(repoSearch.toLowerCase()) ||
+            (r.description && r.description.toLowerCase().includes(repoSearch.toLowerCase())) ||
+            (r.language && r.language.toLowerCase().includes(repoSearch.toLowerCase()));
+
+        if (repoFilterType === 'personal') return matchesQuery && r.is_owner;
+        if (repoFilterType === 'collab') return matchesQuery && !r.is_owner;
+        return matchesQuery;
     });
 
     return (
@@ -170,14 +136,34 @@ export default function Projects() {
                     </p>
                 </div>
 
-                {/* New Project CTA Button */}
-                <button
-                    onClick={() => alert('Fitur tambah proyek baru siap dikembangkan di tahap backend database!')}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#2952e3] hover:bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-600/30 hover:shadow-blue-600/50 hover:-translate-y-0.5 transition-all self-start sm:self-auto"
-                >
-                    <Plus className="w-4 h-4" />
-                    <span>New Project</span>
-                </button>
+                {/* Action Buttons */}
+                <div className="flex items-center gap-2.5 self-start sm:self-auto">
+                    {isGitHubConnected ? (
+                        <button
+                            onClick={fetchRepositories}
+                            className="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white rounded-lg text-sm font-semibold shadow-xs hover:-translate-y-0.5 transition-all border border-slate-700 dark:border-slate-600"
+                        >
+                            <GithubIcon className="w-4 h-4 text-white" />
+                            <span>Import from GitHub</span>
+                        </button>
+                    ) : (
+                        <Link
+                            href="/settings?tab=Integrations"
+                            className="inline-flex items-center gap-2 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs sm:text-sm font-semibold transition-all border border-slate-200 dark:border-slate-700"
+                        >
+                            <GithubIcon className="w-4 h-4" />
+                            <span>Connect GitHub</span>
+                        </Link>
+                    )}
+
+                    <Link
+                        href="/projects/create"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-[#2952e3] hover:bg-blue-600 text-white rounded-lg text-sm font-semibold shadow-md shadow-blue-600/30 hover:shadow-blue-600/50 hover:-translate-y-0.5 transition-all"
+                    >
+                        <Plus className="w-4 h-4" />
+                        <span>New Project</span>
+                    </Link>
+                </div>
             </div>
 
             {/* 2. Top 4 Stat Cards */}
@@ -188,16 +174,12 @@ export default function Projects() {
                         <div className="w-10 h-10 rounded-md bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400">
                             <Folder className="w-5 h-5 fill-blue-600/20" />
                         </div>
-                        <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md">
-                            <MoreHorizontal className="w-4 h-4" />
-                        </button>
                     </div>
                     <div className="mt-4">
                         <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Projects</p>
-                        <h3 className="text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">12</h3>
-                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1.5">
-                            <ArrowUp className="w-3.5 h-3.5" />
-                            <span>2 this month</span>
+                        <h3 className="text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">{stats.total}</h3>
+                        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-1">
+                            Semua proyek terdaftar
                         </p>
                     </div>
                 </div>
@@ -205,19 +187,15 @@ export default function Projects() {
                 {/* Active Projects */}
                 <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
                     <div className="flex items-start justify-between">
-                        <div className="w-10 h-10 rounded-md bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                            <Clock className="w-5 h-5 fill-emerald-600/20" />
+                        <div className="w-10 h-10 rounded-md bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                            <Clock className="w-5 h-5 fill-blue-600/20" />
                         </div>
-                        <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md">
-                            <MoreHorizontal className="w-4 h-4" />
-                        </button>
                     </div>
                     <div className="mt-4">
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Active Projects</p>
-                        <h3 className="text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">8</h3>
-                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1.5">
-                            <ArrowUp className="w-3.5 h-3.5" />
-                            <span>2 more active</span>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">In Progress</p>
+                        <h3 className="text-[28px] font-bold text-blue-600 dark:text-blue-400 mt-0.5">{stats.active}</h3>
+                        <p className="text-xs text-blue-600/80 dark:text-blue-400/80 font-medium mt-1">
+                            Sedang aktif dikerjakan
                         </p>
                     </div>
                 </div>
@@ -225,19 +203,15 @@ export default function Projects() {
                 {/* Completed Projects */}
                 <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
                     <div className="flex items-start justify-between">
-                        <div className="w-10 h-10 rounded-md bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                            <CheckCircle2 className="w-5 h-5 fill-blue-600/20" />
+                        <div className="w-10 h-10 rounded-md bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                            <CheckCircle2 className="w-5 h-5 fill-emerald-600/20" />
                         </div>
-                        <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md">
-                            <MoreHorizontal className="w-4 h-4" />
-                        </button>
                     </div>
                     <div className="mt-4">
                         <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Completed Projects</p>
-                        <h3 className="text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">3</h3>
-                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1.5">
-                            <ArrowUp className="w-3.5 h-3.5" />
-                            <span>1 this month</span>
+                        <h3 className="text-[28px] font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">{stats.completed}</h3>
+                        <p className="text-xs text-emerald-600/80 dark:text-emerald-400/80 font-medium mt-1">
+                            Selesai & dirilis
                         </p>
                     </div>
                 </div>
@@ -248,15 +222,12 @@ export default function Projects() {
                         <div className="w-10 h-10 rounded-md bg-rose-50 dark:bg-rose-950/60 flex items-center justify-center text-rose-600 dark:text-rose-400">
                             <PauseCircle className="w-5 h-5 fill-rose-600/20" />
                         </div>
-                        <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md">
-                            <MoreHorizontal className="w-4 h-4" />
-                        </button>
                     </div>
                     <div className="mt-4">
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">On Hold</p>
-                        <h3 className="text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">1</h3>
-                        <p className="text-xs text-slate-400 font-medium mt-1.5">
-                            No changes
+                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">On Hold / Not Started</p>
+                        <h3 className="text-[28px] font-bold text-rose-600 dark:text-rose-400 mt-0.5">{stats.on_hold}</h3>
+                        <p className="text-xs text-rose-600/80 dark:text-rose-400/80 font-medium mt-1">
+                            Pending / dijeda
                         </p>
                     </div>
                 </div>
@@ -381,9 +352,16 @@ export default function Projects() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
-                            {filteredProjects.map((item, idx) => {
-                                const Icon = item.icon;
-                                return (
+                            {filteredProjects.length === 0 ? (
+                                <tr>
+                                    <td colSpan="8" className="py-12 text-center text-slate-400 dark:text-slate-500">
+                                        <Folder className="w-10 h-10 mx-auto stroke-[1.5] text-slate-300 dark:text-slate-600 mb-2" />
+                                        <p className="text-sm font-semibold">Belum ada proyek yang terdaftar</p>
+                                        <p className="text-xs mt-0.5">Mulai dengan mengklik tombol "New Project" atau "Import from GitHub".</p>
+                                    </td>
+                                </tr>
+                            ) : (
+                                filteredProjects.map((item, idx) => (
                                     <tr
                                         key={item.id}
                                         className="hover:bg-slate-50/70 dark:hover:bg-[#122352]/40 transition-colors group"
@@ -393,43 +371,80 @@ export default function Projects() {
                                             {idx + 1}
                                         </td>
 
-                                        {/* Project Name + Icon */}
+                                        {/* Project Name + Icon / Thumbnail */}
                                         <td className="py-4 px-4">
                                             <div className="flex items-center gap-3">
-                                                <div className={`w-9 h-9 rounded-lg flex items-center justify-center shrink-0 ${item.iconBg}`}>
-                                                    <Icon className="w-4 h-4" />
-                                                </div>
+                                                {item.images && item.images.length > 0 ? (
+                                                    <img
+                                                        src={item.images[0]}
+                                                        alt={item.name}
+                                                        className="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-[#1e346e] shrink-0"
+                                                    />
+                                                ) : (
+                                                    <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 border border-blue-100 dark:border-blue-900/50">
+                                                        <Folder className="w-5 h-5" />
+                                                    </div>
+                                                )}
                                                 <div>
-                                                    <h4 className="font-semibold text-sm sm:text-[15px] text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                    <Link
+                                                        href={`/projects/${item.slug || item.id}`}
+                                                        className="font-semibold text-sm sm:text-[15px] text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+                                                    >
                                                         {item.name}
-                                                    </h4>
-                                                    <p className="text-xs text-slate-400 dark:text-slate-400 mt-0.5">
-                                                        {item.category}
-                                                    </p>
+                                                    </Link>
+                                                    <div className="flex items-center gap-2 mt-0.5">
+                                                        <span className="text-xs text-slate-400 dark:text-slate-400">
+                                                            {item.category || 'General'}
+                                                        </span>
+                                                        {item.github_repo_name && (
+                                                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-500 dark:text-slate-400">
+                                                                <GithubIcon className="w-3 h-3" />
+                                                                <span>{item.github_repo_name}</span>
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </td>
 
                                         {/* Description */}
                                         <td className="py-4 px-4 text-slate-600 dark:text-slate-300 max-w-xs truncate text-xs sm:text-sm">
-                                            {item.description}
+                                            {item.description || 'Tidak ada deskripsi'}
                                         </td>
 
-                                        {/* Team Stack */}
+                                        {/* Project Type & Tech Stack */}
                                         <td className="py-4 px-4">
-                                            <div className="flex items-center -space-x-2">
-                                                {item.team.map((imgUrl, i) => (
-                                                    <img
-                                                        key={i}
-                                                        src={imgUrl}
-                                                        alt="Team member"
-                                                        className="w-7 h-7 rounded-full ring-2 ring-white dark:ring-[#0e1d47] object-cover"
-                                                    />
-                                                ))}
-                                                {item.extraTeam > 0 && (
-                                                    <span className="w-7 h-7 rounded-full bg-slate-100 dark:bg-[#1a2f66] ring-2 ring-white dark:ring-[#0e1d47] text-xs font-bold text-slate-600 dark:text-slate-300 flex items-center justify-center">
-                                                        +{item.extraTeam}
-                                                    </span>
+                                            <div className="space-y-1">
+                                                <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full border ${
+                                                    item.project_type === 'Team'
+                                                        ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 border-purple-200 dark:border-purple-900'
+                                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                                                }`}>
+                                                    {item.project_type === 'Team' ? (
+                                                        <>
+                                                            <Users className="w-3 h-3" />
+                                                            <span>Team</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <UserIcon className="w-3 h-3" />
+                                                            <span>Solo</span>
+                                                        </>
+                                                    )}
+                                                </span>
+                                                {item.tech_stack && item.tech_stack.length > 0 && (
+                                                    <div className="flex flex-wrap gap-1 max-w-[140px]">
+                                                        {item.tech_stack.slice(0, 2).map((tech, ti) => (
+                                                            <span key={ti} className="text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500 dark:text-slate-400">
+                                                                {tech}
+                                                            </span>
+                                                        ))}
+                                                        {item.tech_stack.length > 2 && (
+                                                            <span className="text-[10px] text-slate-400">
+                                                                +{item.tech_stack.length - 2}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 )}
                                             </div>
                                         </td>
@@ -451,39 +466,43 @@ export default function Projects() {
                                             </span>
                                         </td>
 
-                                        {/* Progress Bar */}
-                                        <td className="py-4 px-4">
-                                            <div className="flex items-center gap-3 w-36">
-                                                <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                                    <div
-                                                        className={`h-full rounded-full ${
-                                                            item.status === 'Completed'
-                                                                ? 'bg-emerald-500'
-                                                                : 'bg-[#2952e3]'
-                                                        }`}
-                                                        style={{ width: `${item.progress}%` }}
-                                                    ></div>
-                                                </div>
-                                                <span className="text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-300 w-9 text-right">
-                                                    {item.progress}%
+                                        {/* Gallery preview count */}
+                                        <td className="py-4 px-4 text-xs text-slate-500 dark:text-slate-400">
+                                            {item.images && item.images.length > 0 ? (
+                                                <span className="font-semibold text-slate-700 dark:text-slate-300">
+                                                    {item.images.length} Gambar
                                                 </span>
-                                            </div>
+                                            ) : (
+                                                <span className="text-slate-400">Belum ada</span>
+                                            )}
                                         </td>
 
                                         {/* Due Date */}
                                         <td className="py-4 px-4 text-slate-600 dark:text-slate-300 text-xs sm:text-sm">
-                                            {item.dueDate}
+                                            {item.due_date || item.dueDate || '-'}
                                         </td>
 
-                                        {/* Actions */}
+                                        {/* Actions: Edit & View */}
                                         <td className="py-4 px-4 text-center">
-                                            <button className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md">
-                                                <MoreHorizontal className="w-4 h-4" />
-                                            </button>
+                                            <div className="flex items-center justify-center gap-1.5">
+                                                <Link
+                                                    href={`/projects/${item.id}/edit`}
+                                                    className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                                                >
+                                                    Edit
+                                                </Link>
+                                                <Link
+                                                    href={`/projects/${item.slug || item.id}`}
+                                                    className="p-1 rounded-lg text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                                                    title="Lihat Detail"
+                                                >
+                                                    <ExternalLink className="w-4 h-4" />
+                                                </Link>
+                                            </div>
                                         </td>
                                     </tr>
-                                );
-                            })}
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -549,53 +568,33 @@ export default function Projects() {
                                 <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">Not Started</h4>
                             </div>
                             <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-slate-200/60 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                                2
+                                {projects.filter((p) => p.status === 'Not Started').length}
                             </span>
                         </div>
 
                         {/* Cards */}
                         <div className="space-y-2.5">
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <FileText className="w-4 h-4 text-slate-400" />
-                                        <h5 className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                            Documentation
-                                        </h5>
+                            {projects.filter((p) => p.status === 'Not Started').map((p) => (
+                                <div key={p.id} className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group">
+                                    <div className="flex items-center justify-between">
+                                        <Link href={`/projects/${p.slug || p.id}`} className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                                            {p.name}
+                                        </Link>
+                                        <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-slate-600 p-0.5 rounded text-xs font-medium">
+                                            Edit
+                                        </Link>
                                     </div>
-                                    <button className="text-slate-400 hover:text-slate-600 p-0.5 rounded">
-                                        <MoreHorizontal className="w-4 h-4" />
-                                    </button>
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
+                                        {p.description || 'Tidak ada deskripsi'}
+                                    </p>
                                 </div>
-                                <div className="mt-3 flex items-center justify-between text-xs font-medium text-slate-400">
-                                    <span className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded-full"></span>
-                                    <span>0%</span>
-                                </div>
-                            </div>
-
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Layers className="w-4 h-4 text-slate-400" />
-                                        <h5 className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                            Research &amp; Planning
-                                        </h5>
-                                    </div>
-                                    <button className="text-slate-400 hover:text-slate-600 p-0.5 rounded">
-                                        <MoreHorizontal className="w-4 h-4" />
-                                    </button>
-                                </div>
-                                <div className="mt-3 flex items-center justify-between text-xs font-medium text-slate-400">
-                                    <span className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded-full"></span>
-                                    <span>0%</span>
-                                </div>
-                            </div>
+                            ))}
                         </div>
 
-                        <button className="w-full py-2 rounded-md border border-dashed border-slate-300 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-400 dark:hover:border-blue-500 transition-colors flex items-center justify-center gap-1.5">
+                        <Link href="/projects/create" className="w-full py-2 rounded-md border border-dashed border-slate-300 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-400 dark:hover:border-blue-500 transition-colors flex items-center justify-center gap-1.5">
                             <Plus className="w-4 h-4" />
                             <span>Add Project</span>
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Column 2: In Progress */}
@@ -606,97 +605,42 @@ export default function Projects() {
                                 <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">In Progress</h4>
                             </div>
                             <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/50">
-                                4
+                                {projects.filter((p) => p.status === 'In Progress').length}
                             </span>
                         </div>
 
                         {/* Cards */}
                         <div className="space-y-2.5">
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Monitor className="w-4 h-4 text-blue-600" />
-                                        <h5 className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                            Company Website
-                                        </h5>
+                            {projects.filter((p) => p.status === 'In Progress').map((p) => (
+                                <div key={p.id} className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group">
+                                    <div className="flex items-center justify-between">
+                                        <Link href={`/projects/${p.slug || p.id}`} className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                                            {p.name}
+                                        </Link>
+                                        <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-slate-600 p-0.5 rounded text-xs font-medium">
+                                            Edit
+                                        </Link>
                                     </div>
-                                    <button className="text-slate-400 hover:text-slate-600 p-0.5 rounded">
-                                        <MoreHorizontal className="w-4 h-4" />
-                                    </button>
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
+                                        {p.description || 'Tidak ada deskripsi'}
+                                    </p>
+                                    {p.tech_stack && p.tech_stack.length > 0 && (
+                                        <div className="flex flex-wrap gap-1 mt-2">
+                                            {p.tech_stack.slice(0, 3).map((t, ti) => (
+                                                <span key={ti} className="text-[10px] px-1.5 py-0.5 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-300">
+                                                    {t}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
-                                <div className="mt-3 flex items-center justify-between text-xs font-medium">
-                                    <div className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-[#2952e3] rounded-full w-[70%]"></div>
-                                    </div>
-                                    <span className="font-semibold text-slate-600 dark:text-slate-300">70%</span>
-                                </div>
-                            </div>
-
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Smartphone className="w-4 h-4 text-purple-600" />
-                                        <h5 className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                            Mobile App
-                                        </h5>
-                                    </div>
-                                    <button className="text-slate-400 hover:text-slate-600 p-0.5 rounded">
-                                        <MoreHorizontal className="w-4 h-4" />
-                                    </button>
-                                </div>
-                                <div className="mt-3 flex items-center justify-between text-xs font-medium">
-                                    <div className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-[#2952e3] rounded-full w-[45%]"></div>
-                                    </div>
-                                    <span className="font-semibold text-slate-600 dark:text-slate-300">45%</span>
-                                </div>
-                            </div>
-
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Link2 className="w-4 h-4 text-blue-600" />
-                                        <h5 className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                            API Integration
-                                        </h5>
-                                    </div>
-                                    <button className="text-slate-400 hover:text-slate-600 p-0.5 rounded">
-                                        <MoreHorizontal className="w-4 h-4" />
-                                    </button>
-                                </div>
-                                <div className="mt-3 flex items-center justify-between text-xs font-medium">
-                                    <div className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-[#2952e3] rounded-full w-[60%]"></div>
-                                    </div>
-                                    <span className="font-semibold text-slate-600 dark:text-slate-300">60%</span>
-                                </div>
-                            </div>
-
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Palette className="w-4 h-4 text-purple-600" />
-                                        <h5 className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                            UI/UX Enhancement
-                                        </h5>
-                                    </div>
-                                    <button className="text-slate-400 hover:text-slate-600 p-0.5 rounded">
-                                        <MoreHorizontal className="w-4 h-4" />
-                                    </button>
-                                </div>
-                                <div className="mt-3 flex items-center justify-between text-xs font-medium">
-                                    <div className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-[#2952e3] rounded-full w-[20%]"></div>
-                                    </div>
-                                    <span className="font-semibold text-slate-600 dark:text-slate-300">20%</span>
-                                </div>
-                            </div>
+                            ))}
                         </div>
 
-                        <button className="w-full py-2 rounded-md border border-dashed border-slate-300 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-400 dark:hover:border-blue-500 transition-colors flex items-center justify-center gap-1.5">
+                        <Link href="/projects/create" className="w-full py-2 rounded-md border border-dashed border-slate-300 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-400 dark:hover:border-blue-500 transition-colors flex items-center justify-center gap-1.5">
                             <Plus className="w-4 h-4" />
                             <span>Add Project</span>
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Column 3: Completed */}
@@ -707,77 +651,33 @@ export default function Projects() {
                                 <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">Completed</h4>
                             </div>
                             <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50">
-                                3
+                                {projects.filter((p) => p.status === 'Completed').length}
                             </span>
                         </div>
 
                         {/* Cards */}
                         <div className="space-y-2.5">
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <LayoutDashboard className="w-4 h-4 text-emerald-600" />
-                                        <h5 className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                            Admin Dashboard
-                                        </h5>
+                            {projects.filter((p) => p.status === 'Completed').map((p) => (
+                                <div key={p.id} className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-emerald-400 dark:hover:border-emerald-500 transition-all group">
+                                    <div className="flex items-center justify-between">
+                                        <Link href={`/projects/${p.slug || p.id}`} className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">
+                                            {p.name}
+                                        </Link>
+                                        <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-slate-600 p-0.5 rounded text-xs font-medium">
+                                            Edit
+                                        </Link>
                                     </div>
-                                    <button className="text-slate-400 hover:text-slate-600 p-0.5 rounded">
-                                        <MoreHorizontal className="w-4 h-4" />
-                                    </button>
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
+                                        {p.description || 'Tidak ada deskripsi'}
+                                    </p>
                                 </div>
-                                <div className="mt-3 flex items-center justify-between text-xs font-medium">
-                                    <div className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-emerald-500 rounded-full w-[100%]"></div>
-                                    </div>
-                                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">100%</span>
-                                </div>
-                            </div>
-
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Monitor className="w-4 h-4 text-emerald-600" />
-                                        <h5 className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                            Landing Page
-                                        </h5>
-                                    </div>
-                                    <button className="text-slate-400 hover:text-slate-600 p-0.5 rounded">
-                                        <MoreHorizontal className="w-4 h-4" />
-                                    </button>
-                                </div>
-                                <div className="mt-3 flex items-center justify-between text-xs font-medium">
-                                    <div className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-emerald-500 rounded-full w-[100%]"></div>
-                                    </div>
-                                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">100%</span>
-                                </div>
-                            </div>
-
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Layers className="w-4 h-4 text-emerald-600" />
-                                        <h5 className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                            Database Setup
-                                        </h5>
-                                    </div>
-                                    <button className="text-slate-400 hover:text-slate-600 p-0.5 rounded">
-                                        <MoreHorizontal className="w-4 h-4" />
-                                    </button>
-                                </div>
-                                <div className="mt-3 flex items-center justify-between text-xs font-medium">
-                                    <div className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-emerald-500 rounded-full w-[100%]"></div>
-                                    </div>
-                                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">100%</span>
-                                </div>
-                            </div>
+                            ))}
                         </div>
 
-                        <button className="w-full py-2 rounded-md border border-dashed border-slate-300 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-400 dark:hover:border-blue-500 transition-colors flex items-center justify-center gap-1.5">
+                        <Link href="/projects/create" className="w-full py-2 rounded-md border border-dashed border-slate-300 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-400 dark:hover:border-blue-500 transition-colors flex items-center justify-center gap-1.5">
                             <Plus className="w-4 h-4" />
                             <span>Add Project</span>
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Column 4: On Hold */}
@@ -788,40 +688,312 @@ export default function Projects() {
                                 <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">On Hold</h4>
                             </div>
                             <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50">
-                                1
+                                {projects.filter((p) => p.status === 'On Hold').length}
                             </span>
                         </div>
 
                         {/* Cards */}
                         <div className="space-y-2.5">
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group cursor-pointer">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-2">
-                                        <Palette className="w-4 h-4 text-rose-600" />
-                                        <h5 className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                            UI/UX Redesign
-                                        </h5>
+                            {projects.filter((p) => p.status === 'On Hold').map((p) => (
+                                <div key={p.id} className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-rose-400 dark:hover:border-rose-500 transition-all group">
+                                    <div className="flex items-center justify-between">
+                                        <Link href={`/projects/${p.slug || p.id}`} className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors truncate">
+                                            {p.name}
+                                        </Link>
+                                        <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-slate-600 p-0.5 rounded text-xs font-medium">
+                                            Edit
+                                        </Link>
                                     </div>
-                                    <button className="text-slate-400 hover:text-slate-600 p-0.5 rounded">
-                                        <MoreHorizontal className="w-4 h-4" />
-                                    </button>
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
+                                        {p.description || 'Tidak ada deskripsi'}
+                                    </p>
                                 </div>
-                                <div className="mt-3 flex items-center justify-between text-xs font-medium">
-                                    <div className="w-20 h-2 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                        <div className="h-full bg-rose-500 rounded-full w-[30%]"></div>
-                                    </div>
-                                    <span className="font-semibold text-rose-600 dark:text-rose-400">30%</span>
-                                </div>
-                            </div>
+                            ))}
                         </div>
 
-                        <button className="w-full py-2 rounded-md border border-dashed border-slate-300 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-400 dark:hover:border-blue-500 transition-colors flex items-center justify-center gap-1.5">
+                        <Link href="/projects/create" className="w-full py-2 rounded-md border border-dashed border-slate-300 dark:border-slate-700 text-xs sm:text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-400 dark:hover:border-blue-500 transition-colors flex items-center justify-center gap-1.5">
                             <Plus className="w-4 h-4" />
                             <span>Add Project</span>
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>
+
+            {/* GitHub Repositories Modal */}
+            {isRepoModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
+                    <div className="bg-white dark:bg-[#0e1d47] rounded-2xl border border-slate-200/80 dark:border-[#1e346e] shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150">
+                        {/* Modal Header */}
+                        <div className="px-6 py-4 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-[#0a1533]/50">
+                            <div className="flex items-center gap-3">
+                                <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 flex items-center justify-center text-white shadow-xs">
+                                    <GithubIcon className="w-5 h-5" />
+                                </div>
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                                            Import from GitHub
+                                        </h3>
+                                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/70 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900">
+                                            @{githubUsername || 'Asafik'}
+                                        </span>
+                                    </div>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                                        Daftar repositori akun & kolaborasi tim GitHub Anda
+                                    </p>
+                                </div>
+                            </div>
+                            <button
+                                onClick={() => setIsRepoModalOpen(false)}
+                                className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                            >
+                                <X className="w-4 h-4" />
+                            </button>
+                        </div>
+
+                        {/* Search & Tabs Filter */}
+                        <div className="p-4 sm:p-5 border-b border-slate-200/80 dark:border-slate-800 space-y-3 bg-white dark:bg-[#0e1d47]">
+                            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+                                {/* Search */}
+                                <div className="relative flex-1">
+                                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                                    <input
+                                        type="text"
+                                        placeholder="Cari repositori berdasarkan nama, bahasa, deskripsi..."
+                                        value={repoSearch}
+                                        onChange={(e) => setRepoSearch(e.target.value)}
+                                        className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-[#0a1533] border border-slate-200 dark:border-[#1e346e] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-slate-800 dark:text-slate-200 placeholder-slate-400"
+                                    />
+                                    {repoSearch && (
+                                        <button
+                                            onClick={() => setRepoSearch('')}
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                        >
+                                            <X className="w-3.5 h-3.5" />
+                                        </button>
+                                    )}
+                                </div>
+
+                                {/* Refresh Button */}
+                                <button
+                                    onClick={() => {
+                                        setRepos([]);
+                                        fetchRepositories();
+                                    }}
+                                    disabled={loadingRepos}
+                                    className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors shrink-0 disabled:opacity-50"
+                                >
+                                    <RefreshCw className={`w-3.5 h-3.5 ${loadingRepos ? 'animate-spin' : ''}`} />
+                                    <span>Refresh</span>
+                                </button>
+                            </div>
+
+                            {/* Filter Tabs */}
+                            <div className="flex items-center gap-2">
+                                <button
+                                    onClick={() => setRepoFilterType('all')}
+                                    className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all ${
+                                        repoFilterType === 'all'
+                                            ? 'bg-blue-600 text-white shadow-xs'
+                                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                    }`}
+                                >
+                                    Semua ({repos.length})
+                                </button>
+                                <button
+                                    onClick={() => setRepoFilterType('personal')}
+                                    className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                                        repoFilterType === 'personal'
+                                            ? 'bg-blue-600 text-white shadow-xs'
+                                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                    }`}
+                                >
+                                    <UserIcon className="w-3 h-3" />
+                                    <span>Milik Saya ({repos.filter((r) => r.is_owner).length})</span>
+                                </button>
+                                <button
+                                    onClick={() => setRepoFilterType('collab')}
+                                    className={`px-3 py-1 text-xs font-semibold rounded-lg transition-all flex items-center gap-1.5 ${
+                                        repoFilterType === 'collab'
+                                            ? 'bg-blue-600 text-white shadow-xs'
+                                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
+                                    }`}
+                                >
+                                    <Users className="w-3 h-3" />
+                                    <span>Collab / Tim ({repos.filter((r) => !r.is_owner).length})</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Repos List Container */}
+                        <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-2.5 max-h-[55vh]">
+                            {loadingRepos ? (
+                                <div className="py-16 flex flex-col items-center justify-center text-center">
+                                    <div className="w-10 h-10 border-3 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                                    <p className="mt-3 text-sm font-semibold text-slate-700 dark:text-slate-300">
+                                        Mengambil repositori dari GitHub...
+                                    </p>
+                                    <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
+                                        Memuat repo pribadi dan kolaborasi tim
+                                    </p>
+                                </div>
+                            ) : repoError ? (
+                                <div className="py-12 px-4 text-center space-y-3">
+                                    <div className="w-12 h-12 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-600 flex items-center justify-center mx-auto">
+                                        <X className="w-6 h-6" />
+                                    </div>
+                                    <p className="text-sm font-medium text-rose-600 dark:text-rose-400">
+                                        {repoError}
+                                    </p>
+                                    <Link
+                                        href="/settings?tab=Integrations"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-lg transition-colors"
+                                    >
+                                        Buka Pengaturan Integrasi
+                                    </Link>
+                                </div>
+                            ) : filteredRepos.length === 0 ? (
+                                <div className="py-16 text-center text-slate-400 dark:text-slate-500 space-y-2">
+                                    <GithubIcon className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600" />
+                                    <p className="text-sm font-medium">Tidak ada repositori yang cocok</p>
+                                    <p className="text-xs">Coba kata kunci pencarian lain.</p>
+                                </div>
+                            ) : (
+                                filteredRepos.map((repo) => (
+                                    <div
+                                        key={repo.id}
+                                        className="p-4 rounded-xl border border-slate-200/80 dark:border-[#1e346e] bg-slate-50/40 dark:bg-[#0a1533]/40 hover:bg-white dark:hover:bg-[#0e1d47] hover:border-blue-300 dark:hover:border-blue-600 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                                    >
+                                        <div className="space-y-1.5 flex-1 min-w-0">
+                                            <div className="flex flex-wrap items-center gap-2">
+                                                {/* Repo Name */}
+                                                <h4 className="text-sm font-bold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
+                                                    {repo.name}
+                                                </h4>
+
+                                                {/* Private / Public Badge */}
+                                                <span
+                                                    className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
+                                                        repo.is_private
+                                                            ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-900/60'
+                                                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                                                    }`}
+                                                >
+                                                    {repo.is_private ? (
+                                                        <>
+                                                            <Lock className="w-2.5 h-2.5" />
+                                                            <span>Private</span>
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Globe className="w-2.5 h-2.5" />
+                                                            <span>Public</span>
+                                                        </>
+                                                    )}
+                                                </span>
+
+                                                {/* Owner / Collab Tag */}
+                                                <span
+                                                    className={`inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full border ${
+                                                        repo.is_owner
+                                                            ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900'
+                                                            : 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border-purple-200 dark:border-purple-900'
+                                                    }`}
+                                                >
+                                                    {repo.is_owner ? 'Personal' : `Collab (${repo.owner.login})`}
+                                                </span>
+
+                                                {/* Language Badge */}
+                                                {repo.language && repo.language !== 'Other' && (
+                                                    <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                                                        <span className="w-2 h-2 rounded-full bg-blue-500 inline-block"></span>
+                                                        {repo.language}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {/* Description */}
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
+                                                {repo.description || 'Tidak ada deskripsi pada repositori ini.'}
+                                            </p>
+
+                                            {/* Meta: Stars, Forks, Updated */}
+                                            <div className="flex items-center gap-3 text-[11px] text-slate-400 dark:text-slate-500">
+                                                {repo.stars > 0 && (
+                                                    <span className="flex items-center gap-1">
+                                                        <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+                                                        {repo.stars}
+                                                    </span>
+                                                )}
+                                                {repo.forks > 0 && (
+                                                    <span className="flex items-center gap-1">
+                                                        <GitFork className="w-3 h-3" />
+                                                        {repo.forks}
+                                                    </span>
+                                                )}
+                                                <span>
+                                                    Update:{' '}
+                                                    {new Date(repo.updated_at).toLocaleDateString('id-ID', {
+                                                        day: 'numeric',
+                                                        month: 'short',
+                                                        year: 'numeric',
+                                                    })}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {/* Action: Open on GitHub & Track */}
+                                        <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                                            <a
+                                                href={repo.html_url}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                                                title="Lihat di GitHub"
+                                            >
+                                                <ExternalLink className="w-4 h-4" />
+                                            </a>
+                                            <button
+                                                onClick={() => {
+                                                    setIsRepoModalOpen(false);
+                                                    const params = new URLSearchParams({
+                                                        name: repo.name,
+                                                        description: repo.description || '',
+                                                        project_type: repo.is_owner ? 'Solo' : 'Team',
+                                                        status: 'In Progress',
+                                                        tech_stack: repo.language || '',
+                                                        github_repo_id: repo.id.toString(),
+                                                        github_repo_name: repo.full_name,
+                                                        github_repo_url: repo.html_url,
+                                                    });
+                                                    router.visit(`/projects/create?${params.toString()}`);
+                                                }}
+                                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs hover:-translate-y-0.5 transition-all"
+                                            >
+                                                <Plus className="w-3.5 h-3.5" />
+                                                <span>Pilih Repo</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="px-6 py-3 border-t border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-[#0a1533]/50 flex items-center justify-between">
+                            <span className="text-xs text-slate-400 dark:text-slate-500">
+                                Menampilkan {filteredRepos.length} dari {repos.length} repositori
+                            </span>
+                            <button
+                                onClick={() => setIsRepoModalOpen(false)}
+                                className="px-4 py-1.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg text-xs font-semibold transition-colors"
+                            >
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     );
 }
