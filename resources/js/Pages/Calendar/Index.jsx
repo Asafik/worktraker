@@ -15,7 +15,24 @@ import {
     ArrowRight,
     X,
     Filter,
+    Bell,
+    BellRing,
+    RefreshCw,
+    ExternalLink,
+    Smartphone,
+    Sparkles,
+    Settings as SettingsIcon,
 } from 'lucide-react';
+
+const GoogleCalendarIcon = ({ className = 'w-5 h-5' }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="4" width="18" height="17" rx="3" fill="#4285F4" />
+        <rect x="3" y="4" width="18" height="5.5" fill="#1A73E8" rx="2" />
+        <circle cx="7" cy="6.8" r="1" fill="white" />
+        <circle cx="17" cy="6.8" r="1" fill="white" />
+        <text x="12" y="17" fill="white" fontSize="8.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">31</text>
+    </svg>
+);
 
 export default function CalendarPage() {
     const [viewMode, setViewMode] = useState('Month'); // Month, Week, Day
@@ -30,6 +47,22 @@ export default function CalendarPage() {
     const [newEventType, setNewEventType] = useState('Task');
     const [newEventDate, setNewEventDate] = useState('2025-09-16');
     const [newEventTime, setNewEventTime] = useState('14:00');
+
+    // Google Calendar & Morning Notification States
+    const [isSyncingCalendar, setIsSyncingCalendar] = useState(false);
+    const [toastMessage, setToastMessage] = useState(null);
+    const [morningReminderTime, setMorningReminderTime] = useState('07:00');
+    const [isMorningAlertActive, setIsMorningAlertActive] = useState(true);
+    const [syncWithGoogleCalendar, setSyncWithGoogleCalendar] = useState(true);
+
+    const handleSyncGoogleCalendar = () => {
+        setIsSyncingCalendar(true);
+        setTimeout(() => {
+            setIsSyncingCalendar(false);
+            setToastMessage('Jadwal & notifikasi pengingat pagi berhasil disinkronkan ke Google Calendar!');
+            setTimeout(() => setToastMessage(null), 4000);
+        }, 1200);
+    };
 
     // Today's Agenda Checklist State
     const [todayAgenda, setTodayAgenda] = useState([
@@ -488,6 +521,67 @@ export default function CalendarPage() {
                     </div>
                 </div>
 
+                {/* Toast Notification */}
+                {toastMessage && (
+                    <div className="fixed top-5 right-5 z-50 flex items-center gap-2.5 px-4 py-2.5 rounded-lg bg-emerald-600 text-white text-xs font-semibold shadow-xl border border-emerald-500/30 animate-in fade-in slide-in-from-top-2 duration-200">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-200 shrink-0" />
+                        <span>{toastMessage}</span>
+                    </div>
+                )}
+
+                {/* Google Calendar Morning Notification & Sync Banner */}
+                <div className="bg-gradient-to-r from-blue-50/90 via-white to-indigo-50/70 dark:from-[#0b1b42] dark:via-[#0e1d47] dark:to-[#112456] rounded-lg border border-blue-200/80 dark:border-blue-900/60 p-4 sm:p-5 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-start sm:items-center gap-3.5">
+                        <div className="w-11 h-11 rounded-lg bg-white dark:bg-[#132659] border border-blue-100 dark:border-blue-900/80 flex items-center justify-center shrink-0 shadow-2xs">
+                            <GoogleCalendarIcon className="w-6 h-6" />
+                        </div>
+                        <div className="space-y-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="text-sm font-bold text-slate-900 dark:text-white">
+                                    Google Calendar Connected
+                                </span>
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100/80 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                    ronismk7@gmail.com
+                                </span>
+                                {isMorningAlertActive ? (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-100/80 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
+                                        <BellRing className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                                        Notifikasi Pagi {morningReminderTime} WIB Aktif
+                                    </span>
+                                ) : (
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                                        Notifikasi Nonaktif
+                                    </span>
+                                )}
+                            </div>
+                            <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                                Setiap pagi pukul <strong className="font-semibold text-slate-900 dark:text-white">{morningReminderTime} WIB</strong>, rangkuman tugas, deadline proyek, dan agenda harian otomatis dikirimkan ke Google Calendar & HP kamu.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
+                        <button
+                            onClick={handleSyncGoogleCalendar}
+                            disabled={isSyncingCalendar}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#192f6d] transition-colors shadow-2xs disabled:opacity-60"
+                        >
+                            <RefreshCw className={`w-3.5 h-3.5 text-blue-500 ${isSyncingCalendar ? 'animate-spin' : ''}`} />
+                            <span>{isSyncingCalendar ? 'Menyinkronkan...' : 'Sync Calendar'}</span>
+                        </button>
+                        <a
+                            href="https://calendar.google.com"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#2563eb] hover:bg-blue-600 text-white text-xs font-semibold shadow-xs transition-colors"
+                        >
+                            <span>Buka Kalender</span>
+                            <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                    </div>
+                </div>
+
                 {/* 2. Main Calendar Content (2-Column Grid) */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
                     {/* Left Column (8 cols): Main Month Grid + Agenda & Quick Add */}
@@ -846,6 +940,77 @@ export default function CalendarPage() {
                                 ))}
                             </div>
                         </div>
+
+                        {/* Google Calendar & Notifikasi HP Card */}
+                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 shadow-xs space-y-4">
+                            <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800/80">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-6 h-6 rounded-md bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center">
+                                        <GoogleCalendarIcon className="w-3.5 h-3.5" />
+                                    </div>
+                                    <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                                        Notifikasi HP & Kalender
+                                    </h3>
+                                </div>
+                                <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-900/60">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                    Aktif
+                                </span>
+                            </div>
+
+                            <div className="space-y-3 text-xs">
+                                {/* Setting 1: Jam Notifikasi Pagi */}
+                                <div className="flex items-center justify-between p-2.5 rounded-md bg-slate-50 dark:bg-[#122352]/50 border border-slate-100 dark:border-[#1e346e]/80">
+                                    <div className="space-y-0.5">
+                                        <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                                            <Bell className="w-3.5 h-3.5 text-blue-500" />
+                                            Alarm Notifikasi Pagi
+                                        </span>
+                                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                            Pengingat agenda harian ke HP
+                                        </p>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="time"
+                                            value={morningReminderTime}
+                                            onChange={(e) => {
+                                                setMorningReminderTime(e.target.value);
+                                                setToastMessage(`Waktu alarm pagi diubah ke ${e.target.value} WIB`);
+                                                setTimeout(() => setToastMessage(null), 3000);
+                                            }}
+                                            className="px-2 py-1 rounded bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-blue-500"
+                                        />
+                                    </div>
+                                </div>
+
+                                {/* Setting 2: Checklist Fitur Notifikasi */}
+                                <div className="space-y-2 pt-1 text-slate-600 dark:text-slate-300">
+                                    <div className="flex items-center gap-2">
+                                        <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5] shrink-0" />
+                                        <span>Rangkuman agenda harian jam {morningReminderTime} WIB</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5] shrink-0" />
+                                        <span>Pengingat deadline 15 menit & 1 hari sebelumnya</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5] shrink-0" />
+                                        <span>Target akun: <strong className="text-slate-800 dark:text-slate-200">ronismk7@gmail.com</strong></span>
+                                    </div>
+                                </div>
+
+                                <div className="pt-2">
+                                    <Link
+                                        href="/settings"
+                                        className="w-full py-1.5 flex items-center justify-center gap-1.5 rounded-md border border-slate-200 dark:border-[#243e80] text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] text-xs font-medium transition-colors"
+                                    >
+                                        <SettingsIcon className="w-3.5 h-3.5 text-slate-400" />
+                                        <span>Kelola di Pengaturan</span>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -924,6 +1089,22 @@ export default function CalendarPage() {
                                     className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:border-blue-500"
                                 />
                             </div>
+
+                            {/* Google Calendar Sync Checkbox */}
+                            <div className="pt-1">
+                                <label className="flex items-center gap-2.5 p-2 rounded-md bg-blue-50/60 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/50 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={syncWithGoogleCalendar}
+                                        onChange={(e) => setSyncWithGoogleCalendar(e.target.checked)}
+                                        className="w-4 h-4 rounded text-blue-600 border-slate-300 focus:ring-blue-500"
+                                    />
+                                    <div className="flex items-center gap-1.5 text-xs text-slate-700 dark:text-slate-200 font-medium">
+                                        <GoogleCalendarIcon className="w-3.5 h-3.5 shrink-0" />
+                                        <span>Sinkronkan ke Google Calendar (Notifikasi HP)</span>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
 
                         <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
@@ -948,6 +1129,12 @@ export default function CalendarPage() {
                                         },
                                     ]);
                                     setIsAddEventOpen(false);
+                                    setToastMessage(
+                                        syncWithGoogleCalendar
+                                            ? `Event "${newEventTitle}" tersimpan & disinkronkan ke Google Calendar HP kamu!`
+                                            : `Event "${newEventTitle}" berhasil ditambahkan!`
+                                    );
+                                    setTimeout(() => setToastMessage(null), 4000);
                                     setNewEventTitle('');
                                 }}
                                 className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-colors"

@@ -45,6 +45,10 @@ class SettingsController extends Controller
             && !empty(config('services.google_drive.client_secret'))
             && !empty(config('services.google_drive.refresh_token'));
 
+        $isGoogleCalendarConnected = !empty(config('services.google_calendar.client_id'))
+            && !empty(config('services.google_calendar.client_secret'))
+            && !empty(config('services.google_calendar.refresh_token'));
+
         return Inertia::render('Settings/Index', [
             'userProfile' => [
                 'id' => $user->id,
@@ -75,7 +79,14 @@ class SettingsController extends Controller
                     'folderId' => config('services.google_drive.folder_id') ?? '',
                     'url' => 'https://drive.google.com',
                     'lastSynced' => now()->format('d M Y, H:i'),
-
+                ],
+                'googleCalendar' => [
+                    'connected'   => $isGoogleCalendarConnected,
+                    'account'     => 'ronismk7@gmail.com',
+                    'accountType' => 'Personal Account (Google Calendar)',
+                    'calendarId'  => config('services.google_calendar.calendar_id', 'primary'),
+                    'url'         => 'https://calendar.google.com',
+                    'lastSynced'  => now()->format('d M Y, H:i'),
                 ],
                 'github' => [
                     'connected'   => !empty($user->github_id),

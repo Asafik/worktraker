@@ -48,4 +48,11 @@ return [
         'folder_id' => env('GOOGLE_DRIVE_FOLDER_ID'),
     ],
 
+    'google_calendar' => [
+        'client_id'     => env('GOOGLE_CALENDAR_CLIENT_ID', env('GOOGLE_DRIVE_CLIENT_ID')),
+        'client_secret' => env('GOOGLE_CALENDAR_CLIENT_SECRET', env('GOOGLE_DRIVE_CLIENT_SECRET')),
+        'refresh_token' => env('GOOGLE_CALENDAR_REFRESH_TOKEN', env('GOOGLE_DRIVE_REFRESH_TOKEN')),
+        'calendar_id'   => env('GOOGLE_CALENDAR_ID', 'primary'),
+    ],
+
 ];

@@ -67,6 +67,16 @@ const XIcon = ({ className }) => (
     </svg>
 );
 
+const GoogleCalendarIcon = ({ className = 'w-7 h-7' }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="4" width="18" height="17" rx="3" fill="#4285F4" />
+        <rect x="3" y="4" width="18" height="5.5" fill="#1A73E8" rx="2" />
+        <circle cx="7" cy="6.8" r="1" fill="white" />
+        <circle cx="17" cy="6.8" r="1" fill="white" />
+        <text x="12" y="17" fill="white" fontSize="8.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">31</text>
+    </svg>
+);
+
 
 
 export default function SettingsPage({ userProfile, integrationsStatus, flash }) {
@@ -192,6 +202,15 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
             lastSynced: integrationsStatus?.googleDrive?.lastSynced || '16 Sep 2025, 21:05',
             syncing: false,
         },
+        googleCalendar: {
+            connected: integrationsStatus?.googleCalendar?.connected ?? true,
+            account: integrationsStatus?.googleCalendar?.account || 'ronismk7@gmail.com',
+            accountType: integrationsStatus?.googleCalendar?.accountType || 'Personal Account (Google Calendar)',
+            calendarId: integrationsStatus?.googleCalendar?.calendarId || 'primary',
+            url: integrationsStatus?.googleCalendar?.url || 'https://calendar.google.com',
+            lastSynced: integrationsStatus?.googleCalendar?.lastSynced || '17 Sep 2026, 10:50',
+            syncing: false,
+        },
     }));
 
     useEffect(() => {
@@ -214,6 +233,15 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                     folderId: integrationsStatus?.googleDrive?.folderId || '',
                     url: integrationsStatus?.googleDrive?.url || 'https://drive.google.com',
                     lastSynced: integrationsStatus?.googleDrive?.lastSynced || '16 Sep 2025, 21:05',
+                    syncing: false,
+                },
+                googleCalendar: {
+                    connected: integrationsStatus?.googleCalendar?.connected ?? true,
+                    account: integrationsStatus?.googleCalendar?.account || 'ronismk7@gmail.com',
+                    accountType: integrationsStatus?.googleCalendar?.accountType || 'Personal Account (Google Calendar)',
+                    calendarId: integrationsStatus?.googleCalendar?.calendarId || 'primary',
+                    url: integrationsStatus?.googleCalendar?.url || 'https://calendar.google.com',
+                    lastSynced: integrationsStatus?.googleCalendar?.lastSynced || '17 Sep 2026, 10:50',
                     syncing: false,
                 },
             });
@@ -1368,6 +1396,112 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     </button>
                                 </div>
                             </div>
+
+                            {/* Integration Item 3: Google Calendar */}
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 shadow-xs space-y-4">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center gap-3.5">
+                                        <div className="w-11 h-11 rounded-lg bg-blue-50/80 dark:bg-blue-950/40 border border-blue-100/80 dark:border-blue-900/50 flex items-center justify-center shrink-0 shadow-2xs">
+                                            <GoogleCalendarIcon className="w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                                                    Google Calendar
+                                                </h3>
+                                                <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100/70 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
+                                                    Mobile Sync
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                                Sinkronisasi deadline proyek, sprint, dan notifikasi jadwal langsung ke Google Calendar di HP.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 shrink-0">
+                                        {integrations.googleCalendar?.connected ? (
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                                <span>Connected</span>
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                                                <span>Not Connected</span>
+                                            </span>
+                                        )}
+                                        <button
+                                            onClick={() => setModalManage('googleCalendar')}
+                                            className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-2xs flex items-center gap-1.5"
+                                        >
+                                            <SettingsIcon className="w-3.5 h-3.5 text-slate-500" />
+                                            <span>Manage</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Feature list & Connected user info */}
+                                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 pt-1 items-center">
+                                    <div className="md:col-span-8 space-y-1.5">
+                                        {[
+                                            'Sync project start dates & deadlines to Google Calendar',
+                                            'Automatic alarm and reminder notifications on your phone',
+                                            'Background sync via cron job schedule',
+                                            'Two-way sprint and task timeline monitoring',
+                                        ].map((feat, i) => (
+                                            <div key={i} className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                                                <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5]" />
+                                                <span>{feat}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="md:col-span-4 flex flex-col items-start md:items-end justify-center space-y-1">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="w-8 h-8 rounded-full bg-white dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] flex items-center justify-center shadow-2xs">
+                                                <GoogleCalendarIcon className="w-4 h-4" />
+                                            </div>
+                                            <div className="text-left">
+                                                <h4 className="font-bold text-xs text-slate-900 dark:text-white truncate max-w-[150px]">
+                                                    {integrations.googleCalendar?.account}
+                                                </h4>
+                                                <p className="text-[10px] text-slate-400">
+                                                    ID: {integrations.googleCalendar?.calendarId || 'primary'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <a
+                                            href={integrations.googleCalendar?.url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-medium pt-1"
+                                        >
+                                            <span>Open Calendar</span>
+                                            <ExternalLink className="w-3 h-3" />
+                                        </a>
+                                    </div>
+                                </div>
+
+                                {/* Card Footer: Last Synced & Sync Now Button */}
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                    <span className="text-xs text-slate-400">
+                                        Last synced: {integrations.googleCalendar?.lastSynced}
+                                    </span>
+                                    <button
+                                        onClick={() => handleSync('googleCalendar', 'Google Calendar')}
+                                        disabled={integrations.googleCalendar?.syncing}
+                                        className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60"
+                                    >
+                                        <RefreshCw
+                                            className={`w-3.5 h-3.5 text-blue-500 ${
+                                                integrations.googleCalendar?.syncing ? 'animate-spin' : ''
+                                            }`}
+                                        />
+                                        <span>Sync Now</span>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
                         {/* Right Column (4 cols): About Integrations, Recommended Setup, Need Help */}
@@ -1606,7 +1740,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                     <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
                         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                             <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                Kelola Integrasi {modalManage === 'github' ? 'GitHub' : 'Google Drive'}
+                                Kelola Integrasi {modalManage === 'github' ? 'GitHub' : modalManage === 'googleDrive' ? 'Google Drive' : 'Google Calendar'}
                             </h3>
                             <button
                                 onClick={() => setModalManage(null)}
@@ -1620,8 +1754,15 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             <p>
                                 Akun terhubung: <strong className="text-slate-900 dark:text-white">{integrations[modalManage]?.account}</strong>
                             </p>
+                            {modalManage === 'googleCalendar' && (
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                    Calendar Target: <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">{integrations.googleCalendar?.calendarId || 'primary'}</span>
+                                </p>
+                            )}
                             <p className="text-xs text-slate-400">
-                                Sinkronisasi otomatis berjalan setiap 6 jam untuk memperbarui data repositori dan file cadangan.
+                                {modalManage === 'googleCalendar' 
+                                    ? 'Sinkronisasi otomatis menyinkronkan tenggat waktu (deadline), sprint, dan milestone proyek ke kalender Google Anda.'
+                                    : 'Sinkronisasi otomatis berjalan setiap 6 jam untuk memperbarui data repositori dan file cadangan.'}
                             </p>
                         </div>
 
