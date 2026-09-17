@@ -27,7 +27,7 @@ export default function DashboardLayout({ children, activePage = 'Dashboard', us
     }, [darkMode]);
 
     return (
-        <div className="min-h-screen bg-[#f4f7fc] dark:bg-[#070c1e] flex antialiased font-sans text-slate-800 dark:text-slate-100 transition-colors duration-200 selection:bg-blue-600 selection:text-white">
+        <div className="h-screen bg-[#f4f7fc] dark:bg-[#070c1e] flex antialiased font-sans text-slate-800 dark:text-slate-100 overflow-hidden transition-colors duration-200 selection:bg-blue-600 selection:text-white">
             {/* Modular Sidebar Component */}
             <Sidebar
                 activePage={activePage}
@@ -36,7 +36,7 @@ export default function DashboardLayout({ children, activePage = 'Dashboard', us
             />
 
             {/* Main Content Area */}
-            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+            <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
                 {/* Modular Navbar Component */}
                 <Navbar
                     setSidebarOpen={setSidebarOpen}

@@ -36,13 +36,13 @@ export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSide
 
             {/* Sidebar Container (Deep Royal Navy #0b1739) */}
             <aside
-                className={`fixed inset-y-0 left-0 z-50 w-64 bg-[#0b1739] text-slate-300 flex flex-col justify-between transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
+                className={`fixed inset-y-0 left-0 z-50 w-64 h-screen bg-[#0b1739] text-slate-300 flex flex-col justify-between flex-shrink-0 transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
                     sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}
             >
-                <div>
+                <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
                     {/* Brand / Logo */}
-                    <div className="h-20 flex items-center justify-between px-6 border-b border-[#1b2b5a]/60">
+                    <div className="h-20 flex items-center justify-between px-6 border-b border-[#1b2b5a]/60 flex-shrink-0">
                         <Link href="/" className="flex items-center gap-3 group">
                             <img
                                 src="/images/logo.png"
@@ -68,7 +68,7 @@ export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSide
                     </div>
 
                     {/* Navigation Menu */}
-                    <nav className="p-4 space-y-1.5 overflow-y-auto max-h-[calc(100vh-280px)]">
+                    <nav className="p-4 space-y-1.5 overflow-y-auto flex-1">
                         {navItems.map((item) => {
                             const Icon = item.icon;
                             const isActive = item.name === activePage;
@@ -96,8 +96,8 @@ export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSide
                 </div>
 
                 {/* Bottom Motivation Area (Seamless edge-to-edge, font Poppins) */}
-                <div className="mt-auto w-full relative select-none overflow-hidden flex flex-col">
-                    <div className="px-5 pt-3 pb-1 relative z-10 space-y-1">
+                <div className="w-full relative select-none overflow-hidden flex flex-col flex-shrink-0">
+                    <div className="px-5 pt-2 pb-1 relative z-10 space-y-1">
                         <p className="text-[13px] font-medium text-slate-100 leading-snug tracking-tight font-['Poppins',sans-serif]">
                             "A little progress<br />
                             each day adds up<br />
