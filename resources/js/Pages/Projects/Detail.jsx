@@ -375,7 +375,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
               info: {
                   type: dbProject.ownership_type ? `${dbProject.ownership_type} Project` : (dbProject.category || 'Web Application'),
                   role: dbProject.role || 'Frontend Developer',
-                  team: dbProject.project_type === 'Team' ? 'Team Collaboration' : 'Solo Developer',
+                  team: dbProject.project_type === 'Team' ? `Tim (${dbProject.team_size || 2} Orang)` : 'Solo Developer',
                   duration: `${dbProject.start_date || 'Mulai'} – ${dbProject.due_date || 'Selesai'}`,
                   status: dbProject.status,
                   client: dbProject.company_name ? dbProject.company_name : (dbProject.ownership_type === 'Personal' ? 'Proyek Pribadi' : (dbProject.github_repo_name ? `GitHub: ${dbProject.github_repo_name}` : 'Internal Project')),

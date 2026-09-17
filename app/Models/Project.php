@@ -20,6 +20,8 @@ class Project extends Model
         'ownership_type',
         'role',
         'project_type',
+        'team_size',
+        'team_members',
         'status',
         'tech_stack',
         'images',
@@ -33,6 +35,8 @@ class Project extends Model
     ];
 
     protected $casts = [
+        'team_size'         => 'integer',
+        'team_members'      => 'array',
         'tech_stack'        => 'array',
         'images'            => 'array',
         'hide_github_link'  => 'boolean',

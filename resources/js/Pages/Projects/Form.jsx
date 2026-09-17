@@ -1,11 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
+import CustomSelect from '@/Components/CustomSelect';
 import {
     ChevronLeft,
     UploadCloud,
     X,
     Plus,
+    Minus,
     Check,
     AlertCircle,
     Globe,
@@ -23,6 +25,7 @@ import {
     Briefcase,
     Lock,
     Shield,
+    RefreshCw,
 } from 'lucide-react';
 
 const GithubIcon = ({ className = 'w-4 h-4' }) => (
@@ -41,12 +44,48 @@ const CATEGORIES = [
     'Other',
 ];
 
-const STATUS_OPTIONS = [
-    { value: 'Not Started', label: 'Not Started', color: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' },
-    { value: 'In Progress', label: 'In Progress', color: 'bg-blue-50 text-blue-600 dark:bg-blue-950/70 dark:text-blue-400' },
-    { value: 'On Hold', label: 'On Hold', color: 'bg-amber-50 text-amber-700 dark:bg-amber-950/70 dark:text-amber-400' },
-    { value: 'Completed', label: 'Completed', color: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-400' },
+const ROLE_PRESETS = [
+    'Frontend Developer',
+    'Backend Developer',
+    'Full Stack Developer',
+    'Mobile Developer',
+    'UI/UX Designer',
+    'DevOps / Cloud Engineer',
+    'QA Engineer / Tester',
+    'Project Manager / Tech Lead',
+    'Data Engineer / AI Specialist',
+    'Lainnya (Kustom)',
 ];
+
+const STATUS_OPTIONS = [
+    { value: 'Not Started', label: 'Not Started' },
+    { value: 'In Progress', label: 'In Progress' },
+    { value: 'On Hold', label: 'On Hold' },
+    { value: 'Completed', label: 'Completed' },
+];
+
+const STATUS_STYLES = {
+    'Not Started': {
+        active: 'bg-slate-600 dark:bg-slate-700 text-white border-slate-600 dark:border-slate-700 shadow-sm ring-2 ring-slate-500/20',
+        inactive: 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-slate-100 dark:hover:bg-slate-800',
+        dot: 'bg-slate-400',
+    },
+    'In Progress': {
+        active: 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/25 ring-2 ring-blue-500/20',
+        inactive: 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-blue-50/50 dark:hover:bg-[#132354] hover:text-blue-600 dark:hover:text-blue-400',
+        dot: 'bg-blue-500',
+    },
+    'On Hold': {
+        active: 'bg-amber-600 text-white border-amber-600 shadow-md shadow-amber-500/25 ring-2 ring-amber-500/20',
+        inactive: 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-amber-50/50 dark:hover:bg-[#132354] hover:text-amber-600 dark:hover:text-amber-400',
+        dot: 'bg-amber-500',
+    },
+    'Completed': {
+        active: 'bg-emerald-600 text-white border-emerald-600 shadow-md shadow-emerald-500/25 ring-2 ring-emerald-500/20',
+        inactive: 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-emerald-50/50 dark:hover:bg-[#132354] hover:text-emerald-600 dark:hover:text-emerald-400',
+        dot: 'bg-emerald-500',
+    },
+};
 
 export default function ProjectForm({ mode = 'create', project = null, prefill = {}, isGitHubConnected = false }) {
     const isEdit = mode === 'edit';
@@ -55,10 +94,39 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
     const [name, setName] = useState(isEdit ? project.name : (prefill.name || ''));
     const [companyName, setCompanyName] = useState(isEdit ? (project.company_name || '') : (prefill.company_name || ''));
     const [ownershipType, setOwnershipType] = useState(isEdit ? (project.ownership_type || 'Company') : (prefill.ownership_type || 'Company'));
-    const [role, setRole] = useState(isEdit ? (project.role || 'Frontend Developer') : (prefill.role || 'Frontend Developer'));
+
+    // Role state with CustomSelect presets
+    const initialRole = isEdit ? (project.role || 'Frontend Developer') : (prefill.role || 'Frontend Developer');
+    const isInitialPreset = ROLE_PRESETS.filter(p => p !== 'Lainnya (Kustom)').includes(initialRole);
+    const [selectedRolePreset, setSelectedRolePreset] = useState(isInitialPreset ? initialRole : 'Lainnya (Kustom)');
+    const [role, setRole] = useState(initialRole);
+    const [isCustomRole, setIsCustomRole] = useState(!isInitialPreset);
+
+    const handleRolePresetChange = (val) => {
+        setSelectedRolePreset(val);
+        if (val === 'Lainnya (Kustom)') {
+            setIsCustomRole(true);
+        } else {
+            setIsCustomRole(false);
+            setRole(val);
+        }
+    };
+
     const [description, setDescription] = useState(isEdit ? (project.description || '') : (prefill.description || ''));
     const [category, setCategory] = useState(isEdit ? project.category : (prefill.category || 'Web Development'));
     const [projectType, setProjectType] = useState(isEdit ? project.project_type : (prefill.project_type || 'Solo'));
+
+    // Team & GitHub Collaborators
+    const [teamSize, setTeamSize] = useState(
+        isEdit ? (project.team_size || 1) : (prefill.team_size || 1)
+    );
+    const [teamMembers, setTeamMembers] = useState(
+        isEdit ? (project.team_members || []) : (prefill.team_members || [])
+    );
+    const [isCheckingCollab, setIsCheckingCollab] = useState(false);
+    const [collabError, setCollabError] = useState(null);
+    const [collabChecked, setCollabChecked] = useState(false);
+
     const [status, setStatus] = useState(isEdit ? project.status : (prefill.status || 'In Progress'));
     const [liveUrl, setLiveUrl] = useState(isEdit ? (project.live_url || '') : (prefill.live_url || ''));
     const [startDate, setStartDate] = useState(isEdit ? (project.start_date || '') : (prefill.start_date || ''));
@@ -69,6 +137,30 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
     const [githubRepoId, setGithubRepoId] = useState(isEdit ? (project.github_repo_id || '') : (prefill.github_repo_id || ''));
     const [githubRepoName, setGithubRepoName] = useState(isEdit ? (project.github_repo_name || '') : (prefill.github_repo_name || ''));
     const [githubRepoUrl, setGithubRepoUrl] = useState(isEdit ? (project.github_repo_url || '') : (prefill.github_repo_url || ''));
+
+    // Fetch collaborators from GitHub
+    const fetchCollaborators = async (repoName = githubRepoName) => {
+        if (!repoName) return;
+        setIsCheckingCollab(true);
+        setCollabError(null);
+        try {
+            const res = await fetch(`/projects/github/collaborators?repo=${encodeURIComponent(repoName)}`);
+            const data = await res.json();
+            if (data.success && Array.isArray(data.members)) {
+                setTeamMembers(data.members);
+                setCollabChecked(true);
+                if (data.members.length > 0) {
+                    setTeamSize(data.members.length);
+                }
+            } else {
+                setCollabError(data.message || 'Tidak dapat mendeteksi kolaborator.');
+            }
+        } catch (err) {
+            setCollabError('Terjadi kesalahan saat memeriksa kolaborator GitHub.');
+        } finally {
+            setIsCheckingCollab(false);
+        }
+    };
 
     // Tech Stack (Tags)
     const initialTags = isEdit
@@ -164,6 +256,10 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
         formData.append('description', description);
         formData.append('category', category);
         formData.append('project_type', projectType);
+        formData.append('team_size', projectType === 'Team' ? teamSize : 1);
+        if (projectType === 'Team' && teamMembers.length > 0) {
+            formData.append('team_members', JSON.stringify(teamMembers));
+        }
         formData.append('status', status);
         formData.append('live_url', liveUrl);
         formData.append('start_date', startDate);
@@ -387,35 +483,26 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                             <div className="md:col-span-2 space-y-1.5">
                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center justify-between">
                                     <span>Peran / Role Anda di Proyek Ini</span>
-                                    <span className="text-[11px] text-blue-600 dark:text-blue-400 font-medium">Klik pilihan cepat di bawah</span>
+                                    <span className="text-[11px] text-blue-600 dark:text-blue-400 font-medium">Pilih dari dropdown</span>
                                 </label>
-                                <div className="relative">
-                                    <UserIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                                    <input
-                                        type="text"
-                                        value={role}
-                                        onChange={(e) => setRole(e.target.value)}
-                                        placeholder="Contoh: Frontend Developer, Web Developer"
-                                        className="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 dark:bg-[#0a1533] border border-slate-200 dark:border-[#1e346e] rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-slate-900 dark:text-white font-medium"
-                                    />
-                                </div>
-                                {/* Preset Chips */}
-                                <div className="flex flex-wrap gap-1.5 pt-0.5">
-                                    {['Frontend Developer', 'Web Developer', 'Backend Developer', 'Full Stack Developer'].map((preset) => (
-                                        <button
-                                            key={preset}
-                                            type="button"
-                                            onClick={() => setRole(preset)}
-                                            className={`text-[11px] px-2.5 py-0.5 rounded-md font-semibold transition-colors cursor-pointer ${
-                                                role === preset
-                                                    ? 'bg-blue-600 text-white shadow-2xs'
-                                                    : 'bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300'
-                                            }`}
-                                        >
-                                            {preset}
-                                        </button>
-                                    ))}
-                                </div>
+                                <CustomSelect
+                                    value={selectedRolePreset}
+                                    onChange={handleRolePresetChange}
+                                    options={ROLE_PRESETS}
+                                    placeholder="Pilih Peran / Role Anda"
+                                />
+                                {isCustomRole && (
+                                    <div className="relative mt-2">
+                                        <UserIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                        <input
+                                            type="text"
+                                            value={role}
+                                            onChange={(e) => setRole(e.target.value)}
+                                            placeholder="Tuliskan nama peran/role Anda..."
+                                            className="w-full pl-10 pr-4 py-2.5 text-sm bg-slate-50 dark:bg-[#0a1533] border border-blue-300 dark:border-blue-600 rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 text-slate-900 dark:text-white font-medium"
+                                        />
+                                    </div>
+                                )}
                             </div>
 
                             {/* Category */}
@@ -423,17 +510,12 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                                     Kategori Proyek
                                 </label>
-                                <select
+                                <CustomSelect
                                     value={category}
-                                    onChange={(e) => setCategory(e.target.value)}
-                                    className="w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-[#0a1533] border border-slate-200 dark:border-[#1e346e] rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-slate-900 dark:text-white"
-                                >
-                                    {CATEGORIES.map((cat) => (
-                                        <option key={cat} value={cat}>
-                                            {cat}
-                                        </option>
-                                    ))}
-                                </select>
+                                    onChange={setCategory}
+                                    options={CATEGORIES}
+                                    placeholder="Pilih Kategori"
+                                />
                             </div>
 
                             {/* Project Type (Solo vs Team) */}
@@ -445,7 +527,7 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                                     <button
                                         type="button"
                                         onClick={() => setProjectType('Solo')}
-                                        className={`py-2.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                                        className={`py-2.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
                                             projectType === 'Solo'
                                                 ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                                                 : 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -456,8 +538,13 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                                     </button>
                                     <button
                                         type="button"
-                                        onClick={() => setProjectType('Team')}
-                                        className={`py-2.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+                                        onClick={() => {
+                                            setProjectType('Team');
+                                            if (githubRepoName && teamMembers.length === 0 && !collabChecked) {
+                                                fetchCollaborators(githubRepoName);
+                                            }
+                                        }}
+                                        className={`py-2.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all cursor-pointer ${
                                             projectType === 'Team'
                                                 ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
                                                 : 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -469,26 +556,179 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                                 </div>
                             </div>
 
+                            {/* Team Details Panel (Only shown when Team is selected) */}
+                            {projectType === 'Team' && (
+                                <div className="md:col-span-2 lg:col-span-4 p-4 sm:p-5 rounded-xl bg-slate-50 dark:bg-[#0a1533] border border-slate-200/80 dark:border-[#1e346e] space-y-4">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200/60 dark:border-slate-800">
+                                        <div className="flex items-center gap-2">
+                                            <Users className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                                            <span className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                                                Konfigurasi Tim Pengerjaan
+                                            </span>
+                                        </div>
+
+                                        {/* Counter controls */}
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                                Total Orang:
+                                            </span>
+                                            <div className="flex items-center rounded-lg border border-slate-200 dark:border-[#1e346e] bg-white dark:bg-[#0e1d47] overflow-hidden">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setTeamSize(Math.max(1, teamSize - 1))}
+                                                    disabled={teamSize <= 1}
+                                                    className="px-2.5 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                                                >
+                                                    <Minus className="w-3.5 h-3.5" />
+                                                </button>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    max="100"
+                                                    value={teamSize}
+                                                    onChange={(e) => setTeamSize(Math.max(1, parseInt(e.target.value) || 1))}
+                                                    className="w-12 text-center text-xs font-bold text-slate-900 dark:text-white bg-transparent border-none focus:outline-hidden focus:ring-0 p-0"
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setTeamSize(teamSize + 1)}
+                                                    className="px-2.5 py-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 transition-colors"
+                                                >
+                                                    <Plus className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* GitHub Collaborator Sync Info */}
+                                    {githubRepoName ? (
+                                        <div className="space-y-3">
+                                            <div className="flex flex-wrap items-center justify-between gap-2">
+                                                <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                                                    <GithubIcon className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+                                                    <span>
+                                                        Repo GitHub: <strong className="text-blue-600 dark:text-blue-400 font-semibold">{githubRepoName}</strong>
+                                                    </span>
+                                                </div>
+
+                                                <button
+                                                    type="button"
+                                                    onClick={() => fetchCollaborators(githubRepoName)}
+                                                    disabled={isCheckingCollab}
+                                                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-300 hover:bg-blue-100 dark:hover:bg-blue-900/60 border border-blue-200 dark:border-blue-900/50 transition-colors cursor-pointer"
+                                                >
+                                                    <RefreshCw className={`w-3.5 h-3.5 ${isCheckingCollab ? 'animate-spin' : ''}`} />
+                                                    <span>{isCheckingCollab ? 'Memeriksa Kolaborator...' : 'Cek Kolaborator GitHub'}</span>
+                                                </button>
+                                            </div>
+
+                                            {collabError && (
+                                                <div className="p-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50 text-amber-700 dark:text-amber-300 text-xs flex items-center gap-2">
+                                                    <AlertCircle className="w-4 h-4 shrink-0" />
+                                                    <span>{collabError}</span>
+                                                </div>
+                                            )}
+
+                                            {/* Detected Collaborators List */}
+                                            {teamMembers.length > 0 && (
+                                                <div className="space-y-2">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                                            Kolaborator & Kontributor Terdeteksi ({teamMembers.length})
+                                                        </span>
+                                                        <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                                                            Otomatis disinkronkan dari GitHub
+                                                        </span>
+                                                    </div>
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                                                        {teamMembers.map((member, idx) => (
+                                                            <div
+                                                                key={member.login || idx}
+                                                                className="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#1e346e] shadow-xs"
+                                                            >
+                                                                <div className="flex items-center gap-2 min-w-0">
+                                                                    {member.avatar_url ? (
+                                                                        <img
+                                                                            src={member.avatar_url}
+                                                                            alt={member.login}
+                                                                            className="w-7 h-7 rounded-full object-cover border border-slate-200 dark:border-slate-700 shrink-0"
+                                                                        />
+                                                                    ) : (
+                                                                        <div className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0">
+                                                                            <UserIcon className="w-3.5 h-3.5 text-slate-500" />
+                                                                        </div>
+                                                                    )}
+                                                                    <div className="min-w-0">
+                                                                        <a
+                                                                            href={member.html_url || `https://github.com/${member.login}`}
+                                                                            target="_blank"
+                                                                            rel="noreferrer"
+                                                                            className="text-xs font-bold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 truncate block"
+                                                                        >
+                                                                            @{member.login}
+                                                                        </a>
+                                                                        <span className="text-[10px] text-slate-400 block truncate">
+                                                                            {member.contributions ? `${member.contributions} kontribusi` : (member.role || 'Kolaborator')}
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => {
+                                                                        const updated = teamMembers.filter((_, i) => i !== idx);
+                                                                        setTeamMembers(updated);
+                                                                        setTeamSize(Math.max(1, updated.length));
+                                                                    }}
+                                                                    className="text-slate-400 hover:text-rose-500 p-1 rounded transition-colors"
+                                                                    title="Hapus dari daftar tim proyek"
+                                                                >
+                                                                    <X className="w-3.5 h-3.5" />
+                                                                </button>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ) : (
+                                        <div className="p-3 rounded-lg bg-blue-50/50 dark:bg-[#0e1d47] border border-blue-100 dark:border-[#1e346e] text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2">
+                                            <Users className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
+                                            <div>
+                                                <p className="font-semibold text-slate-800 dark:text-slate-200">
+                                                    Proyek Tim (Tanpa Repositori GitHub Terhubung)
+                                                </p>
+                                                <p className="text-slate-500 dark:text-slate-400 text-[11px] mt-0.5">
+                                                    Anda dapat mengatur jumlah orang yang mengerjakan proyek ini dengan kontrol di kanan atas.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+
                             {/* Status Pengerjaan */}
-                            <div className="md:col-span-2 space-y-1.5">
+                            <div className="md:col-span-2 lg:col-span-4 space-y-1.5">
                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
                                     Status Proyek
                                 </label>
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                     {STATUS_OPTIONS.map((opt) => {
                                         const isSelected = status === opt.value;
+                                        const style = STATUS_STYLES[opt.value] || STATUS_STYLES['In Progress'];
                                         return (
                                             <button
                                                 key={opt.value}
                                                 type="button"
                                                 onClick={() => setStatus(opt.value)}
-                                                className={`py-2.5 px-2 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
-                                                    isSelected
-                                                        ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 border-slate-900 dark:border-white shadow-xs'
-                                                        : 'bg-slate-50 dark:bg-[#0a1533] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-[#1e346e] hover:bg-slate-100 dark:hover:bg-slate-800'
+                                                className={`py-2.5 px-3 rounded-lg text-xs font-bold flex items-center justify-center gap-2 border transition-all cursor-pointer ${
+                                                    isSelected ? style.active : style.inactive
                                                 }`}
                                             >
-                                                {isSelected && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                                                {isSelected ? (
+                                                    <Check className="w-3.5 h-3.5 stroke-[3] shrink-0" />
+                                                ) : (
+                                                    <span className={`w-2 h-2 rounded-full shrink-0 ${style.dot}`} />
+                                                )}
                                                 <span>{opt.label}</span>
                                             </button>
                                         );

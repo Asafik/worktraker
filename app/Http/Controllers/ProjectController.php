@@ -35,6 +35,8 @@ class ProjectController extends Controller
                 'ownership_type'   => $project->ownership_type ?? 'Company',
                 'role'             => $project->role ?? 'Frontend Developer',
                 'project_type'     => $project->project_type,
+                'team_size'        => $project->team_size ?? 1,
+                'team_members'     => $project->team_members ?? [],
                 'status'           => $project->status,
                 'tech_stack'       => $project->tech_stack ?? [],
                 'images'           => $project->images ?? [],
@@ -84,6 +86,7 @@ class ProjectController extends Controller
             'ownership_type'   => $request->query('ownership_type', 'Company'),
             'role'             => $request->query('role', 'Frontend Developer'),
             'project_type'     => $request->query('project_type', 'Solo'),
+            'team_size'        => (int) $request->query('team_size', 1),
             'status'           => $request->query('status', 'In Progress'),
             'tech_stack'       => $request->query('tech_stack') ? explode(',', $request->query('tech_stack')) : [],
             'github_repo_id'   => $request->query('github_repo_id', ''),
@@ -114,6 +117,8 @@ class ProjectController extends Controller
             'ownership_type'   => 'required|in:Company,Client,Personal',
             'role'             => 'nullable|string|max:100',
             'project_type'     => 'required|in:Solo,Team',
+            'team_size'        => 'nullable|integer|min:1',
+            'team_members'     => 'nullable',
             'status'           => 'required|in:Not Started,In Progress,Completed,On Hold',
             'tech_stack'       => 'nullable|array',
             'tech_stack.*'     => 'string|max:50',
@@ -150,6 +155,18 @@ class ProjectController extends Controller
             }
         }
 
+        // Parse team members and size
+        $teamMembers = $request->input('team_members');
+        if (is_string($teamMembers)) {
+            $teamMembers = json_decode($teamMembers, true) ?: [];
+        }
+        if (!is_array($teamMembers)) {
+            $teamMembers = [];
+        }
+        $teamSize = $validated['project_type'] === 'Team'
+            ? (int) ($request->input('team_size') ?: max(1, count($teamMembers)))
+            : 1;
+
         $project = Project::create([
             'user_id'          => $user?->id,
             'name'             => $validated['name'],
@@ -160,6 +177,8 @@ class ProjectController extends Controller
             'ownership_type'   => $validated['ownership_type'] ?? 'Company',
             'role'             => $validated['role'] ?? 'Frontend Developer',
             'project_type'     => $validated['project_type'],
+            'team_size'        => $teamSize,
+            'team_members'     => $validated['project_type'] === 'Team' ? $teamMembers : [],
             'status'           => $validated['status'],
             'tech_stack'       => $validated['tech_stack'] ?? [],
             'images'           => $imagePaths,
@@ -195,6 +214,8 @@ class ProjectController extends Controller
                 'ownership_type'   => $project->ownership_type ?? 'Company',
                 'role'             => $project->role ?? 'Frontend Developer',
                 'project_type'     => $project->project_type,
+                'team_size'        => $project->team_size ?? 1,
+                'team_members'     => $project->team_members ?? [],
                 'status'           => $project->status,
                 'tech_stack'       => $project->tech_stack ?? [],
                 'images'           => $project->images ?? [],
@@ -226,6 +247,8 @@ class ProjectController extends Controller
             'ownership_type'   => 'required|in:Company,Client,Personal',
             'role'             => 'nullable|string|max:100',
             'project_type'     => 'required|in:Solo,Team',
+            'team_size'        => 'nullable|integer|min:1',
+            'team_members'     => 'nullable',
             'status'           => 'required|in:Not Started,In Progress,Completed,On Hold',
             'tech_stack'       => 'nullable|array',
             'tech_stack.*'     => 'string|max:50',
@@ -277,6 +300,18 @@ class ProjectController extends Controller
             }
         }
 
+        // Parse team members and size
+        $teamMembers = $request->input('team_members');
+        if (is_string($teamMembers)) {
+            $teamMembers = json_decode($teamMembers, true) ?: [];
+        }
+        if (!is_array($teamMembers)) {
+            $teamMembers = [];
+        }
+        $teamSize = $validated['project_type'] === 'Team'
+            ? (int) ($request->input('team_size') ?: max(1, count($teamMembers)))
+            : 1;
+
         $project->update([
             'name'             => $validated['name'],
             'description'      => $validated['description'] ?? null,
@@ -285,6 +320,8 @@ class ProjectController extends Controller
             'ownership_type'   => $validated['ownership_type'] ?? 'Company',
             'role'             => $validated['role'] ?? 'Frontend Developer',
             'project_type'     => $validated['project_type'],
+            'team_size'        => $teamSize,
+            'team_members'     => $validated['project_type'] === 'Team' ? $teamMembers : [],
             'status'           => $validated['status'],
             'tech_stack'       => $validated['tech_stack'] ?? [],
             'images'           => array_values($finalImages),
@@ -377,6 +414,8 @@ class ProjectController extends Controller
                 'ownership_type'   => $project->ownership_type ?? 'Company',
                 'role'             => $project->role ?? 'Frontend Developer',
                 'project_type'     => $project->project_type,
+                'team_size'        => $project->team_size ?? 1,
+                'team_members'     => $project->team_members ?? [],
                 'status'           => $project->status,
                 'tech_stack'       => $project->tech_stack ?? [],
                 'images'           => $project->images ?? [],
@@ -479,6 +518,111 @@ class ProjectController extends Controller
                 'success' => false,
                 'message' => 'Terjadi kesalahan saat menghubungi GitHub: ' . $e->getMessage(),
                 'repos'   => [],
+            ], 500);
+        }
+    }
+
+    /**
+     * Fetch collaborators or contributors for a specific GitHub repository.
+     */
+    public function getGitHubCollaborators(Request $request): JsonResponse
+    {
+        $user = User::first();
+
+        if (!$user || empty($user->github_token)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Akun GitHub belum terhubung.',
+                'members' => [],
+                'count'   => 0,
+            ], 401);
+        }
+
+        $repo = trim($request->query('repo', ''));
+        if (empty($repo)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Nama repository wajib disertakan.',
+                'members' => [],
+                'count'   => 0,
+            ], 400);
+        }
+
+        // If repo does not have owner/repo format, prefix with user's github_username
+        if (!str_contains($repo, '/') && !empty($user->github_username)) {
+            $repo = $user->github_username . '/' . $repo;
+        }
+
+        try {
+            $headers = [
+                'Accept'     => 'application/vnd.github+json',
+                'User-Agent' => 'WorkTrack-App',
+            ];
+
+            $members = [];
+
+            // Attempt 1: Fetch collaborators (requires push access)
+            $response = Http::withToken($user->github_token)
+                ->withHeaders($headers)
+                ->timeout(10)
+                ->get("https://api.github.com/repos/{$repo}/collaborators");
+
+            if ($response->successful()) {
+                $rawCollaborators = $response->json();
+                if (is_array($rawCollaborators)) {
+                    foreach ($rawCollaborators as $collab) {
+                        $members[] = [
+                            'login'      => $collab['login'] ?? '',
+                            'avatar_url' => $collab['avatar_url'] ?? '',
+                            'html_url'   => $collab['html_url'] ?? '',
+                            'role'       => $collab['role_name'] ?? 'collaborator',
+                        ];
+                    }
+                }
+            }
+
+            // Attempt 2: If collaborators is empty (e.g. 403 or no collaborators listed), fallback to contributors
+            if (empty($members)) {
+                $contribResponse = Http::withToken($user->github_token)
+                    ->withHeaders($headers)
+                    ->timeout(10)
+                    ->get("https://api.github.com/repos/{$repo}/contributors", [
+                        'per_page' => 50,
+                    ]);
+
+                if ($contribResponse->successful()) {
+                    $rawContributors = $contribResponse->json();
+                    if (is_array($rawContributors)) {
+                        foreach ($rawContributors as $contrib) {
+                            if (isset($contrib['type']) && $contrib['type'] === 'Bot') {
+                                continue;
+                            }
+                            $members[] = [
+                                'login'         => $contrib['login'] ?? '',
+                                'avatar_url'    => $contrib['avatar_url'] ?? '',
+                                'html_url'      => $contrib['html_url'] ?? '',
+                                'contributions' => $contrib['contributions'] ?? 0,
+                                'role'          => 'contributor',
+                            ];
+                        }
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'repo'    => $repo,
+                'count'   => count($members),
+                'members' => $members,
+            ]);
+        } catch (\Exception $e) {
+            Log::error("Exception fetching collaborators for {$repo}: " . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal mengambil kolaborator repo: ' . $e->getMessage(),
+                'members' => [],
+                'count'   => 0,
             ], 500);
         }
     }

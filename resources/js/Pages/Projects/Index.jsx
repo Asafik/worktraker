@@ -453,7 +453,7 @@ export default function Projects({
                                                     {item.project_type === 'Team' ? (
                                                         <>
                                                             <Users className="w-3 h-3" />
-                                                            <span>Team</span>
+                                                            <span>Team {item.team_size && item.team_size > 1 ? `(${item.team_size})` : ''}</span>
                                                         </>
                                                     ) : (
                                                         <>
