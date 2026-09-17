@@ -56,6 +56,11 @@ export default function CalendarPage() {
     const [isMorningAlertActive, setIsMorningAlertActive] = useState(true);
     const [syncWithGoogleCalendar, setSyncWithGoogleCalendar] = useState(true);
 
+    // Selected Day Click Modal State
+    const [selectedDayModal, setSelectedDayModal] = useState(null);
+    const [modalTaskTitle, setModalTaskTitle] = useState('');
+    const [modalTaskTime, setModalTaskTime] = useState('07:30');
+
     const handleSyncGoogleCalendar = () => {
         setIsSyncingCalendar(true);
         setTimeout(() => {
@@ -63,6 +68,19 @@ export default function CalendarPage() {
             setToastMessage('Jadwal rutin "Berangkat kerja dan berdoa..." berhasil disinkronkan ke Google Calendar!');
             setTimeout(() => setToastMessage(null), 4000);
         }, 1200);
+    };
+
+    const handleDayClick = (item, idx) => {
+        const dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        const dayName = dayNames[idx % 7];
+        const monthName = item.isCurrentMonth ? selectedMonth : (item.day > 20 ? 'Agustus 2026' : 'Oktober 2026');
+        setSelectedDayModal({
+            ...item,
+            idx,
+            dayName,
+            dateFormatted: `${dayName}, ${item.day} ${monthName}`,
+            events: item.events ? [...item.events] : [],
+        });
     };
 
     // Google Calendar Routine Task from user's Google Calendar (Mon - Sat at 07:30)
@@ -116,7 +134,7 @@ export default function CalendarPage() {
     // Calendar grid data for September 2026:
     // Starts on Tuesday Sept 1st, ended Sept 30th on Wednesday.
     // Sundays are red holidays. Tanggal merah selain minggu (e.g. 4 Sep Maulid Nabi) includes Mode Jam Santai.
-    const calendarDays = [
+    const initialCalendarDays = [
         // Row 1: Prev month (Mon Aug 31) + Sept 1 - 6
         { day: 31, isCurrentMonth: false, events: [googleRoutineTask] },
         { day: 1, isCurrentMonth: true, events: [googleRoutineTask] },
@@ -177,6 +195,42 @@ export default function CalendarPage() {
         { day: 3, isCurrentMonth: false, events: [googleRoutineTask] },
         { day: 4, isCurrentMonth: false, isSunday: true, events: [] },
     ];
+
+    const [calendarDays, setCalendarDays] = useState(initialCalendarDays);
+
+    const handleAddModalTask = (e) => {
+        e.preventDefault();
+        if (!modalTaskTitle.trim() || !selectedDayModal) return;
+
+        const newTask = {
+            time: modalTaskTime,
+            title: modalTaskTitle,
+            fullTitle: modalTaskTitle,
+            dot: 'bg-blue-500',
+            bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
+        };
+
+        setCalendarDays((prev) =>
+            prev.map((d, i) =>
+                i === selectedDayModal.idx
+                    ? { ...d, events: [...(d.events || []), newTask] }
+                    : d
+            )
+        );
+
+        setSelectedDayModal((prev) => ({
+            ...prev,
+            events: [...(prev.events || []), newTask],
+        }));
+
+        setToastMessage(
+            syncWithGoogleCalendar
+                ? `Tugas "${modalTaskTitle}" disimpan di ${selectedDayModal.dateFormatted} & disinkronkan ke Google Calendar!`
+                : `Tugas "${modalTaskTitle}" berhasil ditambahkan!`
+        );
+        setTimeout(() => setToastMessage(null), 4000);
+        setModalTaskTitle('');
+    };
 
     // Mini calendar days for September 2026
     const miniCalendarDays = [
@@ -421,7 +475,8 @@ export default function CalendarPage() {
                                 {calendarDays.map((item, idx) => (
                                     <div
                                         key={idx}
-                                        className={`min-h-[86px] sm:min-h-[96px] p-2 flex flex-col justify-between transition-colors hover:bg-slate-50/50 dark:hover:bg-[#122352]/30 ${
+                                        onClick={() => handleDayClick(item, idx)}
+                                        className={`min-h-[86px] sm:min-h-[96px] p-2 flex flex-col justify-between transition-all cursor-pointer group hover:bg-blue-50/40 dark:hover:bg-[#122352]/50 hover:ring-1.5 hover:ring-blue-500/40 ${
                                             !item.isCurrentMonth
                                                 ? 'bg-slate-50/30 dark:bg-[#091433]/30'
                                                 : item.isSunday
@@ -997,6 +1052,176 @@ export default function CalendarPage() {
                                 className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-colors"
                             >
                                 Simpan Event
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal: Detail Tanggal & Agenda (Saat Tanggal Kalender Diklik) */}
+            {selectedDayModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-150">
+                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-2xl w-full max-w-lg p-6 space-y-5 animate-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
+                        {/* Header */}
+                        <div className="flex items-start justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+                            <div className="space-y-1">
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
+                                        {selectedDayModal.dateFormatted}
+                                    </h3>
+                                    {selectedDayModal.isToday && (
+                                        <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#2563eb] text-white">
+                                            Hari Ini
+                                        </span>
+                                    )}
+                                    {selectedDayModal.isHoliday && (
+                                        <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60">
+                                            🔴 {selectedDayModal.holidayName}
+                                        </span>
+                                    )}
+                                    {selectedDayModal.isSunday && (
+                                        <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300">
+                                            Libur Akhir Pekan
+                                        </span>
+                                    )}
+                                </div>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                    {selectedDayModal.isRelaxMode
+                                        ? 'Tanggal merah hari kerja: Mode Jam Santai aktif (Tetap masuk kantor).'
+                                        : selectedDayModal.isSunday
+                                        ? 'Hari libur akhir pekan.'
+                                        : 'Hari kerja reguler dengan Google Calendar sync.'}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setSelectedDayModal(null)}
+                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-md"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Mode Banner */}
+                        {selectedDayModal.isRelaxMode ? (
+                            <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/50 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0">
+                                    <Coffee className="w-4 h-4" />
+                                </div>
+                                <div className="text-xs">
+                                    <span className="font-bold text-amber-800 dark:text-amber-200">Mode Jam Santai Aktif</span>
+                                    <p className="text-amber-700/90 dark:text-amber-300/80 mt-0.5">
+                                        Hari ini adalah tanggal merah ({selectedDayModal.holidayName}). Tetap masuk kantor tapi dengan ritme santai dan fleksibel.
+                                    </p>
+                                </div>
+                            </div>
+                        ) : selectedDayModal.isSunday ? (
+                            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200/60 dark:border-rose-900/40 flex items-center gap-3 text-xs text-rose-700 dark:text-rose-300">
+                                <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
+                                <span>Hari libur akhir pekan. Tidak ada agenda kerja yang diwajibkan.</span>
+                            </div>
+                        ) : (
+                            <div className="p-3 rounded-lg bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 flex items-center gap-3 text-xs text-blue-700 dark:text-blue-300">
+                                <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
+                                <span>Hari kerja normal. Pengingat otomatis di Google Calendar pukul {morningReminderTime} WIB.</span>
+                            </div>
+                        )}
+
+                        {/* Event / Agenda List */}
+                        <div className="space-y-2.5">
+                            <div className="flex items-center justify-between">
+                                <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
+                                    Agenda & Tugas ({selectedDayModal.events?.length || 0})
+                                </h4>
+                                <span className="text-[11px] text-slate-400">
+                                    Terhubung ke Google Calendar
+                                </span>
+                            </div>
+
+                            {selectedDayModal.events && selectedDayModal.events.length > 0 ? (
+                                <div className="space-y-2">
+                                    {selectedDayModal.events.map((ev, i) => (
+                                        <div
+                                            key={i}
+                                            className="p-3 rounded-lg border border-slate-200/80 dark:border-slate-800 bg-slate-50/50 dark:bg-[#122352]/30 flex items-center justify-between gap-3 text-xs sm:text-sm"
+                                        >
+                                            <div className="flex items-start gap-2.5 min-w-0">
+                                                <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${ev.dot || 'bg-blue-500'}`} />
+                                                <div className="min-w-0">
+                                                    <p className="font-semibold text-slate-900 dark:text-white truncate">
+                                                        {ev.fullTitle || ev.title}
+                                                    </p>
+                                                    <div className="flex items-center gap-2 mt-1 text-slate-500 text-xs">
+                                                        <span className="flex items-center gap-1 font-medium">
+                                                            <Clock className="w-3 h-3 text-slate-400" />
+                                                            {ev.time}
+                                                        </span>
+                                                        <span>•</span>
+                                                        <span className="text-blue-600 dark:text-blue-400 font-medium">
+                                                            Tugas Saya
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <span className="shrink-0 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
+                                                Tersinkron
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="p-4 rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400">
+                                    Tidak ada agenda untuk tanggal ini. Tambahkan tugas baru di bawah!
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Quick Add Form in Modal */}
+                        <form onSubmit={handleAddModalTask} className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+                            <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                                + Tambah Tugas di Tanggal Ini
+                            </h4>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Ketik nama tugas baru..."
+                                    value={modalTaskTitle}
+                                    onChange={(e) => setModalTaskTitle(e.target.value)}
+                                    className="flex-1 bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                />
+                                <input
+                                    type="time"
+                                    value={modalTaskTime}
+                                    onChange={(e) => setModalTaskTime(e.target.value)}
+                                    className="w-28 bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-2 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                />
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 cursor-pointer">
+                                    <input
+                                        type="checkbox"
+                                        checked={syncWithGoogleCalendar}
+                                        onChange={(e) => setSyncWithGoogleCalendar(e.target.checked)}
+                                        className="w-3.5 h-3.5 rounded text-blue-600 border-slate-300"
+                                    />
+                                    <span>Sinkron ke Google Calendar</span>
+                                </label>
+                                <button
+                                    type="submit"
+                                    disabled={!modalTaskTitle.trim()}
+                                    className="px-4 py-1.5 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs font-semibold shadow-xs disabled:opacity-50 transition-colors"
+                                >
+                                    Simpan Tugas
+                                </button>
+                            </div>
+                        </form>
+
+                        {/* Footer */}
+                        <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                            <button
+                                onClick={() => setSelectedDayModal(null)}
+                                className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors"
+                            >
+                                Tutup
                             </button>
                         </div>
                     </div>
