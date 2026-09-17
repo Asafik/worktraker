@@ -1105,8 +1105,9 @@ export default function CalendarPage() {
                                         </span>
                                     )}
                                     {selectedDayModal.isHoliday && (
-                                        <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60">
-                                            🔴 {selectedDayModal.holidayName}
+                                        <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                                            <span>{selectedDayModal.holidayName}</span>
                                         </span>
                                     )}
                                     {selectedDayModal.isSunday && (
