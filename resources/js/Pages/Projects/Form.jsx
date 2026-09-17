@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import CustomSelect from '@/Components/CustomSelect';
+import Checkbox from '@/Components/Checkbox';
 import {
     ChevronLeft,
     UploadCloud,
@@ -798,23 +799,22 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                             </div>
 
                             {/* Privasi GitHub Repo (Untuk Repo Private / Milik PT) */}
-                            <div className="md:col-span-2 lg:col-span-4 p-4 rounded-lg bg-slate-50 dark:bg-[#0a1533] border border-slate-200/80 dark:border-[#1e346e] flex items-start gap-3">
-                                <input
-                                    type="checkbox"
-                                    id="hide_github_link"
+                            <div className="md:col-span-2 lg:col-span-4 p-4 rounded-xl bg-slate-50 dark:bg-[#0a1533] border border-slate-200/80 dark:border-[#1e346e] hover:border-blue-200 dark:hover:border-blue-900/50 transition-colors">
+                                <Checkbox
                                     checked={hideGithubLink}
-                                    onChange={(e) => setHideGithubLink(e.target.checked)}
-                                    className="mt-0.5 w-4 h-4 text-blue-600 rounded border-slate-300 dark:border-slate-700 focus:ring-blue-500 cursor-pointer"
-                                />
-                                <label htmlFor="hide_github_link" className="text-xs space-y-1 cursor-pointer select-none">
-                                    <span className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                                        <Lock className="w-3.5 h-3.5 text-amber-500" />
-                                        <span>Sembunyikan Tautan GitHub Publik (Repository Private / Milik PT)</span>
-                                    </span>
-                                    <p className="text-slate-500 dark:text-slate-400">
-                                        Timeline 5 commit terakhir tetap ditampilkan di halaman detail sebagai bukti pengerjaan Anda, namun tautan klik langsung ke GitHub dimatikan agar kode repositori perusahaan tetap aman.
-                                    </p>
-                                </label>
+                                    onChange={setHideGithubLink}
+                                    id="hide_github_link"
+                                >
+                                    <div className="space-y-1">
+                                        <span className="font-bold text-slate-800 dark:text-slate-200 flex items-center gap-1.5 text-xs">
+                                            <Lock className="w-3.5 h-3.5 text-amber-500" />
+                                            <span>Sembunyikan Tautan GitHub Publik (Repository Private / Milik PT)</span>
+                                        </span>
+                                        <p className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
+                                            Timeline 5 commit terakhir tetap ditampilkan di halaman detail sebagai bukti pengerjaan Anda, namun tautan klik langsung ke GitHub dimatikan agar kode repositori perusahaan tetap aman.
+                                        </p>
+                                    </div>
+                                </Checkbox>
                             </div>
                         </div>
                     </div>
