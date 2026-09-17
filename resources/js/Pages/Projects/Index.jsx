@@ -1118,6 +1118,7 @@ export default function Projects({
                                             <button
                                                 onClick={() => {
                                                     setIsRepoModalOpen(false);
+                                                    const repoStartDate = repo.created_at ? repo.created_at.substring(0, 10) : '';
                                                     const params = new URLSearchParams({
                                                         name: repo.name,
                                                         description: repo.description || '',
@@ -1127,7 +1128,11 @@ export default function Projects({
                                                         github_repo_id: repo.id.toString(),
                                                         github_repo_name: repo.full_name,
                                                         github_repo_url: repo.html_url,
+                                                        start_date: repoStartDate,
                                                     });
+                                                    if (repo.is_private) {
+                                                        params.set('hide_github_link', '1');
+                                                    }
                                                     router.visit(`/projects/create?${params.toString()}`);
                                                 }}
                                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs hover:-translate-y-0.5 transition-all"

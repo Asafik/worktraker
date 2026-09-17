@@ -60,10 +60,10 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
     const [category, setCategory] = useState(isEdit ? project.category : (prefill.category || 'Web Development'));
     const [projectType, setProjectType] = useState(isEdit ? project.project_type : (prefill.project_type || 'Solo'));
     const [status, setStatus] = useState(isEdit ? project.status : (prefill.status || 'In Progress'));
-    const [liveUrl, setLiveUrl] = useState(isEdit ? (project.live_url || '') : '');
-    const [startDate, setStartDate] = useState(isEdit ? (project.start_date || '') : '');
-    const [dueDate, setDueDate] = useState(isEdit ? (project.due_date || '') : '');
-    const [hideGithubLink, setHideGithubLink] = useState(isEdit ? Boolean(project.hide_github_link) : false);
+    const [liveUrl, setLiveUrl] = useState(isEdit ? (project.live_url || '') : (prefill.live_url || ''));
+    const [startDate, setStartDate] = useState(isEdit ? (project.start_date || '') : (prefill.start_date || ''));
+    const [dueDate, setDueDate] = useState(isEdit ? (project.due_date || '') : (prefill.due_date || ''));
+    const [hideGithubLink, setHideGithubLink] = useState(isEdit ? Boolean(project.hide_github_link) : Boolean(prefill.hide_github_link));
 
     // GitHub Repo info
     const [githubRepoId, setGithubRepoId] = useState(isEdit ? (project.github_repo_id || '') : (prefill.github_repo_id || ''));
@@ -529,8 +529,14 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
 
                             {/* Start Date & Due Date */}
                             <div className="space-y-1.5">
-                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
-                                    Tanggal Mulai (Opsional)
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 flex items-center justify-between">
+                                    <span>Tanggal Mulai (Opsional)</span>
+                                    {githubRepoName && startDate && (
+                                        <span className="text-[10px] text-blue-600 dark:text-blue-400 font-semibold normal-case flex items-center gap-1">
+                                            <GithubIcon className="w-3 h-3" />
+                                            <span>Auto-fill dari tanggal repo GitHub</span>
+                                        </span>
+                                    )}
                                 </label>
                                 <input
                                     type="date"

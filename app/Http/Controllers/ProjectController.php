@@ -89,7 +89,8 @@ class ProjectController extends Controller
             'github_repo_id'   => $request->query('github_repo_id', ''),
             'github_repo_name' => $request->query('github_repo_name', ''),
             'github_repo_url'  => $request->query('github_repo_url', ''),
-            'hide_github_link' => false,
+            'start_date'       => $request->query('start_date', ''),
+            'hide_github_link' => $request->boolean('hide_github_link'),
         ];
 
         return Inertia::render('Projects/Form', [
@@ -453,6 +454,7 @@ class ProjectController extends Controller
                     'language'    => $repo['language'] ?? '',
                     'stars'       => $repo['stargazers_count'] ?? 0,
                     'forks'       => $repo['forks_count'] ?? 0,
+                    'created_at'  => $repo['created_at'] ?? null,
                     'updated_at'  => $repo['updated_at'] ?? null,
                     'owner'       => [
                         'login'      => $ownerLogin,
