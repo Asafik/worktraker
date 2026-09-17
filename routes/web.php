@@ -46,9 +46,10 @@ Route::get('/notes', function () {
     return Inertia::render('Notes/Index');
 })->name('notes');
 
-Route::get('/calendar', function () {
-    return Inertia::render('Calendar/Index');
-})->name('calendar');
+use App\Http\Controllers\CalendarController;
+
+Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar');
+Route::post('/calendar/sync', [CalendarController::class, 'sync'])->name('calendar.sync');
 
 use App\Http\Controllers\ArchiveController;
 

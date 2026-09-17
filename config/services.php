@@ -53,6 +53,7 @@ return [
         'client_secret' => env('GOOGLE_CALENDAR_CLIENT_SECRET', env('GOOGLE_DRIVE_CLIENT_SECRET')),
         'refresh_token' => env('GOOGLE_CALENDAR_REFRESH_TOKEN', env('GOOGLE_DRIVE_REFRESH_TOKEN')),
         'calendar_id'   => env('GOOGLE_CALENDAR_ID', 'primary'),
+        'ical_url'      => env('GOOGLE_CALENDAR_ICAL_URL'),
     ],
 
 ];

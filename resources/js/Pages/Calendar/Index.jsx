@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import {
     Home,
@@ -34,7 +34,87 @@ const GoogleCalendarIcon = ({ className = 'w-5 h-5' }) => (
     </svg>
 );
 
-export default function CalendarPage() {
+const monthNamesList = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+];
+
+const generateCalendarDays = (monthYearStr) => {
+    const parts = monthYearStr.split(' ');
+    const mName = parts[0];
+    const year = parseInt(parts[1], 10);
+    const monthIdx = monthNamesList.indexOf(mName);
+
+    const firstDay = new Date(year, monthIdx, 1);
+    const startDayOfWeek = (firstDay.getDay() + 6) % 7;
+    const daysInMonth = new Date(year, monthIdx + 1, 0).getDate();
+    const daysInPrevMonth = new Date(year, monthIdx, 0).getDate();
+
+    const days = [];
+
+    // Prev month padding
+    for (let i = startDayOfWeek - 1; i >= 0; i--) {
+        const d = daysInPrevMonth - i;
+        const prevMonthIdx = monthIdx === 0 ? 11 : monthIdx - 1;
+        const prevYear = monthIdx === 0 ? year - 1 : year;
+        const dateStr = `${prevYear}-${String(prevMonthIdx + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        days.push({
+            day: d,
+            isCurrentMonth: false,
+            dateStr,
+            isSunday: false,
+            events: [],
+        });
+    }
+
+    // Current month days
+    for (let d = 1; d <= daysInMonth; d++) {
+        const dateObj = new Date(year, monthIdx, d);
+        const dayOfWeek = (dateObj.getDay() + 6) % 7;
+        const isSunday = dayOfWeek === 6;
+        const dateStr = `${year}-${String(monthIdx + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+
+        const isSept2026 = year === 2026 && monthIdx === 8;
+        const isToday = isSept2026 && d === 17;
+        const isRelaxMode = isSept2026 && d === 4;
+
+        days.push({
+            day: d,
+            isCurrentMonth: true,
+            dateStr,
+            isToday,
+            isRelaxMode,
+            isSunday,
+            events: [],
+        });
+    }
+
+    // Next month padding to fill 35 or 42 grid cells
+    const totalCells = days.length > 35 ? 42 : 35;
+    const nextDaysNeeded = totalCells - days.length;
+    for (let d = 1; d <= nextDaysNeeded; d++) {
+        const nextMonthIdx = monthIdx === 11 ? 0 : monthIdx + 1;
+        const nextYear = monthIdx === 11 ? year + 1 : year;
+        const dateStr = `${nextYear}-${String(nextMonthIdx + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const dateObj = new Date(nextYear, nextMonthIdx, d);
+        const dayOfWeek = (dateObj.getDay() + 6) % 7;
+        days.push({
+            day: d,
+            isCurrentMonth: false,
+            dateStr,
+            isSunday: dayOfWeek === 6,
+            events: [],
+        });
+    }
+
+    return days;
+};
+
+export default function CalendarPage({
+    googleEvents = [],
+    isCalendarConnected = true,
+    calendarEmail = 'ronismk7@gmail.com',
+}) {
     const [viewMode, setViewMode] = useState('Month'); // Month, Week, Day
     const [selectedMonth, setSelectedMonth] = useState('September 2026');
     const [quickAddTab, setQuickAddTab] = useState('Task');
@@ -60,34 +140,108 @@ export default function CalendarPage() {
     const [modalTaskTitle, setModalTaskTitle] = useState('');
     const [modalTaskTime, setModalTaskTime] = useState('07:30');
 
+    // User-created events stored in state mapped by dateStr
+    const [localEvents, setLocalEvents] = useState({});
+
     const handleSyncGoogleCalendar = () => {
         setIsSyncingCalendar(true);
-        setTimeout(() => {
-            setIsSyncingCalendar(false);
-            setToastMessage('Jadwal rutin "Berangkat kerja dan berdoa..." berhasil disinkronkan ke Google Calendar!');
-            setTimeout(() => setToastMessage(null), 4000);
-        }, 1200);
+        router.post(
+            '/calendar/sync',
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsSyncingCalendar(false);
+                    setToastMessage('Google Calendar synchronized successfully!');
+                    setTimeout(() => setToastMessage(null), 4000);
+                },
+                onError: () => {
+                    setIsSyncingCalendar(false);
+                    setToastMessage('Failed to sync Google Calendar.');
+                    setTimeout(() => setToastMessage(null), 4000);
+                },
+            }
+        );
     };
+
+    const handlePrevMonth = () => {
+        const parts = selectedMonth.split(' ');
+        const mName = parts[0];
+        let y = parseInt(parts[1], 10);
+        let idx = monthNamesList.indexOf(mName) - 1;
+        if (idx < 0) {
+            idx = 11;
+            y -= 1;
+        }
+        setSelectedMonth(`${monthNamesList[idx]} ${y}`);
+    };
+
+    const handleNextMonth = () => {
+        const parts = selectedMonth.split(' ');
+        const mName = parts[0];
+        let y = parseInt(parts[1], 10);
+        let idx = monthNamesList.indexOf(mName) + 1;
+        if (idx > 11) {
+            idx = 0;
+            y += 1;
+        }
+        setSelectedMonth(`${monthNamesList[idx]} ${y}`);
+    };
+
+    // Calendar grid data computed with real Google Calendar events and local events
+    const calendarDays = React.useMemo(() => {
+        const baseDays = generateCalendarDays(selectedMonth);
+        return baseDays.map((cell) => {
+            const cellGoogleEvents = googleEvents.filter((e) => e.date === cell.dateStr);
+            const cellLocalEvents = localEvents[cell.dateStr] || [];
+            return {
+                ...cell,
+                events: [...cellGoogleEvents, ...cellLocalEvents],
+            };
+        });
+    }, [selectedMonth, googleEvents, localEvents]);
+
+    // Mini calendar days with dot indicator if has events
+    const miniCalendarDays = React.useMemo(() => {
+        const baseDays = generateCalendarDays(selectedMonth);
+        return baseDays.map((cell) => {
+            const hasEvent =
+                googleEvents.some((e) => e.date === cell.dateStr) ||
+                (localEvents[cell.dateStr] && localEvents[cell.dateStr].length > 0);
+            return {
+                ...cell,
+                hasEvent,
+            };
+        });
+    }, [selectedMonth, googleEvents, localEvents]);
 
     const handleDayClick = (item, idx) => {
         const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         const dayName = dayNames[idx % 7];
-        const monthName = item.isCurrentMonth ? selectedMonth : (item.day > 20 ? 'August 2026' : 'October 2026');
-
-        // Hanya agenda/tugas asli yang dibuat user
         const specificEvents = item.events || [];
 
         setSelectedDayModal({
             ...item,
             idx,
             dayName,
-            dateFormatted: `${dayName}, ${item.day} ${monthName}`,
+            dateFormatted: `${dayName}, ${item.day} ${item.isCurrentMonth ? selectedMonth : item.dateStr}`,
             events: specificEvents,
         });
     };
 
-    // Today's Agenda Checklist State (Murni real, kosong di awal)
-    const [todayAgenda, setTodayAgenda] = useState([]);
+    // Today's Agenda Checklist State
+    const [todayAgenda, setTodayAgenda] = useState(() => {
+        return googleEvents
+            .filter((e) => e.date === '2026-09-17')
+            .map((e) => ({
+                id: e.id,
+                title: e.title,
+                time: e.time,
+                tag: e.type || 'Google Calendar',
+                tagColor: e.bg || 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
+                completed: false,
+            }));
+    });
 
     const toggleAgendaItem = (id) => {
         setTodayAgenda(
@@ -116,83 +270,25 @@ export default function CalendarPage() {
         setTimeout(() => setToastMessage(null), 3000);
     };
 
-    // Calendar grid data for September 2026:
-    // Bersih dari pengulangan tulisan rutin otomatis.
-    // Hanya menampilkan agenda khusus (contoh: Presentasi Project di tgl 3), hari libur (tgl 4 Maulid Nabi), dan hari Minggu.
-    const initialCalendarDays = [
-        // Row 1: Prev month (Mon Aug 31) + Sept 1 - 6
-        { day: 31, isCurrentMonth: false, events: [] },
-        { day: 1, isCurrentMonth: true, events: [] },
-        { day: 2, isCurrentMonth: true, events: [] },
-        { day: 3, isCurrentMonth: true, events: [] },
-        {
-            day: 4,
-            isCurrentMonth: true,
-            isRelaxMode: true, // Mode jam santai (tetap masuk kantor)
-            events: [],
-        },
-        { day: 5, isCurrentMonth: true, events: [] },
-        { day: 6, isCurrentMonth: true, isSunday: true, events: [] }, // Minggu libur
-
-        // Row 2: Sept 7 - 13
-        { day: 7, isCurrentMonth: true, events: [] },
-        { day: 8, isCurrentMonth: true, events: [] },
-        { day: 9, isCurrentMonth: true, events: [] },
-        { day: 10, isCurrentMonth: true, events: [] },
-        { day: 11, isCurrentMonth: true, events: [] },
-        { day: 12, isCurrentMonth: true, events: [] },
-        { day: 13, isCurrentMonth: true, isSunday: true, events: [] },
-
-        // Row 3: Sept 14 - 20 (Week of screenshot)
-        { day: 14, isCurrentMonth: true, events: [] },
-        { day: 15, isCurrentMonth: true, events: [] },
-        { day: 16, isCurrentMonth: true, events: [] },
-        { day: 17, isCurrentMonth: true, isToday: true, events: [] }, // Hari ini (Kamis 17 Sep)
-        { day: 18, isCurrentMonth: true, events: [] },
-        { day: 19, isCurrentMonth: true, events: [] },
-        { day: 20, isCurrentMonth: true, isSunday: true, events: [] },
-
-        // Row 4: Sept 21 - 27
-        { day: 21, isCurrentMonth: true, events: [] },
-        { day: 22, isCurrentMonth: true, events: [] },
-        { day: 23, isCurrentMonth: true, events: [] },
-        { day: 24, isCurrentMonth: true, events: [] },
-        { day: 25, isCurrentMonth: true, events: [] },
-        { day: 26, isCurrentMonth: true, events: [] },
-        { day: 27, isCurrentMonth: true, isSunday: true, events: [] },
-
-        // Row 5: Sept 28 - 30 + Next month Oct 1 - 4
-        { day: 28, isCurrentMonth: true, events: [] },
-        { day: 29, isCurrentMonth: true, events: [] },
-        { day: 30, isCurrentMonth: true, events: [] },
-        { day: 1, isCurrentMonth: false, events: [] },
-        { day: 2, isCurrentMonth: false, events: [] },
-        { day: 3, isCurrentMonth: false, events: [] },
-        { day: 4, isCurrentMonth: false, isSunday: true, events: [] },
-    ];
-
-    const [calendarDays, setCalendarDays] = useState(initialCalendarDays);
-
     const handleAddModalTask = (e) => {
         e.preventDefault();
         if (!modalTaskTitle.trim() || !selectedDayModal) return;
 
         const newTask = {
+            id: Date.now(),
             time: modalTaskTime,
             title: modalTaskTitle,
             fullTitle: modalTaskTitle,
             dot: 'bg-blue-500',
             bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
+            type: 'Task',
         };
 
-        // Simpan ke calendarDays agar langsung muncul di luar kotak tanggal yang dipilih
-        setCalendarDays((prev) =>
-            prev.map((d, i) =>
-                i === selectedDayModal.idx
-                    ? { ...d, events: [...(d.events || []), newTask] }
-                    : d
-            )
-        );
+        const targetDate = selectedDayModal.dateStr;
+        setLocalEvents((prev) => ({
+            ...prev,
+            [targetDate]: [...(prev[targetDate] || []), newTask],
+        }));
 
         setSelectedDayModal((prev) => ({
             ...prev,
@@ -201,54 +297,28 @@ export default function CalendarPage() {
 
         setToastMessage(
             syncWithGoogleCalendar
-                ? `Tugas "${modalTaskTitle}" disimpan di ${selectedDayModal.dateFormatted} & disinkronkan ke Google Calendar!`
-                : `Tugas "${modalTaskTitle}" berhasil ditambahkan!`
+                ? `Task "${modalTaskTitle}" saved & scheduled for Google Calendar!`
+                : `Task "${modalTaskTitle}" added successfully!`
         );
         setTimeout(() => setToastMessage(null), 4000);
         setModalTaskTitle('');
     };
 
-    // Mini calendar days for September 2026
-    const miniCalendarDays = [
-        { day: '', empty: true }, // Mon empty
-        { day: 1 },
-        { day: 2 },
-        { day: 3 },
-        { day: 4, isRelaxMode: true },
-        { day: 5 },
-        { day: 6, isSunday: true },
-        { day: 7 },
-        { day: 8 },
-        { day: 9 },
-        { day: 10 },
-        { day: 11 },
-        { day: 12 },
-        { day: 13, isSunday: true },
-        { day: 14 },
-        { day: 15 },
-        { day: 16 },
-        { day: 17, isToday: true },
-        { day: 18 },
-        { day: 19 },
-        { day: 20, isSunday: true },
-        { day: 21 },
-        { day: 22 },
-        { day: 23 },
-        { day: 24 },
-        { day: 25 },
-        { day: 26 },
-        { day: 27, isSunday: true },
-        { day: 28 },
-        { day: 29 },
-        { day: 30 },
-        { day: 1, isNextMonth: true },
-        { day: 2, isNextMonth: true },
-        { day: 3, isNextMonth: true },
-        { day: 4, isNextMonth: true, isSunday: true },
-    ];
-
-    // Upcoming list (Murni real, kosong di awal)
-    const upcomingList = [];
+    // Upcoming list generated dynamically from real Google Calendar events
+    const upcomingList = (
+        googleEvents.filter((e) => e.date >= '2026-09-17').length > 0
+            ? googleEvents.filter((e) => e.date >= '2026-09-17')
+            : googleEvents
+    )
+        .slice(0, 5)
+        .map((e) => ({
+            id: e.id,
+            title: e.title,
+            time: `${e.date} • ${e.time}`,
+            type: e.type || 'Google Calendar',
+            project: e.location || 'Google Calendar',
+            dot: e.dot || 'bg-blue-500',
+        }));
 
     // Event Types Legend
     const eventTypes = [
@@ -309,12 +379,20 @@ export default function CalendarPage() {
                             </button>
 
                             {/* Prev Arrow Button */}
-                            <button className="p-2 rounded-md border border-slate-200 dark:border-[#243e80] bg-white dark:bg-[#0e1d47] text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-xs">
+                            <button
+                                onClick={handlePrevMonth}
+                                title="Previous Month"
+                                className="p-2 rounded-md border border-slate-200 dark:border-[#243e80] bg-white dark:bg-[#0e1d47] text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-xs cursor-pointer"
+                            >
                                 <ChevronLeft className="w-3.5 h-3.5" />
                             </button>
 
                             {/* Next Arrow Button */}
-                            <button className="p-2 rounded-md border border-slate-200 dark:border-[#243e80] bg-white dark:bg-[#0e1d47] text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-xs">
+                            <button
+                                onClick={handleNextMonth}
+                                title="Next Month"
+                                className="p-2 rounded-md border border-slate-200 dark:border-[#243e80] bg-white dark:bg-[#0e1d47] text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-xs cursor-pointer"
+                            >
                                 <ChevronRight className="w-3.5 h-3.5" />
                             </button>
 
@@ -325,6 +403,10 @@ export default function CalendarPage() {
                                     onChange={(e) => setSelectedMonth(e.target.value)}
                                     className="appearance-none bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#243e80] text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 rounded-md pl-3 pr-8 py-1.5 cursor-pointer focus:outline-none shadow-xs"
                                 >
+                                    <option value="May 2022">May 2022</option>
+                                    <option value="December 2023">December 2023</option>
+                                    <option value="February 2024">February 2024</option>
+                                    <option value="March 2024">March 2024</option>
                                     <option value="September 2026">September 2026</option>
                                     <option value="October 2026">October 2026</option>
                                     <option value="November 2026">November 2026</option>
@@ -827,11 +909,21 @@ export default function CalendarPage() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5] shrink-0" />
-                                        <span>Sync account: <strong className="text-slate-800 dark:text-slate-200">ronismk7@gmail.com</strong></span>
+                                        <span>Sync account: <strong className="text-slate-800 dark:text-slate-200">{calendarEmail || 'ronismk7@gmail.com'}</strong></span>
                                     </div>
                                 </div>
 
-                                <div className="pt-2">
+                                <div className="pt-2 space-y-2">
+                                    <button
+                                        type="button"
+                                        onClick={handleSyncGoogleCalendar}
+                                        disabled={isSyncingCalendar}
+                                        className="w-full py-2 px-3 flex items-center justify-center gap-2 rounded-md bg-blue-50 dark:bg-blue-950/60 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-[#2563eb] dark:text-blue-300 text-xs font-semibold border border-blue-200/80 dark:border-blue-900/40 transition-colors disabled:opacity-60 cursor-pointer shadow-2xs"
+                                    >
+                                        <RefreshCw className={`w-3.5 h-3.5 ${isSyncingCalendar ? 'animate-spin' : ''}`} />
+                                        <span>{isSyncingCalendar ? 'Syncing Google Calendar...' : 'Sync Google Calendar Now'}</span>
+                                    </button>
+
                                     <Link
                                         href="/settings"
                                         className="w-full py-1.5 flex items-center justify-center gap-1.5 rounded-md border border-slate-200 dark:border-[#243e80] text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] text-xs font-medium transition-colors"
