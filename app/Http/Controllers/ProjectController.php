@@ -231,6 +231,17 @@ class ProjectController extends Controller
         // Handle existing images retained
         $finalImages = $request->input('existing_images', []);
 
+        // Delete images removed during edit from storage
+        if (is_array($project->images)) {
+            $removedImages = array_diff($project->images, $finalImages);
+            foreach ($removedImages as $removedImg) {
+                $relPath = str_replace('/storage/', '', $removedImg);
+                if (Storage::disk('public')->exists($relPath)) {
+                    Storage::disk('public')->delete($relPath);
+                }
+            }
+        }
+
         // Upload new images up to max 4 total
         if ($request->hasFile('new_images')) {
             foreach ($request->file('new_images') as $file) {
