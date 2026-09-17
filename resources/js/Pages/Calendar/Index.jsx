@@ -22,6 +22,7 @@ import {
     Smartphone,
     Sparkles,
     Settings as SettingsIcon,
+    Coffee,
 } from 'lucide-react';
 
 const GoogleCalendarIcon = ({ className = 'w-5 h-5' }) => (
@@ -114,16 +115,31 @@ export default function CalendarPage() {
 
     // Calendar grid data for September 2026:
     // Starts on Tuesday Sept 1st, ended Sept 30th on Wednesday.
-    // Cleaned of all dummy events, populated with user's real Google Calendar routine (Monday - Saturday 07:30).
+    // Sundays are red holidays. Tanggal merah selain minggu (e.g. 4 Sep Maulid Nabi) includes Mode Jam Santai.
     const calendarDays = [
         // Row 1: Prev month (Mon Aug 31) + Sept 1 - 6
         { day: 31, isCurrentMonth: false, events: [googleRoutineTask] },
         { day: 1, isCurrentMonth: true, events: [googleRoutineTask] },
         { day: 2, isCurrentMonth: true, events: [googleRoutineTask] },
         { day: 3, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 4, isCurrentMonth: true, events: [googleRoutineTask] },
+        {
+            day: 4,
+            isCurrentMonth: true,
+            isHoliday: true,
+            holidayName: 'Maulid Nabi Muhammad SAW',
+            isRelaxMode: true, // Tanggal merah tetap masuk kantor tapi jam santai
+            events: [
+                {
+                    time: '07:30',
+                    title: 'Berangkat kerja & doa (Jam Santai)...',
+                    fullTitle: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik (Mode Jam Santai)',
+                    dot: 'bg-amber-500',
+                    bg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-900/40',
+                },
+            ],
+        },
         { day: 5, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 6, isCurrentMonth: true, events: [] }, // Minggu libur / tidak ada tugas
+        { day: 6, isCurrentMonth: true, isSunday: true, events: [] }, // Minggu libur
 
         // Row 2: Sept 7 - 13
         { day: 7, isCurrentMonth: true, events: [googleRoutineTask] },
@@ -132,7 +148,7 @@ export default function CalendarPage() {
         { day: 10, isCurrentMonth: true, events: [googleRoutineTask] },
         { day: 11, isCurrentMonth: true, events: [googleRoutineTask] },
         { day: 12, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 13, isCurrentMonth: true, events: [] },
+        { day: 13, isCurrentMonth: true, isSunday: true, events: [] },
 
         // Row 3: Sept 14 - 20 (Week of screenshot)
         { day: 14, isCurrentMonth: true, events: [googleRoutineTask] },
@@ -141,7 +157,7 @@ export default function CalendarPage() {
         { day: 17, isCurrentMonth: true, isToday: true, events: [googleRoutineTask] }, // Hari ini (Kamis 17 Sep)
         { day: 18, isCurrentMonth: true, events: [googleRoutineTask] },
         { day: 19, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 20, isCurrentMonth: true, events: [] },
+        { day: 20, isCurrentMonth: true, isSunday: true, events: [] },
 
         // Row 4: Sept 21 - 27
         { day: 21, isCurrentMonth: true, events: [googleRoutineTask] },
@@ -150,7 +166,7 @@ export default function CalendarPage() {
         { day: 24, isCurrentMonth: true, events: [googleRoutineTask] },
         { day: 25, isCurrentMonth: true, events: [googleRoutineTask] },
         { day: 26, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 27, isCurrentMonth: true, events: [] },
+        { day: 27, isCurrentMonth: true, isSunday: true, events: [] },
 
         // Row 5: Sept 28 - 30 + Next month Oct 1 - 4
         { day: 28, isCurrentMonth: true, events: [googleRoutineTask] },
@@ -159,7 +175,7 @@ export default function CalendarPage() {
         { day: 1, isCurrentMonth: false, events: [googleRoutineTask] },
         { day: 2, isCurrentMonth: false, events: [googleRoutineTask] },
         { day: 3, isCurrentMonth: false, events: [googleRoutineTask] },
-        { day: 4, isCurrentMonth: false, events: [] },
+        { day: 4, isCurrentMonth: false, isSunday: true, events: [] },
     ];
 
     // Mini calendar days for September 2026
@@ -168,37 +184,37 @@ export default function CalendarPage() {
         { day: 1, hasEvent: true },
         { day: 2, hasEvent: true },
         { day: 3, hasEvent: true },
-        { day: 4, hasEvent: true },
+        { day: 4, hasEvent: true, isHoliday: true }, // Maulid Nabi
         { day: 5, hasEvent: true },
-        { day: 6 },
+        { day: 6, isSunday: true },
         { day: 7, hasEvent: true },
         { day: 8, hasEvent: true },
         { day: 9, hasEvent: true },
         { day: 10, hasEvent: true },
         { day: 11, hasEvent: true },
         { day: 12, hasEvent: true },
-        { day: 13 },
+        { day: 13, isSunday: true },
         { day: 14, hasEvent: true },
         { day: 15, hasEvent: true },
         { day: 16, hasEvent: true },
         { day: 17, isToday: true, hasEvent: true },
         { day: 18, hasEvent: true },
         { day: 19, hasEvent: true },
-        { day: 20 },
+        { day: 20, isSunday: true },
         { day: 21, hasEvent: true },
         { day: 22, hasEvent: true },
         { day: 23, hasEvent: true },
         { day: 24, hasEvent: true },
         { day: 25, hasEvent: true },
         { day: 26, hasEvent: true },
-        { day: 27 },
+        { day: 27, isSunday: true },
         { day: 28, hasEvent: true },
         { day: 29, hasEvent: true },
         { day: 30, hasEvent: true },
         { day: 1, isNextMonth: true },
         { day: 2, isNextMonth: true },
         { day: 3, isNextMonth: true },
-        { day: 4, isNextMonth: true },
+        { day: 4, isNextMonth: true, isSunday: true },
     ];
 
     // Upcoming list (Cleaned from dummy items, synced with Google Calendar)
@@ -216,11 +232,11 @@ export default function CalendarPage() {
     // Event Types Legend
     const eventTypes = [
         { name: 'Tugas Saya (Google)', dot: 'bg-blue-500' },
+        { name: 'Hari Libur Nasional (Merah)', dot: 'bg-rose-500' },
+        { name: 'Mode Jam Santai (Masuk Kantor)', dot: 'bg-amber-500' },
         { name: 'Project', dot: 'bg-emerald-500' },
         { name: 'Deadline', dot: 'bg-rose-500' },
         { name: 'Meeting', dot: 'bg-amber-500' },
-        { name: 'Personal', dot: 'bg-slate-500' },
-        { name: 'Task', dot: 'bg-indigo-500' },
     ];
 
     return (
@@ -394,7 +410,7 @@ export default function CalendarPage() {
                                 <div>Thu</div>
                                 <div>Fri</div>
                                 <div>Sat</div>
-                                <div>Sun</div>
+                                <div className="text-rose-600 dark:text-rose-400 font-bold">Sun (Libur)</div>
                             </div>
 
                             {/* Calendar Days Matrix (5 weeks / 35 cells) */}
@@ -408,18 +424,24 @@ export default function CalendarPage() {
                                         className={`min-h-[86px] sm:min-h-[96px] p-2 flex flex-col justify-between transition-colors hover:bg-slate-50/50 dark:hover:bg-[#122352]/30 ${
                                             !item.isCurrentMonth
                                                 ? 'bg-slate-50/30 dark:bg-[#091433]/30'
+                                                : item.isSunday
+                                                ? 'bg-rose-50/20 dark:bg-rose-950/10'
+                                                : item.isHoliday
+                                                ? 'bg-amber-50/20 dark:bg-amber-950/10'
                                                 : ''
                                         }`}
                                     >
-                                        <div className="flex items-center justify-between">
+                                        <div className="flex items-center justify-between gap-1">
                                             {item.isToday ? (
-                                                <span className="w-6 h-6 rounded-full bg-[#2563eb] text-white font-bold text-xs flex items-center justify-center shadow-xs">
+                                                <span className="w-6 h-6 rounded-full bg-[#2563eb] text-white font-bold text-xs flex items-center justify-center shadow-xs shrink-0">
                                                     {item.day}
                                                 </span>
                                             ) : (
                                                 <span
                                                     className={`text-xs font-bold ${
-                                                        item.isCurrentMonth
+                                                        item.isSunday || item.isHoliday
+                                                            ? 'text-rose-600 dark:text-rose-400 font-extrabold'
+                                                            : item.isCurrentMonth
                                                             ? 'text-slate-800 dark:text-slate-200'
                                                             : 'text-slate-300 dark:text-slate-600'
                                                     }`}
@@ -427,7 +449,29 @@ export default function CalendarPage() {
                                                     {item.day}
                                                 </span>
                                             )}
+
+                                            {item.isHoliday ? (
+                                                <span
+                                                    className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 shadow-2xs truncate max-w-[125px]"
+                                                    title={item.holidayName}
+                                                >
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
+                                                    <span className="truncate">{item.holidayName}</span>
+                                                </span>
+                                            ) : item.isSunday ? (
+                                                <span className="text-[10px] font-semibold text-rose-500/80 dark:text-rose-400/80">
+                                                    Libur
+                                                </span>
+                                            ) : null}
                                         </div>
+
+                                        {/* Relax Mode Notice if national holiday */}
+                                        {item.isRelaxMode && (
+                                            <div className="mt-1 flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-900/40">
+                                                <Coffee className="w-3 h-3 text-amber-500 shrink-0" />
+                                                <span className="truncate">Jam Santai • Masuk Kantor</span>
+                                            </div>
+                                        )}
 
                                         {/* Events pill inside calendar day cell */}
                                         <div className="space-y-1 mt-1">
@@ -642,7 +686,7 @@ export default function CalendarPage() {
                                     <span>Thu</span>
                                     <span>Fri</span>
                                     <span>Sat</span>
-                                    <span>Sun</span>
+                                    <span className="text-rose-600 dark:text-rose-400 font-bold">Sun</span>
                                 </div>
 
                                 <div
@@ -660,6 +704,8 @@ export default function CalendarPage() {
                                                     className={`font-medium ${
                                                         mDay.empty || mDay.isNextMonth
                                                             ? 'text-slate-300 dark:text-slate-600'
+                                                            : mDay.isSunday || mDay.isHoliday
+                                                            ? 'text-rose-600 dark:text-rose-400 font-bold'
                                                             : 'text-slate-700 dark:text-slate-300'
                                                     }`}
                                                 >
@@ -667,7 +713,7 @@ export default function CalendarPage() {
                                                 </span>
                                             )}
                                             {mDay.hasEvent && !mDay.isToday && (
-                                                <span className="w-1 h-1 rounded-full bg-blue-500 mt-0.5" />
+                                                <span className={`w-1 h-1 rounded-full mt-0.5 ${mDay.isHoliday ? 'bg-rose-500' : 'bg-blue-500'}`} />
                                             )}
                                         </div>
                                     ))}
@@ -777,6 +823,22 @@ export default function CalendarPage() {
                                             className="px-2 py-1 rounded bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-blue-500"
                                         />
                                     </div>
+                                </div>
+
+                                {/* Setting: Mode Jam Santai saat Tanggal Merah */}
+                                <div className="flex items-center justify-between p-2.5 rounded-md bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-900/40">
+                                    <div className="space-y-0.5">
+                                        <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+                                            <Coffee className="w-3.5 h-3.5 text-amber-500" />
+                                            Mode Jam Santai (Tanggal Merah)
+                                        </span>
+                                        <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                                            Tetap masuk kantor tapi ritme santai
+                                        </p>
+                                    </div>
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200">
+                                        Aktif
+                                    </span>
                                 </div>
 
                                 {/* Setting 2: Checklist Fitur Notifikasi */}
