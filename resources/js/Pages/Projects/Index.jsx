@@ -35,6 +35,7 @@ import {
     Check,
     Users,
     User as UserIcon,
+    Trash2,
 } from 'lucide-react';
 
 const GithubIcon = ({ className }) => (
@@ -69,12 +70,19 @@ export default function Projects({
     // Filter logic
     const filteredProjects = projects.filter((item) => {
         const matchesSearch =
-            item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            item.description.toLowerCase().includes(searchQuery.toLowerCase());
+            (item.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            (item.description || '').toLowerCase().includes(searchQuery.toLowerCase());
         const matchesStatus = statusFilter === 'All' || item.status === statusFilter;
         const matchesCategory = categoryFilter === 'All' || item.category === categoryFilter;
         return matchesSearch && matchesStatus && matchesCategory;
     });
+
+    const handleDeleteProject = (proj) => {
+        if (!proj) return;
+        if (confirm(`Apakah Anda yakin ingin menghapus proyek "${proj.name}"? Data proyek dan tangkapan layar akan dihapus secara permanen.`)) {
+            router.delete(`/projects/${proj.id}`);
+        }
+    };
 
     // Fetch GitHub Repositories function
     const fetchRepositories = async () => {
@@ -482,7 +490,7 @@ export default function Projects({
                                             {item.due_date || item.dueDate || '-'}
                                         </td>
 
-                                        {/* Actions: Edit & View */}
+                                        {/* Actions: Edit, View & Delete */}
                                         <td className="py-4 px-4 text-center">
                                             <div className="flex items-center justify-center gap-1.5">
                                                 <Link
@@ -498,6 +506,14 @@ export default function Projects({
                                                 >
                                                     <ExternalLink className="w-4 h-4" />
                                                 </Link>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDeleteProject(item)}
+                                                    className="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                                                    title="Hapus Proyek"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -576,13 +592,23 @@ export default function Projects({
                         <div className="space-y-2.5">
                             {projects.filter((p) => p.status === 'Not Started').map((p) => (
                                 <div key={p.id} className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between gap-2">
                                         <Link href={`/projects/${p.slug || p.id}`} className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
                                             {p.name}
                                         </Link>
-                                        <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-slate-600 p-0.5 rounded text-xs font-medium">
-                                            Edit
-                                        </Link>
+                                        <div className="flex items-center gap-1 shrink-0">
+                                            <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-blue-600 p-0.5 rounded text-xs font-medium">
+                                                Edit
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteProject(p)}
+                                                className="text-slate-400 hover:text-rose-600 p-0.5 rounded text-xs transition-colors cursor-pointer"
+                                                title="Hapus Proyek"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
                                     </div>
                                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
                                         {p.description || 'Tidak ada deskripsi'}
@@ -613,13 +639,23 @@ export default function Projects({
                         <div className="space-y-2.5">
                             {projects.filter((p) => p.status === 'In Progress').map((p) => (
                                 <div key={p.id} className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-blue-400 dark:hover:border-blue-500 transition-all group">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between gap-2">
                                         <Link href={`/projects/${p.slug || p.id}`} className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors truncate">
                                             {p.name}
                                         </Link>
-                                        <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-slate-600 p-0.5 rounded text-xs font-medium">
-                                            Edit
-                                        </Link>
+                                        <div className="flex items-center gap-1 shrink-0">
+                                            <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-blue-600 p-0.5 rounded text-xs font-medium">
+                                                Edit
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteProject(p)}
+                                                className="text-slate-400 hover:text-rose-600 p-0.5 rounded text-xs transition-colors cursor-pointer"
+                                                title="Hapus Proyek"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
                                     </div>
                                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
                                         {p.description || 'Tidak ada deskripsi'}
@@ -659,13 +695,23 @@ export default function Projects({
                         <div className="space-y-2.5">
                             {projects.filter((p) => p.status === 'Completed').map((p) => (
                                 <div key={p.id} className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-emerald-400 dark:hover:border-emerald-500 transition-all group">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between gap-2">
                                         <Link href={`/projects/${p.slug || p.id}`} className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors truncate">
                                             {p.name}
                                         </Link>
-                                        <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-slate-600 p-0.5 rounded text-xs font-medium">
-                                            Edit
-                                        </Link>
+                                        <div className="flex items-center gap-1 shrink-0">
+                                            <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-blue-600 p-0.5 rounded text-xs font-medium">
+                                                Edit
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteProject(p)}
+                                                className="text-slate-400 hover:text-rose-600 p-0.5 rounded text-xs transition-colors cursor-pointer"
+                                                title="Hapus Proyek"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
                                     </div>
                                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
                                         {p.description || 'Tidak ada deskripsi'}
@@ -696,13 +742,23 @@ export default function Projects({
                         <div className="space-y-2.5">
                             {projects.filter((p) => p.status === 'On Hold').map((p) => (
                                 <div key={p.id} className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs hover:border-rose-400 dark:hover:border-rose-500 transition-all group">
-                                    <div className="flex items-center justify-between">
+                                    <div className="flex items-center justify-between gap-2">
                                         <Link href={`/projects/${p.slug || p.id}`} className="text-sm font-semibold text-slate-800 dark:text-white group-hover:text-rose-600 dark:group-hover:text-rose-400 transition-colors truncate">
                                             {p.name}
                                         </Link>
-                                        <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-slate-600 p-0.5 rounded text-xs font-medium">
-                                            Edit
-                                        </Link>
+                                        <div className="flex items-center gap-1 shrink-0">
+                                            <Link href={`/projects/${p.id}/edit`} className="text-slate-400 hover:text-blue-600 p-0.5 rounded text-xs font-medium">
+                                                Edit
+                                            </Link>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteProject(p)}
+                                                className="text-slate-400 hover:text-rose-600 p-0.5 rounded text-xs transition-colors cursor-pointer"
+                                                title="Hapus Proyek"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
                                     </div>
                                     <p className="text-xs text-slate-400 dark:text-slate-500 mt-1 line-clamp-2">
                                         {p.description || 'Tidak ada deskripsi'}
