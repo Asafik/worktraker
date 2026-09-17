@@ -36,22 +36,22 @@ const GoogleCalendarIcon = ({ className = 'w-5 h-5' }) => (
 
 export default function CalendarPage() {
     const [viewMode, setViewMode] = useState('Month'); // Month, Week, Day
-    const [selectedMonth, setSelectedMonth] = useState('September 2025');
+    const [selectedMonth, setSelectedMonth] = useState('September 2026');
     const [quickAddTab, setQuickAddTab] = useState('Task');
     const [quickAddTitle, setQuickAddTitle] = useState('');
-    const [quickAddDate, setQuickAddDate] = useState('16/09/2025');
-    const [quickAddTime, setQuickAddTime] = useState('10:00');
-    const [quickAddProject, setQuickAddProject] = useState('Company Website');
+    const [quickAddDate, setQuickAddDate] = useState('17/09/2026');
+    const [quickAddTime, setQuickAddTime] = useState('07:30');
+    const [quickAddProject, setQuickAddProject] = useState('Tugas Saya');
     const [isAddEventOpen, setIsAddEventOpen] = useState(false);
     const [newEventTitle, setNewEventTitle] = useState('');
     const [newEventType, setNewEventType] = useState('Task');
-    const [newEventDate, setNewEventDate] = useState('2025-09-16');
-    const [newEventTime, setNewEventTime] = useState('14:00');
+    const [newEventDate, setNewEventDate] = useState('2026-09-17');
+    const [newEventTime, setNewEventTime] = useState('07:30');
 
     // Google Calendar & Morning Notification States
     const [isSyncingCalendar, setIsSyncingCalendar] = useState(false);
     const [toastMessage, setToastMessage] = useState(null);
-    const [morningReminderTime, setMorningReminderTime] = useState('07:00');
+    const [morningReminderTime, setMorningReminderTime] = useState('07:30');
     const [isMorningAlertActive, setIsMorningAlertActive] = useState(true);
     const [syncWithGoogleCalendar, setSyncWithGoogleCalendar] = useState(true);
 
@@ -59,35 +59,28 @@ export default function CalendarPage() {
         setIsSyncingCalendar(true);
         setTimeout(() => {
             setIsSyncingCalendar(false);
-            setToastMessage('Jadwal & notifikasi pengingat pagi berhasil disinkronkan ke Google Calendar!');
+            setToastMessage('Jadwal rutin "Berangkat kerja dan berdoa..." berhasil disinkronkan ke Google Calendar!');
             setTimeout(() => setToastMessage(null), 4000);
         }, 1200);
     };
 
-    // Today's Agenda Checklist State
+    // Google Calendar Routine Task from user's Google Calendar (Mon - Sat at 07:30)
+    const googleRoutineTask = {
+        time: '07:30',
+        title: 'Berangkat kerja & doa...',
+        fullTitle: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik dan kebahagiaan...',
+        dot: 'bg-blue-500',
+        bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
+    };
+
+    // Today's Agenda Checklist State (Synchronized with Google Calendar)
     const [todayAgenda, setTodayAgenda] = useState([
         {
             id: 1,
-            title: 'Dashboard Development',
-            time: '10:00 - 12:00',
-            tag: 'Company Website',
+            title: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik dan kebahagiaan...',
+            time: '07:30 - 08:30',
+            tag: 'Tugas Saya (Google Calendar)',
             tagColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-            completed: false,
-        },
-        {
-            id: 2,
-            title: 'Update Notes',
-            time: '15:00 - 16:00',
-            tag: 'Personal',
-            tagColor: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700',
-            completed: false,
-        },
-        {
-            id: 3,
-            title: 'Read documentation',
-            time: '16:00 - 17:00',
-            tag: 'API Integration',
-            tagColor: 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40',
             completed: false,
         },
     ]);
@@ -108,324 +101,126 @@ export default function CalendarPage() {
             id: Date.now(),
             title: quickAddTitle,
             time: `${quickAddTime} - ${(parseInt(quickAddTime.split(':')[0]) + 1).toString().padStart(2, '0')}:00`,
-            tag: quickAddProject || 'General',
+            tag: quickAddProject || 'Tugas Saya',
             tagColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
             completed: false,
         };
 
         setTodayAgenda([...todayAgenda, newItem]);
         setQuickAddTitle('');
+        setToastMessage(`Tugas "${quickAddTitle}" ditambahkan & disinkronkan!`);
+        setTimeout(() => setToastMessage(null), 3000);
     };
 
-    // Calendar grid data (September 2025: starts on Monday Sept 1st, ended Sept 30th on Tuesday)
-    // 35 days matching the screenshot:
-    // Prev month: 25, 26, 27, 28, 29, 30, 31 (grayed)
-    // Sept: 1 to 30
-    // Next month: 1, 2, 3, 4, 5 (grayed)
+    // Calendar grid data for September 2026:
+    // Starts on Tuesday Sept 1st, ended Sept 30th on Wednesday.
+    // Cleaned of all dummy events, populated with user's real Google Calendar routine (Monday - Saturday 07:30).
     const calendarDays = [
-        // Row 1: Prev month
-        { day: 25, isCurrentMonth: false },
-        { day: 26, isCurrentMonth: false },
-        { day: 27, isCurrentMonth: false },
-        { day: 28, isCurrentMonth: false },
-        { day: 29, isCurrentMonth: false },
-        { day: 30, isCurrentMonth: false },
-        { day: 31, isCurrentMonth: false },
+        // Row 1: Prev month (Mon Aug 31) + Sept 1 - 6
+        { day: 31, isCurrentMonth: false, events: [googleRoutineTask] },
+        { day: 1, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 2, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 3, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 4, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 5, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 6, isCurrentMonth: true, events: [] }, // Minggu libur / tidak ada tugas
 
-        // Row 2: 1 - 7
-        { day: 1, isCurrentMonth: true },
-        {
-            day: 2,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '10:00',
-                    title: 'Planning App',
-                    dot: 'bg-blue-500',
-                    bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
-                },
-            ],
-        },
-        {
-            day: 3,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '14:00',
-                    title: 'UI Design',
-                    dot: 'bg-rose-500',
-                    bg: 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-100 dark:border-rose-900/40',
-                },
-            ],
-        },
-        { day: 4, isCurrentMonth: true },
-        {
-            day: 5,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '09:00',
-                    title: 'Daily Review',
-                    dot: 'bg-emerald-500',
-                    bg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/40',
-                },
-            ],
-        },
-        { day: 6, isCurrentMonth: true },
-        { day: 7, isCurrentMonth: true },
+        // Row 2: Sept 7 - 13
+        { day: 7, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 8, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 9, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 10, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 11, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 12, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 13, isCurrentMonth: true, events: [] },
 
-        // Row 3: 8 - 14
-        { day: 8, isCurrentMonth: true },
-        {
-            day: 9,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '13:00',
-                    title: 'API Integration',
-                    dot: 'bg-purple-500',
-                    bg: 'bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-100 dark:border-purple-900/40',
-                },
-            ],
-        },
-        {
-            day: 10,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '10:00',
-                    title: 'Meeting',
-                    dot: 'bg-amber-500',
-                    bg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-100 dark:border-amber-900/40',
-                },
-            ],
-        },
-        { day: 11, isCurrentMonth: true },
-        {
-            day: 12,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '15:00',
-                    title: 'Fix Bug',
-                    dot: 'bg-rose-500',
-                    bg: 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-100 dark:border-rose-900/40',
-                },
-            ],
-        },
-        { day: 13, isCurrentMonth: true },
-        { day: 14, isCurrentMonth: true },
+        // Row 3: Sept 14 - 20 (Week of screenshot)
+        { day: 14, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 15, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 16, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 17, isCurrentMonth: true, isToday: true, events: [googleRoutineTask] }, // Hari ini (Kamis 17 Sep)
+        { day: 18, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 19, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 20, isCurrentMonth: true, events: [] },
 
-        // Row 4: 15 - 21
-        {
-            day: 15,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '09:00',
-                    title: 'Write Docs',
-                    dot: 'bg-blue-500',
-                    bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
-                },
-            ],
-        },
-        {
-            day: 16,
-            isCurrentMonth: true,
-            isToday: true,
-            events: [
-                {
-                    time: '10:00',
-                    title: 'Dashboard',
-                    dot: 'bg-emerald-500',
-                    bg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/40',
-                },
-                {
-                    time: '15:00',
-                    title: 'Update Notes',
-                    dot: 'bg-blue-500',
-                    bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
-                },
-            ],
-        },
-        { day: 17, isCurrentMonth: true },
-        {
-            day: 18,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '14:00',
-                    title: 'Testing',
-                    dot: 'bg-purple-500',
-                    bg: 'bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-100 dark:border-purple-900/40',
-                },
-            ],
-        },
-        { day: 19, isCurrentMonth: true },
-        { day: 20, isCurrentMonth: true },
-        { day: 21, isCurrentMonth: true },
+        // Row 4: Sept 21 - 27
+        { day: 21, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 22, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 23, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 24, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 25, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 26, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 27, isCurrentMonth: true, events: [] },
 
-        // Row 5: 22 - 28
-        { day: 22, isCurrentMonth: true },
-        {
-            day: 23,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '10:00',
-                    title: 'Client Review',
-                    dot: 'bg-amber-500',
-                    bg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-100 dark:border-amber-900/40',
-                },
-            ],
-        },
-        {
-            day: 24,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '13:00',
-                    title: 'Deployment',
-                    dot: 'bg-rose-500',
-                    bg: 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-100 dark:border-rose-900/40',
-                },
-            ],
-        },
-        { day: 25, isCurrentMonth: true },
-        {
-            day: 26,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '09:00',
-                    title: 'Planning',
-                    dot: 'bg-blue-500',
-                    bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
-                },
-            ],
-        },
-        { day: 27, isCurrentMonth: true },
-        { day: 28, isCurrentMonth: true },
-
-        // Row 6: 29 - 30 + next month
-        {
-            day: 29,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '10:00',
-                    title: 'Portfolio',
-                    dot: 'bg-emerald-500',
-                    bg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/40',
-                },
-            ],
-        },
-        { day: 30, isCurrentMonth: true },
-        { day: 1, isCurrentMonth: false },
-        { day: 2, isCurrentMonth: false },
-        { day: 3, isCurrentMonth: false },
-        { day: 4, isCurrentMonth: false },
-        { day: 5, isCurrentMonth: false },
+        // Row 5: Sept 28 - 30 + Next month Oct 1 - 4
+        { day: 28, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 29, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 30, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 1, isCurrentMonth: false, events: [googleRoutineTask] },
+        { day: 2, isCurrentMonth: false, events: [googleRoutineTask] },
+        { day: 3, isCurrentMonth: false, events: [googleRoutineTask] },
+        { day: 4, isCurrentMonth: false, events: [] },
     ];
 
-    // Mini calendar days
+    // Mini calendar days for September 2026
     const miniCalendarDays = [
-        { day: '', empty: true },
-        { day: '', empty: true },
-        { day: '', empty: true },
-        { day: '', empty: true },
-        { day: '', empty: true },
-        { day: '', empty: true },
-        { day: '', empty: true },
-        { day: 1 },
+        { day: '', empty: true }, // Mon empty
+        { day: 1, hasEvent: true },
         { day: 2, hasEvent: true },
-        { day: 3 },
+        { day: 3, hasEvent: true },
         { day: 4, hasEvent: true },
-        { day: 5 },
+        { day: 5, hasEvent: true },
         { day: 6 },
         { day: 7, hasEvent: true },
         { day: 8, hasEvent: true },
-        { day: 9 },
-        { day: 10 },
-        { day: 11 },
-        { day: 12 },
+        { day: 9, hasEvent: true },
+        { day: 10, hasEvent: true },
+        { day: 11, hasEvent: true },
+        { day: 12, hasEvent: true },
         { day: 13 },
-        { day: 14 },
-        { day: 15 },
-        { day: 16, isToday: true },
-        { day: 17 },
-        { day: 18 },
-        { day: 19 },
+        { day: 14, hasEvent: true },
+        { day: 15, hasEvent: true },
+        { day: 16, hasEvent: true },
+        { day: 17, isToday: true, hasEvent: true },
+        { day: 18, hasEvent: true },
+        { day: 19, hasEvent: true },
         { day: 20 },
-        { day: 21 },
-        { day: 22 },
-        { day: 23 },
-        { day: 24 },
-        { day: 25 },
-        { day: 26 },
+        { day: 21, hasEvent: true },
+        { day: 22, hasEvent: true },
+        { day: 23, hasEvent: true },
+        { day: 24, hasEvent: true },
+        { day: 25, hasEvent: true },
+        { day: 26, hasEvent: true },
         { day: 27 },
-        { day: 28 },
-        { day: 29 },
-        { day: 30 },
+        { day: 28, hasEvent: true },
+        { day: 29, hasEvent: true },
+        { day: 30, hasEvent: true },
         { day: 1, isNextMonth: true },
         { day: 2, isNextMonth: true },
         { day: 3, isNextMonth: true },
         { day: 4, isNextMonth: true },
-        { day: 5, isNextMonth: true },
     ];
 
-    // Upcoming list
+    // Upcoming list (Cleaned from dummy items, synced with Google Calendar)
     const upcomingList = [
         {
             id: 1,
-            title: 'Dashboard Development',
-            time: 'Today, 10:00 - 12:00',
-            type: 'Project',
-            project: 'Company Website',
-            dot: 'bg-blue-500',
-        },
-        {
-            id: 2,
-            title: 'Update Notes',
-            time: 'Today, 15:00 - 16:00',
-            type: 'Note',
-            project: 'Personal',
-            dot: 'bg-blue-500',
-        },
-        {
-            id: 3,
-            title: 'Testing & QA',
-            time: '18 Sep 2025, 14:00 - 16:00',
-            type: 'Task',
-            project: 'Mobile App',
-            dot: 'bg-purple-500',
-        },
-        {
-            id: 4,
-            title: 'Client Review',
-            time: '23 Sep 2025, 10:00 - 11:00',
-            type: 'Meeting',
-            project: 'Company Website',
-            dot: 'bg-amber-500',
-        },
-        {
-            id: 5,
-            title: 'Planning Next Sprint',
-            time: '26 Sep 2025, 09:00 - 10:00',
-            type: 'Task',
-            project: 'Personal',
+            title: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik...',
+            time: 'Rutin (Senin - Sabtu), 07:30',
+            type: 'Tugas Saya',
+            project: 'Google Calendar',
             dot: 'bg-blue-500',
         },
     ];
 
     // Event Types Legend
     const eventTypes = [
-        { name: 'Task', dot: 'bg-blue-500' },
-        { name: 'Note', dot: 'bg-purple-500' },
+        { name: 'Tugas Saya (Google)', dot: 'bg-blue-500' },
         { name: 'Project', dot: 'bg-emerald-500' },
         { name: 'Deadline', dot: 'bg-rose-500' },
         { name: 'Meeting', dot: 'bg-amber-500' },
         { name: 'Personal', dot: 'bg-slate-500' },
+        { name: 'Task', dot: 'bg-indigo-500' },
     ];
 
     return (
@@ -470,7 +265,7 @@ export default function CalendarPage() {
                         <div className="flex flex-wrap items-center gap-2">
                             {/* Today button */}
                             <button
-                                onClick={() => setSelectedMonth('September 2025')}
+                                onClick={() => setSelectedMonth('September 2026')}
                                 className="px-3.5 py-1.5 rounded-md border border-slate-200 dark:border-[#243e80] bg-white dark:bg-[#0e1d47] text-xs sm:text-sm font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-xs"
                             >
                                 Today
@@ -493,10 +288,10 @@ export default function CalendarPage() {
                                     onChange={(e) => setSelectedMonth(e.target.value)}
                                     className="appearance-none bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#243e80] text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 rounded-md pl-3 pr-8 py-1.5 cursor-pointer focus:outline-none shadow-xs"
                                 >
-                                    <option value="September 2025">September 2025</option>
-                                    <option value="October 2025">October 2025</option>
-                                    <option value="November 2025">November 2025</option>
-                                    <option value="December 2025">December 2025</option>
+                                    <option value="September 2026">September 2026</option>
+                                    <option value="October 2026">October 2026</option>
+                                    <option value="November 2026">November 2026</option>
+                                    <option value="December 2026">December 2026</option>
                                 </select>
                                 <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                             </div>
@@ -670,7 +465,7 @@ export default function CalendarPage() {
                                             </h3>
                                         </div>
                                         <span className="text-xs text-slate-400 dark:text-slate-400 font-medium">
-                                            Tuesday, 16 September 2025
+                                            Thursday, 17 September 2026
                                         </span>
                                     </div>
 
@@ -823,7 +618,7 @@ export default function CalendarPage() {
                         <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 shadow-xs space-y-4">
                             <div className="flex items-center justify-between">
                                 <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                                    September 2025
+                                    September 2026
                                 </h3>
                                 <div className="flex items-center gap-1">
                                     <button className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white rounded transition-colors">
