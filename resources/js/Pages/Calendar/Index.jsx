@@ -74,32 +74,7 @@ export default function CalendarPage() {
         const dayName = dayNames[idx % 7];
         const monthName = item.isCurrentMonth ? selectedMonth : (item.day > 20 ? 'August 2026' : 'October 2026');
 
-        // Pengingat rutin harian Google Calendar muncul di DALAM MODAL (Mon - Sat, 07:30)
-        // Tidak memenuhi kotak kalender di luar agar tampilan tetap bersih
-        const isWorkday = idx % 7 !== 6;
-        const routineForDay = isWorkday
-            ? [
-                item.isRelaxMode
-                    ? {
-                        time: '07:30',
-                        title: 'Berangkat kerja & doa (Mode Jam Santai)',
-                        fullTitle: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik (Mode Jam Santai)',
-                        dot: 'bg-rose-500',
-                        bg: 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200/80 dark:border-rose-900/40',
-                        isRoutine: true,
-                    }
-                    : {
-                        time: '07:30',
-                        title: 'Berangkat kerja & doa...',
-                        fullTitle: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik dan kebahagiaan...',
-                        dot: 'bg-blue-500',
-                        bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
-                        isRoutine: true,
-                    }
-            ]
-            : [];
-
-        // Agenda/tugas khusus yang dibuat user pada tanggal ini (misal Presentasi tanggal 3)
+        // Hanya agenda/tugas asli yang dibuat user
         const specificEvents = item.events || [];
 
         setSelectedDayModal({
@@ -107,30 +82,12 @@ export default function CalendarPage() {
             idx,
             dayName,
             dateFormatted: `${dayName}, ${item.day} ${monthName}`,
-            events: [...routineForDay, ...specificEvents],
+            events: specificEvents,
         });
     };
 
-    // Google Calendar Routine Task definition
-    const googleRoutineTask = {
-        time: '07:30',
-        title: 'Berangkat kerja & doa...',
-        fullTitle: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik dan kebahagiaan...',
-        dot: 'bg-blue-500',
-        bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
-    };
-
-    // Today's Agenda Checklist State (Synchronized with Google Calendar)
-    const [todayAgenda, setTodayAgenda] = useState([
-        {
-            id: 1,
-            title: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik dan kebahagiaan...',
-            time: '07:30 - 08:30',
-            tag: 'Google Calendar',
-            tagColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-            completed: false,
-        },
-    ]);
+    // Today's Agenda Checklist State (Murni real, kosong di awal)
+    const [todayAgenda, setTodayAgenda] = useState([]);
 
     const toggleAgendaItem = (id) => {
         setTodayAgenda(
@@ -290,17 +247,8 @@ export default function CalendarPage() {
         { day: 4, isNextMonth: true, isSunday: true },
     ];
 
-    // Upcoming list (Cleaned from dummy items, synced with Google Calendar)
-    const upcomingList = [
-        {
-            id: 1,
-            title: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik...',
-            time: 'Daily (Mon - Sat), 07:30',
-            type: 'My Tasks',
-            project: 'Google Calendar',
-            dot: 'bg-blue-500',
-        },
-    ];
+    // Upcoming list (Murni real, kosong di awal)
+    const upcomingList = [];
 
     // Event Types Legend
     const eventTypes = [
@@ -529,47 +477,53 @@ export default function CalendarPage() {
                                     </div>
 
                                     {/* Agenda Items list */}
-                                    <div className="divide-y divide-slate-100 dark:divide-slate-800/80 mt-1">
-                                        {todayAgenda.map((item) => (
-                                            <div
-                                                key={item.id}
-                                                className="py-3 flex items-center justify-between gap-3 text-xs sm:text-sm group"
-                                            >
-                                                <div className="flex items-center gap-3 min-w-0">
-                                                    <div
-                                                        onClick={() => toggleAgendaItem(item.id)}
-                                                        className={`w-4 h-4 rounded border flex items-center justify-center cursor-pointer transition-colors shrink-0 ${
-                                                            item.completed
-                                                                ? 'bg-[#2563eb] border-[#2563eb] text-white'
-                                                                : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-[#122352] group-hover:border-blue-500'
-                                                        }`}
-                                                    >
-                                                        {item.completed && <Check className="w-3 h-3 stroke-[3]" />}
+                                    {todayAgenda.length > 0 ? (
+                                        <div className="divide-y divide-slate-100 dark:divide-slate-800/80 mt-1">
+                                            {todayAgenda.map((item) => (
+                                                <div
+                                                    key={item.id}
+                                                    className="py-3 flex items-center justify-between gap-3 text-xs sm:text-sm group"
+                                                >
+                                                    <div className="flex items-center gap-3 min-w-0">
+                                                        <div
+                                                            onClick={() => toggleAgendaItem(item.id)}
+                                                            className={`w-4 h-4 rounded border flex items-center justify-center cursor-pointer transition-colors shrink-0 ${
+                                                                item.completed
+                                                                    ? 'bg-[#2563eb] border-[#2563eb] text-white'
+                                                                    : 'border-slate-300 dark:border-slate-600 bg-white dark:bg-[#122352] group-hover:border-blue-500'
+                                                            }`}
+                                                        >
+                                                            {item.completed && <Check className="w-3 h-3 stroke-[3]" />}
+                                                        </div>
+                                                        <span
+                                                            className={`font-semibold truncate transition-colors ${
+                                                                item.completed
+                                                                    ? 'line-through text-slate-400 dark:text-slate-500'
+                                                                    : 'text-slate-800 dark:text-slate-200'
+                                                            }`}
+                                                        >
+                                                            {item.title}
+                                                        </span>
                                                     </div>
-                                                    <span
-                                                        className={`font-semibold truncate transition-colors ${
-                                                            item.completed
-                                                                ? 'line-through text-slate-400 dark:text-slate-500'
-                                                                : 'text-slate-800 dark:text-slate-200'
-                                                        }`}
-                                                    >
-                                                        {item.title}
-                                                    </span>
-                                                </div>
 
-                                                <div className="flex items-center gap-2 shrink-0">
-                                                    <span className="text-xs text-slate-400 dark:text-slate-400 font-medium">
-                                                        {item.time}
-                                                    </span>
-                                                    <span
-                                                        className={`text-xs font-semibold px-2 py-0.5 rounded-md ${item.tagColor}`}
-                                                    >
-                                                        {item.tag}
-                                                    </span>
+                                                    <div className="flex items-center gap-2 shrink-0">
+                                                        <span className="text-xs text-slate-400 dark:text-slate-400 font-medium">
+                                                            {item.time}
+                                                        </span>
+                                                        <span
+                                                            className={`text-xs font-semibold px-2 py-0.5 rounded-md ${item.tagColor}`}
+                                                        >
+                                                            {item.tag}
+                                                        </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        ))}
-                                    </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="py-8 text-center text-xs text-slate-400 dark:text-slate-500">
+                                            No tasks scheduled for today. Use Quick Add or click any date to add a task.
+                                        </div>
+                                    )}
                                 </div>
 
                                 <button
@@ -748,35 +702,41 @@ export default function CalendarPage() {
                                 </button>
                             </div>
 
-                            <div className="space-y-3.5">
-                                {upcomingList.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className="flex items-start justify-between gap-3 text-xs sm:text-sm group hover:bg-slate-50/60 dark:hover:bg-[#122352]/30 p-1.5 -mx-1.5 rounded-md transition-colors"
-                                    >
-                                        <div className="flex items-start gap-2.5 min-w-0">
-                                            <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${item.dot}`} />
-                                            <div className="min-w-0">
-                                                <h4 className="font-bold text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                                    {item.title}
-                                                </h4>
-                                                <p className="text-xs text-slate-400 font-medium mt-0.5">
-                                                    {item.time}
-                                                </p>
+                            {upcomingList.length > 0 ? (
+                                <div className="space-y-3.5">
+                                    {upcomingList.map((item) => (
+                                        <div
+                                            key={item.id}
+                                            className="flex items-start justify-between gap-3 text-xs sm:text-sm group hover:bg-slate-50/60 dark:hover:bg-[#122352]/30 p-1.5 -mx-1.5 rounded-md transition-colors"
+                                        >
+                                            <div className="flex items-start gap-2.5 min-w-0">
+                                                <span className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${item.dot}`} />
+                                                <div className="min-w-0">
+                                                    <h4 className="font-bold text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                        {item.title}
+                                                    </h4>
+                                                    <p className="text-xs text-slate-400 font-medium mt-0.5">
+                                                        {item.time}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="text-right shrink-0">
+                                                <span className="block text-xs text-slate-400 font-medium">
+                                                    {item.type}
+                                                </span>
+                                                <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                                                    {item.project}
+                                                </span>
                                             </div>
                                         </div>
-
-                                        <div className="text-right shrink-0">
-                                            <span className="block text-xs text-slate-400 font-medium">
-                                                {item.type}
-                                            </span>
-                                            <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
-                                                {item.project}
-                                            </span>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="py-6 text-center text-xs text-slate-400 dark:text-slate-500">
+                                    No upcoming events.
+                                </div>
+                            )}
                         </div>
 
                         {/* Event Types Legend */}
