@@ -85,8 +85,8 @@ export default function CalendarPage() {
                         time: '07:30',
                         title: 'Berangkat kerja & doa (Mode Jam Santai)',
                         fullTitle: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik (Mode Jam Santai)',
-                        dot: 'bg-amber-500',
-                        bg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-900/40',
+                        dot: 'bg-rose-500',
+                        bg: 'bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200/80 dark:border-rose-900/40',
                         isRoutine: true,
                     }
                     : {
@@ -270,7 +270,7 @@ export default function CalendarPage() {
         { day: 1 },
         { day: 2 },
         { day: 3, hasEvent: true }, // Presentasi
-        { day: 4 },
+        { day: 4, isRelaxMode: true },
         { day: 5 },
         { day: 6, isSunday: true },
         { day: 7 },
@@ -319,7 +319,7 @@ export default function CalendarPage() {
     const eventTypes = [
         { name: 'My Tasks (Google)', dot: 'bg-blue-500' },
         { name: 'National Holiday', dot: 'bg-rose-500' },
-        { name: 'Flexible Office Hours', dot: 'bg-amber-500' },
+        { name: 'Flexible Office Hours', dot: 'bg-rose-500' },
         { name: 'Project', dot: 'bg-emerald-500' },
         { name: 'Deadline', dot: 'bg-rose-500' },
         { name: 'Meeting', dot: 'bg-amber-500' },
@@ -511,10 +511,8 @@ export default function CalendarPage() {
                                         className={`min-h-[86px] sm:min-h-[96px] p-2 flex flex-col justify-between transition-all cursor-pointer group hover:bg-blue-50/40 dark:hover:bg-[#122352]/50 hover:ring-1.5 hover:ring-blue-500/40 ${
                                             !item.isCurrentMonth
                                                 ? 'bg-slate-50/30 dark:bg-[#091433]/30'
-                                                : item.isSunday
+                                                : item.isSunday || item.isRelaxMode || item.isHoliday
                                                 ? 'bg-rose-50/20 dark:bg-rose-950/10'
-                                                : item.isHoliday
-                                                ? 'bg-amber-50/20 dark:bg-amber-950/10'
                                                 : ''
                                         }`}
                                     >
@@ -526,7 +524,7 @@ export default function CalendarPage() {
                                             ) : (
                                                 <span
                                                     className={`text-xs font-bold ${
-                                                        item.isSunday || item.isHoliday
+                                                        item.isSunday || item.isHoliday || item.isRelaxMode
                                                             ? 'text-rose-600 dark:text-rose-400 font-extrabold'
                                                             : item.isCurrentMonth
                                                             ? 'text-slate-800 dark:text-slate-200'
@@ -550,8 +548,8 @@ export default function CalendarPage() {
 
                                         {/* Relax Mode Notice if national holiday */}
                                         {item.isRelaxMode && (
-                                            <div className="mt-1 flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-900/40">
-                                                <Coffee className="w-3 h-3 text-amber-500 shrink-0" />
+                                            <div className="mt-1 flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-900/40">
+                                                <Coffee className="w-3 h-3 text-rose-500 shrink-0" />
                                                 <span className="truncate">Flexible Hours • Office Day</span>
                                             </div>
                                         )}
@@ -787,7 +785,7 @@ export default function CalendarPage() {
                                                     className={`font-medium ${
                                                         mDay.empty || mDay.isNextMonth
                                                             ? 'text-slate-300 dark:text-slate-600'
-                                                            : mDay.isSunday || mDay.isHoliday
+                                                            : mDay.isSunday || mDay.isHoliday || mDay.isRelaxMode
                                                             ? 'text-rose-600 dark:text-rose-400 font-bold'
                                                             : 'text-slate-700 dark:text-slate-300'
                                                     }`}
@@ -909,17 +907,17 @@ export default function CalendarPage() {
                                 </div>
 
                                 {/* Setting: Mode Jam Santai saat Tanggal Merah */}
-                                <div className="flex items-center justify-between p-2.5 rounded-md bg-amber-50/60 dark:bg-amber-950/30 border border-amber-200/60 dark:border-amber-900/40">
+                                <div className="flex items-center justify-between p-2.5 rounded-md bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200/60 dark:border-rose-900/40">
                                     <div className="space-y-0.5">
                                         <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
-                                            <Coffee className="w-3.5 h-3.5 text-amber-500" />
+                                            <Coffee className="w-3.5 h-3.5 text-rose-500" />
                                             Flexible Hours (Holiday Office Day)
                                         </span>
                                         <p className="text-[11px] text-slate-500 dark:text-slate-400">
                                             Office work with flexible rhythm
                                         </p>
                                     </div>
-                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200">
+                                    <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800 dark:bg-rose-900/60 dark:text-rose-200">
                                         Active
                                     </span>
                                 </div>
@@ -1132,13 +1130,13 @@ export default function CalendarPage() {
 
                         {/* Mode Banner */}
                         {selectedDayModal.isRelaxMode ? (
-                            <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200/80 dark:border-amber-900/50 flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/60 text-amber-700 dark:text-amber-300 flex items-center justify-center shrink-0">
+                            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/50 flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300 flex items-center justify-center shrink-0">
                                     <Coffee className="w-4 h-4" />
                                 </div>
                                 <div className="text-xs">
-                                    <span className="font-bold text-amber-800 dark:text-amber-200">Flexible Hours Mode</span>
-                                    <p className="text-amber-700/90 dark:text-amber-300/80 mt-0.5">
+                                    <span className="font-bold text-rose-800 dark:text-rose-200">Flexible Hours Mode</span>
+                                    <p className="text-rose-700/90 dark:text-rose-300/80 mt-0.5">
                                         Office day with relaxed and flexible pace.
                                     </p>
                                 </div>
