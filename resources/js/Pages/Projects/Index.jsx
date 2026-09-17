@@ -884,11 +884,11 @@ export default function Projects({
             {/* GitHub Repositories Modal */}
             {isRepoModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-2xl border border-slate-200/80 dark:border-[#1e346e] shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150">
+                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in zoom-in-95 duration-150">
                         {/* Modal Header */}
                         <div className="px-6 py-4 border-b border-slate-200/80 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-[#0a1533]/50">
                             <div className="flex items-center gap-3">
-                                <div className="w-10 h-10 rounded-xl bg-slate-900 dark:bg-slate-800 flex items-center justify-center text-white shadow-xs">
+                                <div className="w-10 h-10 rounded-lg bg-slate-900 dark:bg-slate-800 flex items-center justify-center text-white shadow-xs">
                                     <GithubIcon className="w-5 h-5" />
                                 </div>
                                 <div>
@@ -924,7 +924,7 @@ export default function Projects({
                                         placeholder="Cari repositori berdasarkan nama, bahasa, deskripsi..."
                                         value={repoSearch}
                                         onChange={(e) => setRepoSearch(e.target.value)}
-                                        className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-[#0a1533] border border-slate-200 dark:border-[#1e346e] rounded-xl focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-slate-800 dark:text-slate-200 placeholder-slate-400"
+                                        className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-slate-50 dark:bg-[#0a1533] border border-slate-200 dark:border-[#1e346e] rounded-lg focus:outline-hidden focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 text-slate-800 dark:text-slate-200 placeholder-slate-400"
                                     />
                                     {repoSearch && (
                                         <button
@@ -943,7 +943,7 @@ export default function Projects({
                                         fetchRepositories();
                                     }}
                                     disabled={loadingRepos}
-                                    className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors shrink-0 disabled:opacity-50"
+                                    className="inline-flex items-center justify-center gap-1.5 px-3 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg transition-colors shrink-0 disabled:opacity-50"
                                 >
                                     <RefreshCw className={`w-3.5 h-3.5 ${loadingRepos ? 'animate-spin' : ''}`} />
                                     <span>Refresh</span>
@@ -1024,7 +1024,7 @@ export default function Projects({
                                 filteredRepos.map((repo) => (
                                     <div
                                         key={repo.id}
-                                        className="p-4 rounded-xl border border-slate-200/80 dark:border-[#1e346e] bg-slate-50/40 dark:bg-[#0a1533]/40 hover:bg-white dark:hover:bg-[#0e1d47] hover:border-blue-300 dark:hover:border-blue-600 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
+                                        className="p-4 rounded-lg border border-slate-200/80 dark:border-[#1e346e] bg-slate-50/40 dark:bg-[#0a1533]/40 hover:bg-white dark:hover:bg-[#0e1d47] hover:border-blue-300 dark:hover:border-blue-600 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3 group"
                                     >
                                         <div className="space-y-1.5 flex-1 min-w-0">
                                             <div className="flex flex-wrap items-center gap-2">
