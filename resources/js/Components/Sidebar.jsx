@@ -96,18 +96,22 @@ export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSide
                 </div>
 
                 {/* Bottom Motivation Card */}
-                <div className="p-4 m-4 rounded-lg bg-[#13234f] border border-[#223974] relative overflow-hidden shadow-lg">
-                    <div className="relative z-10 space-y-1 pr-14">
-                        <h2 className="text-xs font-bold text-white tracking-wide">Keep Going!</h2>
-                        <p className="text-[11px] text-slate-300 leading-tight">
-                            Big progress starts with small steps.
+                <div className="mx-4 mb-4 rounded-xl bg-gradient-to-b from-[#0b1638] via-[#0d1c44] to-[#12234f] border border-[#1f366e]/70 relative overflow-hidden shadow-lg shadow-black/25 flex flex-col justify-between">
+                    <div className="p-4 pb-1 relative z-10">
+                        <p className="text-xs font-medium text-slate-100 leading-snug tracking-tight">
+                            &ldquo;A little progress each day adds up to big results.&rdquo;
+                        </p>
+                        <p className="text-[11px] font-medium text-[#7d93be] mt-2.5">
+                            &mdash; Unknown
                         </p>
                     </div>
-                    <img
-                        src="/images/keep_going.png"
-                        alt="Keep going illustration"
-                        className="absolute right-0 bottom-0 w-24 h-20 object-contain pointer-events-none opacity-90"
-                    />
+                    <div className="relative w-full h-28 mt-0.5 overflow-hidden pointer-events-none">
+                        <img
+                            src="/images/sidebar_boy.png"
+                            alt="Inspiration illustration"
+                            className="w-full h-full object-cover object-bottom"
+                        />
+                    </div>
                 </div>
             </aside>
         </>
