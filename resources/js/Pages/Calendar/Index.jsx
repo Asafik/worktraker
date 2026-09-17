@@ -184,9 +184,7 @@ export default function CalendarPage() {
         {
             day: 4,
             isCurrentMonth: true,
-            isHoliday: true,
-            holidayName: 'Maulid Nabi Muhammad SAW',
-            isRelaxMode: true, // Tanggal merah tetap masuk kantor tapi jam santai
+            isRelaxMode: true, // Mode jam santai (tetap masuk kantor)
             events: [],
         },
         { day: 5, isCurrentMonth: true, events: [] },
@@ -272,7 +270,7 @@ export default function CalendarPage() {
         { day: 1 },
         { day: 2 },
         { day: 3, hasEvent: true }, // Presentasi
-        { day: 4, isHoliday: true }, // Maulid Nabi
+        { day: 4 },
         { day: 5 },
         { day: 6, isSunday: true },
         { day: 7 },
@@ -539,7 +537,7 @@ export default function CalendarPage() {
                                                 </span>
                                             )}
 
-                                            {item.isHoliday && (
+                                            {item.isHoliday && item.holidayName && (
                                                 <span
                                                     className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 shadow-2xs truncate max-w-[125px]"
                                                     title={item.holidayName}
@@ -1104,7 +1102,7 @@ export default function CalendarPage() {
                                             Today
                                         </span>
                                     )}
-                                    {selectedDayModal.isHoliday && (
+                                    {selectedDayModal.isHoliday && selectedDayModal.holidayName && (
                                         <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60">
                                             <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
                                             <span>{selectedDayModal.holidayName}</span>
@@ -1118,7 +1116,7 @@ export default function CalendarPage() {
                                 </div>
                                 <p className="text-xs text-slate-500 dark:text-slate-400">
                                     {selectedDayModal.isRelaxMode
-                                        ? 'National holiday: Flexible work rhythm & office hours.'
+                                        ? 'Flexible work rhythm & office hours.'
                                         : selectedDayModal.isSunday
                                         ? 'Weekend. No scheduled office hours.'
                                         : 'Regular workday with Google Calendar sync.'}
@@ -1141,7 +1139,7 @@ export default function CalendarPage() {
                                 <div className="text-xs">
                                     <span className="font-bold text-amber-800 dark:text-amber-200">Flexible Hours Mode</span>
                                     <p className="text-amber-700/90 dark:text-amber-300/80 mt-0.5">
-                                        National holiday ({selectedDayModal.holidayName}). Office day with relaxed and flexible pace.
+                                        Office day with relaxed and flexible pace.
                                     </p>
                                 </div>
                             </div>
