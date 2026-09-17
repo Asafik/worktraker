@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
 import {
     LayoutDashboard,
@@ -13,6 +13,22 @@ import {
 } from 'lucide-react';
 
 export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSidebarOpen }) {
+    const [showMotivation, setShowMotivation] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const val = localStorage.getItem('worktrack_show_motivation');
+            return val !== null ? val === 'true' : true;
+        }
+        return true;
+    });
+
+    useEffect(() => {
+        const handler = () => {
+            const val = localStorage.getItem('worktrack_show_motivation');
+            setShowMotivation(val !== null ? val === 'true' : true);
+        };
+        window.addEventListener('worktrack_motivation_toggle', handler);
+        return () => window.removeEventListener('worktrack_motivation_toggle', handler);
+    }, []);
     const navItems = [
         { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
         { name: 'Projects', icon: FolderKanban, href: '/projects' },
@@ -96,25 +112,27 @@ export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSide
                 </div>
 
                 {/* Bottom Motivation Area (Seamless edge-to-edge, font Poppins) */}
-                <div className="w-full relative select-none overflow-hidden flex flex-col flex-shrink-0">
-                    <div className="px-5 pt-2 pb-1 relative z-10 space-y-1">
-                        <p className="text-[13px] font-medium text-slate-100 leading-snug tracking-tight font-['Poppins',sans-serif]">
-                            "A little progress<br />
-                            each day adds up<br />
-                            to big results."
-                        </p>
-                        <p className="text-[11px] text-[#7d93be] font-medium font-['Poppins',sans-serif]">
-                            — Unknown
-                        </p>
+                {showMotivation && (
+                    <div className="w-full relative select-none overflow-hidden flex flex-col flex-shrink-0 transition-opacity duration-200">
+                        <div className="px-5 pt-2 pb-1 relative z-10 space-y-1">
+                            <p className="text-[13px] font-medium text-slate-100 leading-snug tracking-tight font-['Poppins',sans-serif]">
+                                "A little progress<br />
+                                each day adds up<br />
+                                to big results."
+                            </p>
+                            <p className="text-[11px] text-[#7d93be] font-medium font-['Poppins',sans-serif]">
+                                — Unknown
+                            </p>
+                        </div>
+                        <div className="relative w-full overflow-hidden pointer-events-none">
+                            <img
+                                src="/images/sidebar_boy_night.png"
+                                alt="Inspiration illustration"
+                                className="w-full h-auto object-cover object-bottom block"
+                            />
+                        </div>
                     </div>
-                    <div className="relative w-full overflow-hidden pointer-events-none">
-                        <img
-                            src="/images/sidebar_boy_night.png"
-                            alt="Inspiration illustration"
-                            className="w-full h-auto object-cover object-bottom block"
-                        />
-                    </div>
-                </div>
+                )}
             </aside>
         </>
     );

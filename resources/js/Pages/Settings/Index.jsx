@@ -34,6 +34,12 @@ import {
     Link2,
     Puzzle,
     X,
+    Sun,
+    Moon,
+    Monitor,
+    Sparkles,
+    Type,
+    LayoutDashboard,
 } from 'lucide-react';
 
 // Brand SVGs matching screenshot
@@ -281,8 +287,51 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
     // ==========================================
     // 4. APPEARANCE STATE
     // ==========================================
-    const [themeMode, setThemeMode] = useState('dark');
-    const [accentColor, setAccentColor] = useState('blue');
+    const [themeMode, setThemeMode] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('theme') || 'dark';
+        }
+        return 'dark';
+    });
+    const [accentColor, setAccentColor] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('worktrack_accent') || 'blue';
+        }
+        return 'blue';
+    });
+    const [fontFamily, setFontFamily] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('worktrack_font') || 'Inter';
+        }
+        return 'Inter';
+    });
+    const [density, setDensity] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return localStorage.getItem('worktrack_density') || 'comfortable';
+        }
+        return 'comfortable';
+    });
+    const [showMotivation, setShowMotivation] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const val = localStorage.getItem('worktrack_show_motivation');
+            return val !== null ? val === 'true' : true;
+        }
+        return true;
+    });
+    const [smoothAnimations, setSmoothAnimations] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const val = localStorage.getItem('worktrack_smooth_anim');
+            return val !== null ? val === 'true' : true;
+        }
+        return true;
+    });
+    const [badgeGlow, setBadgeGlow] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const val = localStorage.getItem('worktrack_badge_glow');
+            return val !== null ? val === 'true' : true;
+        }
+        return true;
+    });
 
     // ==========================================
     // 5. PREFERENCES STATE
@@ -1071,79 +1120,508 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                 )}
 
                 {/* ================================================================ */}
-                {/* TAB 3: APPEARANCE */}
+                {/* TAB 3: APPEARANCE (Rich 2-Column with Interactive Live Preview) */}
                 {/* ================================================================ */}
                 {activeTab === 'Appearance' && (
-                    <div className="max-w-3xl space-y-6">
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-6 shadow-xs space-y-6">
-                            <div>
-                                <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                    Tema Tampilan (Theme Mode)
-                                </h3>
-                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                                    Sesuaikan tema antarmuka WorkTrack agar nyaman saat bekerja siang atau malam.
-                                </p>
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                        {/* Left Column: Settings Controls (7 cols) */}
+                        <div className="lg:col-span-7 space-y-5">
+                            {/* Card 1: Theme Mode */}
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
+                                <div>
+                                    <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                        <Sun className="w-4 h-4 text-amber-500 dark:text-amber-400" />
+                                        <span>Tema Tampilan (Theme Mode)</span>
+                                    </h3>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                        Sesuaikan tema antarmuka WorkTrack agar nyaman saat bekerja siang atau malam.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                    {[
+                                        {
+                                            key: 'light',
+                                            title: 'Light Mode',
+                                            desc: 'Tampilan bersih & terang',
+                                            icon: Sun,
+                                            iconColor: 'text-amber-500',
+                                        },
+                                        {
+                                            key: 'dark',
+                                            title: 'Dark Mode',
+                                            desc: 'Tema gelap Deep Navy',
+                                            icon: Moon,
+                                            iconColor: 'text-blue-400',
+                                        },
+                                        {
+                                            key: 'system',
+                                            title: 'Ikuti Sistem',
+                                            desc: 'Sinkron otomatis OS',
+                                            icon: Monitor,
+                                            iconColor: 'text-slate-400',
+                                        },
+                                    ].map((t) => {
+                                        const IconComponent = t.icon;
+                                        const isSelected = themeMode === t.key;
+                                        return (
+                                            <button
+                                                key={t.key}
+                                                type="button"
+                                                onClick={() => {
+                                                    setThemeMode(t.key);
+                                                    const root = document.documentElement;
+                                                    if (t.key === 'dark') {
+                                                        root.classList.add('dark');
+                                                        localStorage.setItem('theme', 'dark');
+                                                    } else if (t.key === 'light') {
+                                                        root.classList.remove('dark');
+                                                        localStorage.setItem('theme', 'light');
+                                                    } else {
+                                                        const isSysDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                                                        if (isSysDark) root.classList.add('dark');
+                                                        else root.classList.remove('dark');
+                                                        localStorage.removeItem('theme');
+                                                    }
+                                                    triggerSave('Tema tampilan berhasil diperbarui!');
+                                                }}
+                                                className={`p-3.5 rounded-lg border text-left cursor-pointer transition-all ${
+                                                    isSelected
+                                                        ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/40 ring-1 ring-blue-600/30 shadow-xs'
+                                                        : 'border-slate-200 dark:border-[#243e80] hover:border-slate-300 dark:hover:border-[#385cb0] bg-[#f8fafc] dark:bg-[#122352]/40'
+                                                }`}
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <IconComponent className={`w-4 h-4 ${t.iconColor}`} />
+                                                        <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
+                                                            {t.title}
+                                                        </h4>
+                                                    </div>
+                                                    {isSelected && (
+                                                        <Check className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                                                    )}
+                                                </div>
+                                                <p className="text-[11px] text-slate-400 mt-1.5 leading-snug">
+                                                    {t.desc}
+                                                </p>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
                             </div>
 
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                {[
-                                    { key: 'light', title: 'Light Mode', desc: 'Tampilan bersih dan terang' },
-                                    { key: 'dark', title: 'Dark Mode (Default)', desc: 'Tema gelap Deep Royal Navy' },
-                                    { key: 'system', title: 'Ikuti Sistem', desc: 'Sinkron otomatis dengan OS' },
-                                ].map((t) => (
+                            {/* Card 2: Accent Colors */}
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
+                                <div>
+                                    <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                        <Palette className="w-4 h-4 text-blue-500" />
+                                        <span>Warna Aksen Dashboard</span>
+                                    </h3>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                        Warna primer untuk tombol aktif, badge status, dan sorotan antarmuka.
+                                    </p>
+                                </div>
+
+                                <div className="flex flex-wrap items-center gap-2.5">
+                                    {[
+                                        { key: 'blue', name: 'WorkTrack Blue', color: 'bg-[#2563eb]', border: 'border-[#2563eb]' },
+                                        { key: 'emerald', name: 'Emerald', color: 'bg-emerald-600', border: 'border-emerald-600' },
+                                        { key: 'purple', name: 'Royal Purple', color: 'bg-purple-600', border: 'border-purple-600' },
+                                        { key: 'amber', name: 'Amber Gold', color: 'bg-amber-600', border: 'border-amber-600' },
+                                        { key: 'rose', name: 'Crimson Rose', color: 'bg-rose-600', border: 'border-rose-600' },
+                                    ].map((c) => {
+                                        const isSelected = accentColor === c.key;
+                                        return (
+                                            <button
+                                                key={c.key}
+                                                type="button"
+                                                onClick={() => {
+                                                    setAccentColor(c.key);
+                                                    localStorage.setItem('worktrack_accent', c.key);
+                                                    triggerSave(`Warna aksen diubah ke ${c.name}!`);
+                                                }}
+                                                className={`flex items-center gap-2 px-3.5 py-2 rounded-md border text-xs font-semibold transition-all cursor-pointer ${
+                                                    isSelected
+                                                        ? 'border-blue-600 dark:border-blue-500 bg-blue-50/60 dark:bg-blue-950/50 text-blue-600 dark:text-blue-300 ring-2 ring-blue-500/20 shadow-xs'
+                                                        : 'border-slate-200 dark:border-[#243e80] text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352]'
+                                                }`}
+                                            >
+                                                <span className={`w-3.5 h-3.5 rounded-full ${c.color} shadow-xs`} />
+                                                <span>{c.name}</span>
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* Card 3: Typography & Layout Density */}
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
+                                <div>
+                                    <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                        <Type className="w-4 h-4 text-purple-500" />
+                                        <span>Tipografi & Kepadatan Tata Letak</span>
+                                    </h3>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                        Sesuaikan jenis huruf dan kerapatan padding antarmuka.
+                                    </p>
+                                </div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                                            Font Antarmuka
+                                        </label>
+                                        <CustomSelect
+                                            value={fontFamily}
+                                            onChange={(val) => {
+                                                setFontFamily(val);
+                                                localStorage.setItem('worktrack_font', val);
+                                                triggerSave(`Font diubah ke ${val}`);
+                                            }}
+                                            options={[
+                                                { value: 'Inter', label: 'Inter (Default - Modern Clean)' },
+                                                { value: 'Poppins', label: 'Poppins (Friendly & Rounded)' },
+                                                { value: 'Plus Jakarta Sans', label: 'Plus Jakarta Sans (Tech Sleek)' },
+                                            ]}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                                            Kepadatan Tampilan (Density)
+                                        </label>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {[
+                                                { key: 'comfortable', label: 'Comfortable', desc: 'Nyaman & luas' },
+                                                { key: 'compact', label: 'Compact', desc: 'Ramping & hemat baris' },
+                                            ].map((d) => (
+                                                <button
+                                                    key={d.key}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setDensity(d.key);
+                                                        localStorage.setItem('worktrack_density', d.key);
+                                                        triggerSave(`Kepadatan diubah ke ${d.label}`);
+                                                    }}
+                                                    className={`px-3 py-2 rounded-md border text-center transition-all cursor-pointer ${
+                                                        density === d.key
+                                                            ? 'border-blue-600 bg-blue-50/60 dark:bg-blue-950/40 text-blue-600 dark:text-blue-300 font-bold shadow-xs'
+                                                            : 'border-slate-200 dark:border-[#243e80] text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#122352]'
+                                                    }`}
+                                                >
+                                                    <span className="text-xs block">{d.label}</span>
+                                                    <span className="text-[10px] text-slate-400 block mt-0.5">{d.desc}</span>
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Card 4: Sidebar Preferences & Visual Effects (Toggle) */}
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
+                                <div>
+                                    <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                        <Sliders className="w-4 h-4 text-emerald-500" />
+                                        <span>Preferensi Sidebar & Efek Visual</span>
+                                    </h3>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                        Kustomisasi elemen tambahan di sidebar dan efek transisi.
+                                    </p>
+                                </div>
+
+                                <div className="divide-y divide-slate-100 dark:divide-slate-800/80 space-y-1">
+                                    <div className="flex items-center justify-between py-3">
+                                        <div className="pr-4">
+                                            <h5 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">
+                                                Tampilkan Motivasi Harian di Sidebar
+                                            </h5>
+                                            <p className="text-xs text-slate-400 mt-0.5">
+                                                Menampilkan kutipan inspirasi dan ilustrasi gunung di bagian paling bawah sidebar.
+                                            </p>
+                                        </div>
+                                        <Toggle
+                                            checked={showMotivation}
+                                            onChange={(checked) => {
+                                                setShowMotivation(checked);
+                                                localStorage.setItem('worktrack_show_motivation', String(checked));
+                                                window.dispatchEvent(new Event('worktrack_motivation_toggle'));
+                                                triggerSave(checked ? 'Motivasi sidebar diaktifkan' : 'Motivasi sidebar disembunyikan');
+                                            }}
+                                            ariaLabel="Tampilkan motivasi di sidebar"
+                                        />
+                                    </div>
+
+                                    <div className="flex items-center justify-between py-3">
+                                        <div className="pr-4">
+                                            <h5 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">
+                                                Animasi & Efek Transisi Halus
+                                            </h5>
+                                            <p className="text-xs text-slate-400 mt-0.5">
+                                                Animasi lembut saat navigasi antar menu dan perubahan status kartu.
+                                            </p>
+                                        </div>
+                                        <Toggle
+                                            checked={smoothAnimations}
+                                            onChange={(checked) => {
+                                                setSmoothAnimations(checked);
+                                                localStorage.setItem('worktrack_smooth_anim', String(checked));
+                                                triggerSave(checked ? 'Animasi halus aktif' : 'Animasi disederhanakan');
+                                            }}
+                                            ariaLabel="Animasi dan efek transisi"
+                                        />
+                                    </div>
+
+                                    <div className="flex items-center justify-between py-3">
+                                        <div className="pr-4">
+                                            <h5 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">
+                                                Aksen Glow pada Status & Badge
+                                            </h5>
+                                            <p className="text-xs text-slate-400 mt-0.5">
+                                                Beri efek pendar cahaya lembut pada badge status aktif dan sorotan utama.
+                                            </p>
+                                        </div>
+                                        <Toggle
+                                            checked={badgeGlow}
+                                            onChange={(checked) => {
+                                                setBadgeGlow(checked);
+                                                localStorage.setItem('worktrack_badge_glow', String(checked));
+                                                triggerSave(checked ? 'Efek glow aktif' : 'Efek glow nonaktif');
+                                            }}
+                                            ariaLabel="Efek glow status"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Right Column: Live Interactive Preview (5 cols) */}
+                        <div className="lg:col-span-5 sticky top-5 space-y-3">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-5 shadow-xs">
+                                {/* Preview Header */}
+                                <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-800/80">
+                                    <div className="flex items-center gap-1.5">
+                                        <span className="w-2.5 h-2.5 rounded-full bg-rose-400/90 inline-block" />
+                                        <span className="w-2.5 h-2.5 rounded-full bg-amber-400/90 inline-block" />
+                                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/90 inline-block" />
+                                        <span className="text-[11px] font-mono text-slate-400 ml-2">worktrack.app</span>
+                                    </div>
+                                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span>Live Preview</span>
+                                    </div>
+                                </div>
+
+                                {/* Mini UI Mockup Container */}
+                                <div className="pt-4">
                                     <div
-                                        key={t.key}
-                                        onClick={() => {
-                                            setThemeMode(t.key);
-                                            triggerSave();
-                                        }}
-                                        className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                                            themeMode === t.key
-                                                ? 'border-blue-600 bg-blue-50/40 dark:bg-blue-950/40'
-                                                : 'border-slate-200 dark:border-slate-800 hover:border-slate-300'
+                                        className={`rounded-lg border border-slate-200 dark:border-slate-700/60 overflow-hidden shadow-sm flex h-[340px] text-[10px] ${
+                                            themeMode === 'light'
+                                                ? 'bg-[#f4f7fc] text-slate-800'
+                                                : 'bg-[#070c1e] text-slate-100'
                                         }`}
                                     >
-                                        <div className="flex items-center justify-between">
-                                            <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
-                                                {t.title}
-                                            </h4>
-                                            {themeMode === t.key && (
-                                                <Check className="w-4 h-4 text-blue-600" />
+                                        {/* Mini Sidebar (Always Deep Navy #0b1739) */}
+                                        <div className="w-24 bg-[#0b1739] text-white flex flex-col justify-between p-2 flex-shrink-0 border-r border-[#1b2b5a]/60 select-none">
+                                            <div className="space-y-2">
+                                                {/* Mini Brand */}
+                                                <div className="flex items-center gap-1.5 pb-2 border-b border-[#1b2b5a]/60">
+                                                    <img
+                                                        src="/images/logo.png"
+                                                        alt="Logo"
+                                                        className="w-4 h-4 rounded object-contain"
+                                                    />
+                                                    <span className="font-bold text-[9px] tracking-tight text-white truncate">
+                                                        WorkTrack
+                                                    </span>
+                                                </div>
+
+                                                {/* Mini Nav Items */}
+                                                <div className="space-y-1">
+                                                    <div
+                                                        className={`px-2 py-1 rounded font-semibold text-[9px] flex items-center gap-1 shadow-xs ${
+                                                            accentColor === 'emerald'
+                                                                ? 'bg-emerald-600 text-white'
+                                                                : accentColor === 'purple'
+                                                                ? 'bg-purple-600 text-white'
+                                                                : accentColor === 'amber'
+                                                                ? 'bg-amber-600 text-white'
+                                                                : accentColor === 'rose'
+                                                                ? 'bg-rose-600 text-white'
+                                                                : 'bg-[#3b52d4] text-white'
+                                                        }`}
+                                                    >
+                                                        <LayoutDashboard className="w-2.5 h-2.5" />
+                                                        <span>Dashboard</span>
+                                                    </div>
+                                                    <div className="px-2 py-1 rounded text-[9px] text-[#8a99b5] flex items-center gap-1">
+                                                        <Layers className="w-2.5 h-2.5" />
+                                                        <span>Projects</span>
+                                                    </div>
+                                                    <div className="px-2 py-1 rounded text-[9px] text-[#8a99b5] flex items-center gap-1">
+                                                        <Check className="w-2.5 h-2.5" />
+                                                        <span>Tasks</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Mini Motivation Area in Preview */}
+                                            {showMotivation && (
+                                                <div className="w-full relative overflow-hidden rounded bg-[#0b1739] border border-[#1b2b5a]/40 pt-1">
+                                                    <p className="text-[7px] text-slate-200 px-1 font-medium leading-tight">
+                                                        "A little progress..."
+                                                    </p>
+                                                    <img
+                                                        src="/images/sidebar_boy_night.png"
+                                                        alt="boy"
+                                                        className="w-full h-10 object-cover object-bottom block mt-0.5"
+                                                    />
+                                                </div>
                                             )}
                                         </div>
-                                        <p className="text-xs text-slate-400 mt-1">{t.desc}</p>
-                                    </div>
-                                ))}
-                            </div>
 
-                            <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-                                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2">
-                                    Warna Aksen Dashboard
-                                </h3>
-                                <div className="flex flex-wrap items-center gap-3">
-                                    {[
-                                        { key: 'blue', name: 'WorkTrack Blue', color: 'bg-[#2563eb]' },
-                                        { key: 'emerald', name: 'Emerald', color: 'bg-emerald-600' },
-                                        { key: 'purple', name: 'Royal Purple', color: 'bg-purple-600' },
-                                        { key: 'amber', name: 'Amber Gold', color: 'bg-amber-600' },
-                                    ].map((c) => (
-                                        <button
-                                            key={c.key}
-                                            onClick={() => {
-                                                setAccentColor(c.key);
-                                                triggerSave();
-                                            }}
-                                            className={`flex items-center gap-2 px-3 py-2 rounded-md border text-xs font-semibold transition-all ${
-                                                accentColor === c.key
-                                                    ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-300'
-                                                    : 'border-slate-200 dark:border-[#243e80] text-slate-700 dark:text-slate-300'
-                                            }`}
-                                        >
-                                            <span className={`w-3.5 h-3.5 rounded-full ${c.color}`} />
-                                            <span>{c.name}</span>
-                                        </button>
-                                    ))}
+                                        {/* Mini Content Area */}
+                                        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+                                            {/* Mini Navbar */}
+                                            <div
+                                                className={`h-7 px-2 flex items-center justify-between border-b ${
+                                                    themeMode === 'light'
+                                                        ? 'bg-white border-slate-200'
+                                                        : 'bg-[#0b1739] border-[#1b2b5a]'
+                                                }`}
+                                            >
+                                                <div
+                                                    className={`w-24 h-3.5 rounded px-1.5 flex items-center text-[7px] ${
+                                                        themeMode === 'light'
+                                                            ? 'bg-slate-100 text-slate-400'
+                                                            : 'bg-[#10204d] text-slate-400'
+                                                    }`}
+                                                >
+                                                    Search...
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <span className="w-3.5 h-3.5 rounded-full bg-blue-500/20 text-blue-500 flex items-center justify-center font-bold text-[7px]">
+                                                        A
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {/* Mini Body */}
+                                            <div className="p-2 space-y-2 overflow-y-auto">
+                                                {/* Mini Stat Cards */}
+                                                <div className="grid grid-cols-2 gap-1.5">
+                                                    <div
+                                                        className={`p-1.5 rounded border ${
+                                                            themeMode === 'light'
+                                                                ? 'bg-white border-slate-200/80 shadow-2xs'
+                                                                : 'bg-[#0e1d47] border-[#1e346e]'
+                                                        }`}
+                                                    >
+                                                        <span className="text-[8px] text-slate-400 block">Total Proyek</span>
+                                                        <span className="text-xs font-bold block mt-0.5">8 Aktif</span>
+                                                        <div className="w-full bg-slate-200 dark:bg-slate-700 h-1 rounded-full mt-1 overflow-hidden">
+                                                            <div
+                                                                className={`h-full rounded-full ${
+                                                                    accentColor === 'emerald'
+                                                                        ? 'bg-emerald-600'
+                                                                        : accentColor === 'purple'
+                                                                        ? 'bg-purple-600'
+                                                                        : accentColor === 'amber'
+                                                                        ? 'bg-amber-600'
+                                                                        : accentColor === 'rose'
+                                                                        ? 'bg-rose-600'
+                                                                        : 'bg-[#2563eb]'
+                                                                }`}
+                                                                style={{ width: '75%' }}
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div
+                                                        className={`p-1.5 rounded border ${
+                                                            themeMode === 'light'
+                                                                ? 'bg-white border-slate-200/80 shadow-2xs'
+                                                                : 'bg-[#0e1d47] border-[#1e346e]'
+                                                        }`}
+                                                    >
+                                                        <span className="text-[8px] text-slate-400 block">Selesai</span>
+                                                        <span className="text-xs font-bold block mt-0.5">94%</span>
+                                                        <div className="flex items-center gap-1 mt-1">
+                                                            <span
+                                                                className={`px-1 py-0.2 rounded text-[7px] font-bold ${
+                                                                    accentColor === 'emerald'
+                                                                        ? 'bg-emerald-500/20 text-emerald-400'
+                                                                        : accentColor === 'purple'
+                                                                        ? 'bg-purple-500/20 text-purple-400'
+                                                                        : accentColor === 'amber'
+                                                                        ? 'bg-amber-500/20 text-amber-400'
+                                                                        : accentColor === 'rose'
+                                                                        ? 'bg-rose-500/20 text-rose-400'
+                                                                        : 'bg-blue-500/20 text-blue-400'
+                                                                }`}
+                                                            >
+                                                                Tepat Waktu
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Mini Project Row */}
+                                                <div
+                                                    className={`p-2 rounded border flex items-center justify-between ${
+                                                        themeMode === 'light'
+                                                            ? 'bg-white border-slate-200/80'
+                                                            : 'bg-[#0e1d47] border-[#1e346e]'
+                                                    }`}
+                                                >
+                                                    <div className="space-y-0.5">
+                                                        <div className="flex items-center gap-1">
+                                                            <span
+                                                                className={`w-1.5 h-1.5 rounded-full ${
+                                                                    accentColor === 'emerald'
+                                                                        ? 'bg-emerald-500'
+                                                                        : accentColor === 'purple'
+                                                                        ? 'bg-purple-500'
+                                                                        : accentColor === 'amber'
+                                                                        ? 'bg-amber-500'
+                                                                        : accentColor === 'rose'
+                                                                        ? 'bg-rose-500'
+                                                                        : 'bg-blue-500'
+                                                                }`}
+                                                            />
+                                                            <span className="font-bold text-[8px] truncate">
+                                                                WorkTrack Redesign
+                                                            </span>
+                                                        </div>
+                                                        <span className="text-[7px] text-slate-400 block pl-2.5">
+                                                            Deadline: 20 Sep 2026
+                                                        </span>
+                                                    </div>
+                                                    <span
+                                                        className={`px-1.5 py-0.5 rounded text-[7px] font-bold ${
+                                                            accentColor === 'emerald'
+                                                                ? 'bg-emerald-600 text-white'
+                                                                : accentColor === 'purple'
+                                                                ? 'bg-purple-600 text-white'
+                                                                : accentColor === 'amber'
+                                                                ? 'bg-amber-600 text-white'
+                                                                : accentColor === 'rose'
+                                                                ? 'bg-rose-600 text-white'
+                                                                : 'bg-[#2563eb] text-white'
+                                                        }`}
+                                                    >
+                                                        In Progress
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <p className="text-[11px] text-slate-400 text-center mt-3">
+                                    Pratinjau antarmuka di atas merespons secara langsung pilihan tema, warna aksen, dan kustomisasi Anda.
+                                </p>
                             </div>
                         </div>
                     </div>
