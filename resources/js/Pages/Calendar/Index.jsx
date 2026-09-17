@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import {
@@ -193,6 +193,7 @@ export default function CalendarPage({
                 preserveScroll: true,
                 onSuccess: () => {
                     setIsSyncingCalendar(false);
+                    setLocalEvents({});
                     setToastMessage('Google Calendar synchronized successfully!');
                     setTimeout(() => setToastMessage(null), 4000);
                 },
@@ -283,6 +284,20 @@ export default function CalendarPage({
                 completed: false,
             }));
     });
+
+    useEffect(() => {
+        const todayEvs = googleEvents
+            .filter((e) => e.date === '2026-09-17')
+            .map((e) => ({
+                id: e.id,
+                title: e.title,
+                time: e.time,
+                tag: e.type || 'Google Calendar',
+                tagColor: e.bg || 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
+                completed: false,
+            }));
+        setTodayAgenda(todayEvs);
+    }, [googleEvents]);
 
     const toggleAgendaItem = (id) => {
         setTodayAgenda(
