@@ -37,6 +37,7 @@ import {
     User as UserIcon,
     Trash2,
     Building2,
+    Pencil,
 } from 'lucide-react';
 
 const GithubIcon = ({ className }) => (
@@ -351,13 +352,13 @@ export default function Projects({
                         <thead className="bg-[#f8fafc] dark:bg-[#0c183b] text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-100 dark:border-slate-800/80">
                             <tr>
                                 <th className="py-3.5 px-4 w-12 text-center">#</th>
-                                <th className="py-3.5 px-4">Project Name</th>
-                                <th className="py-3.5 px-4">Description</th>
-                                <th className="py-3.5 px-4">Team</th>
+                                <th className="py-3.5 px-4">Proyek & Peran</th>
+                                <th className="py-3.5 px-4">Perusahaan / Klien</th>
+                                <th className="py-3.5 px-4">GitHub Repo</th>
+                                <th className="py-3.5 px-4">Tech Stack</th>
+                                <th className="py-3.5 px-4">Tipe Tim</th>
                                 <th className="py-3.5 px-4">Status</th>
-                                <th className="py-3.5 px-4">Progress</th>
-                                <th className="py-3.5 px-4">Due Date</th>
-                                <th className="py-3.5 px-4 text-center">Actions</th>
+                                <th className="py-3.5 px-4 text-center">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
@@ -375,12 +376,12 @@ export default function Projects({
                                         key={item.id}
                                         className="hover:bg-slate-50/70 dark:hover:bg-[#122352]/40 transition-colors group"
                                     >
-                                        {/* Row number */}
+                                        {/* 1. Row number */}
                                         <td className="py-4 px-4 text-center text-slate-400 dark:text-slate-500 font-medium">
                                             {idx + 1}
                                         </td>
 
-                                        {/* Project Name + Icon / Thumbnail */}
+                                        {/* 2. Project Name + Thumbnail & Role */}
                                         <td className="py-4 px-4">
                                             <div className="flex items-center gap-3">
                                                 {item.images && item.images.length > 0 ? (
@@ -394,42 +395,18 @@ export default function Projects({
                                                         <Folder className="w-5 h-5" />
                                                     </div>
                                                 )}
-                                                <div>
+                                                <div className="min-w-0">
                                                     <Link
                                                         href={`/projects/${item.slug || item.id}`}
-                                                        className="font-semibold text-sm sm:text-[15px] text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+                                                        className="font-semibold text-sm sm:text-[15px] text-slate-900 dark:text-white group-hover:text-blue-600 dark:hover:text-blue-400 transition-colors block truncate max-w-[200px] sm:max-w-xs"
                                                     >
                                                         {item.name}
                                                     </Link>
-                                                    <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                                                        <span className="text-xs text-slate-400 dark:text-slate-400">
-                                                            {item.category || 'General'}
-                                                        </span>
-                                                        {item.company_name ? (
-                                                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-700 dark:text-blue-300 bg-blue-50 dark:bg-blue-950/60 px-2 py-0.5 rounded-md border border-blue-200/70 dark:border-blue-800/60">
-                                                                <Building2 className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                                                                <span>{item.company_name}</span>
-                                                            </span>
-                                                        ) : item.ownership_type === 'Personal' ? (
-                                                            <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/70 dark:border-emerald-800/60">
-                                                                <span>Personal</span>
-                                                            </span>
-                                                        ) : null}
+                                                    <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400 dark:text-slate-400">
+                                                        <span>{item.category || 'General'}</span>
                                                         {item.role && (
-                                                            <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                                                            <span className="text-slate-500 dark:text-slate-400 font-medium">
                                                                 • {item.role}
-                                                            </span>
-                                                        )}
-                                                        {item.github_repo_name && (
-                                                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-500 dark:text-slate-400">
-                                                                <GithubIcon className="w-3 h-3" />
-                                                                <span>{item.github_repo_name}</span>
-                                                            </span>
-                                                        )}
-                                                        {item.hide_github_link && (
-                                                            <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-900/50" title="Repo Private PT (Tautan disembunyikan)">
-                                                                <Lock className="w-2.5 h-2.5" />
-                                                                <span>Private PT</span>
                                                             </span>
                                                         )}
                                                     </div>
@@ -437,101 +414,160 @@ export default function Projects({
                                             </div>
                                         </td>
 
-                                        {/* Description */}
-                                        <td className="py-4 px-4 text-slate-600 dark:text-slate-300 max-w-xs truncate text-xs sm:text-sm">
-                                            {item.description || 'Tidak ada deskripsi'}
-                                        </td>
-
-                                        {/* Project Type & Tech Stack */}
+                                        {/* 3. Perusahaan / Klien */}
                                         <td className="py-4 px-4">
-                                            <div className="space-y-1">
-                                                <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full border ${
-                                                    item.project_type === 'Team'
-                                                        ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 border-purple-200 dark:border-purple-900'
-                                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
-                                                }`}>
-                                                    {item.project_type === 'Team' ? (
-                                                        <>
-                                                            <Users className="w-3 h-3" />
-                                                            <span>Team {item.team_size && item.team_size > 1 ? `(${item.team_size})` : ''}</span>
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            <UserIcon className="w-3 h-3" />
-                                                            <span>Solo</span>
-                                                        </>
-                                                    )}
-                                                </span>
-                                                {item.tech_stack && item.tech_stack.length > 0 && (
-                                                    <div className="flex flex-wrap gap-1 max-w-[140px]">
-                                                        {item.tech_stack.slice(0, 2).map((tech, ti) => (
-                                                            <span key={ti} className="text-[10px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-500 dark:text-slate-400">
-                                                                {tech}
-                                                            </span>
-                                                        ))}
-                                                        {item.tech_stack.length > 2 && (
-                                                            <span className="text-[10px] text-slate-400">
-                                                                +{item.tech_stack.length - 2}
-                                                            </span>
-                                                        )}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </td>
-
-                                        {/* Status Badge */}
-                                        <td className="py-4 px-4">
-                                            <span
-                                                className={`text-xs font-semibold px-2.5 py-1 rounded-md ${
-                                                    item.status === 'In Progress'
-                                                        ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/50'
-                                                        : item.status === 'Completed'
-                                                        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50'
-                                                        : item.status === 'On Hold'
-                                                        ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50'
-                                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-                                                }`}
-                                            >
-                                                {item.status}
-                                            </span>
-                                        </td>
-
-                                        {/* Gallery preview count */}
-                                        <td className="py-4 px-4 text-xs text-slate-500 dark:text-slate-400">
-                                            {item.images && item.images.length > 0 ? (
-                                                <span className="font-semibold text-slate-700 dark:text-slate-300">
-                                                    {item.images.length} Gambar
+                                            {item.company_name ? (
+                                                <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200">
+                                                    <Building2 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
+                                                    <span className="truncate max-w-[180px]">{item.company_name}</span>
+                                                </div>
+                                            ) : item.ownership_type === 'Personal' ? (
+                                                <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/70 dark:border-emerald-800/60">
+                                                    <span>Proyek Pribadi</span>
                                                 </span>
                                             ) : (
-                                                <span className="text-slate-400">Belum ada</span>
+                                                <span className="text-xs text-slate-400">-</span>
                                             )}
                                         </td>
 
-                                        {/* Due Date */}
-                                        <td className="py-4 px-4 text-slate-600 dark:text-slate-300 text-xs sm:text-sm">
-                                            {item.due_date || item.dueDate || '-'}
+                                        {/* 4. GitHub Repository */}
+                                        <td className="py-4 px-4">
+                                            {item.github_repo_name ? (
+                                                <div className="space-y-1">
+                                                    <div className="flex items-center gap-1.5">
+                                                        <GithubIcon className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300 shrink-0" />
+                                                        {item.hide_github_link ? (
+                                                            <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[160px]">
+                                                                {item.github_repo_name}
+                                                            </span>
+                                                        ) : (
+                                                            <a
+                                                                href={item.github_repo_url || `https://github.com/${item.github_repo_name}`}
+                                                                target="_blank"
+                                                                rel="noreferrer"
+                                                                className="text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline truncate max-w-[160px] inline-block"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                            >
+                                                                {item.github_repo_name}
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                    <div>
+                                                        {item.hide_github_link ? (
+                                                            <span
+                                                                className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-200 dark:border-amber-900/50"
+                                                                title="Repository Private PT (Tautan disembunyikan demi keamanan)"
+                                                            >
+                                                                <Lock className="w-2.5 h-2.5 text-amber-500" />
+                                                                <span>Private PT</span>
+                                                            </span>
+                                                        ) : (
+                                                            <span className="inline-flex items-center text-[10px] font-medium text-slate-400 dark:text-slate-400">
+                                                                Public Repo
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-slate-400">-</span>
+                                            )}
                                         </td>
 
-                                        {/* Actions: Edit, View & Delete */}
+                                        {/* 5. Tech Stack */}
+                                        <td className="py-4 px-4">
+                                            {item.tech_stack && item.tech_stack.length > 0 ? (
+                                                <div className="flex flex-wrap gap-1 max-w-[180px]">
+                                                    {item.tech_stack.slice(0, 3).map((tech, ti) => (
+                                                        <span
+                                                            key={ti}
+                                                            className="text-[11px] font-medium bg-slate-100 dark:bg-[#122352] text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-[#1e346e] px-2 py-0.5 rounded-md"
+                                                        >
+                                                            {tech}
+                                                        </span>
+                                                    ))}
+                                                    {item.tech_stack.length > 3 && (
+                                                        <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 self-center px-1">
+                                                            +{item.tech_stack.length - 3}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <span className="text-xs text-slate-400">-</span>
+                                            )}
+                                        </td>
+
+                                        {/* 6. Tipe Tim */}
+                                        <td className="py-4 px-4">
+                                            <span
+                                                className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full border ${
+                                                    item.project_type === 'Team'
+                                                        ? 'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-300 border-purple-200 dark:border-purple-900'
+                                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                                                }`}
+                                            >
+                                                {item.project_type === 'Team' ? (
+                                                    <>
+                                                        <Users className="w-3 h-3" />
+                                                        <span>Team {item.team_size && item.team_size > 1 ? `(${item.team_size})` : ''}</span>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <UserIcon className="w-3 h-3" />
+                                                        <span>Solo</span>
+                                                    </>
+                                                )}
+                                            </span>
+                                        </td>
+
+                                        {/* 7. Status */}
+                                        <td className="py-4 px-4">
+                                            <span
+                                                className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-md border ${
+                                                    item.status === 'In Progress'
+                                                        ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/50'
+                                                        : item.status === 'Completed'
+                                                        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-900/50'
+                                                        : item.status === 'On Hold'
+                                                        ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-900/50'
+                                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700'
+                                                }`}
+                                            >
+                                                <span
+                                                    className={`w-1.5 h-1.5 rounded-full ${
+                                                        item.status === 'In Progress'
+                                                            ? 'bg-blue-500'
+                                                            : item.status === 'Completed'
+                                                            ? 'bg-emerald-500'
+                                                            : item.status === 'On Hold'
+                                                            ? 'bg-amber-500'
+                                                            : 'bg-slate-400'
+                                                    }`}
+                                                />
+                                                <span>{item.status}</span>
+                                            </span>
+                                        </td>
+
+                                        {/* 8. Aksi (Icon buttons) */}
                                         <td className="py-4 px-4 text-center">
-                                            <div className="flex items-center justify-center gap-1.5">
+                                            <div className="flex items-center justify-center gap-1">
                                                 <Link
                                                     href={`/projects/${item.id}/edit`}
-                                                    className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors"
+                                                    className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors"
+                                                    title="Edit Proyek"
                                                 >
-                                                    Edit
+                                                    <Pencil className="w-4 h-4" />
                                                 </Link>
                                                 <Link
                                                     href={`/projects/${item.slug || item.id}`}
-                                                    className="p-1 rounded-lg text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                                                    title="Lihat Detail"
+                                                    className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/50 transition-colors"
+                                                    title="Lihat Detail Proyek"
                                                 >
                                                     <ExternalLink className="w-4 h-4" />
                                                 </Link>
                                                 <button
                                                     type="button"
                                                     onClick={() => handleDeleteProject(item)}
-                                                    className="p-1 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                                                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                                                     title="Hapus Proyek"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
