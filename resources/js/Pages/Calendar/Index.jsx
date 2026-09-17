@@ -71,11 +71,11 @@ export default function CalendarPage() {
     };
 
     const handleDayClick = (item, idx) => {
-        const dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
+        const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
         const dayName = dayNames[idx % 7];
-        const monthName = item.isCurrentMonth ? selectedMonth : (item.day > 20 ? 'Agustus 2026' : 'Oktober 2026');
+        const monthName = item.isCurrentMonth ? selectedMonth : (item.day > 20 ? 'August 2026' : 'October 2026');
 
-        // Pengingat rutin harian Google Calendar muncul di DALAM MODAL (Senin - Sabtu, 07:30)
+        // Pengingat rutin harian Google Calendar muncul di DALAM MODAL (Mon - Sat, 07:30)
         // Tidak memenuhi kotak kalender di luar agar tampilan tetap bersih
         const isWorkday = idx % 7 !== 6;
         const routineForDay = isWorkday
@@ -127,7 +127,7 @@ export default function CalendarPage() {
             id: 1,
             title: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik dan kebahagiaan...',
             time: '07:30 - 08:30',
-            tag: 'Tugas Saya (Google Calendar)',
+            tag: 'Google Calendar',
             tagColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
             completed: false,
         },
@@ -310,8 +310,8 @@ export default function CalendarPage() {
         {
             id: 1,
             title: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik...',
-            time: 'Rutin (Senin - Sabtu), 07:30',
-            type: 'Tugas Saya',
+            time: 'Daily (Mon - Sat), 07:30',
+            type: 'My Tasks',
             project: 'Google Calendar',
             dot: 'bg-blue-500',
         },
@@ -319,9 +319,9 @@ export default function CalendarPage() {
 
     // Event Types Legend
     const eventTypes = [
-        { name: 'Tugas Saya (Google)', dot: 'bg-blue-500' },
-        { name: 'Hari Libur Nasional (Merah)', dot: 'bg-rose-500' },
-        { name: 'Mode Jam Santai (Masuk Kantor)', dot: 'bg-amber-500' },
+        { name: 'My Tasks (Google)', dot: 'bg-blue-500' },
+        { name: 'National Holiday', dot: 'bg-rose-500' },
+        { name: 'Flexible Office Hours', dot: 'bg-amber-500' },
         { name: 'Project', dot: 'bg-emerald-500' },
         { name: 'Deadline', dot: 'bg-rose-500' },
         { name: 'Meeting', dot: 'bg-amber-500' },
@@ -446,16 +446,16 @@ export default function CalendarPage() {
                                 {isMorningAlertActive ? (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-100/80 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
                                         <BellRing className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                                        Notifikasi Pagi {morningReminderTime} WIB Aktif
+                                        Morning Sync {morningReminderTime} Active
                                     </span>
                                 ) : (
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
-                                        Notifikasi Nonaktif
+                                        Notifications Off
                                     </span>
                                 )}
                             </div>
                             <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                                Setiap pagi pukul <strong className="font-semibold text-slate-900 dark:text-white">{morningReminderTime} WIB</strong>, rangkuman tugas, deadline proyek, dan agenda harian otomatis dikirimkan ke Google Calendar & HP kamu.
+                                Daily morning agenda & project deadlines automatically synced to your Google Calendar at <strong className="font-semibold text-slate-900 dark:text-white">{morningReminderTime}</strong>.
                             </p>
                         </div>
                     </div>
@@ -467,7 +467,7 @@ export default function CalendarPage() {
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-white dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#192f6d] transition-colors shadow-2xs disabled:opacity-60"
                         >
                             <RefreshCw className={`w-3.5 h-3.5 text-blue-500 ${isSyncingCalendar ? 'animate-spin' : ''}`} />
-                            <span>{isSyncingCalendar ? 'Menyinkronkan...' : 'Sync Calendar'}</span>
+                            <span>{isSyncingCalendar ? 'Syncing...' : 'Sync Calendar'}</span>
                         </button>
                         <a
                             href="https://calendar.google.com"
@@ -475,7 +475,7 @@ export default function CalendarPage() {
                             rel="noreferrer"
                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-[#2563eb] hover:bg-blue-600 text-white text-xs font-semibold shadow-xs transition-colors"
                         >
-                            <span>Buka Kalender</span>
+                            <span>Open Calendar</span>
                             <ExternalLink className="w-3.5 h-3.5" />
                         </a>
                     </div>
@@ -498,7 +498,7 @@ export default function CalendarPage() {
                                 <div>Thu</div>
                                 <div>Fri</div>
                                 <div>Sat</div>
-                                <div className="text-rose-600 dark:text-rose-400 font-bold">Sun (Libur)</div>
+                                <div className="text-rose-600 dark:text-rose-400 font-bold">Sun</div>
                             </div>
 
                             {/* Calendar Days Matrix (5 weeks / 35 cells) */}
@@ -539,7 +539,7 @@ export default function CalendarPage() {
                                                 </span>
                                             )}
 
-                                            {item.isHoliday ? (
+                                            {item.isHoliday && (
                                                 <span
                                                     className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 shadow-2xs truncate max-w-[125px]"
                                                     title={item.holidayName}
@@ -547,18 +547,14 @@ export default function CalendarPage() {
                                                     <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
                                                     <span className="truncate">{item.holidayName}</span>
                                                 </span>
-                                            ) : item.isSunday ? (
-                                                <span className="text-[10px] font-semibold text-rose-500/80 dark:text-rose-400/80">
-                                                    Libur
-                                                </span>
-                                            ) : null}
+                                            )}
                                         </div>
 
                                         {/* Relax Mode Notice if national holiday */}
                                         {item.isRelaxMode && (
                                             <div className="mt-1 flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/60 dark:border-amber-900/40">
                                                 <Coffee className="w-3 h-3 text-amber-500 shrink-0" />
-                                                <span className="truncate">Jam Santai • Masuk Kantor</span>
+                                                <span className="truncate">Flexible Hours • Office Day</span>
                                             </div>
                                         )}
 
@@ -879,12 +875,12 @@ export default function CalendarPage() {
                                         <GoogleCalendarIcon className="w-3.5 h-3.5" />
                                     </div>
                                     <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
-                                        Notifikasi HP & Kalender
+                                        Device & Calendar Alerts
                                     </h3>
                                 </div>
                                 <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-900/60">
                                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                                    Aktif
+                                    Active
                                 </span>
                             </div>
 
@@ -894,10 +890,10 @@ export default function CalendarPage() {
                                     <div className="space-y-0.5">
                                         <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
                                             <Bell className="w-3.5 h-3.5 text-blue-500" />
-                                            Alarm Notifikasi Pagi
+                                            Daily Morning Reminder
                                         </span>
                                         <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                                            Pengingat agenda harian ke HP
+                                            Agenda summary sent to device
                                         </p>
                                     </div>
                                     <div className="flex items-center gap-2">
@@ -906,7 +902,7 @@ export default function CalendarPage() {
                                             value={morningReminderTime}
                                             onChange={(e) => {
                                                 setMorningReminderTime(e.target.value);
-                                                setToastMessage(`Waktu alarm pagi diubah ke ${e.target.value} WIB`);
+                                                setToastMessage(`Daily morning reminder updated to ${e.target.value}`);
                                                 setTimeout(() => setToastMessage(null), 3000);
                                             }}
                                             className="px-2 py-1 rounded bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-blue-500"
@@ -919,14 +915,14 @@ export default function CalendarPage() {
                                     <div className="space-y-0.5">
                                         <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
                                             <Coffee className="w-3.5 h-3.5 text-amber-500" />
-                                            Mode Jam Santai (Tanggal Merah)
+                                            Flexible Hours (Holiday Office Day)
                                         </span>
                                         <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                                            Tetap masuk kantor tapi ritme santai
+                                            Office work with flexible rhythm
                                         </p>
                                     </div>
                                     <span className="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-200">
-                                        Aktif
+                                        Active
                                     </span>
                                 </div>
 
@@ -934,15 +930,15 @@ export default function CalendarPage() {
                                 <div className="space-y-2 pt-1 text-slate-600 dark:text-slate-300">
                                     <div className="flex items-center gap-2">
                                         <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5] shrink-0" />
-                                        <span>Rangkuman agenda harian jam {morningReminderTime} WIB</span>
+                                        <span>Daily morning agenda routine at {morningReminderTime}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5] shrink-0" />
-                                        <span>Pengingat deadline 15 menit & 1 hari sebelumnya</span>
+                                        <span>15 min & 1 day advance deadline alerts</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5] shrink-0" />
-                                        <span>Target akun: <strong className="text-slate-800 dark:text-slate-200">ronismk7@gmail.com</strong></span>
+                                        <span>Sync account: <strong className="text-slate-800 dark:text-slate-200">ronismk7@gmail.com</strong></span>
                                     </div>
                                 </div>
 
@@ -952,7 +948,7 @@ export default function CalendarPage() {
                                         className="w-full py-1.5 flex items-center justify-center gap-1.5 rounded-md border border-slate-200 dark:border-[#243e80] text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] text-xs font-medium transition-colors"
                                     >
                                         <SettingsIcon className="w-3.5 h-3.5 text-slate-400" />
-                                        <span>Kelola di Pengaturan</span>
+                                        <span>Manage in Settings</span>
                                     </Link>
                                 </div>
                             </div>
@@ -1105,7 +1101,7 @@ export default function CalendarPage() {
                                     </h3>
                                     {selectedDayModal.isToday && (
                                         <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#2563eb] text-white">
-                                            Hari Ini
+                                            Today
                                         </span>
                                     )}
                                     {selectedDayModal.isHoliday && (
@@ -1115,16 +1111,16 @@ export default function CalendarPage() {
                                     )}
                                     {selectedDayModal.isSunday && (
                                         <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-700 dark:bg-rose-950/70 dark:text-rose-300">
-                                            Libur Akhir Pekan
+                                            Weekend
                                         </span>
                                     )}
                                 </div>
                                 <p className="text-xs text-slate-500 dark:text-slate-400">
                                     {selectedDayModal.isRelaxMode
-                                        ? 'Tanggal merah hari kerja: Mode Jam Santai aktif (Tetap masuk kantor).'
+                                        ? 'National holiday: Flexible work rhythm & office hours.'
                                         : selectedDayModal.isSunday
-                                        ? 'Hari libur akhir pekan.'
-                                        : 'Hari kerja reguler dengan Google Calendar sync.'}
+                                        ? 'Weekend. No scheduled office hours.'
+                                        : 'Regular workday with Google Calendar sync.'}
                                 </p>
                             </div>
                             <button
@@ -1142,21 +1138,21 @@ export default function CalendarPage() {
                                     <Coffee className="w-4 h-4" />
                                 </div>
                                 <div className="text-xs">
-                                    <span className="font-bold text-amber-800 dark:text-amber-200">Mode Jam Santai Aktif</span>
+                                    <span className="font-bold text-amber-800 dark:text-amber-200">Flexible Hours Mode</span>
                                     <p className="text-amber-700/90 dark:text-amber-300/80 mt-0.5">
-                                        Hari ini adalah tanggal merah ({selectedDayModal.holidayName}). Tetap masuk kantor tapi dengan ritme santai dan fleksibel.
+                                        National holiday ({selectedDayModal.holidayName}). Office day with relaxed and flexible pace.
                                     </p>
                                 </div>
                             </div>
                         ) : selectedDayModal.isSunday ? (
                             <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/30 border border-rose-200/60 dark:border-rose-900/40 flex items-center gap-3 text-xs text-rose-700 dark:text-rose-300">
                                 <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
-                                <span>Hari libur akhir pekan. Tidak ada agenda kerja yang diwajibkan.</span>
+                                <span>Weekend. No mandatory work agenda.</span>
                             </div>
                         ) : (
                             <div className="p-3 rounded-lg bg-blue-50/70 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/40 flex items-center gap-3 text-xs text-blue-700 dark:text-blue-300">
                                 <span className="w-2 h-2 rounded-full bg-blue-500 shrink-0" />
-                                <span>Hari kerja normal. Pengingat otomatis di Google Calendar pukul {morningReminderTime} WIB.</span>
+                                <span>Regular workday. Google Calendar morning reminder set for {morningReminderTime} AM.</span>
                             </div>
                         )}
 
@@ -1164,10 +1160,10 @@ export default function CalendarPage() {
                         <div className="space-y-2.5">
                             <div className="flex items-center justify-between">
                                 <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider">
-                                    Agenda & Tugas ({selectedDayModal.events?.length || 0})
+                                    Events & Tasks ({selectedDayModal.events?.length || 0})
                                 </h4>
                                 <span className="text-[11px] text-slate-400">
-                                    Terhubung ke Google Calendar
+                                    Google Calendar Synced
                                 </span>
                             </div>
 
@@ -1191,20 +1187,20 @@ export default function CalendarPage() {
                                                         </span>
                                                         <span>•</span>
                                                         <span className="text-blue-600 dark:text-blue-400 font-medium">
-                                                            Tugas Saya
+                                                            My Task
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
                                             <span className="shrink-0 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
-                                                Tersinkron
+                                                Synced
                                             </span>
                                         </div>
                                     ))}
                                 </div>
                             ) : (
                                 <div className="p-4 rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-center text-xs text-slate-400">
-                                    Tidak ada agenda untuk tanggal ini. Tambahkan tugas baru di bawah!
+                                    No scheduled events for this date. Add a new task below!
                                 </div>
                             )}
                         </div>
@@ -1212,12 +1208,12 @@ export default function CalendarPage() {
                         {/* Quick Add Form in Modal */}
                         <form onSubmit={handleAddModalTask} className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800">
                             <h4 className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                                + Tambah Tugas di Tanggal Ini
+                                + Add Task for This Day
                             </h4>
                             <div className="flex gap-2">
                                 <input
                                     type="text"
-                                    placeholder="Ketik nama tugas baru..."
+                                    placeholder="Enter new task or meeting title..."
                                     value={modalTaskTitle}
                                     onChange={(e) => setModalTaskTitle(e.target.value)}
                                     className="flex-1 bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
@@ -1237,14 +1233,14 @@ export default function CalendarPage() {
                                         onChange={(e) => setSyncWithGoogleCalendar(e.target.checked)}
                                         className="w-3.5 h-3.5 rounded text-blue-600 border-slate-300"
                                     />
-                                    <span>Sinkron ke Google Calendar</span>
+                                    <span>Sync with Google Calendar</span>
                                 </label>
                                 <button
                                     type="submit"
                                     disabled={!modalTaskTitle.trim()}
                                     className="px-4 py-1.5 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs font-semibold shadow-xs disabled:opacity-50 transition-colors"
                                 >
-                                    Simpan Tugas
+                                    Save Task
                                 </button>
                             </div>
                         </form>
@@ -1255,7 +1251,7 @@ export default function CalendarPage() {
                                 onClick={() => setSelectedDayModal(null)}
                                 className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors"
                             >
-                                Tutup
+                                Close
                             </button>
                         </div>
                     </div>
