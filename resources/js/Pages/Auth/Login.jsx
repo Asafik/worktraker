@@ -307,8 +307,8 @@ export default function Login({ errors = {} }) {
 
                             {/* Right Gradients */}
                             <linearGradient id="neon-node6" x1="830" y1="43" x2="510" y2="260" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#34d399" />
-                                <stop offset="1" stopColor="#06b6d4" />
+                                <stop stopColor="#4285f4" />
+                                <stop offset="1" stopColor="#38bdf8" />
                             </linearGradient>
                             <linearGradient id="neon-node7" x1="830" y1="163" x2="510" y2="275" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#60a5fa" />
@@ -500,10 +500,10 @@ export default function Login({ errors = {} }) {
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
                             </path>
                             {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#34d399" opacity="0.5" filter="url(#photon-glow)">
+                            <circle r="7.5" fill="#4285f4" opacity="0.5" filter="url(#photon-glow)">
                                 <animateMotion path="M 830 43 C 740 43, 620 230, 510 260" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#34d399" strokeWidth="2" filter="url(#photon-glow)">
+                            <circle r="3.5" fill="#ffffff" stroke="#4285f4" strokeWidth="2" filter="url(#photon-glow)">
                                 <animateMotion path="M 830 43 C 740 43, 620 230, 510 260" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
                             </circle>
                         </g>
@@ -770,27 +770,38 @@ export default function Login({ errors = {} }) {
                     </div>
 
                     {/* RIGHT COLUMN (5 Nodes) */}
-                    {/* 6. Calendar */}
+                    {/* 6. Google Calendar */}
                     <div
                         onMouseEnter={() => setActiveNode('calendar')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[15px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
-                            activeNode === 'calendar' ? 'scale-103 border-emerald-400 shadow-emerald-500/20' : ''
+                        className={`absolute top-[15px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                            activeNode === 'calendar' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                         }`}
                     >
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                            <CalendarIcon className="w-5 h-5" />
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white border border-slate-700/60 flex items-center justify-center shrink-0 shadow-xs">
+                            <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                                <rect x="3" y="4" width="18" height="17" rx="3" fill="#4285F4" />
+                                <rect x="3" y="4" width="18" height="5.5" fill="#1A73E8" rx="2" />
+                                <circle cx="7" cy="6.8" r="1" fill="white" />
+                                <circle cx="17" cy="6.8" r="1" fill="white" />
+                                <text x="12" y="17" fill="white" fontSize="8.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">31</text>
+                            </svg>
                         </div>
                         <div className="min-w-0">
-                            <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-emerald-300 transition-colors leading-tight">
-                                Calendar
-                            </h3>
+                            <div className="flex items-center gap-1.5">
+                                <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-blue-300 transition-colors leading-tight truncate">
+                                    Google Calendar
+                                </h3>
+                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30 shrink-0 leading-none">
+                                    Connect
+                                </span>
+                            </div>
                             <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
-                                Plan your schedule
+                                Sync your schedule
                             </p>
                         </div>
                         {/* Hardware Cable Port Socket */}
-                        <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(52,211,153,0.8)] z-30" />
+                        <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-blue-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(66,133,244,0.8)] z-30" />
                     </div>
 
                     {/* 7. Portfolio */}
