@@ -788,14 +788,9 @@ export default function Login({ errors = {} }) {
                             </svg>
                         </div>
                         <div className="min-w-0">
-                            <div className="flex items-center gap-1.5">
-                                <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-blue-300 transition-colors leading-tight truncate">
-                                    Google Calendar
-                                </h3>
-                                <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30 shrink-0 leading-none">
-                                    Connect
-                                </span>
-                            </div>
+                            <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-blue-300 transition-colors leading-tight truncate">
+                                Google Calendar
+                            </h3>
                             <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
                                 Sync your schedule
                             </p>
