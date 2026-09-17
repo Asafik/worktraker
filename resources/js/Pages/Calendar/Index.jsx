@@ -167,19 +167,7 @@ export default function CalendarPage() {
         { day: 31, isCurrentMonth: false, events: [] },
         { day: 1, isCurrentMonth: true, events: [] },
         { day: 2, isCurrentMonth: true, events: [] },
-        {
-            day: 3,
-            isCurrentMonth: true,
-            events: [
-                {
-                    time: '10:00',
-                    title: 'Presentasi Project',
-                    fullTitle: 'Presentasi Project & Review Fitur',
-                    dot: 'bg-emerald-500',
-                    bg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/40',
-                },
-            ],
-        },
+        { day: 3, isCurrentMonth: true, events: [] },
         {
             day: 4,
             isCurrentMonth: true,
@@ -268,7 +256,7 @@ export default function CalendarPage() {
         { day: '', empty: true }, // Mon empty
         { day: 1 },
         { day: 2 },
-        { day: 3, hasEvent: true }, // Presentasi
+        { day: 3 },
         { day: 4, isRelaxMode: true },
         { day: 5 },
         { day: 6, isSunday: true },
