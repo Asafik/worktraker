@@ -110,6 +110,47 @@ const generateCalendarDays = (monthYearStr) => {
     return days;
 };
 
+const openGoogleCalendarTemplate = ({ title, date, time, durationMinutes = 60, description = '' }) => {
+    try {
+        const parts = (date || '2026-09-17').split('-');
+        const year = parseInt(parts[0], 10) || 2026;
+        const month = parseInt(parts[1], 10) || 9;
+        const day = parseInt(parts[2], 10) || 17;
+
+        const timeParts = (time || '09:00').split(':');
+        const hours = parseInt(timeParts[0], 10) || 9;
+        const minutes = parseInt(timeParts[1], 10) || 0;
+
+        const pad = (n) => String(n).padStart(2, '0');
+        const startStr = `${year}${pad(month)}${pad(day)}T${pad(hours)}${pad(minutes)}00`;
+
+        let endHours = hours + Math.floor(durationMinutes / 60);
+        let endMinutes = minutes + (durationMinutes % 60);
+        if (endMinutes >= 60) {
+            endHours += Math.floor(endMinutes / 60);
+            endMinutes = endMinutes % 60;
+        }
+        let endDay = day;
+        if (endHours >= 24) {
+            endHours = endHours % 24;
+            endDay += 1;
+        }
+        const endStr = `${year}${pad(month)}${pad(endDay)}T${pad(endHours)}${pad(endMinutes)}00`;
+
+        const params = new URLSearchParams({
+            action: 'TEMPLATE',
+            text: title,
+            dates: `${startStr}/${endStr}`,
+            details: description || 'Dibuat melalui WorkTrack',
+        });
+
+        const url = `https://calendar.google.com/calendar/render?${params.toString()}`;
+        window.open(url, '_blank', 'noopener,noreferrer');
+    } catch (err) {
+        console.error('Error generating Google Calendar URL', err);
+    }
+};
+
 export default function CalendarPage({
     googleEvents = [],
     isCalendarConnected = true,
@@ -295,12 +336,18 @@ export default function CalendarPage({
             events: [...(prev.events || []), newTask],
         }));
 
-        setToastMessage(
-            syncWithGoogleCalendar
-                ? `Task "${modalTaskTitle}" saved & scheduled for Google Calendar!`
-                : `Task "${modalTaskTitle}" added successfully!`
-        );
-        setTimeout(() => setToastMessage(null), 4000);
+        if (syncWithGoogleCalendar) {
+            openGoogleCalendarTemplate({
+                title: modalTaskTitle,
+                date: targetDate,
+                time: modalTaskTime,
+                description: `Created via WorkTrack for ${selectedDayModal.dateFormatted}`,
+            });
+            setToastMessage(`Task "${modalTaskTitle}" saved & opened in Google Calendar! Click Save in the new tab.`);
+        } else {
+            setToastMessage(`Task "${modalTaskTitle}" added successfully!`);
+        }
+        setTimeout(() => setToastMessage(null), 5000);
         setModalTaskTitle('');
     };
 
@@ -1040,24 +1087,49 @@ export default function CalendarPage({
                             <button
                                 onClick={() => {
                                     if (!newEventTitle) return;
-                                    setTodayAgenda([
-                                        ...todayAgenda,
-                                        {
-                                            id: Date.now(),
+                                    const newTask = {
+                                        id: Date.now(),
+                                        title: newEventTitle,
+                                        time: newEventTime,
+                                        tag: newEventType,
+                                        tagColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
+                                        completed: false,
+                                    };
+
+                                    setLocalEvents((prev) => ({
+                                        ...prev,
+                                        [newEventDate]: [
+                                            ...(prev[newEventDate] || []),
+                                            {
+                                                id: newTask.id,
+                                                time: newEventTime,
+                                                title: newEventTitle,
+                                                fullTitle: newEventTitle,
+                                                dot: 'bg-blue-500',
+                                                bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
+                                                type: newEventType,
+                                            },
+                                        ],
+                                    }));
+
+                                    if (newEventDate === '2026-09-17') {
+                                        setTodayAgenda((prev) => [...prev, newTask]);
+                                    }
+
+                                    if (syncWithGoogleCalendar) {
+                                        openGoogleCalendarTemplate({
                                             title: newEventTitle,
+                                            date: newEventDate,
                                             time: newEventTime,
-                                            tag: newEventType,
-                                            tagColor: 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-                                            completed: false,
-                                        },
-                                    ]);
+                                            description: `Category: ${newEventType} - Created via WorkTrack`,
+                                        });
+                                        setToastMessage(`Event "${newEventTitle}" tersimpan & Google Calendar telah dibuka! Silakan klik Save.`);
+                                    } else {
+                                        setToastMessage(`Event "${newEventTitle}" berhasil ditambahkan!`);
+                                    }
+
                                     setIsAddEventOpen(false);
-                                    setToastMessage(
-                                        syncWithGoogleCalendar
-                                            ? `Event "${newEventTitle}" tersimpan & disinkronkan ke Google Calendar HP kamu!`
-                                            : `Event "${newEventTitle}" berhasil ditambahkan!`
-                                    );
-                                    setTimeout(() => setToastMessage(null), 4000);
+                                    setTimeout(() => setToastMessage(null), 5000);
                                     setNewEventTitle('');
                                 }}
                                 className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-colors"
@@ -1167,14 +1239,29 @@ export default function CalendarPage({
                                                         </span>
                                                         <span>•</span>
                                                         <span className="text-blue-600 dark:text-blue-400 font-medium">
-                                                            My Task
+                                                            {ev.type || 'Google Calendar'}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <span className="shrink-0 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
-                                                Synced
-                                            </span>
+                                            <div className="flex items-center gap-2 shrink-0">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => openGoogleCalendarTemplate({
+                                                        title: ev.fullTitle || ev.title,
+                                                        date: selectedDayModal.dateStr,
+                                                        time: ev.time?.includes(':') ? ev.time.split(' ')[0] : '09:00',
+                                                        description: ev.description || '',
+                                                    })}
+                                                    title="Open in Google Calendar"
+                                                    className="p-1 rounded text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                                >
+                                                    <ExternalLink className="w-3.5 h-3.5" />
+                                                </button>
+                                                <span className="shrink-0 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
+                                                    Synced
+                                                </span>
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -1213,7 +1300,10 @@ export default function CalendarPage({
                                         onChange={(e) => setSyncWithGoogleCalendar(e.target.checked)}
                                         className="w-3.5 h-3.5 rounded text-blue-600 border-slate-300"
                                     />
-                                    <span>Sync with Google Calendar</span>
+                                    <span className="flex items-center gap-1.5 font-medium">
+                                        <GoogleCalendarIcon className="w-3.5 h-3.5 shrink-0" />
+                                        <span>Sync & Open in Google Calendar</span>
+                                    </span>
                                 </label>
                                 <button
                                     type="submit"
