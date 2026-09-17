@@ -95,21 +95,23 @@ export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSide
                     </nav>
                 </div>
 
-                {/* Bottom Motivation Card */}
-                <div className="mx-4 mb-4 rounded-xl bg-gradient-to-b from-[#0b1638] via-[#0d1c44] to-[#12234f] border border-[#1f366e]/70 relative overflow-hidden shadow-lg shadow-black/25 flex flex-col justify-between">
-                    <div className="p-4 pb-1 relative z-10">
-                        <p className="text-xs font-medium text-slate-100 leading-snug tracking-tight">
-                            &ldquo;A little progress each day adds up to big results.&rdquo;
+                {/* Bottom Motivation Area (Seamless, no boxed card, font Poppins) */}
+                <div className="mt-auto px-5 pt-2 pb-3 relative overflow-hidden select-none">
+                    <div className="relative z-10 space-y-1.5 mb-2">
+                        <p className="text-[13px] font-medium text-slate-100 leading-snug tracking-tight font-['Poppins',sans-serif]">
+                            "A little progress<br />
+                            each day adds up<br />
+                            to big results."
                         </p>
-                        <p className="text-[11px] font-medium text-[#7d93be] mt-2.5">
-                            &mdash; Unknown
+                        <p className="text-[11px] text-[#7d93be] font-medium font-['Poppins',sans-serif]">
+                            — Unknown
                         </p>
                     </div>
-                    <div className="relative w-full h-28 mt-0.5 overflow-hidden pointer-events-none">
+                    <div className="relative w-full overflow-hidden pointer-events-none">
                         <img
-                            src="/images/sidebar_boy.png"
+                            src="/images/sidebar_boy_clean.png"
                             alt="Inspiration illustration"
-                            className="w-full h-full object-cover object-bottom"
+                            className="w-full h-auto object-contain object-bottom block"
                         />
                     </div>
                 </div>
