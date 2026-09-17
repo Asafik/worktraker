@@ -95,9 +95,9 @@ export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSide
                     </nav>
                 </div>
 
-                {/* Bottom Motivation Area (Seamless, no boxed card, font Poppins) */}
-                <div className="mt-auto px-5 pt-2 pb-3 relative overflow-hidden select-none">
-                    <div className="relative z-10 space-y-1.5 mb-2">
+                {/* Bottom Motivation Area (Seamless edge-to-edge, font Poppins) */}
+                <div className="mt-auto w-full relative select-none overflow-hidden flex flex-col">
+                    <div className="px-5 pt-3 pb-1 relative z-10 space-y-1">
                         <p className="text-[13px] font-medium text-slate-100 leading-snug tracking-tight font-['Poppins',sans-serif]">
                             "A little progress<br />
                             each day adds up<br />
@@ -109,9 +109,9 @@ export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSide
                     </div>
                     <div className="relative w-full overflow-hidden pointer-events-none">
                         <img
-                            src="/images/sidebar_boy_clean.png"
+                            src="/images/sidebar_boy_night.png"
                             alt="Inspiration illustration"
-                            className="w-full h-auto object-contain object-bottom block"
+                            className="w-full h-auto object-cover object-bottom block"
                         />
                     </div>
                 </div>
