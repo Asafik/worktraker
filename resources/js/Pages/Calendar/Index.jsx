@@ -22,7 +22,6 @@ import {
     Smartphone,
     Sparkles,
     Settings as SettingsIcon,
-    Coffee,
 } from 'lucide-react';
 
 const GoogleCalendarIcon = ({ className = 'w-5 h-5' }) => (
@@ -548,8 +547,8 @@ export default function CalendarPage() {
 
                                         {/* Relax Mode Notice if national holiday */}
                                         {item.isRelaxMode && (
-                                            <div className="mt-1 flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-900/40">
-                                                <Coffee className="w-3 h-3 text-rose-500 shrink-0" />
+                                            <div className="mt-1 flex items-center gap-1.5 px-1.5 py-0.5 rounded text-[10px] font-semibold bg-rose-50 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 border border-rose-200/60 dark:border-rose-900/40">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0" />
                                                 <span className="truncate">Flexible Hours • Office Day</span>
                                             </div>
                                         )}
@@ -910,7 +909,6 @@ export default function CalendarPage() {
                                 <div className="flex items-center justify-between p-2.5 rounded-md bg-rose-50/60 dark:bg-rose-950/30 border border-rose-200/60 dark:border-rose-900/40">
                                     <div className="space-y-0.5">
                                         <span className="font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
-                                            <Coffee className="w-3.5 h-3.5 text-rose-500" />
                                             Flexible Hours (Holiday Office Day)
                                         </span>
                                         <p className="text-[11px] text-slate-500 dark:text-slate-400">
@@ -1130,11 +1128,9 @@ export default function CalendarPage() {
 
                         {/* Mode Banner */}
                         {selectedDayModal.isRelaxMode ? (
-                            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/50 flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-full bg-rose-100 dark:bg-rose-900/60 text-rose-700 dark:text-rose-300 flex items-center justify-center shrink-0">
-                                    <Coffee className="w-4 h-4" />
-                                </div>
-                                <div className="text-xs">
+                            <div className="p-3 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/50 flex items-center gap-3 text-xs text-rose-700 dark:text-rose-300">
+                                <span className="w-2 h-2 rounded-full bg-rose-500 shrink-0" />
+                                <div>
                                     <span className="font-bold text-rose-800 dark:text-rose-200">Flexible Hours Mode</span>
                                     <p className="text-rose-700/90 dark:text-rose-300/80 mt-0.5">
                                         Office day with relaxed and flexible pace.
