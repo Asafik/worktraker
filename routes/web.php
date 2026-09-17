@@ -19,9 +19,11 @@ Route::get('/contact', function () {
     return Inertia::render('Welcome/Index', ['initialSection' => 'contact']);
 })->name('contact');
 
-Route::get('/login', function () {
-    return Inertia::render('Auth/Login');
-})->name('login');
+use App\Http\Controllers\AuthController;
+
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard/Index');

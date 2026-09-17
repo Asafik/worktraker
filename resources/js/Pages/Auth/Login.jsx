@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import {
+    User,
     Mail,
     Lock,
     Eye,
     EyeOff,
     ArrowRight,
+    AlertCircle,
     Folder,
     Check,
     FileText,
@@ -14,28 +16,42 @@ import {
     Archive as ArchiveIcon,
     Plus,
 } from 'lucide-react';
+import Checkbox from '@/Components/Checkbox';
 
-export default function Login() {
-    const [email, setEmail] = useState('');
+export default function Login({ errors = {} }) {
+    const [loginInput, setLoginInput] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [formErrors, setFormErrors] = useState({});
     const [activeNode, setActiveNode] = useState(null);
+
+    const mergedErrors = { ...errors, ...formErrors };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         setIsLoading(true);
+        setFormErrors({});
 
-        // Smooth transition to dashboard
-        setTimeout(() => {
-            router.visit('/dashboard');
-        }, 400);
+        router.post('/login', {
+            login: loginInput,
+            password: password,
+            remember: rememberMe,
+        }, {
+            onError: (errs) => {
+                setFormErrors(errs);
+                setIsLoading(false);
+            },
+            onFinish: () => {
+                setIsLoading(false);
+            },
+        });
     };
 
     return (
         <div className="min-h-screen w-full flex flex-col lg:flex-row font-sans text-slate-800 bg-white selection:bg-blue-600 selection:text-white overflow-x-hidden">
-            <Head title="Sign In - WorkTrack" />
+            <Head title="Masuk - WorkTrack" />
 
             {/* ========================================================== */}
             {/* LEFT SIDE: CLEAN LIGHT SIGN IN PANEL (Seamless Full White) */}
@@ -60,38 +76,60 @@ export default function Login() {
                     {/* Welcome Badge */}
                     <div className="inline-block mb-3">
                         <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-100">
-                            Welcome Back
+                            Selamat Datang
                         </span>
                     </div>
 
                     {/* Headline */}
                     <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-                        Sign In to{' '}
+                        Masuk ke{' '}
                         <span className="block mt-0.5">
                             Work<span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">Track</span>
                         </span>
                     </h1>
 
                     <p className="text-xs sm:text-sm text-slate-500 leading-relaxed mt-2.5">
-                        Manage your projects, tasks, and productivity in one place. Let's get things done!
+                        Kelola proyek, tugas, dan produktivitas Anda dalam satu tempat.
                     </p>
 
+                    {/* Error Banner */}
+                    {mergedErrors.login && (
+                        <div className="mt-5 p-3 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-700 font-medium flex items-center gap-2.5 animate-fadeIn">
+                            <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+                            <span>{mergedErrors.login}</span>
+                        </div>
+                    )}
+
                     {/* Form */}
-                    <form onSubmit={handleSubmit} className="mt-8 space-y-4.5">
-                        {/* Email Address */}
+                    <form onSubmit={handleSubmit} className="mt-6 space-y-4.5">
+                        {/* Username or Email Address */}
                         <div className="space-y-1.5">
                             <label className="text-xs font-semibold text-slate-700 block">
-                                Email Address
+                                Username atau Email
                             </label>
                             <div className="relative">
-                                <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                {loginInput.includes('@') ? (
+                                    <Mail className="w-4 h-4 text-blue-500 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors" />
+                                ) : (
+                                    <User className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors" />
+                                )}
                                 <input
-                                    type="email"
+                                    type="text"
                                     required
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="you@example.com"
-                                    className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all bg-white hover:border-slate-300"
+                                    autoComplete="username"
+                                    value={loginInput}
+                                    onChange={(e) => {
+                                        setLoginInput(e.target.value);
+                                        if (formErrors.login) {
+                                            setFormErrors((prev) => ({ ...prev, login: null }));
+                                        }
+                                    }}
+                                    placeholder="Username atau email@example.com"
+                                    className={`w-full pl-10 pr-4 py-2.5 rounded-lg border text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 transition-all bg-white hover:border-slate-300 ${
+                                        mergedErrors.login
+                                            ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-500/20'
+                                            : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500/20'
+                                    }`}
                                 />
                             </div>
                         </div>
@@ -106,16 +144,26 @@ export default function Login() {
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     required
+                                    autoComplete="current-password"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Enter your password"
-                                    className="w-full pl-10 pr-10 py-2.5 rounded-lg border border-slate-200 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all bg-white hover:border-slate-300"
+                                    onChange={(e) => {
+                                        setPassword(e.target.value);
+                                        if (formErrors.password) {
+                                            setFormErrors((prev) => ({ ...prev, password: null }));
+                                        }
+                                    }}
+                                    placeholder="Masukkan password Anda"
+                                    className={`w-full pl-10 pr-10 py-2.5 rounded-lg border text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 transition-all bg-white hover:border-slate-300 ${
+                                        mergedErrors.password
+                                            ? 'border-rose-300 focus:border-rose-500 focus:ring-rose-500/20'
+                                            : 'border-slate-200 focus:border-blue-500 focus:ring-blue-500/20'
+                                    }`}
                                 />
                                 <button
                                     type="button"
                                     onClick={() => setShowPassword(!showPassword)}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer p-1"
-                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                                    aria-label={showPassword ? 'Sembunyikan password' : 'Tampilkan password'}
                                 >
                                     {showPassword ? (
                                         <EyeOff className="w-4 h-4" />
@@ -124,28 +172,28 @@ export default function Login() {
                                     )}
                                 </button>
                             </div>
+                            {mergedErrors.password && (
+                                <p className="text-xs text-rose-500 font-medium mt-1">
+                                    {mergedErrors.password}
+                                </p>
+                            )}
                         </div>
 
                         {/* Remember me & Forgot Password */}
                         <div className="flex items-center justify-between pt-1">
-                            <label className="inline-flex items-center gap-2 cursor-pointer select-none">
-                                <input
-                                    type="checkbox"
-                                    checked={rememberMe}
-                                    onChange={(e) => setRememberMe(e.target.checked)}
-                                    className="w-4 h-4 rounded-sm border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                />
-                                <span className="text-xs font-medium text-slate-600">
-                                    Remember me
-                                </span>
-                            </label>
+                            <Checkbox
+                                checked={rememberMe}
+                                onChange={setRememberMe}
+                                label="Ingat saya"
+                                size="sm"
+                            />
 
                             <a
                                 href="#"
                                 onClick={(e) => e.preventDefault()}
                                 className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
                             >
-                                Forgot password?
+                                Lupa password?
                             </a>
                         </div>
 
@@ -154,9 +202,9 @@ export default function Login() {
                             <button
                                 type="submit"
                                 disabled={isLoading}
-                                className="w-full py-2.5 sm:py-3 px-4 rounded-lg bg-gradient-to-r from-[#3b66ff] via-[#3b82f6] to-[#4f46e5] hover:from-[#3256ee] hover:to-[#4338ca] text-white font-semibold text-sm shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-blue-500/35 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-75"
+                                className="w-full py-2.5 sm:py-3 px-4 rounded-lg bg-gradient-to-r from-[#3b66ff] via-[#3b82f6] to-[#4f46e5] hover:from-[#3256ee] hover:to-[#4338ca] text-white font-semibold text-sm shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-blue-500/35 hover:-translate-y-0.5 active:translate-y-0 cursor-pointer disabled:opacity-75 disabled:pointer-events-none"
                             >
-                                <span>{isLoading ? 'Signing In...' : 'Sign In'}</span>
+                                <span>{isLoading ? 'Memproses...' : 'Masuk'}</span>
                                 <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>
@@ -165,14 +213,14 @@ export default function Login() {
                     {/* Don't have an account */}
                     <div className="text-center mt-7">
                         <span className="text-xs text-slate-500">
-                            Don't have an account?{' '}
+                            Belum memiliki akun?{' '}
                         </span>
                         <a
                             href="#"
                             onClick={(e) => e.preventDefault()}
                             className="text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
                         >
-                            Create one
+                            Daftar sekarang
                         </a>
                     </div>
                 </div>
