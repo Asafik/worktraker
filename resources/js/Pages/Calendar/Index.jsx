@@ -74,16 +74,45 @@ export default function CalendarPage() {
         const dayNames = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
         const dayName = dayNames[idx % 7];
         const monthName = item.isCurrentMonth ? selectedMonth : (item.day > 20 ? 'Agustus 2026' : 'Oktober 2026');
+
+        // Pengingat rutin harian Google Calendar muncul di DALAM MODAL (Senin - Sabtu, 07:30)
+        // Tidak memenuhi kotak kalender di luar agar tampilan tetap bersih
+        const isWorkday = idx % 7 !== 6;
+        const routineForDay = isWorkday
+            ? [
+                item.isRelaxMode
+                    ? {
+                        time: '07:30',
+                        title: 'Berangkat kerja & doa (Mode Jam Santai)',
+                        fullTitle: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik (Mode Jam Santai)',
+                        dot: 'bg-amber-500',
+                        bg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-900/40',
+                        isRoutine: true,
+                    }
+                    : {
+                        time: '07:30',
+                        title: 'Berangkat kerja & doa...',
+                        fullTitle: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik dan kebahagiaan...',
+                        dot: 'bg-blue-500',
+                        bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
+                        isRoutine: true,
+                    }
+            ]
+            : [];
+
+        // Agenda/tugas khusus yang dibuat user pada tanggal ini (misal Presentasi tanggal 3)
+        const specificEvents = item.events || [];
+
         setSelectedDayModal({
             ...item,
             idx,
             dayName,
             dateFormatted: `${dayName}, ${item.day} ${monthName}`,
-            events: item.events ? [...item.events] : [],
+            events: [...routineForDay, ...specificEvents],
         });
     };
 
-    // Google Calendar Routine Task from user's Google Calendar (Mon - Sat at 07:30)
+    // Google Calendar Routine Task definition
     const googleRoutineTask = {
         time: '07:30',
         title: 'Berangkat kerja & doa...',
@@ -132,67 +161,71 @@ export default function CalendarPage() {
     };
 
     // Calendar grid data for September 2026:
-    // Starts on Tuesday Sept 1st, ended Sept 30th on Wednesday.
-    // Sundays are red holidays. Tanggal merah selain minggu (e.g. 4 Sep Maulid Nabi) includes Mode Jam Santai.
+    // Bersih dari pengulangan tulisan rutin otomatis.
+    // Hanya menampilkan agenda khusus (contoh: Presentasi Project di tgl 3), hari libur (tgl 4 Maulid Nabi), dan hari Minggu.
     const initialCalendarDays = [
         // Row 1: Prev month (Mon Aug 31) + Sept 1 - 6
-        { day: 31, isCurrentMonth: false, events: [googleRoutineTask] },
-        { day: 1, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 2, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 3, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 31, isCurrentMonth: false, events: [] },
+        { day: 1, isCurrentMonth: true, events: [] },
+        { day: 2, isCurrentMonth: true, events: [] },
+        {
+            day: 3,
+            isCurrentMonth: true,
+            events: [
+                {
+                    time: '10:00',
+                    title: 'Presentasi Project',
+                    fullTitle: 'Presentasi Project & Review Fitur',
+                    dot: 'bg-emerald-500',
+                    bg: 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-100 dark:border-emerald-900/40',
+                },
+            ],
+        },
         {
             day: 4,
             isCurrentMonth: true,
             isHoliday: true,
             holidayName: 'Maulid Nabi Muhammad SAW',
             isRelaxMode: true, // Tanggal merah tetap masuk kantor tapi jam santai
-            events: [
-                {
-                    time: '07:30',
-                    title: 'Berangkat kerja & doa (Jam Santai)...',
-                    fullTitle: 'Berangkat kerja dan berdoa demi masa depan yang lebih baik (Mode Jam Santai)',
-                    dot: 'bg-amber-500',
-                    bg: 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200/80 dark:border-amber-900/40',
-                },
-            ],
+            events: [],
         },
-        { day: 5, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 5, isCurrentMonth: true, events: [] },
         { day: 6, isCurrentMonth: true, isSunday: true, events: [] }, // Minggu libur
 
         // Row 2: Sept 7 - 13
-        { day: 7, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 8, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 9, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 10, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 11, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 12, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 7, isCurrentMonth: true, events: [] },
+        { day: 8, isCurrentMonth: true, events: [] },
+        { day: 9, isCurrentMonth: true, events: [] },
+        { day: 10, isCurrentMonth: true, events: [] },
+        { day: 11, isCurrentMonth: true, events: [] },
+        { day: 12, isCurrentMonth: true, events: [] },
         { day: 13, isCurrentMonth: true, isSunday: true, events: [] },
 
         // Row 3: Sept 14 - 20 (Week of screenshot)
-        { day: 14, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 15, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 16, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 17, isCurrentMonth: true, isToday: true, events: [googleRoutineTask] }, // Hari ini (Kamis 17 Sep)
-        { day: 18, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 19, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 14, isCurrentMonth: true, events: [] },
+        { day: 15, isCurrentMonth: true, events: [] },
+        { day: 16, isCurrentMonth: true, events: [] },
+        { day: 17, isCurrentMonth: true, isToday: true, events: [] }, // Hari ini (Kamis 17 Sep)
+        { day: 18, isCurrentMonth: true, events: [] },
+        { day: 19, isCurrentMonth: true, events: [] },
         { day: 20, isCurrentMonth: true, isSunday: true, events: [] },
 
         // Row 4: Sept 21 - 27
-        { day: 21, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 22, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 23, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 24, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 25, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 26, isCurrentMonth: true, events: [googleRoutineTask] },
+        { day: 21, isCurrentMonth: true, events: [] },
+        { day: 22, isCurrentMonth: true, events: [] },
+        { day: 23, isCurrentMonth: true, events: [] },
+        { day: 24, isCurrentMonth: true, events: [] },
+        { day: 25, isCurrentMonth: true, events: [] },
+        { day: 26, isCurrentMonth: true, events: [] },
         { day: 27, isCurrentMonth: true, isSunday: true, events: [] },
 
         // Row 5: Sept 28 - 30 + Next month Oct 1 - 4
-        { day: 28, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 29, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 30, isCurrentMonth: true, events: [googleRoutineTask] },
-        { day: 1, isCurrentMonth: false, events: [googleRoutineTask] },
-        { day: 2, isCurrentMonth: false, events: [googleRoutineTask] },
-        { day: 3, isCurrentMonth: false, events: [googleRoutineTask] },
+        { day: 28, isCurrentMonth: true, events: [] },
+        { day: 29, isCurrentMonth: true, events: [] },
+        { day: 30, isCurrentMonth: true, events: [] },
+        { day: 1, isCurrentMonth: false, events: [] },
+        { day: 2, isCurrentMonth: false, events: [] },
+        { day: 3, isCurrentMonth: false, events: [] },
         { day: 4, isCurrentMonth: false, isSunday: true, events: [] },
     ];
 
@@ -210,6 +243,7 @@ export default function CalendarPage() {
             bg: 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-100 dark:border-blue-900/40',
         };
 
+        // Simpan ke calendarDays agar langsung muncul di luar kotak tanggal yang dipilih
         setCalendarDays((prev) =>
             prev.map((d, i) =>
                 i === selectedDayModal.idx
@@ -235,36 +269,36 @@ export default function CalendarPage() {
     // Mini calendar days for September 2026
     const miniCalendarDays = [
         { day: '', empty: true }, // Mon empty
-        { day: 1, hasEvent: true },
-        { day: 2, hasEvent: true },
-        { day: 3, hasEvent: true },
-        { day: 4, hasEvent: true, isHoliday: true }, // Maulid Nabi
-        { day: 5, hasEvent: true },
+        { day: 1 },
+        { day: 2 },
+        { day: 3, hasEvent: true }, // Presentasi
+        { day: 4, isHoliday: true }, // Maulid Nabi
+        { day: 5 },
         { day: 6, isSunday: true },
-        { day: 7, hasEvent: true },
-        { day: 8, hasEvent: true },
-        { day: 9, hasEvent: true },
-        { day: 10, hasEvent: true },
-        { day: 11, hasEvent: true },
-        { day: 12, hasEvent: true },
+        { day: 7 },
+        { day: 8 },
+        { day: 9 },
+        { day: 10 },
+        { day: 11 },
+        { day: 12 },
         { day: 13, isSunday: true },
-        { day: 14, hasEvent: true },
-        { day: 15, hasEvent: true },
-        { day: 16, hasEvent: true },
-        { day: 17, isToday: true, hasEvent: true },
-        { day: 18, hasEvent: true },
-        { day: 19, hasEvent: true },
+        { day: 14 },
+        { day: 15 },
+        { day: 16 },
+        { day: 17, isToday: true },
+        { day: 18 },
+        { day: 19 },
         { day: 20, isSunday: true },
-        { day: 21, hasEvent: true },
-        { day: 22, hasEvent: true },
-        { day: 23, hasEvent: true },
-        { day: 24, hasEvent: true },
-        { day: 25, hasEvent: true },
-        { day: 26, hasEvent: true },
+        { day: 21 },
+        { day: 22 },
+        { day: 23 },
+        { day: 24 },
+        { day: 25 },
+        { day: 26 },
         { day: 27, isSunday: true },
-        { day: 28, hasEvent: true },
-        { day: 29, hasEvent: true },
-        { day: 30, hasEvent: true },
+        { day: 28 },
+        { day: 29 },
+        { day: 30 },
         { day: 1, isNextMonth: true },
         { day: 2, isNextMonth: true },
         { day: 3, isNextMonth: true },
