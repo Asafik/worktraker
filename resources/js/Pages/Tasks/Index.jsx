@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import Modal from '@/Components/Modal';
@@ -38,21 +38,7 @@ const GithubIcon = ({ className = 'w-3.5 h-3.5' }) => (
     </svg>
 );
 
-const STATUS_FILTER_OPTIONS = [
-    { value: 'all', label: 'Semua Status' },
-    { value: 'todo', label: 'Antrean (To Do)' },
-    { value: 'in_progress', label: 'Sedang Dikerjakan' },
-    { value: 'completed', label: 'Selesai' },
-];
-
 const TASK_TYPE_OPTIONS = [
-    { value: 'revision', label: 'Revisi Proyek' },
-    { value: 'feature', label: 'Pengerjaan Fitur' },
-    { value: 'bugfix', label: 'Perbaikan Bug' },
-    { value: 'general', label: 'Tugas Umum' },
-];
-
-const QUICK_TYPE_OPTIONS = [
     { value: 'revision', label: 'Revisi Proyek' },
     { value: 'feature', label: 'Fitur Baru' },
     { value: 'bugfix', label: 'Perbaikan Bug' },
@@ -60,13 +46,20 @@ const QUICK_TYPE_OPTIONS = [
 ];
 
 const TASK_PRIORITY_OPTIONS = [
-    { value: 'Urgent', label: 'Urgent (Mendesak)' },
-    { value: 'High', label: 'High (Tinggi)' },
-    { value: 'Medium', label: 'Medium (Sedang)' },
-    { value: 'Low', label: 'Low (Rendah)' },
+    { value: 'Urgent', label: 'Mendesak (Urgent)' },
+    { value: 'High', label: 'Tinggi (High)' },
+    { value: 'Medium', label: 'Sedang (Medium)' },
+    { value: 'Low', label: 'Rendah (Low)' },
 ];
 
 const TASK_STATUS_OPTIONS = [
+    { value: 'todo', label: 'Antrean (To Do)' },
+    { value: 'in_progress', label: 'Sedang Dikerjakan' },
+    { value: 'completed', label: 'Selesai' },
+];
+
+const FILTER_STATUS_OPTIONS = [
+    { value: 'all', label: 'Semua Status' },
     { value: 'todo', label: 'Antrean (To Do)' },
     { value: 'in_progress', label: 'Sedang Dikerjakan' },
     { value: 'completed', label: 'Selesai' },
@@ -90,6 +83,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
     // Modal state for Add/Edit
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingTask, setEditingTask] = useState(null);
+    const [isSavingTask, setIsSavingTask] = useState(false);
     const [modalForm, setModalForm] = useState({
         title: '',
         description: '',
@@ -103,35 +97,35 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
     // Delete confirmation modal state
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [taskToDelete, setTaskToDelete] = useState(null);
+    const [isDeletingTask, setIsDeletingTask] = useState(false);
 
-    // Global loading overlay state
-    const [isSaving, setIsSaving] = useState(false);
-    const [isDeleting, setIsDeleting] = useState(false);
+    // Status toggling state
+    const [isTogglingTask, setIsTogglingTask] = useState(false);
 
-    // Derived project options for CustomSelect with Live Search
-    const projectFilterOptions = [
+    // Project options with search support
+    const projectFilterOptions = useMemo(() => [
         { value: 'all', label: 'Semua Proyek' },
-        ...projects.map((p) => ({
-            value: String(p.id),
-            label: `${p.name}${p.github_repo_name ? ` (${p.github_repo_name})` : ''}`,
+        ...projects.map((proj) => ({
+            value: String(proj.id),
+            label: `${proj.name}${proj.github_repo_name ? ` (${proj.github_repo_name})` : ''}`,
         })),
-    ];
+    ], [projects]);
 
-    const quickProjectOptions = [
+    const quickProjectOptions = useMemo(() => [
         { value: '', label: '-- Tanpa Proyek (Umum) --' },
-        ...projects.map((p) => ({
-            value: String(p.id),
-            label: `${p.name}${p.github_repo_name ? ` (${p.github_repo_name})` : ''}`,
+        ...projects.map((proj) => ({
+            value: String(proj.id),
+            label: `${proj.name}${proj.github_repo_name ? ` (${proj.github_repo_name})` : ''}`,
         })),
-    ];
+    ], [projects]);
 
-    const modalProjectOptions = [
+    const modalProjectOptions = useMemo(() => [
         { value: '', label: '-- Tanpa Proyek (Umum) --' },
-        ...projects.map((p) => ({
-            value: String(p.id),
-            label: `${p.name}${p.github_repo_name ? ` (${p.github_repo_name})` : ''}`,
+        ...projects.map((proj) => ({
+            value: String(proj.id),
+            label: `${proj.name}${proj.github_repo_name ? ` (${proj.github_repo_name})` : ''}`,
         })),
-    ];
+    ], [projects]);
 
     // Handle quick submit
     const handleQuickAdd = (e) => {
@@ -156,20 +150,51 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
             },
             onError: () => {
                 setIsSubmittingQuick(false);
-                toast.error('Gagal menambahkan tugas cepat.');
+                toast.error('Gagal menambahkan tugas.');
             },
         });
     };
 
     // Toggle completion
     const handleToggleTask = (taskId) => {
+        if (!taskId) return;
+        setIsTogglingTask(true);
         router.post(`/tasks/${taskId}/toggle`, {}, {
             preserveScroll: true,
             onSuccess: () => {
+                setIsTogglingTask(false);
                 toast.success('Status tugas berhasil diperbarui.');
             },
             onError: () => {
+                setIsTogglingTask(false);
                 toast.error('Gagal memperbarui status tugas.');
+            },
+        });
+    };
+
+    // Open delete confirmation modal
+    const handleOpenDeleteModal = (task) => {
+        if (!task) return;
+        setTaskToDelete(task);
+        setIsDeleteModalOpen(true);
+    };
+
+    // Confirm and execute task deletion
+    const handleConfirmDelete = () => {
+        if (!taskToDelete?.id) return;
+        setIsDeleteModalOpen(false);
+        setIsDeletingTask(true);
+        router.delete(`/tasks/${taskToDelete.id}`, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setIsDeletingTask(false);
+                setTaskToDelete(null);
+                toast.success('Tugas berhasil dihapus.');
+            },
+            onError: () => {
+                setIsDeletingTask(false);
+                setIsDeleteModalOpen(true);
+                toast.error('Gagal menghapus tugas.');
             },
         });
     };
@@ -204,60 +229,47 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
         setIsModalOpen(true);
     };
 
-    // Save Modal submit
+    // Save Modal
     const handleSaveModal = (e) => {
         e.preventDefault();
         if (!modalForm.title.trim()) return;
 
-        // Close modal first, then trigger centered loading modal overlay
+        // Close modal first, then open centered loading overlay
         setIsModalOpen(false);
-        setIsSaving(true);
+        setIsSavingTask(true);
 
-        const endpoint = editingTask ? `/tasks/${editingTask.id}/update` : '/tasks';
-        router.post(endpoint, {
+        const payload = {
             ...modalForm,
             project_id: modalForm.project_id ? Number(modalForm.project_id) : null,
-        }, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setIsSaving(false);
-                toast.success(editingTask ? 'Perubahan tugas berhasil disimpan!' : 'Tugas baru berhasil ditambahkan!');
-            },
-            onError: () => {
-                setIsSaving(false);
-                setIsModalOpen(true);
-                toast.error(editingTask ? 'Gagal menyimpan perubahan tugas.' : 'Gagal menambahkan tugas baru.');
-            },
-        });
-    };
+        };
 
-    // Open delete confirmation modal
-    const openDeleteModal = (task) => {
-        setTaskToDelete(task);
-        setIsDeleteModalOpen(true);
-    };
-
-    // Confirm and execute delete
-    const handleConfirmDelete = () => {
-        if (!taskToDelete?.id) return;
-
-        // Close confirmation modal first, then open centered loading modal overlay
-        setIsDeleteModalOpen(false);
-        setIsDeleting(true);
-
-        router.delete(`/tasks/${taskToDelete.id}`, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setIsDeleting(false);
-                setTaskToDelete(null);
-                toast.success('Tugas berhasil dihapus.');
-            },
-            onError: () => {
-                setIsDeleting(false);
-                setIsDeleteModalOpen(true);
-                toast.error('Gagal menghapus tugas.');
-            },
-        });
+        if (editingTask) {
+            router.post(`/tasks/${editingTask.id}/update`, payload, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsSavingTask(false);
+                    toast.success('Perubahan tugas berhasil disimpan!');
+                },
+                onError: () => {
+                    setIsSavingTask(false);
+                    setIsModalOpen(true);
+                    toast.error('Gagal menyimpan perubahan tugas.');
+                },
+            });
+        } else {
+            router.post('/tasks', payload, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsSavingTask(false);
+                    toast.success('Tugas baru berhasil ditambahkan!');
+                },
+                onError: () => {
+                    setIsSavingTask(false);
+                    setIsModalOpen(true);
+                    toast.error('Gagal menambahkan tugas baru.');
+                },
+            });
+        }
     };
 
     // Filter tasks locally for responsive instant feedback
@@ -465,11 +477,11 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                     className="bg-white dark:bg-[#0e1d47] p-3 sm:p-4 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-2.5"
                 >
                     {/* Type Selector */}
-                    <div className="w-full md:w-44 shrink-0">
+                    <div className="w-full md:w-40 shrink-0">
                         <CustomSelect
                             value={quickType}
                             onChange={(val) => setQuickType(val)}
-                            options={QUICK_TYPE_OPTIONS}
+                            options={TASK_TYPE_OPTIONS}
                             buttonClassName="!py-2 !px-3 !text-xs font-semibold"
                         />
                     </div>
@@ -486,16 +498,16 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         />
                     </div>
 
-                    {/* Project Selector with Live Search */}
+                    {/* Project Selector (Direct Connection to Database Projects) */}
                     <div className="w-full md:w-56 shrink-0">
                         <CustomSelect
-                            value={String(quickProjectId)}
+                            value={quickProjectId}
                             onChange={(val) => setQuickProjectId(val)}
                             options={quickProjectOptions}
-                            placeholder="-- Pilih Proyek --"
+                            placeholder="-- Tanpa Proyek --"
+                            buttonClassName="!py-2 !px-3 !text-xs"
                             searchable={true}
                             searchPlaceholder="Cari proyek..."
-                            buttonClassName="!py-2 !px-3 !text-xs"
                         />
                     </div>
 
@@ -516,7 +528,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-md text-xs sm:text-sm font-semibold shadow-xs transition-colors shrink-0 flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                         <Plus className="w-4 h-4" />
-                        <span>{isSubmittingQuick ? 'Menambahkan...' : 'Tambah'}</span>
+                        <span>Tambah</span>
                     </button>
                 </form>
 
@@ -534,9 +546,9 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         />
                     </div>
 
-                    {/* Filter Controls */}
+                    {/* Filter Pills */}
                     <div className="flex flex-wrap items-center gap-2">
-                        {/* Type Filter Pills */}
+                        {/* Type Filter */}
                         <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#122352] p-1 rounded-md">
                             {[
                                 { id: 'all', label: 'Semua' },
@@ -560,50 +572,50 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         </div>
 
                         {/* Status Filter */}
-                        <div className="w-36">
+                        <div className="w-36 sm:w-40">
                             <CustomSelect
                                 value={selectedStatus}
                                 onChange={(val) => setSelectedStatus(val)}
-                                options={STATUS_FILTER_OPTIONS}
+                                options={FILTER_STATUS_OPTIONS}
                                 buttonClassName="!py-1.5 !px-2.5 !text-xs font-semibold"
                             />
                         </div>
 
-                        {/* Project Filter with Live Search */}
-                        <div className="w-52">
+                        {/* Project Filter */}
+                        <div className="w-44 sm:w-52">
                             <CustomSelect
-                                value={String(selectedProject)}
+                                value={selectedProject}
                                 onChange={(val) => setSelectedProject(val)}
                                 options={projectFilterOptions}
+                                buttonClassName="!py-1.5 !px-2.5 !text-xs font-semibold"
                                 searchable={true}
                                 searchPlaceholder="Cari proyek..."
-                                buttonClassName="!py-1.5 !px-2.5 !text-xs"
                             />
                         </div>
                     </div>
                 </div>
 
-                {/* 5. Tasks View (List or Board) */}
+                {/* 5. Main Content: LIST VIEW or BOARD VIEW */}
                 {viewMode === 'list' ? (
                     /* ================= LIST VIEW ================= */
                     <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs overflow-hidden">
                         {filteredTasks.length === 0 ? (
-                            <div className="p-12 text-center space-y-3">
-                                <div className="w-12 h-12 mx-auto rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                            <div className="py-16 text-center space-y-3">
+                                <div className="w-12 h-12 mx-auto rounded-md bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                                     <CheckSquare className="w-6 h-6" />
                                 </div>
-                                <h4 className="text-sm font-bold text-slate-800 dark:text-slate-200">
-                                    Tidak ada tugas yang cocok
-                                </h4>
+                                <h3 className="text-base font-bold text-slate-800 dark:text-white">
+                                    Belum ada tugas atau revisi
+                                </h3>
                                 <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
-                                    Coba ubah kata kunci pencarian atau filter kategori/proyek di atas.
+                                    Tambahkan tugas baru melalui bar di atas untuk memulai tracking pengerjaan dan revisi proyek Anda.
                                 </p>
                             </div>
                         ) : (
-                            <div className="divide-y divide-slate-100 dark:divide-slate-800/80">
+                            <div className="divide-y divide-slate-100 dark:divide-[#17254d]">
                                 {filteredTasks.map((task) => {
-                                    const isDone = task.status === 'completed';
                                     const typeConf = getTypeConfig(task.type);
+                                    const isDone = task.status === 'completed';
                                     const TypeIcon = typeConf.icon;
 
                                     return (
@@ -637,67 +649,69 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                         {task.priority}
                                                     </span>
 
-                                                    {/* Related Project Badge */}
+                                                    {/* Related Project Badge (Direct Connection!) */}
                                                     {task.project ? (
                                                         <Link
                                                             href={`/projects/${task.project.slug || task.project.id}`}
-                                                            className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                                                            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 dark:bg-[#182c66] text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 border border-slate-200 dark:border-[#223974] transition-colors"
                                                         >
-                                                            <Folder className="w-3 h-3" />
+                                                            <Folder className="w-3 h-3 text-blue-500" />
                                                             <span>{task.project.name}</span>
                                                         </Link>
                                                     ) : (
-                                                        <span className="text-[11px] text-slate-400">Umum</span>
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-medium text-slate-400 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                                            Umum
+                                                        </span>
                                                     )}
 
-                                                    {/* GitHub Repo Badge */}
-                                                    {task.project && task.project.github_repo_name && (
+                                                    {/* Related GitHub Repository Badge */}
+                                                    {task.project?.github_repo_name && (
                                                         <a
-                                                            href={`https://github.com/${task.project.github_repo_name}`}
+                                                            href={task.project.github_repo_url || `https://github.com/${task.project.github_repo_name}`}
                                                             target="_blank"
                                                             rel="noreferrer"
-                                                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-600 transition-colors"
-                                                            title="Buka Repositori GitHub"
+                                                            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-slate-900 text-white dark:bg-slate-800 dark:text-slate-200 hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+                                                            title={`Buka repositori GitHub ${task.project.github_repo_name}`}
                                                         >
                                                             <GithubIcon className="w-3 h-3" />
-                                                            <span>{task.project.github_repo_name}</span>
+                                                            <span className="font-mono">{task.project.github_repo_name}</span>
+                                                            <ExternalLink className="w-2.5 h-2.5 opacity-70" />
                                                         </a>
                                                     )}
+
+                                                    {/* Date: Completed Date (auto on check) or Target Due Date */}
+                                                    {isDone && task.completed_at ? (
+                                                        <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-900/50 ml-auto">
+                                                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                                                            <span>Selesai {formatCompletedDate(task.completed_at)}</span>
+                                                        </span>
+                                                    ) : task.due_date ? (
+                                                        <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-400 ml-auto">
+                                                            <Clock className="w-3 h-3" />
+                                                            <span>Target: {task.due_date}</span>
+                                                        </span>
+                                                    ) : null}
                                                 </div>
 
-                                                {/* Title */}
-                                                <h4 className={`text-sm sm:text-base font-bold leading-snug ${
-                                                    isDone ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-900 dark:text-white'
+                                                {/* Task Title */}
+                                                <h4 className={`text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug transition-all ${
+                                                    isDone ? 'line-through text-slate-400 dark:text-slate-500' : ''
                                                 }`}>
                                                     {task.title}
                                                 </h4>
 
                                                 {/* Description */}
                                                 {task.description && (
-                                                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                                    <p className={`text-xs leading-relaxed max-w-3xl ${
+                                                        isDone ? 'text-slate-400 dark:text-slate-600' : 'text-slate-500 dark:text-slate-400'
+                                                    }`}>
                                                         {task.description}
                                                     </p>
                                                 )}
-
-                                                {/* Bottom Meta */}
-                                                <div className="flex flex-wrap items-center gap-4 text-[11px] text-slate-400 pt-0.5">
-                                                    {task.due_date && (
-                                                        <span className="flex items-center gap-1">
-                                                            <Clock className="w-3 h-3" />
-                                                            <span>Target: {task.due_date}</span>
-                                                        </span>
-                                                    )}
-                                                    {isDone && task.completed_at && (
-                                                        <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-                                                            <CheckCircle2 className="w-3 h-3" />
-                                                            <span>Selesai pada {formatCompletedDate(task.completed_at)}</span>
-                                                        </span>
-                                                    )}
-                                                </div>
                                             </div>
 
                                             {/* Action Buttons */}
-                                            <div className="flex items-center gap-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                                            <div className="flex items-center gap-1 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
                                                 <button
                                                     type="button"
                                                     onClick={() => openEditModal(task)}
@@ -708,7 +722,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                 </button>
                                                 <button
                                                     type="button"
-                                                    onClick={() => openDeleteModal(task)}
+                                                    onClick={() => handleOpenDeleteModal(task)}
                                                     className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
                                                     title="Hapus Tugas"
                                                 >
@@ -725,43 +739,29 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                     /* ================= BOARD (KANBAN) VIEW ================= */
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {[
-                            { id: 'todo', title: 'Antrean (To Do)', color: 'border-slate-300 dark:border-[#243e80]' },
-                            { id: 'in_progress', title: 'Sedang Dikerjakan', color: 'border-blue-500' },
-                            { id: 'completed', title: 'Selesai', color: 'border-emerald-500' },
+                            { id: 'todo', title: 'Antrean (To Do)', color: 'border-slate-300 dark:border-slate-700', bgHeader: 'bg-slate-100 dark:bg-slate-800' },
+                            { id: 'in_progress', title: 'Sedang Dikerjakan', color: 'border-blue-300 dark:border-blue-900', bgHeader: 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300' },
+                            { id: 'completed', title: 'Selesai', color: 'border-emerald-300 dark:border-emerald-900', bgHeader: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300' },
                         ].map((col) => {
                             const colTasks = filteredTasks.filter((t) => t.status === col.id);
 
                             return (
                                 <div
                                     key={col.id}
-                                    className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col min-h-[500px]"
+                                    className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col h-full min-h-[450px]"
                                 >
                                     {/* Column Header */}
-                                    <div className={`p-3.5 border-b border-slate-100 dark:border-[#17254d] border-t-2 ${col.color} flex items-center justify-between`}>
-                                        <div className="flex items-center gap-2">
-                                            <h4 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white">
-                                                {col.title}
-                                            </h4>
-                                            <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 dark:bg-[#172b60] text-slate-600 dark:text-slate-300">
-                                                {colTasks.length}
-                                            </span>
-                                        </div>
-                                        {col.id === 'todo' && (
-                                            <button
-                                                type="button"
-                                                onClick={openAddModal}
-                                                className="p-1 text-slate-400 hover:text-blue-600 transition-colors"
-                                                title="Tambah ke Antrean"
-                                            >
-                                                <Plus className="w-4 h-4" />
-                                            </button>
-                                        )}
+                                    <div className={`px-4 py-3 border-b border-slate-100 dark:border-[#1b2b5a] flex items-center justify-between font-bold text-xs rounded-t-lg ${col.bgHeader}`}>
+                                        <span>{col.title}</span>
+                                        <span className="px-2 py-0.5 rounded-full bg-white dark:bg-slate-900 text-[11px] shadow-2xs font-extrabold">
+                                            {colTasks.length}
+                                        </span>
                                     </div>
 
-                                    {/* Cards Container */}
-                                    <div className="p-3 space-y-2.5 flex-1 overflow-y-auto max-h-[700px]">
+                                    {/* Column Tasks */}
+                                    <div className="p-3 space-y-3 flex-1 overflow-y-auto">
                                         {colTasks.length === 0 ? (
-                                            <div className="p-8 text-center text-xs text-slate-400 border border-dashed border-slate-200 dark:border-[#1e346e] rounded-md">
+                                            <div className="py-10 text-center text-xs text-slate-400">
                                                 Tidak ada tugas
                                             </div>
                                         ) : (
@@ -821,15 +821,15 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => openEditModal(task)}
-                                                                    className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 dark:hover:text-white"
+                                                                    className="p-1.5 rounded-md text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
                                                                     title="Edit Tugas"
                                                                 >
                                                                     <Edit3 className="w-3.5 h-3.5" />
                                                                 </button>
                                                                 <button
                                                                     type="button"
-                                                                    onClick={() => openDeleteModal(task)}
-                                                                    className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400"
+                                                                    onClick={() => handleOpenDeleteModal(task)}
+                                                                    className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
                                                                     title="Hapus Tugas"
                                                                 >
                                                                     <Trash2 className="w-3.5 h-3.5" />
@@ -848,12 +848,11 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                 )}
             </div>
 
-            {/* Modal: Tambah / Edit Tugas */}
+            {/* Modal Tambah / Edit Tugas */}
             <Modal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 title={editingTask ? 'Edit Tugas / Revisi' : 'Tambah Tugas / Revisi Baru'}
-                description={editingTask ? 'Perbarui informasi tugas dan hubungkan dengan proyek.' : 'Buat kartu tugas baru untuk dipantau di Kanban dan List view.'}
                 icon={editingTask ? Edit3 : Plus}
                 maxWidth="lg"
             >
@@ -873,19 +872,19 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         />
                     </div>
 
-                    {/* Project Connection (Direct Relational Link) with Live Search */}
+                    {/* Project Connection (Direct Relational Link) */}
                     <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
                             Terkait dengan Proyek (Database Projects)
                         </label>
                         <CustomSelect
-                            value={String(modalForm.project_id || '')}
+                            value={modalForm.project_id}
                             onChange={(val) => setModalForm({ ...modalForm, project_id: val })}
                             options={modalProjectOptions}
                             placeholder="-- Tanpa Proyek (Umum) --"
+                            buttonClassName="!py-2 !px-3.5 !text-xs sm:!text-sm"
                             searchable={true}
                             searchPlaceholder="Cari nama atau repo proyek..."
-                            buttonClassName="!py-2 !px-3.5 !text-xs sm:!text-sm"
                         />
                     </div>
 
@@ -899,7 +898,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                 value={modalForm.type}
                                 onChange={(val) => setModalForm({ ...modalForm, type: val })}
                                 options={TASK_TYPE_OPTIONS}
-                                buttonClassName="!py-2 !px-3 !text-xs font-semibold"
+                                buttonClassName="!py-2 !px-3.5 !text-xs font-semibold"
                             />
                         </div>
 
@@ -911,7 +910,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                 value={modalForm.priority}
                                 onChange={(val) => setModalForm({ ...modalForm, priority: val })}
                                 options={TASK_PRIORITY_OPTIONS}
-                                buttonClassName="!py-2 !px-3 !text-xs font-semibold"
+                                buttonClassName="!py-2 !px-3.5 !text-xs font-semibold"
                             />
                         </div>
                     </div>
@@ -926,7 +925,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                 value={modalForm.status}
                                 onChange={(val) => setModalForm({ ...modalForm, status: val })}
                                 options={TASK_STATUS_OPTIONS}
-                                buttonClassName="!py-2 !px-3 !text-xs font-semibold"
+                                buttonClassName="!py-2 !px-3.5 !text-xs font-semibold"
                             />
                         </div>
 
@@ -968,10 +967,9 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         </button>
                         <button
                             type="submit"
-                            disabled={isSaving}
-                            className="px-5 py-2 rounded-md text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+                            className="px-5 py-2 rounded-md text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-colors cursor-pointer"
                         >
-                            {isSaving ? 'Menyimpan...' : editingTask ? 'Simpan Perubahan' : 'Tambah Tugas'}
+                            {editingTask ? 'Simpan Perubahan' : 'Tambah Tugas'}
                         </button>
                     </div>
                 </form>
@@ -997,7 +995,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                             <p className="text-xs text-rose-700/90 dark:text-rose-300/80 leading-relaxed">
                                 Tugas{' '}
                                 <strong className="font-semibold text-rose-950 dark:text-rose-100">
-                                    "{taskToDelete?.title || 'Tugas'}"
+                                    "{taskToDelete?.title}"
                                 </strong>{' '}
                                 akan dihapus secara permanen dari sistem.
                             </p>
@@ -1024,19 +1022,29 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                 </div>
             </Modal>
 
-            {/* Global Full-Screen Loading Overlay for CRUD */}
+            {/* Global Centered Loading Overlay for Tasks */}
             <LoadingOverlay
-                show={isSaving || isDeleting}
+                show={isSavingTask || isSubmittingQuick || isDeletingTask || isTogglingTask}
                 fullScreen={true}
                 message={
-                    isSaving
-                        ? editingTask ? 'Menyimpan perubahan tugas...' : 'Menambahkan tugas baru...'
-                        : 'Menghapus tugas...'
+                    isDeletingTask
+                        ? 'Menghapus tugas...'
+                        : isTogglingTask
+                        ? 'Memperbarui status tugas...'
+                        : isSubmittingQuick
+                        ? 'Menambahkan tugas baru...'
+                        : editingTask
+                        ? 'Menyimpan perubahan tugas...'
+                        : 'Menambahkan tugas baru...'
                 }
                 description={
-                    isSaving
-                        ? 'Memperbarui data dan status tugas di server'
-                        : 'Menghapus data tugas dari sistem'
+                    isDeletingTask
+                        ? 'Menghapus tugas dari sistem dan proyek terkait'
+                        : isTogglingTask
+                        ? 'Menyinkronkan status penyelesaian tugas'
+                        : isSubmittingQuick
+                        ? 'Menyimpan tugas cepat ke antrean'
+                        : 'Memperbarui data di server'
                 }
             />
         </DashboardLayout>
