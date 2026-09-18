@@ -272,7 +272,10 @@ export default function Notes({
         e.preventDefault();
         if (!createForm.title.trim()) return;
 
+        // Close modal first, then open centered loading modal overlay
+        setIsCreateModalOpen(false);
         setIsCreating(true);
+
         router.post('/notes', {
             title: createForm.title.trim(),
             category: createForm.category,
@@ -281,7 +284,6 @@ export default function Notes({
         }, {
             preserveScroll: true,
             onSuccess: () => {
-                setIsCreateModalOpen(false);
                 setCreateForm({
                     title: '',
                     category: 'Revision',
@@ -294,6 +296,7 @@ export default function Notes({
             },
             onError: () => {
                 setIsCreating(false);
+                setIsCreateModalOpen(true);
                 toast.error('Gagal membuat catatan baru.');
             },
         });
@@ -611,7 +614,10 @@ export default function Notes({
             return;
         }
 
+        // Close modal first, then open centered loading modal overlay
+        setIsSendTasksModalOpen(false);
         setIsSendingToTasks(true);
+
         router.post(
             '/notes/send-to-tasks',
             {
@@ -629,7 +635,6 @@ export default function Notes({
                 preserveScroll: true,
                 onSuccess: () => {
                     setIsSendingToTasks(false);
-                    setIsSendTasksModalOpen(false);
 
                     // Update editor content locally with [Masuk Tasks] tag for sent items
                     let newContent = editorForm.content;
@@ -669,6 +674,7 @@ export default function Notes({
                 },
                 onError: (err) => {
                     setIsSendingToTasks(false);
+                    setIsSendTasksModalOpen(true);
                     toast.error('Gagal mengirim ke tasks: ' + (err.message || 'Terjadi kesalahan.'));
                 },
             }
