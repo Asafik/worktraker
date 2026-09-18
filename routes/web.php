@@ -41,9 +41,13 @@ Route::post('/projects/{id}', [ProjectController::class, 'update'])->name('proje
 Route::delete('/projects/{id}', [ProjectController::class, 'destroy'])->name('projects.destroy');
 Route::get('/projects/{slug}', [ProjectController::class, 'show'])->name('projects.show');
 
-Route::get('/tasks', function () {
-    return Inertia::render('Tasks/Index');
-})->name('tasks');
+use App\Http\Controllers\TaskController;
+
+Route::get('/tasks', [TaskController::class, 'index'])->name('tasks');
+Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
+Route::post('/tasks/{task}/update', [TaskController::class, 'update'])->name('tasks.update');
+Route::post('/tasks/{task}/toggle', [TaskController::class, 'toggle'])->name('tasks.toggle');
+Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
 Route::get('/notes', function () {
     return Inertia::render('Notes/Index');

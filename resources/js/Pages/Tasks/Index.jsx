@@ -1,898 +1,875 @@
 import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
+import Checkbox from '@/Components/Checkbox';
 import {
     CheckSquare,
     Clock,
     CheckCircle2,
     AlertCircle,
-    MoreHorizontal,
     Plus,
     Search,
     ChevronDown,
-    ChevronLeft,
-    ChevronRight,
     Home,
-    Monitor,
-    Smartphone,
-    LayoutDashboard,
-    Link2,
+    RotateCcw,
+    Sparkles,
     Calendar as CalendarIcon,
-    BarChart2,
-    FileText,
-    ArrowUp,
+    Trash2,
+    Edit3,
+    ExternalLink,
+    Filter,
+    Layers,
+    Folder,
+    LayoutList,
+    Kanban,
+    X,
+    Check,
     ArrowRight,
-    Play,
-    User,
 } from 'lucide-react';
 
-export default function Tasks() {
-    // Search and filters
-    const [searchQuery, setSearchQuery] = useState('');
-    const [statusFilter, setStatusFilter] = useState('All');
-    const [priorityFilter, setPriorityFilter] = useState('All');
-    const [projectFilter, setProjectFilter] = useState('All');
-    const [sortFilter, setSortFilter] = useState('Due Date');
+// GitHub SVG Icon
+const GithubIcon = ({ className = 'w-3.5 h-3.5' }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+        <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+    </svg>
+);
 
-    // Selected tasks state
-    const [selectedTasks, setSelectedTasks] = useState([1, 2]);
+export default function Tasks({ tasks = [], projects = [], stats = {}, filters = {}, flash = {} }) {
+    const [viewMode, setViewMode] = useState('list'); // 'list' or 'board'
+    const [searchQuery, setSearchQuery] = useState(filters.search || '');
+    const [selectedType, setSelectedType] = useState(filters.type || 'all');
+    const [selectedStatus, setSelectedStatus] = useState(filters.status || 'all');
+    const [selectedProject, setSelectedProject] = useState(filters.project_id || 'all');
 
-    // Tasks database (matching screenshot mock)
-    const [tasks, setTasks] = useState([
-        {
-            id: 1,
-            title: 'Design landing page',
-            description: 'Create new landing page for main website',
-            project: 'Company Website',
-            projectIcon: Monitor,
-            projectColor: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60',
-            priority: 'High',
-            status: 'In Progress',
-            dueDate: '16 Sep 2025',
-            dueSubtext: '2 days left',
-            isOverdue: false,
-        },
-        {
-            id: 2,
-            title: 'Fix login bug',
-            description: 'Resolve issue with user authentication',
-            project: 'Mobile App',
-            projectIcon: Smartphone,
-            projectColor: 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60',
-            priority: 'High',
-            status: 'In Progress',
-            dueDate: '16 Sep 2025',
-            dueSubtext: '2 days left',
-            isOverdue: false,
-        },
-        {
-            id: 3,
-            title: 'Setup database',
-            description: 'Initial database structure and migration',
-            project: 'Admin Dashboard',
-            projectIcon: LayoutDashboard,
-            projectColor: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60',
-            priority: 'Medium',
-            status: 'Completed',
-            dueDate: '12 Sep 2025',
-            dueSubtext: '',
-            isOverdue: false,
-        },
-        {
-            id: 4,
-            title: 'Write API documentation',
-            description: 'Create API docs for backend services',
-            project: 'API Integration',
-            projectIcon: Link2,
-            projectColor: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60',
-            priority: 'Medium',
-            status: 'In Progress',
-            dueDate: '18 Sep 2025',
-            dueSubtext: '4 days left',
-            isOverdue: false,
-        },
-        {
-            id: 5,
-            title: 'UI/UX improvements',
-            description: 'Improve dashboard user experience',
-            project: 'Admin Dashboard',
-            projectIcon: LayoutDashboard,
-            projectColor: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60',
-            priority: 'Low',
-            status: 'Not Started',
-            dueDate: '20 Sep 2025',
-            dueSubtext: '6 days left',
-            isOverdue: false,
-        },
-        {
-            id: 6,
-            title: 'Testing & QA',
-            description: 'Perform testing on new features',
-            project: 'Mobile App',
-            projectIcon: Smartphone,
-            projectColor: 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/60',
-            priority: 'High',
-            status: 'On Hold',
-            dueDate: '14 Sep 2025',
-            dueSubtext: 'Overdue',
-            isOverdue: true,
-        },
-        {
-            id: 7,
-            title: 'Deploy to production',
-            description: 'Deploy latest version to production',
-            project: 'Company Website',
-            projectIcon: Monitor,
-            projectColor: 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/60',
-            priority: 'High',
-            status: 'Not Started',
-            dueDate: '25 Sep 2025',
-            dueSubtext: '11 days left',
-            isOverdue: false,
-        },
-        {
-            id: 8,
-            title: 'Research new features',
-            description: 'Research and plan for next phase',
-            project: 'Personal',
-            projectIcon: FileText,
-            projectColor: 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800',
-            priority: 'Low',
-            status: 'Completed',
-            dueDate: '10 Sep 2025',
-            dueSubtext: '',
-            isOverdue: false,
-        },
-    ]);
+    // Quick Add input state
+    const [quickTitle, setQuickTitle] = useState('');
+    const [quickType, setQuickType] = useState('revision');
+    const [quickProjectId, setQuickProjectId] = useState(projects[0]?.id || '');
+    const [quickPriority, setQuickPriority] = useState('High');
+    const [quickDueDate, setQuickDueDate] = useState('');
+    const [isSubmittingQuick, setIsSubmittingQuick] = useState(false);
 
-    // Today tasks in right widget
-    const [todayTasks, setTodayTasks] = useState([
-        { id: 101, title: 'Design landing page', project: 'Company Website', priority: 'High', done: false },
-        { id: 102, title: 'Fix login bug', project: 'Mobile App', priority: 'High', done: false },
-        { id: 103, title: 'Review UI design', project: 'Admin Dashboard', priority: 'Medium', done: false },
-    ]);
+    // Modal state for Add/Edit
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingTask, setEditingTask] = useState(null);
+    const [modalForm, setModalForm] = useState({
+        title: '',
+        description: '',
+        project_id: '',
+        type: 'revision',
+        priority: 'High',
+        status: 'todo',
+        due_date: '',
+    });
 
-    // Toggle today task
-    const toggleTodayTask = (id) => {
-        setTodayTasks((prev) =>
-            prev.map((item) => (item.id === id ? { ...item, done: !item.done } : item))
-        );
+    // Handle quick submit
+    const handleQuickAdd = (e) => {
+        e.preventDefault();
+        if (!quickTitle.trim()) return;
+
+        setIsSubmittingQuick(true);
+        router.post('/tasks', {
+            title: quickTitle.trim(),
+            type: quickType,
+            project_id: quickProjectId || null,
+            priority: quickPriority,
+            status: 'todo',
+            due_date: quickDueDate || null,
+        }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setQuickTitle('');
+                setQuickDueDate('');
+                setIsSubmittingQuick(false);
+            },
+            onError: () => {
+                setIsSubmittingQuick(false);
+            },
+        });
     };
 
-    // Toggle single task select checkbox
-    const toggleTaskSelect = (id) => {
-        setSelectedTasks((prev) =>
-            prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
-        );
+    // Toggle completion
+    const handleToggleTask = (taskId) => {
+        router.post(`/tasks/${taskId}/toggle`, {}, {
+            preserveScroll: true,
+        });
     };
 
-    // Toggle select all
-    const toggleSelectAll = () => {
-        if (selectedTasks.length === filteredTasks.length) {
-            setSelectedTasks([]);
-        } else {
-            setSelectedTasks(filteredTasks.map((t) => t.id));
+    // Delete task
+    const handleDeleteTask = (taskId) => {
+        if (confirm('Yakin ingin menghapus tugas ini?')) {
+            router.delete(`/tasks/${taskId}`, {
+                preserveScroll: true,
+            });
         }
     };
 
-    // Filter tasks
+    // Open Add Modal
+    const openAddModal = () => {
+        setEditingTask(null);
+        setModalForm({
+            title: '',
+            description: '',
+            project_id: projects[0]?.id || '',
+            type: 'revision',
+            priority: 'High',
+            status: 'todo',
+            due_date: '',
+        });
+        setIsModalOpen(true);
+    };
+
+    // Open Edit Modal
+    const openEditModal = (task) => {
+        setEditingTask(task);
+        setModalForm({
+            title: task.title,
+            description: task.description || '',
+            project_id: task.project_id || '',
+            type: task.type,
+            priority: task.priority,
+            status: task.status,
+            due_date: task.due_date || '',
+        });
+        setIsModalOpen(true);
+    };
+
+    // Save Modal
+    const handleSaveModal = (e) => {
+        e.preventDefault();
+        if (!modalForm.title.trim()) return;
+
+        if (editingTask) {
+            router.post(`/tasks/${editingTask.id}/update`, modalForm, {
+                preserveScroll: true,
+                onSuccess: () => setIsModalOpen(false),
+            });
+        } else {
+            router.post('/tasks', modalForm, {
+                preserveScroll: true,
+                onSuccess: () => setIsModalOpen(false),
+            });
+        }
+    };
+
+    // Filter tasks locally for responsive instant feedback
     const filteredTasks = tasks.filter((task) => {
         const matchesSearch =
+            !searchQuery ||
             task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            task.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            task.project.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesStatus = statusFilter === 'All' || task.status === statusFilter;
-        const matchesPriority = priorityFilter === 'All' || task.priority === priorityFilter;
-        const matchesProject = projectFilter === 'All' || task.project === projectFilter;
-        return matchesSearch && matchesStatus && matchesPriority && matchesProject;
+            (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (task.project && task.project.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (task.project && task.project.github_repo_name && task.project.github_repo_name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+        const matchesType = selectedType === 'all' || task.type === selectedType;
+        const matchesStatus = selectedStatus === 'all' || task.status === selectedStatus;
+        const matchesProject = selectedProject === 'all' || String(task.project_id) === String(selectedProject);
+
+        return matchesSearch && matchesType && matchesStatus && matchesProject;
     });
 
-    // Calendar cells matching the UI mockup in media_1789528221777.png
-    // Row 1: Mon (empty), Tue 1, Wed 2 (dot), Thu 3, Fri 4 (dot), Sat 5 (faded), Sun 7 (dot)
-    // Row 2: Mon 7 (dot), Tue 8 (dot), Wed 9, Thu 10, Fri 11, Sat 12, Sun 14
-    // Row 3: Mon 14, Tue 16 (active blue circle), Wed 16, Thu 17, Fri 18, Sat 19, Sun 20
-    // Row 4: Mon 21, Tue 22 (dot), Wed 23, Thu 24, Fri 25, Sat 26, Sun 27
-    // Row 5: Mon 28, Tue 29, Wed 30, Thu 1 (faded), Fri 2 (faded), Sat 3 (faded), Sun 4 (faded)
-    const calendarCells = [
-        { day: null },
-        { day: 1 },
-        { day: 2, hasDot: true },
-        { day: 3 },
-        { day: 4, hasDot: true },
-        { day: 5, isFaded: true },
-        { day: 7, hasDot: true },
+    // Helper badge configs
+    const getTypeConfig = (type) => {
+        switch (type) {
+            case 'revision':
+                return {
+                    label: 'Revisi',
+                    bg: 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/60',
+                    icon: RotateCcw,
+                };
+            case 'bugfix':
+                return {
+                    label: 'Bug Fix',
+                    bg: 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-400 border-rose-200 dark:border-rose-800/60',
+                    icon: AlertCircle,
+                };
+            case 'feature':
+                return {
+                    label: 'Fitur Baru',
+                    bg: 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/60',
+                    icon: Sparkles,
+                };
+            default:
+                return {
+                    label: 'Umum',
+                    bg: 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700',
+                    icon: CheckSquare,
+                };
+        }
+    };
 
-        { day: 7, hasDot: true },
-        { day: 8, hasDot: true },
-        { day: 9 },
-        { day: 10 },
-        { day: 11 },
-        { day: 12 },
-        { day: 14 },
-
-        { day: 14 },
-        { day: 16, isActive: true },
-        { day: 16 },
-        { day: 17 },
-        { day: 18 },
-        { day: 19 },
-        { day: 20 },
-
-        { day: 21 },
-        { day: 22, hasDot: true },
-        { day: 23 },
-        { day: 24 },
-        { day: 25 },
-        { day: 26 },
-        { day: 27 },
-
-        { day: 28 },
-        { day: 29 },
-        { day: 30 },
-        { day: 1, isFaded: true },
-        { day: 2, isFaded: true },
-        { day: 3, isFaded: true },
-        { day: 4, isFaded: true },
-    ];
+    const getPriorityConfig = (priority) => {
+        switch (priority) {
+            case 'Urgent':
+                return 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50';
+            case 'High':
+                return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-900/50';
+            case 'Medium':
+                return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/50';
+            default:
+                return 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700';
+        }
+    };
 
     return (
-        <>
-            <Head title="Tasks - WorkTrack" />
+        <DashboardLayout activePage="Tasks">
+            <Head title="Tasks & Revisi - WorkTrack" />
 
-            {/* Main 2-Column Responsive Layout (Left: Header, Stats, Table; Right: Calendar, Quick Stats, Activity) */}
-            <div className="worktrack-layout-2col pt-1">
-                {/* Left Area (Takes remaining width) */}
-                <div className="worktrack-layout-main space-y-5">
-                    {/* 1. Header & Breadcrumbs */}
-                    <div className="space-y-1">
+            <div className="space-y-6 max-w-7xl mx-auto">
+                {/* 1. Header & Quick Actions */}
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
                         {/* Breadcrumbs */}
-                        <div className="flex items-center gap-1.5 text-xs text-slate-400 dark:text-slate-400 font-medium">
+                        <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
                             <Link href="/" className="hover:text-blue-600 dark:hover:text-blue-400 flex items-center gap-1">
                                 <Home className="w-3.5 h-3.5" />
+                                <span>Home</span>
                             </Link>
-                            <ChevronRight className="w-3 h-3 text-slate-400" />
-                            <span className="text-slate-600 dark:text-slate-300">Tasks</span>
+                            <span>/</span>
+                            <span className="text-slate-700 dark:text-slate-200 font-semibold">Tasks & Revisi</span>
                         </div>
-
-                        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                            Tasks
+                        <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight mt-1">
+                            Tasks & Revisi Proyek
                         </h1>
-                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                            Organize your work, stay focused, and get things done.
+                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                            Kelola to-do, permintaan revisi klien, dan perbaikan bug yang terhubung langsung ke proyek & GitHub repository Anda.
                         </p>
                     </div>
 
-                    {/* 2. Top 4 Metric Stat Cards (Inside Left Column) */}
-                    <div className="worktrack-stats-4col">
-                        {/* Card 1: All Tasks */}
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-4 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
-                            <div className="flex items-start justify-between">
-                                <div className="w-9 h-9 rounded-md bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                                    <CheckSquare className="w-4 h-4 fill-blue-600/20" />
-                                </div>
-                                <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md">
-                                    <MoreHorizontal className="w-4 h-4" />
-                                </button>
-                            </div>
-                            <div className="mt-3">
-                                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">All Tasks</p>
-                                <h3 className="text-[26px] font-bold text-slate-900 dark:text-white mt-0.5 leading-tight">24</h3>
-                                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1">
-                                    <ArrowUp className="w-3 h-3" />
-                                    <span>6 this month</span>
-                                </p>
-                            </div>
+                    <div className="flex items-center gap-2.5 shrink-0">
+                        {/* View Switcher */}
+                        <div className="flex items-center bg-white dark:bg-[#0c183b] p-1 rounded-lg border border-slate-200 dark:border-[#223974] shadow-2xs">
+                            <button
+                                type="button"
+                                onClick={() => setViewMode('list')}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                                    viewMode === 'list'
+                                        ? 'bg-blue-600 text-white shadow-xs'
+                                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                                }`}
+                                title="Tampilan Daftar"
+                            >
+                                <LayoutList className="w-3.5 h-3.5" />
+                                <span>List</span>
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setViewMode('board')}
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
+                                    viewMode === 'board'
+                                        ? 'bg-blue-600 text-white shadow-xs'
+                                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                                }`}
+                                title="Tampilan Papan Kanban"
+                            >
+                                <Kanban className="w-3.5 h-3.5" />
+                                <span>Board</span>
+                            </button>
                         </div>
 
-                        {/* Card 2: In Progress */}
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-4 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
-                            <div className="flex items-start justify-between">
-                                <div className="w-9 h-9 rounded-md bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                                    <Play className="w-3.5 h-3.5 fill-blue-600" />
-                                </div>
-                                <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md">
-                                    <MoreHorizontal className="w-4 h-4" />
-                                </button>
-                            </div>
-                            <div className="mt-3">
-                                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">In Progress</p>
-                                <h3 className="text-[26px] font-bold text-slate-900 dark:text-white mt-0.5 leading-tight">8</h3>
-                                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1">
-                                    <ArrowUp className="w-3 h-3" />
-                                    <span>2 this month</span>
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Card 3: Completed */}
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-4 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
-                            <div className="flex items-start justify-between">
-                                <div className="w-9 h-9 rounded-md bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
-                                    <CheckCircle2 className="w-4 h-4 fill-emerald-600/20" />
-                                </div>
-                                <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md">
-                                    <MoreHorizontal className="w-4 h-4" />
-                                </button>
-                            </div>
-                            <div className="mt-3">
-                                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Completed</p>
-                                <h3 className="text-[26px] font-bold text-slate-900 dark:text-white mt-0.5 leading-tight">12</h3>
-                                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1">
-                                    <ArrowUp className="w-3 h-3" />
-                                    <span>4 this month</span>
-                                </p>
-                            </div>
-                        </div>
-
-                        {/* Card 4: Overdue */}
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-4 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
-                            <div className="flex items-start justify-between">
-                                <div className="w-9 h-9 rounded-md bg-rose-50 dark:bg-rose-950/60 flex items-center justify-center text-rose-600 dark:text-rose-400">
-                                    <Clock className="w-4 h-4 fill-rose-600/20" />
-                                </div>
-                                <button className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md">
-                                    <MoreHorizontal className="w-4 h-4" />
-                                </button>
-                            </div>
-                            <div className="mt-3">
-                                <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Overdue</p>
-                                <h3 className="text-[26px] font-bold text-slate-900 dark:text-white mt-0.5 leading-tight">4</h3>
-                                <p className="text-xs text-rose-600 dark:text-rose-400 font-semibold flex items-center gap-1 mt-1">
-                                    <ArrowUp className="w-3 h-3" />
-                                    <span>1 this month</span>
-                                </p>
-                            </div>
-                        </div>
+                        {/* Add Task Button */}
+                        <button
+                            type="button"
+                            onClick={openAddModal}
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-sm shadow-blue-500/20 transition-all hover:shadow-md cursor-pointer"
+                        >
+                            <Plus className="w-4 h-4 stroke-[2.5]" />
+                            <span>Tambah Tugas / Revisi</span>
+                        </button>
                     </div>
+                </div>
 
-                    {/* 3. Tasks Table & Filters Card */}
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs overflow-hidden transition-colors">
-                    {/* Filter & Search Bar */}
-                    <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-slate-800/80 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-                        {/* Search Input */}
-                        <div className="relative flex-1 max-w-sm">
-                            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                            <input
-                                type="text"
-                                placeholder="Search tasks..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md pl-9 pr-4 py-1.5 text-xs text-slate-700 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                            />
+                {/* 2. Top Metric Cards */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    {/* Total Tasks */}
+                    <div className="bg-white dark:bg-[#0c183b] p-4 rounded-xl border border-slate-200/80 dark:border-[#223974] shadow-xs flex items-center gap-3.5">
+                        <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                            <Layers className="w-5 h-5" />
                         </div>
-
-                        {/* Dropdown Filters */}
-                        <div className="flex flex-wrap items-center gap-2">
-                            {/* All Status */}
-                            <div className="relative">
-                                <select
-                                    value={statusFilter}
-                                    onChange={(e) => setStatusFilter(e.target.value)}
-                                    className="appearance-none bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] text-xs font-medium text-slate-700 dark:text-slate-200 rounded-md pl-3 pr-7 py-1.5 cursor-pointer focus:outline-none focus:border-blue-500"
-                                >
-                                    <option value="All">All Status</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Completed">Completed</option>
-                                    <option value="Not Started">Not Started</option>
-                                    <option value="On Hold">On Hold</option>
-                                </select>
-                                <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-                            </div>
-
-                            {/* All Priority */}
-                            <div className="relative">
-                                <select
-                                    value={priorityFilter}
-                                    onChange={(e) => setPriorityFilter(e.target.value)}
-                                    className="appearance-none bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] text-xs font-medium text-slate-700 dark:text-slate-200 rounded-md pl-3 pr-7 py-1.5 cursor-pointer focus:outline-none focus:border-blue-500"
-                                >
-                                    <option value="All">All Priority</option>
-                                    <option value="High">High</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="Low">Low</option>
-                                </select>
-                                <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-                            </div>
-
-                            {/* All Projects */}
-                            <div className="relative">
-                                <select
-                                    value={projectFilter}
-                                    onChange={(e) => setProjectFilter(e.target.value)}
-                                    className="appearance-none bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] text-xs font-medium text-slate-700 dark:text-slate-200 rounded-md pl-3 pr-7 py-1.5 cursor-pointer focus:outline-none focus:border-blue-500"
-                                >
-                                    <option value="All">All Projects</option>
-                                    <option value="Company Website">Company Website</option>
-                                    <option value="Mobile App">Mobile App</option>
-                                    <option value="Admin Dashboard">Admin Dashboard</option>
-                                    <option value="API Integration">API Integration</option>
-                                    <option value="Personal">Personal</option>
-                                </select>
-                                <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-                            </div>
-
-                            {/* Sort */}
-                            <div className="relative">
-                                <select
-                                    value={sortFilter}
-                                    onChange={(e) => setSortFilter(e.target.value)}
-                                    className="appearance-none bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] text-xs font-medium text-slate-700 dark:text-slate-200 rounded-md pl-3 pr-7 py-1.5 cursor-pointer focus:outline-none focus:border-blue-500"
-                                >
-                                    <option value="Due Date">Sort: Due Date</option>
-                                    <option value="Priority">Sort: Priority</option>
-                                    <option value="Status">Sort: Status</option>
-                                    <option value="Title">Sort: Title</option>
-                                </select>
-                                <ChevronDown className="w-3.5 h-3.5 text-slate-400 absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none" />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Table View */}
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left text-xs sm:text-sm">
-                            <thead className="bg-[#f8fafc] dark:bg-[#0c183b] text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-100 dark:border-slate-800/80">
-                                <tr>
-                                    <th className="py-3 px-4 w-10 text-center">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedTasks.length === filteredTasks.length && filteredTasks.length > 0}
-                                            onChange={toggleSelectAll}
-                                            className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                        />
-                                    </th>
-                                    <th className="py-3 px-4">Task Title</th>
-                                    <th className="py-3 px-4">Project</th>
-                                    <th className="py-3 px-4">Priority</th>
-                                    <th className="py-3 px-4">Status</th>
-                                    <th className="py-3 px-4">Due Date</th>
-                                    <th className="py-3 px-4 w-12 text-center">
-                                        <MoreHorizontal className="w-4 h-4 mx-auto text-slate-400" />
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
-                                {filteredTasks.map((item) => {
-                                    const Icon = item.projectIcon;
-                                    const isChecked = selectedTasks.includes(item.id);
-                                    return (
-                                        <tr
-                                            key={item.id}
-                                            className="hover:bg-slate-50/70 dark:hover:bg-[#122352]/40 transition-colors group"
-                                        >
-                                            {/* Checkbox */}
-                                            <td className="py-3.5 px-4 text-center">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={isChecked}
-                                                    onChange={() => toggleTaskSelect(item.id)}
-                                                    className="w-4 h-4 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                                />
-                                            </td>
-
-                                            {/* Task Title & Description */}
-                                            <td className="py-3.5 px-4">
-                                                <div>
-                                                    <h4 className="font-semibold text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                                                        {item.title}
-                                                    </h4>
-                                                    <p className="text-[11px] text-slate-400 dark:text-slate-400 mt-0.5">
-                                                        {item.description}
-                                                    </p>
-                                                </div>
-                                            </td>
-
-                                            {/* Project */}
-                                            <td className="py-3.5 px-4">
-                                                <div className="flex items-center gap-2">
-                                                    <div className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${item.projectColor}`}>
-                                                        <Icon className="w-3.5 h-3.5" />
-                                                    </div>
-                                                    <span className="font-medium text-xs text-slate-700 dark:text-slate-200">
-                                                        {item.project}
-                                                    </span>
-                                                </div>
-                                            </td>
-
-                                            {/* Priority Badge */}
-                                            <td className="py-3.5 px-4">
-                                                <span
-                                                    className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-md ${
-                                                        item.priority === 'High'
-                                                            ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50'
-                                                            : item.priority === 'Medium'
-                                                            ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/50'
-                                                            : 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/50'
-                                                    }`}
-                                                >
-                                                    {item.priority}
-                                                </span>
-                                            </td>
-
-                                            {/* Status Badge */}
-                                            <td className="py-3.5 px-4">
-                                                <span
-                                                    className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-md ${
-                                                        item.status === 'In Progress'
-                                                            ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/50'
-                                                            : item.status === 'Completed'
-                                                            ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/50'
-                                                            : item.status === 'On Hold'
-                                                            ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50'
-                                                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-                                                    }`}
-                                                >
-                                                    {item.status}
-                                                </span>
-                                            </td>
-
-                                            {/* Due Date */}
-                                            <td className="py-3.5 px-4">
-                                                <div>
-                                                    <span className="text-xs font-medium text-slate-700 dark:text-slate-200">
-                                                        {item.dueDate}
-                                                    </span>
-                                                    {item.dueSubtext && (
-                                                        <p
-                                                            className={`text-[11px] font-medium mt-0.5 ${
-                                                                item.isOverdue
-                                                                    ? 'text-rose-600 dark:text-rose-400 font-semibold'
-                                                                    : 'text-slate-400'
-                                                            }`}
-                                                        >
-                                                            {item.dueSubtext}
-                                                        </p>
-                                                    )}
-                                                </div>
-                                            </td>
-
-                                            {/* Actions */}
-                                            <td className="py-3.5 px-4 text-center">
-                                                <button className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 p-1 rounded-md">
-                                                    <MoreHorizontal className="w-4 h-4" />
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    {/* Table Pagination */}
-                    <div className="p-4 sm:px-6 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
                         <div>
-                            Showing <span className="font-semibold text-slate-800 dark:text-slate-200">1</span> to{' '}
-                            <span className="font-semibold text-slate-800 dark:text-slate-200">{filteredTasks.length}</span> of{' '}
-                            <span className="font-semibold text-slate-800 dark:text-slate-200">{tasks.length}</span> tasks
+                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Tasks</p>
+                            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
+                                {stats.total || 0}
+                            </h3>
                         </div>
+                    </div>
 
-                        <div className="flex items-center gap-1.5">
-                            <button className="w-8 h-8 rounded-md border border-slate-200 dark:border-[#243e80] flex items-center justify-center text-slate-500 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors">
-                                <ChevronLeft className="w-4 h-4" />
-                            </button>
-                            <button className="w-8 h-8 rounded-md bg-[#2952e3] text-white font-semibold flex items-center justify-center shadow-xs">
-                                1
-                            </button>
-                            <button className="w-8 h-8 rounded-md border border-slate-200 dark:border-[#243e80] flex items-center justify-center text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors font-medium">
-                                2
-                            </button>
-                            <button className="w-8 h-8 rounded-md border border-slate-200 dark:border-[#243e80] flex items-center justify-center text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors font-medium">
-                                3
-                            </button>
-                            <button className="w-8 h-8 rounded-md border border-slate-200 dark:border-[#243e80] flex items-center justify-center text-slate-500 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors">
-                                <ChevronRight className="w-4 h-4" />
-                            </button>
+                    {/* Active Revisions (Special Highlight) */}
+                    <div className="bg-white dark:bg-[#0c183b] p-4 rounded-xl border border-amber-200/80 dark:border-amber-900/40 shadow-xs flex items-center gap-3.5 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
+                        <div className="w-10 h-10 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                            <RotateCcw className="w-5 h-5 stroke-[2.2]" />
+                        </div>
+                        <div>
+                            <div className="flex items-center gap-1.5">
+                                <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold">Revisi Aktif</p>
+                                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                            </div>
+                            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
+                                {stats.revisions || 0}
+                            </h3>
+                        </div>
+                    </div>
+
+                    {/* In Progress */}
+                    <div className="bg-white dark:bg-[#0c183b] p-4 rounded-xl border border-slate-200/80 dark:border-[#223974] shadow-xs flex items-center gap-3.5">
+                        <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                            <Clock className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Sedang Dikerjakan</p>
+                            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
+                                {stats.in_progress || 0}
+                            </h3>
+                        </div>
+                    </div>
+
+                    {/* Completed */}
+                    <div className="bg-white dark:bg-[#0c183b] p-4 rounded-xl border border-slate-200/80 dark:border-[#223974] shadow-xs flex items-center gap-3.5">
+                        <div className="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                            <CheckCircle2 className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Selesai</p>
+                            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
+                                {stats.completed || 0}
+                            </h3>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Right Column: Calendar Widget, Quick Stats, Recent Activity */}
-            <div className="worktrack-layout-sidebar space-y-5">
-                {/* 1. Calendar Card (Unified card matching screenshot mockup) */}
-                <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs">
-                    {/* Card Top Header: Calendar Title + Add Task Button */}
-                    <div className="flex items-center justify-between pb-4">
-                        <div className="flex items-center gap-2">
-                            <CalendarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-slate-800 dark:text-slate-100" />
-                            <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">Calendar</h3>
-                        </div>
-
-                        <button
-                            onClick={() => alert('Fitur tambah task baru siap dikembangkan di tahap database!')}
-                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs font-semibold shadow-sm hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all"
+                {/* 3. Quick Add Bar (Ultra-convenient) */}
+                <form
+                    onSubmit={handleQuickAdd}
+                    className="bg-white dark:bg-[#0c183b] p-3 sm:p-4 rounded-xl border border-slate-200/80 dark:border-[#223974] shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-2.5"
+                >
+                    {/* Type Selector */}
+                    <div className="w-full md:w-40 shrink-0">
+                        <select
+                            value={quickType}
+                            onChange={(e) => setQuickType(e.target.value)}
+                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
                         >
-                            <Plus className="w-3.5 h-3.5 stroke-[2.5]" />
-                            <span>Add Task</span>
-                        </button>
+                            <option value="revision">Revisi Proyek</option>
+                            <option value="feature">Fitur Baru</option>
+                            <option value="bugfix">Perbaikan Bug</option>
+                            <option value="general">Tugas Umum</option>
+                        </select>
                     </div>
 
-                    {/* Month Header: September 2025 < > */}
-                    <div className="flex items-center justify-between pb-3 pt-1">
-                        <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">September 2025</h4>
-                        <div className="flex items-center gap-1 text-slate-400">
-                            <button className="p-1 hover:text-slate-700 dark:hover:text-slate-200 rounded transition-colors">
-                                <ChevronLeft className="w-3.5 h-3.5" />
-                            </button>
-                            <button className="p-1 hover:text-slate-700 dark:hover:text-slate-200 rounded transition-colors">
-                                <ChevronRight className="w-3.5 h-3.5" />
-                            </button>
+                    {/* Title Input */}
+                    <div className="flex-1 relative">
+                        <input
+                            type="text"
+                            required
+                            value={quickTitle}
+                            onChange={(e) => setQuickTitle(e.target.value)}
+                            placeholder="Tuliskan tugas atau revisi baru... (tekan Enter)"
+                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-[#0f1f4b]"
+                        />
+                    </div>
+
+                    {/* Project Selector (Direct Connection to Database Projects) */}
+                    <div className="w-full md:w-48 shrink-0">
+                        <select
+                            value={quickProjectId}
+                            onChange={(e) => setQuickProjectId(e.target.value)}
+                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                        >
+                            <option value="">-- Tanpa Proyek (Umum) --</option>
+                            {projects.map((proj) => (
+                                <option key={proj.id} value={proj.id}>
+                                    {proj.name} {proj.github_repo_name ? `(${proj.github_repo_name})` : ''}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Priority Selector */}
+                    <div className="w-full md:w-32 shrink-0">
+                        <select
+                            value={quickPriority}
+                            onChange={(e) => setQuickPriority(e.target.value)}
+                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                        >
+                            <option value="Urgent">Urgent</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+
+                    {/* Submit Button */}
+                    <button
+                        type="submit"
+                        disabled={isSubmittingQuick || !quickTitle.trim()}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-colors shrink-0 flex items-center justify-center gap-1.5 cursor-pointer"
+                    >
+                        <Plus className="w-4 h-4" />
+                        <span>Tambah</span>
+                    </button>
+                </form>
+
+                {/* 4. Filter Bar & Search */}
+                <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-white dark:bg-[#0c183b] p-3 sm:p-4 rounded-xl border border-slate-200/80 dark:border-[#223974] shadow-xs">
+                    {/* Search */}
+                    <div className="relative w-full md:w-72">
+                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Cari tugas, revisi, repo..."
+                            className="w-full pl-9 pr-3.5 py-1.5 bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
+
+                    {/* Filter Pills */}
+                    <div className="flex flex-wrap items-center gap-2">
+                        {/* Type Filter */}
+                        <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#122352] p-1 rounded-lg">
+                            {[
+                                { id: 'all', label: 'Semua' },
+                                { id: 'revision', label: 'Revisi' },
+                                { id: 'feature', label: 'Fitur' },
+                                { id: 'bugfix', label: 'Bug Fix' },
+                            ].map((tab) => (
+                                <button
+                                    key={tab.id}
+                                    type="button"
+                                    onClick={() => setSelectedType(tab.id)}
+                                    className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
+                                        selectedType === tab.id
+                                            ? 'bg-white dark:bg-[#1c3272] text-blue-600 dark:text-blue-300 shadow-2xs'
+                                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                                    }`}
+                                >
+                                    {tab.label}
+                                </button>
+                            ))}
                         </div>
-                    </div>
 
-                    {/* Weekday Names (7 columns) */}
-                    <div
-                        className="text-center text-[10px] font-semibold text-slate-400 dark:text-slate-400 pb-2"
-                        style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))' }}
-                    >
-                        <span>Mon</span>
-                        <span>Tue</span>
-                        <span>Wed</span>
-                        <span>Thu</span>
-                        <span>Fri</span>
-                        <span>Sat</span>
-                        <span>Sun</span>
-                    </div>
+                        {/* Status Filter */}
+                        <select
+                            value={selectedStatus}
+                            onChange={(e) => setSelectedStatus(e.target.value)}
+                            className="bg-slate-100 dark:bg-[#122352] border border-transparent dark:border-[#243e80] rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer"
+                        >
+                            <option value="all">Semua Status</option>
+                            <option value="todo">Antrean (To Do)</option>
+                            <option value="in_progress">Sedang Dikerjakan</option>
+                            <option value="completed">Selesai</option>
+                        </select>
 
-                    {/* Calendar Grid (7 columns with dots and active 16) */}
-                    <div
-                        className="gap-y-1 text-center text-xs"
-                        style={{ display: 'grid', gridTemplateColumns: 'repeat(7, minmax(0, 1fr))' }}
-                    >
-                        {calendarCells.map((cell, idx) => {
-                            if (!cell.day) {
-                                return <div key={idx} className="h-7" />;
-                            }
+                        {/* Project Filter */}
+                        <select
+                            value={selectedProject}
+                            onChange={(e) => setSelectedProject(e.target.value)}
+                            className="bg-slate-100 dark:bg-[#122352] border border-transparent dark:border-[#243e80] rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer max-w-[180px] truncate"
+                        >
+                            <option value="all">Semua Proyek</option>
+                            {projects.map((proj) => (
+                                <option key={proj.id} value={proj.id}>
+                                    {proj.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+
+                {/* 5. Main Content: LIST VIEW or BOARD VIEW */}
+                {viewMode === 'list' ? (
+                    /* ================= LIST VIEW ================= */
+                    <div className="bg-white dark:bg-[#0c183b] rounded-xl border border-slate-200/80 dark:border-[#223974] shadow-xs overflow-hidden">
+                        {filteredTasks.length === 0 ? (
+                            <div className="py-16 text-center space-y-3">
+                                <div className="w-14 h-14 mx-auto rounded-full bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                                    <CheckSquare className="w-7 h-7" />
+                                </div>
+                                <h3 className="text-base font-bold text-slate-800 dark:text-white">
+                                    Belum ada tugas atau revisi
+                                </h3>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                                    Tambahkan tugas baru melalui bar di atas untuk memulai tracking pengerjaan dan revisi proyek Anda.
+                                </p>
+                            </div>
+                        ) : (
+                            <div className="divide-y divide-slate-100 dark:divide-[#1b2b5a]">
+                                {filteredTasks.map((task) => {
+                                    const typeConf = getTypeConfig(task.type);
+                                    const isDone = task.status === 'completed';
+                                    const TypeIcon = typeConf.icon;
+
+                                    return (
+                                        <div
+                                            key={task.id}
+                                            className={`p-4 sm:px-5 flex items-start gap-3.5 hover:bg-slate-50/70 dark:hover:bg-[#122352]/40 transition-colors group ${
+                                                isDone ? 'bg-slate-50/40 dark:bg-[#09122c]/40' : ''
+                                            }`}
+                                        >
+                                            {/* Completion Checkbox */}
+                                            <div className="pt-0.5">
+                                                <Checkbox
+                                                    checked={isDone}
+                                                    onChange={() => handleToggleTask(task.id)}
+                                                    size="md"
+                                                />
+                                            </div>
+
+                                            {/* Main Information */}
+                                            <div className="flex-1 min-w-0 space-y-1.5">
+                                                {/* Top Meta Line: Badges */}
+                                                <div className="flex flex-wrap items-center gap-2">
+                                                    {/* Type Badge */}
+                                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border ${typeConf.bg}`}>
+                                                        <TypeIcon className="w-3 h-3" />
+                                                        <span>{typeConf.label}</span>
+                                                    </span>
+
+                                                    {/* Priority Badge */}
+                                                    <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border ${getPriorityConfig(task.priority)}`}>
+                                                        {task.priority}
+                                                    </span>
+
+                                                    {/* Related Project Badge (Direct Connection!) */}
+                                                    {task.project ? (
+                                                        <Link
+                                                            href={`/projects/${task.project.slug || task.project.id}`}
+                                                            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 dark:bg-[#182c66] text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 border border-slate-200 dark:border-[#223974] transition-colors"
+                                                        >
+                                                            <Folder className="w-3 h-3 text-blue-500" />
+                                                            <span>{task.project.name}</span>
+                                                        </Link>
+                                                    ) : (
+                                                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-medium text-slate-400 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                                            Umum
+                                                        </span>
+                                                    )}
+
+                                                    {/* Related GitHub Repository Badge */}
+                                                    {task.project?.github_repo_name && (
+                                                        <a
+                                                            href={task.project.github_repo_url || `https://github.com/${task.project.github_repo_name}`}
+                                                            target="_blank"
+                                                            rel="noreferrer"
+                                                            className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-slate-900 text-white dark:bg-slate-800 dark:text-slate-200 hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+                                                            title={`Buka repositori GitHub ${task.project.github_repo_name}`}
+                                                        >
+                                                            <GithubIcon className="w-3 h-3" />
+                                                            <span className="font-mono">{task.project.github_repo_name}</span>
+                                                            <ExternalLink className="w-2.5 h-2.5 opacity-70" />
+                                                        </a>
+                                                    )}
+
+                                                    {/* Due Date */}
+                                                    {task.due_date && (
+                                                        <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-400 ml-auto">
+                                                            <Clock className="w-3 h-3" />
+                                                            <span>{task.due_date}</span>
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                {/* Task Title */}
+                                                <h4 className={`text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-snug transition-all ${
+                                                    isDone ? 'line-through text-slate-400 dark:text-slate-500' : ''
+                                                }`}>
+                                                    {task.title}
+                                                </h4>
+
+                                                {/* Description */}
+                                                {task.description && (
+                                                    <p className={`text-xs leading-relaxed max-w-3xl ${
+                                                        isDone ? 'text-slate-400 dark:text-slate-600' : 'text-slate-500 dark:text-slate-400'
+                                                    }`}>
+                                                        {task.description}
+                                                    </p>
+                                                )}
+                                            </div>
+
+                                            {/* Action Buttons */}
+                                            <div className="flex items-center gap-1 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => openEditModal(task)}
+                                                    className="p-1.5 rounded-md text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                                    title="Edit Tugas"
+                                                >
+                                                    <Edit3 className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleDeleteTask(task.id)}
+                                                    className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                                                    title="Hapus Tugas"
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
+                    </div>
+                ) : (
+                    /* ================= BOARD (KANBAN) VIEW ================= */
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {[
+                            { id: 'todo', title: 'Antrean (To Do)', color: 'border-slate-300 dark:border-slate-700', bgHeader: 'bg-slate-100 dark:bg-slate-800' },
+                            { id: 'in_progress', title: 'Sedang Dikerjakan', color: 'border-blue-300 dark:border-blue-900', bgHeader: 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300' },
+                            { id: 'completed', title: 'Selesai', color: 'border-emerald-300 dark:border-emerald-900', bgHeader: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300' },
+                        ].map((col) => {
+                            const colTasks = filteredTasks.filter((t) => t.status === col.id);
+
                             return (
-                                <div key={idx} className="flex flex-col items-center justify-center py-0.5">
-                                    <button
-                                        className={`w-7 h-7 flex items-center justify-center text-xs transition-all ${
-                                            cell.isActive
-                                                ? 'rounded-full bg-[#2563eb] text-white font-bold shadow-md shadow-blue-500/30'
-                                                : cell.isFaded
-                                                ? 'text-slate-300 dark:text-slate-600 font-medium'
-                                                : 'rounded-md text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-medium'
-                                        }`}
-                                    >
-                                        {cell.day}
-                                    </button>
-                                    {cell.hasDot ? (
-                                        <span className="w-1 h-1 rounded-full bg-blue-600 dark:bg-blue-400 mt-0.5"></span>
-                                    ) : (
-                                        <span className="w-1 h-1 mt-0.5"></span>
-                                    )}
+                                <div
+                                    key={col.id}
+                                    className="bg-white dark:bg-[#0c183b] rounded-xl border border-slate-200/80 dark:border-[#223974] shadow-xs flex flex-col h-full min-h-[450px]"
+                                >
+                                    {/* Column Header */}
+                                    <div className={`px-4 py-3 border-b border-slate-100 dark:border-[#1b2b5a] flex items-center justify-between font-bold text-xs rounded-t-xl ${col.bgHeader}`}>
+                                        <span>{col.title}</span>
+                                        <span className="px-2 py-0.5 rounded-full bg-white dark:bg-slate-900 text-[11px] shadow-2xs font-extrabold">
+                                            {colTasks.length}
+                                        </span>
+                                    </div>
+
+                                    {/* Column Tasks */}
+                                    <div className="p-3 space-y-3 flex-1 overflow-y-auto">
+                                        {colTasks.length === 0 ? (
+                                            <div className="py-10 text-center text-xs text-slate-400">
+                                                Tidak ada tugas
+                                            </div>
+                                        ) : (
+                                            colTasks.map((task) => {
+                                                const typeConf = getTypeConfig(task.type);
+
+                                                return (
+                                                    <div
+                                                        key={task.id}
+                                                        className="bg-slate-50 dark:bg-[#122352] p-3.5 rounded-lg border border-slate-200/90 dark:border-[#243e80] shadow-xs hover:shadow-md transition-all space-y-2 group"
+                                                    >
+                                                        {/* Badges */}
+                                                        <div className="flex items-center justify-between gap-1">
+                                                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${typeConf.bg}`}>
+                                                                {typeConf.label}
+                                                            </span>
+                                                            <span className={`px-1.5 py-0.5 rounded text-[9px] font-bold border ${getPriorityConfig(task.priority)}`}>
+                                                                {task.priority}
+                                                            </span>
+                                                        </div>
+
+                                                        {/* Title */}
+                                                        <h5 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                                                            {task.title}
+                                                        </h5>
+
+                                                        {/* Related Project */}
+                                                        {task.project && (
+                                                            <div className="text-[11px] text-slate-500 dark:text-slate-300 flex items-center gap-1 truncate font-medium">
+                                                                <Folder className="w-3 h-3 text-blue-500 shrink-0" />
+                                                                <span className="truncate">{task.project.name}</span>
+                                                            </div>
+                                                        )}
+
+                                                        {/* Bottom Actions */}
+                                                        <div className="pt-2 border-t border-slate-200/60 dark:border-[#1e346e] flex items-center justify-between text-[11px]">
+                                                            {task.due_date ? (
+                                                                <span className="text-slate-400 flex items-center gap-1">
+                                                                    <Clock className="w-3 h-3" />
+                                                                    <span>{task.due_date}</span>
+                                                                </span>
+                                                            ) : <span />}
+
+                                                            <div className="flex items-center gap-1">
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => handleToggleTask(task.id)}
+                                                                    className="px-2 py-0.5 rounded text-[10px] font-semibold bg-white dark:bg-[#1c3272] border border-slate-200 dark:border-[#2c4794] text-slate-700 dark:text-slate-200 hover:text-blue-600 transition-colors"
+                                                                >
+                                                                    {task.status === 'completed' ? 'Kembalikan' : 'Selesai'}
+                                                                </button>
+                                                                <button
+                                                                    type="button"
+                                                                    onClick={() => openEditModal(task)}
+                                                                    className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-white"
+                                                                >
+                                                                    <Edit3 className="w-3.5 h-3.5" />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })
+                                        )}
+                                    </div>
                                 </div>
                             );
                         })}
                     </div>
-
-                    {/* Today Section */}
-                    <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800/80">
-                        <div className="flex items-center justify-between mb-3">
-                            <h5 className="text-xs font-bold text-blue-600 dark:text-blue-400 cursor-pointer">
-                                Today
-                            </h5>
-                            <span className="w-5 h-5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 text-[11px] font-bold flex items-center justify-center">
-                                3
-                            </span>
-                        </div>
-
-                        {/* Today Tasks List */}
-                        <div className="space-y-2.5">
-                            {todayTasks.map((t) => (
-                                <div
-                                    key={t.id}
-                                    onClick={() => toggleTodayTask(t.id)}
-                                    className="flex items-center justify-between p-2 rounded-md hover:bg-slate-50/80 dark:hover:bg-[#122352]/50 transition-colors cursor-pointer group"
-                                >
-                                    <div className="flex items-center gap-2.5 min-w-0">
-                                        <input
-                                            type="checkbox"
-                                            checked={t.done}
-                                            onChange={() => {}}
-                                            className="w-3.5 h-3.5 rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                        />
-                                        <div className="truncate">
-                                            <h6
-                                                className={`text-xs font-semibold truncate transition-colors ${
-                                                    t.done
-                                                        ? 'line-through text-slate-400 dark:text-slate-500'
-                                                        : 'text-slate-900 dark:text-slate-100 group-hover:text-blue-600 dark:group-hover:text-blue-400'
-                                                }`}
-                                            >
-                                                {t.title}
-                                            </h6>
-                                            <p className="text-[10px] text-slate-400 truncate mt-0.5">
-                                                {t.project}
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <span
-                                        className={`text-[10px] font-semibold px-2 py-0.5 rounded-md shrink-0 ml-2 ${
-                                            t.priority === 'High'
-                                                ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/50'
-                                                : 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/50'
-                                        }`}
-                                    >
-                                        {t.priority}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                    {/* 2. Quick Stats Card */}
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs">
-                        <div className="flex items-center justify-between pb-4">
-                            <div className="flex items-center gap-2">
-                                <BarChart2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />
-                                <h4 className="text-xs font-bold text-slate-900 dark:text-white">Quick Stats</h4>
-                            </div>
-                            <div className="relative">
-                                <select className="appearance-none bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] text-[11px] font-medium text-slate-700 dark:text-slate-200 rounded-md pl-2 pr-6 py-1 cursor-pointer focus:outline-none">
-                                    <option>This Week</option>
-                                    <option>This Month</option>
-                                    <option>All Time</option>
-                                </select>
-                                <ChevronDown className="w-3 h-3 text-slate-400 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-                            </div>
-                        </div>
-
-                        {/* Progress Breakdown Bars */}
-                        <div className="space-y-3.5">
-                            {/* Completed: 12 (60%) */}
-                            <div className="flex items-center justify-between gap-3 text-xs">
-                                <div className="flex items-center gap-2 w-28 shrink-0">
-                                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                    <span className="text-slate-600 dark:text-slate-300 font-medium">Completed</span>
-                                </div>
-                                <span className="font-bold text-slate-800 dark:text-slate-200 text-xs w-6 text-right">
-                                    12
-                                </span>
-                                <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div className="h-full bg-emerald-500 rounded-full w-[60%]"></div>
-                                </div>
-                                <span className="text-[11px] text-slate-400 w-8 text-right">60%</span>
-                            </div>
-
-                            {/* In Progress: 8 (40%) */}
-                            <div className="flex items-center justify-between gap-3 text-xs">
-                                <div className="flex items-center gap-2 w-28 shrink-0">
-                                    <span className="w-2 h-2 rounded-full bg-[#2952e3]"></span>
-                                    <span className="text-slate-600 dark:text-slate-300 font-medium">In Progress</span>
-                                </div>
-                                <span className="font-bold text-slate-800 dark:text-slate-200 text-xs w-6 text-right">
-                                    8
-                                </span>
-                                <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div className="h-full bg-[#2952e3] rounded-full w-[40%]"></div>
-                                </div>
-                                <span className="text-[11px] text-slate-400 w-8 text-right">40%</span>
-                            </div>
-
-                            {/* Not Started: 5 (25%) */}
-                            <div className="flex items-center justify-between gap-3 text-xs">
-                                <div className="flex items-center gap-2 w-28 shrink-0">
-                                    <span className="w-2 h-2 rounded-full bg-slate-400"></span>
-                                    <span className="text-slate-600 dark:text-slate-300 font-medium">Not Started</span>
-                                </div>
-                                <span className="font-bold text-slate-800 dark:text-slate-200 text-xs w-6 text-right">
-                                    5
-                                </span>
-                                <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div className="h-full bg-slate-400 rounded-full w-[25%]"></div>
-                                </div>
-                                <span className="text-[11px] text-slate-400 w-8 text-right">25%</span>
-                            </div>
-
-                            {/* On Hold: 3 (15%) */}
-                            <div className="flex items-center justify-between gap-3 text-xs">
-                                <div className="flex items-center gap-2 w-28 shrink-0">
-                                    <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                                    <span className="text-slate-600 dark:text-slate-300 font-medium">On Hold</span>
-                                </div>
-                                <span className="font-bold text-slate-800 dark:text-slate-200 text-xs w-6 text-right">
-                                    3
-                                </span>
-                                <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div className="h-full bg-amber-500 rounded-full w-[15%]"></div>
-                                </div>
-                                <span className="text-[11px] text-slate-400 w-8 text-right">15%</span>
-                            </div>
-
-                            {/* Overdue: 4 (20%) */}
-                            <div className="flex items-center justify-between gap-3 text-xs">
-                                <div className="flex items-center gap-2 w-28 shrink-0">
-                                    <span className="w-2 h-2 rounded-full bg-rose-500"></span>
-                                    <span className="text-slate-600 dark:text-slate-300 font-medium">Overdue</span>
-                                </div>
-                                <span className="font-bold text-slate-800 dark:text-slate-200 text-xs w-6 text-right">
-                                    4
-                                </span>
-                                <div className="flex-1 h-1.5 bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
-                                    <div className="h-full bg-rose-500 rounded-full w-[20%]"></div>
-                                </div>
-                                <span className="text-[11px] text-slate-400 w-8 text-right">20%</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* 3. Recent Activity Card */}
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs">
-                        <div className="flex items-center justify-between pb-3">
-                            <div className="flex items-center gap-2">
-                                <span className="w-1 h-4 bg-blue-600 rounded-full"></span>
-                                <h4 className="text-xs font-bold text-slate-900 dark:text-white">Recent Activity</h4>
-                            </div>
-                            <Link href="#" className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 flex items-center gap-1">
-                                <span>View All</span>
-                                <ArrowRight className="w-3 h-3" />
-                            </Link>
-                        </div>
-
-                        {/* Activities List */}
-                        <div className="space-y-3 pt-1">
-                            {/* Activity 1 */}
-                            <div className="flex items-start gap-3">
-                                <div className="w-7 h-7 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
-                                    <CheckCircle2 className="w-3.5 h-3.5" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center justify-between">
-                                        <h5 className="text-xs font-semibold text-slate-800 dark:text-white truncate">
-                                            Completed task
-                                        </h5>
-                                        <span className="text-[10px] text-slate-400 shrink-0">2 hours ago</span>
-                                    </div>
-                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                                        Setup database
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Activity 2 */}
-                            <div className="flex items-start gap-3">
-                                <div className="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
-                                    <CheckCircle2 className="w-3.5 h-3.5" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center justify-between">
-                                        <h5 className="text-xs font-semibold text-slate-800 dark:text-white truncate">
-                                            Updated task
-                                        </h5>
-                                        <span className="text-[10px] text-slate-400 shrink-0">5 hours ago</span>
-                                    </div>
-                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                                        Design landing page
-                                    </p>
-                                </div>
-                            </div>
-
-                            {/* Activity 3 */}
-                            <div className="flex items-start gap-3">
-                                <div className="w-7 h-7 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5">
-                                    <Plus className="w-3.5 h-3.5" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center justify-between">
-                                        <h5 className="text-xs font-semibold text-slate-800 dark:text-white truncate">
-                                            Created task
-                                        </h5>
-                                        <span className="text-[10px] text-slate-400 shrink-0">1 day ago</span>
-                                    </div>
-                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                                        Research new features
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                )}
             </div>
-        </>
+
+            {/* Modal Tambah / Edit Tugas */}
+            {isModalOpen && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-fadeIn"
+                    onClick={() => setIsModalOpen(false)}
+                    role="dialog"
+                    aria-modal="true"
+                >
+                    <div
+                        className="relative bg-white dark:bg-[#0c183b] border border-slate-200 dark:border-[#223974] rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-[#1b2b5a]">
+                            <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                                {editingTask ? 'Edit Tugas / Revisi' : 'Tambah Tugas / Revisi Baru'}
+                            </h3>
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(false)}
+                                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSaveModal} className="p-5 space-y-4">
+                            {/* Title */}
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                    Judul Tugas / Revisi *
+                                </label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={modalForm.title}
+                                    onChange={(e) => setModalForm({ ...modalForm, title: e.target.value })}
+                                    placeholder="Contoh: Revisi warna tombol navbar di mobile"
+                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                />
+                            </div>
+
+                            {/* Project Connection (Direct Relational Link) */}
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                    Terkait dengan Proyek (Database Projects)
+                                </label>
+                                <select
+                                    value={modalForm.project_id}
+                                    onChange={(e) => setModalForm({ ...modalForm, project_id: e.target.value })}
+                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                >
+                                    <option value="">-- Tanpa Proyek (Umum) --</option>
+                                    {projects.map((proj) => (
+                                        <option key={proj.id} value={proj.id}>
+                                            {proj.name} {proj.github_repo_name ? `(${proj.github_repo_name})` : ''}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Two Columns: Type & Priority */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                        Tipe Pekerjaan *
+                                    </label>
+                                    <select
+                                        value={modalForm.type}
+                                        onChange={(e) => setModalForm({ ...modalForm, type: e.target.value })}
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                    >
+                                        <option value="revision">Revisi Proyek</option>
+                                        <option value="feature">Pengerjaan Fitur</option>
+                                        <option value="bugfix">Perbaikan Bug</option>
+                                        <option value="general">Tugas Umum</option>
+                                    </select>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                        Tingkat Prioritas *
+                                    </label>
+                                    <select
+                                        value={modalForm.priority}
+                                        onChange={(e) => setModalForm({ ...modalForm, priority: e.target.value })}
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                    >
+                                        <option value="Urgent">Urgent</option>
+                                        <option value="High">High</option>
+                                        <option value="Medium">Medium</option>
+                                        <option value="Low">Low</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            {/* Two Columns: Status & Due Date */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                        Status Pengerjaan *
+                                    </label>
+                                    <select
+                                        value={modalForm.status}
+                                        onChange={(e) => setModalForm({ ...modalForm, status: e.target.value })}
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                    >
+                                        <option value="todo">Antrean (To Do)</option>
+                                        <option value="in_progress">Sedang Dikerjakan</option>
+                                        <option value="completed">Selesai</option>
+                                    </select>
+                                </div>
+
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                        Tenggat Waktu (Due Date)
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={modalForm.due_date}
+                                        onChange={(e) => setModalForm({ ...modalForm, due_date: e.target.value })}
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Description */}
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                    Catatan / Detail Tambahan
+                                </label>
+                                <textarea
+                                    rows={3}
+                                    value={modalForm.description}
+                                    onChange={(e) => setModalForm({ ...modalForm, description: e.target.value })}
+                                    placeholder="Tuliskan catatan revisi dari klien atau detail instruksi perbaikan..."
+                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg p-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                                />
+                            </div>
+
+                            {/* Modal Actions */}
+                            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#1b2b5a]">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsModalOpen(false)}
+                                    className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="px-5 py-2 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-colors cursor-pointer"
+                                >
+                                    {editingTask ? 'Simpan Perubahan' : 'Tambah Tugas'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+        </DashboardLayout>
     );
 }
-
-Tasks.layout = (page) => <DashboardLayout activePage="Tasks">{page}</DashboardLayout>;
