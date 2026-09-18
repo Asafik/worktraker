@@ -1177,20 +1177,9 @@ export default function Notes({
 
                     {/* Content Textarea */}
                     <div className="space-y-1.5">
-                        <div className="flex items-center justify-between">
-                            <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
-                                Isi Catatan / Poin Revisi
-                            </label>
-                            <button
-                                type="button"
-                                onClick={() => handleAiRefine('create')}
-                                disabled={isRefiningAi || !createForm.content?.trim()}
-                                className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-md text-[11px] font-semibold transition-all cursor-pointer disabled:opacity-50"
-                            >
-                                <Sparkles className={`w-3 h-3 ${isRefiningAi && aiTarget === 'create' ? 'animate-spin' : ''}`} />
-                                <span>{isRefiningAi && aiTarget === 'create' ? 'Merapikan...' : 'Rapikan dengan AI'}</span>
-                            </button>
-                        </div>
+                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                            Isi Catatan / Poin Revisi
+                        </label>
                         <textarea
                             rows={5}
                             value={createForm.content}
