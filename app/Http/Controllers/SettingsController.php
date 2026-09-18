@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class SettingsController extends Controller
@@ -48,6 +49,15 @@ class SettingsController extends Controller
         $isGoogleCalendarConnected = !empty(config('services.google_calendar.client_id'))
             && !empty(config('services.google_calendar.client_secret'))
             && !empty(config('services.google_calendar.refresh_token'));
+
+        $isGeminiConnected = !empty(config('services.gemini.key'));
+        $todayKey = 'gemini_requests_' . date('Y-m-d');
+        $tokensKey = 'gemini_tokens_' . date('Y-m-d');
+        $geminiUsedToday = (int) Cache::get($todayKey, 0);
+        $geminiTokensToday = (int) Cache::get($tokensKey, 0);
+        $geminiDailyLimit = 1500;
+        $geminiRemaining = max(0, $geminiDailyLimit - $geminiUsedToday);
+        $geminiLastRequestAt = Cache::get('gemini_last_request_at');
 
         return Inertia::render('Settings/Index', [
             'userProfile' => [
@@ -95,6 +105,21 @@ class SettingsController extends Controller
                     'avatar'      => $user->github_avatar ?? '/images/avatar1.png',
                     'url'         => $user->github_username ? 'https://github.com/' . $user->github_username : '',
                     'lastSynced'  => $user->updated_at?->format('d M Y, H:i') ?? now()->format('d M Y, H:i'),
+                ],
+                'googleGemini' => [
+                    'connected'        => $isGeminiConnected,
+                    'account'          => 'Google AI Studio (API Key)',
+                    'accountType'      => 'Gemini Free Tier Quota',
+                    'model'            => config('services.gemini.model', 'gemini-2.5-flash'),
+                    'dailyLimit'       => $geminiDailyLimit,
+                    'usedToday'        => $geminiUsedToday,
+                    'remainingToday'   => $geminiRemaining,
+                    'percentRemaining' => round(($geminiRemaining / $geminiDailyLimit) * 100, 1),
+                    'tokensToday'      => $geminiTokensToday,
+                    'rpmLimit'         => 15,
+                    'tpmLimit'         => '1.000.000',
+                    'lastSynced'       => $geminiLastRequestAt ? \Carbon\Carbon::parse($geminiLastRequestAt)->format('d M Y, H:i') : 'Belum ada request',
+                    'url'              => 'https://aistudio.google.com',
                 ],
             ],
             'flash' => [

@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -212,7 +213,17 @@ Format response WAJIB berupa JSON dengan struktur persis seperti ini:
             }
             $cleaned = trim($cleaned);
 
-            $parsed = json_decode($cleaned, true);
+            // Track usage count and tokens for settings integration monitoring
+            $todayKey = 'gemini_requests_' . date('Y-m-d');
+            Cache::add($todayKey, 0, now()->endOfDay());
+            Cache::increment($todayKey);
+            Cache::forever('gemini_last_request_at', now()->toDateTimeString());
+
+            if (isset($responseData['usageMetadata']['totalTokenCount'])) {
+                $tokensKey = 'gemini_tokens_' . date('Y-m-d');
+                Cache::add($tokensKey, 0, now()->endOfDay());
+                Cache::increment($tokensKey, (int) $responseData['usageMetadata']['totalTokenCount']);
+            }
 
             if (json_last_error() === JSON_ERROR_NONE && isset($parsed['refined_content'])) {
                 return response()->json([

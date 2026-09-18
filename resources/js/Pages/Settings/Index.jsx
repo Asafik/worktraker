@@ -86,7 +86,18 @@ const GoogleCalendarIcon = ({ className = 'w-7 h-7' }) => (
     </svg>
 );
 
-
+const GoogleGeminiIcon = ({ className = 'w-7 h-7' }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none">
+        <defs>
+            <linearGradient id="geminiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#1B72E8" />
+                <stop offset="50%" stopColor="#8AB4F8" />
+                <stop offset="100%" stopColor="#D96570" />
+            </linearGradient>
+        </defs>
+        <path d="M12 2C12 7.52 7.52 12 2 12C7.52 12 12 16.48 12 22C12 16.48 16.48 12 22 12C16.48 12 12 7.52 12 2Z" fill="url(#geminiGrad)" />
+    </svg>
+);
 
 export default function SettingsPage({ userProfile, integrationsStatus, flash }) {
     // Active tabs: Profile, Account & Security, Appearance, Integrations, Preferences
@@ -237,6 +248,22 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
             lastSynced: integrationsStatus?.googleCalendar?.lastSynced || '17 Sep 2026, 10:50',
             syncing: false,
         },
+        googleGemini: {
+            connected: integrationsStatus?.googleGemini?.connected ?? false,
+            account: integrationsStatus?.googleGemini?.account || 'Google AI Studio (API Key)',
+            accountType: integrationsStatus?.googleGemini?.accountType || 'Gemini Free Tier Quota',
+            model: integrationsStatus?.googleGemini?.model || 'gemini-2.5-flash',
+            dailyLimit: integrationsStatus?.googleGemini?.dailyLimit ?? 1500,
+            usedToday: integrationsStatus?.googleGemini?.usedToday ?? 0,
+            remainingToday: integrationsStatus?.googleGemini?.remainingToday ?? 1500,
+            percentRemaining: integrationsStatus?.googleGemini?.percentRemaining ?? 100,
+            tokensToday: integrationsStatus?.googleGemini?.tokensToday ?? 0,
+            rpmLimit: integrationsStatus?.googleGemini?.rpmLimit ?? 15,
+            tpmLimit: integrationsStatus?.googleGemini?.tpmLimit || '1.000.000',
+            lastSynced: integrationsStatus?.googleGemini?.lastSynced || 'Belum ada request',
+            url: integrationsStatus?.googleGemini?.url || 'https://aistudio.google.com',
+            syncing: false,
+        },
     }));
 
     useEffect(() => {
@@ -268,6 +295,22 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                     calendarId: integrationsStatus?.googleCalendar?.calendarId || 'primary',
                     url: integrationsStatus?.googleCalendar?.url || 'https://calendar.google.com',
                     lastSynced: integrationsStatus?.googleCalendar?.lastSynced || '17 Sep 2026, 10:50',
+                    syncing: false,
+                },
+                googleGemini: {
+                    connected: integrationsStatus?.googleGemini?.connected ?? false,
+                    account: integrationsStatus?.googleGemini?.account || 'Google AI Studio (API Key)',
+                    accountType: integrationsStatus?.googleGemini?.accountType || 'Gemini Free Tier Quota',
+                    model: integrationsStatus?.googleGemini?.model || 'gemini-2.5-flash',
+                    dailyLimit: integrationsStatus?.googleGemini?.dailyLimit ?? 1500,
+                    usedToday: integrationsStatus?.googleGemini?.usedToday ?? 0,
+                    remainingToday: integrationsStatus?.googleGemini?.remainingToday ?? 1500,
+                    percentRemaining: integrationsStatus?.googleGemini?.percentRemaining ?? 100,
+                    tokensToday: integrationsStatus?.googleGemini?.tokensToday ?? 0,
+                    rpmLimit: integrationsStatus?.googleGemini?.rpmLimit ?? 15,
+                    tpmLimit: integrationsStatus?.googleGemini?.tpmLimit || '1.000.000',
+                    lastSynced: integrationsStatus?.googleGemini?.lastSynced || 'Belum ada request',
+                    url: integrationsStatus?.googleGemini?.url || 'https://aistudio.google.com',
                     syncing: false,
                 },
             });
@@ -1873,7 +1916,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     <button
                                         onClick={() => handleSync('googleCalendar', 'Google Calendar')}
                                         disabled={integrations.googleCalendar?.syncing}
-                                        className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60"
+                                        className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60 cursor-pointer"
                                     >
                                         <RefreshCw
                                             className={`w-3.5 h-3.5 text-blue-500 ${
@@ -1881,6 +1924,166 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                             }`}
                                         />
                                         <span>Sync Now</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Integration Item 4: Google Gemini AI */}
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 shadow-xs space-y-4">
+                                <div className="flex items-start justify-between">
+                                    <div className="flex items-center gap-3.5">
+                                        <div className="w-11 h-11 rounded-lg bg-gradient-to-tr from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 border border-blue-100/80 dark:border-blue-900/50 flex items-center justify-center shrink-0 shadow-2xs">
+                                            <GoogleGeminiIcon className="w-6 h-6" />
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-2">
+                                                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                                                    Google Gemini AI
+                                                </h3>
+                                                <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-100/70 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">
+                                                    Free Tier (AI Studio)
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                                Analisis dan perapian otomatis catatan revisi programmer, deteksi singkatan, dan perbaikan typo.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex items-center gap-2 shrink-0">
+                                        {integrations.googleGemini?.connected ? (
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                                <span>Connected</span>
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                                                <span>Not Connected</span>
+                                            </span>
+                                        )}
+                                        <button
+                                            onClick={() => setModalManage('googleGemini')}
+                                            className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer"
+                                        >
+                                            <SettingsIcon className="w-3.5 h-3.5 text-slate-500" />
+                                            <span>Detail</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Quota & Credit Monitor Panel */}
+                                <div className="bg-slate-50/80 dark:bg-[#122352]/50 border border-slate-200/70 dark:border-[#243e80]/70 rounded-lg p-4 space-y-3">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <Sparkles className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                                            <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                                                Status Kuota & Kredit Gratis Hari Ini
+                                            </span>
+                                        </div>
+                                        <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-100/60 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200/60 dark:border-emerald-900/50">
+                                            {integrations.googleGemini?.remainingToday?.toLocaleString('id-ID')} / {integrations.googleGemini?.dailyLimit?.toLocaleString('id-ID')} Request Tersisa ({integrations.googleGemini?.percentRemaining}%)
+                                        </span>
+                                    </div>
+
+                                    {/* Progress Bar */}
+                                    <div className="space-y-1">
+                                        <div className="w-full bg-slate-200 dark:bg-slate-700 h-2 rounded-full overflow-hidden">
+                                            <div
+                                                className="bg-gradient-to-r from-blue-500 to-indigo-500 h-full rounded-full transition-all duration-500"
+                                                style={{ width: `${Math.min(100, Math.max(0, integrations.googleGemini?.percentRemaining ?? 100))}%` }}
+                                            />
+                                        </div>
+                                        <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-0.5">
+                                            <span>Terpakai hari ini: <strong className="text-slate-700 dark:text-slate-200">{integrations.googleGemini?.usedToday} request</strong></span>
+                                            <span>Reset otomatis: <strong>Setiap 00:00 UTC (07:00 WIB)</strong></span>
+                                        </div>
+                                    </div>
+
+                                    {/* Parameter Grid */}
+                                    <div className="grid grid-cols-3 gap-2.5 pt-1 border-t border-slate-200/60 dark:border-[#243e80]/60">
+                                        <div className="bg-white dark:bg-[#0e1d47] p-2.5 rounded-md border border-slate-200/60 dark:border-[#1e346e]">
+                                            <span className="text-[10px] text-slate-400 block font-medium">Batas Per Menit</span>
+                                            <strong className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                                                {integrations.googleGemini?.rpmLimit} RPM
+                                            </strong>
+                                            <span className="text-[9px] text-slate-500 dark:text-slate-400 block mt-0.5">1 req tiap 4 detik</span>
+                                        </div>
+                                        <div className="bg-white dark:bg-[#0e1d47] p-2.5 rounded-md border border-slate-200/60 dark:border-[#1e346e]">
+                                            <span className="text-[10px] text-slate-400 block font-medium">Token Per Menit</span>
+                                            <strong className="text-xs font-bold text-slate-800 dark:text-slate-100">
+                                                {integrations.googleGemini?.tpmLimit} TPM
+                                            </strong>
+                                            <span className="text-[9px] text-slate-500 dark:text-slate-400 block mt-0.5">~750.000 kata/mnt</span>
+                                        </div>
+                                        <div className="bg-white dark:bg-[#0e1d47] p-2.5 rounded-md border border-slate-200/60 dark:border-[#1e346e]">
+                                            <span className="text-[10px] text-slate-400 block font-medium">Model Aktif</span>
+                                            <strong className="text-xs font-bold text-indigo-600 dark:text-indigo-400 truncate block">
+                                                {integrations.googleGemini?.model}
+                                            </strong>
+                                            <span className="text-[9px] text-emerald-600 dark:text-emerald-400 block mt-0.5">Biaya: $0.00 (Free)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Feature list & Connected info */}
+                                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 pt-1 items-center">
+                                    <div className="md:col-span-8 space-y-1.5">
+                                        {[
+                                            'Pahami singkatan santai developer (bkin, ftur, pke, jwt, bg, dll)',
+                                            'Perbaiki typo dan susun menjadi poin checklist terstruktur',
+                                            'Dapat diakses langsung di editor catatan dengan tombol "Rapikan dengan AI"',
+                                            'Dilengkapi fitur Urungkan (Undo) jika ingin teks semula',
+                                        ].map((feat, i) => (
+                                            <div key={i} className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                                                <Check className="w-3.5 h-3.5 text-emerald-500 stroke-[2.5]" />
+                                                <span>{feat}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="md:col-span-4 flex flex-col items-start md:items-end justify-center space-y-1">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="w-8 h-8 rounded-full bg-white dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] flex items-center justify-center shadow-2xs">
+                                                <GoogleGeminiIcon className="w-4 h-4" />
+                                            </div>
+                                            <div className="text-left">
+                                                <h4 className="font-bold text-xs text-slate-900 dark:text-white truncate max-w-[150px]">
+                                                    {integrations.googleGemini?.account}
+                                                </h4>
+                                                <p className="text-[10px] text-slate-400">
+                                                    {integrations.googleGemini?.accountType}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <a
+                                            href={integrations.googleGemini?.url}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1 font-medium pt-1"
+                                        >
+                                            <span>Buka AI Studio</span>
+                                            <ExternalLink className="w-3 h-3" />
+                                        </a>
+                                    </div>
+                                </div>
+
+                                {/* Card Footer: Last Used & Refresh Button */}
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                    <span className="text-xs text-slate-400">
+                                        Terakhir digunakan: {integrations.googleGemini?.lastSynced}
+                                    </span>
+                                    <button
+                                        onClick={() => handleSync('googleGemini', 'Google Gemini AI')}
+                                        disabled={integrations.googleGemini?.syncing}
+                                        className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60 cursor-pointer"
+                                    >
+                                        <RefreshCw
+                                            className={`w-3.5 h-3.5 text-blue-500 ${
+                                                integrations.googleGemini?.syncing ? 'animate-spin' : ''
+                                            }`}
+                                        />
+                                        <span>Cek Koneksi</span>
                                     </button>
                                 </div>
                             </div>
@@ -2121,11 +2324,11 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                     <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
                         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                             <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                Kelola Integrasi {modalManage === 'github' ? 'GitHub' : modalManage === 'googleDrive' ? 'Google Drive' : 'Google Calendar'}
+                                Kelola Integrasi {modalManage === 'github' ? 'GitHub' : modalManage === 'googleDrive' ? 'Google Drive' : modalManage === 'googleCalendar' ? 'Google Calendar' : 'Google Gemini AI'}
                             </h3>
                             <button
                                 onClick={() => setModalManage(null)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -2133,18 +2336,46 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
 
                         <div className="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                             <p>
-                                Akun terhubung: <strong className="text-slate-900 dark:text-white">{integrations[modalManage]?.account}</strong>
+                                Akun / Layanan: <strong className="text-slate-900 dark:text-white">{integrations[modalManage]?.account}</strong>
                             </p>
-                            {modalManage === 'googleCalendar' && (
-                                <p className="text-xs text-slate-500 dark:text-slate-400">
-                                    Calendar Target: <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">{integrations.googleCalendar?.calendarId || 'primary'}</span>
+                            {modalManage === 'googleGemini' ? (
+                                <div className="space-y-2.5 pt-1">
+                                    <div className="p-3 bg-slate-50 dark:bg-[#122352] rounded-md border border-slate-200 dark:border-[#243e80] space-y-1.5 text-xs">
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-500 dark:text-slate-400">Model AI:</span>
+                                            <span className="font-mono font-semibold text-indigo-600 dark:text-indigo-400">{integrations.googleGemini?.model}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-500 dark:text-slate-400">Status Token:</span>
+                                            <span className="font-semibold text-emerald-600 dark:text-emerald-400">Tersimpan di .env</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-500 dark:text-slate-400">Sisa Kuota Hari Ini:</span>
+                                            <span className="font-semibold text-slate-800 dark:text-slate-200">{integrations.googleGemini?.remainingToday} / {integrations.googleGemini?.dailyLimit} request</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="text-slate-500 dark:text-slate-400">Reset Kuota:</span>
+                                            <span className="text-slate-600 dark:text-slate-300">00:00 UTC (07:00 WIB)</span>
+                                        </div>
+                                    </div>
+                                    <p className="text-xs text-slate-400 leading-relaxed">
+                                        Google AI Studio memberikan kuota gratis harian hingga 1.500 request per hari tanpa masa kedaluwarsa. Anda dapat langsung menggunakan fitur "Rapikan dengan AI" di halaman Catatan (Notes).
+                                    </p>
+                                </div>
+                            ) : modalManage === 'googleCalendar' ? (
+                                <>
+                                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                                        Calendar Target: <span className="font-mono font-semibold text-slate-700 dark:text-slate-300">{integrations.googleCalendar?.calendarId || 'primary'}</span>
+                                    </p>
+                                    <p className="text-xs text-slate-400">
+                                        Sinkronisasi otomatis menyinkronkan tenggat waktu (deadline), sprint, dan milestone proyek ke kalender Google Anda.
+                                    </p>
+                                </>
+                            ) : (
+                                <p className="text-xs text-slate-400">
+                                    Sinkronisasi otomatis berjalan setiap 6 jam untuk memperbarui data repositori dan file cadangan.
                                 </p>
                             )}
-                            <p className="text-xs text-slate-400">
-                                {modalManage === 'googleCalendar' 
-                                    ? 'Sinkronisasi otomatis menyinkronkan tenggat waktu (deadline), sprint, dan milestone proyek ke kalender Google Anda.'
-                                    : 'Sinkronisasi otomatis berjalan setiap 6 jam untuk memperbarui data repositori dan file cadangan.'}
-                            </p>
                         </div>
 
                         <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
