@@ -27,6 +27,11 @@ import {
     Sparkles,
     Calendar,
     X,
+    ListTodo,
+    CheckSquare,
+    Square,
+    ArrowUpRight,
+    ArrowRight,
 } from 'lucide-react';
 
 export default function Notes({
@@ -61,6 +66,13 @@ export default function Notes({
     const [aiTarget, setAiTarget] = useState(null); // 'editor' | 'create'
     const [aiNotice, setAiNotice] = useState(null); // { type, message }
     const [undoBackup, setUndoBackup] = useState(null);
+
+    // Modal state for sending note items to Tasks
+    const [isSendTasksModalOpen, setIsSendTasksModalOpen] = useState(false);
+    const [parsedTasks, setParsedTasks] = useState([]);
+    const [targetProjectId, setTargetProjectId] = useState('');
+    const [useAiTaskDesc, setUseAiTaskDesc] = useState(false); // Default FALSE as requested
+    const [isSendingToTasks, setIsSendingToTasks] = useState(false);
 
     // Modal state for creating a new note
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -339,6 +351,162 @@ export default function Notes({
             });
             setTimeout(() => setAiNotice(null), 3000);
         }
+    };
+
+    // Parse note text into modular items for tasks
+    const parseNoteItems = (content) => {
+        if (!content || !content.trim()) return [];
+        const lines = content.split('\n');
+        const items = [];
+        let currentItem = null;
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i].trim();
+            if (!line) {
+                if (currentItem && currentItem.rawDesc.length > 0) {
+                    currentItem.rawDesc.push('');
+                }
+                continue;
+            }
+
+            // Check if line starts with numbered item like "1. " or "1) "
+            const numMatch = line.match(/^(\d+)[.)]\s+(.+)/);
+            // Check if line is a bold heading like "**Title**"
+            const boldMatch = line.match(/^\*\*(.+?)\*\*(.*)/);
+
+            if (numMatch) {
+                if (currentItem) {
+                    items.push(finalizeParsedItem(currentItem, items.length + 1));
+                }
+                let titlePart = numMatch[2].trim();
+                let subDesc = '';
+                const innerBold = titlePart.match(/^\*\*(.+?)\*\*(.*)/);
+                if (innerBold) {
+                    titlePart = innerBold[1].trim();
+                    subDesc = innerBold[2].trim();
+                }
+
+                currentItem = {
+                    title: titlePart,
+                    rawDesc: subDesc ? [subDesc] : [],
+                };
+            } else if (boldMatch && !line.startsWith('* ')) {
+                if (currentItem) {
+                    items.push(finalizeParsedItem(currentItem, items.length + 1));
+                }
+                currentItem = {
+                    title: boldMatch[1].trim(),
+                    rawDesc: boldMatch[2].trim() ? [boldMatch[2].trim()] : [],
+                };
+            } else if (currentItem) {
+                currentItem.rawDesc.push(line);
+            } else {
+                currentItem = {
+                    title: line.replace(/^[-*•]\s*/, ''),
+                    rawDesc: [],
+                };
+            }
+        }
+
+        if (currentItem) {
+            items.push(finalizeParsedItem(currentItem, items.length + 1));
+        }
+
+        return items.filter((it) => it.title && it.title.trim().length > 0);
+    };
+
+    const finalizeParsedItem = (item, index) => {
+        let cleanTitle = item.title.replace(/^[*_#\s]+|[*_#\s]+$/g, '').trim();
+        if (!cleanTitle) cleanTitle = `Poin Revisi ${index}`;
+
+        let cleanDesc = item.rawDesc.join('\n').trim();
+
+        return {
+            id: `item-${index}`,
+            title: cleanTitle,
+            description: cleanDesc,
+            selected: true,
+        };
+    };
+
+    // Open Send to Tasks Modal
+    const handleOpenSendTasksModal = () => {
+        if (!editorForm.content || !editorForm.content.trim()) {
+            setAiNotice({
+                type: 'error',
+                message: 'Isi catatan masih kosong. Tulis catatan terlebih dahulu sebelum dikirim ke Tasks.',
+            });
+            setTimeout(() => setAiNotice(null), 3500);
+            return;
+        }
+
+        const items = parseNoteItems(editorForm.content);
+        if (items.length === 0) {
+            setAiNotice({
+                type: 'error',
+                message: 'Tidak dapat menemukan poin revisi. Pastikan catatan memiliki format poin atau baris teks.',
+            });
+            setTimeout(() => setAiNotice(null), 3500);
+            return;
+        }
+
+        setParsedTasks(items);
+        setTargetProjectId(editorForm.project_id || (projects[0]?.id ? String(projects[0].id) : ''));
+        setUseAiTaskDesc(false);
+        setIsSendTasksModalOpen(true);
+    };
+
+    // Toggle single item selection
+    const handleToggleTaskItem = (index) => {
+        setParsedTasks((prev) =>
+            prev.map((item, idx) =>
+                idx === index ? { ...item, selected: !item.selected } : item
+            )
+        );
+    };
+
+    // Select all / Deselect all
+    const handleSelectAllTasks = (select) => {
+        setParsedTasks((prev) => prev.map((item) => ({ ...item, selected: select })));
+    };
+
+    // Execute Send to Tasks
+    const handleExecuteSendTasks = (e) => {
+        e.preventDefault();
+        const selectedItems = parsedTasks.filter((it) => it.selected);
+        if (selectedItems.length === 0) {
+            alert('Pilih minimal satu poin tugas yang ingin dikirim.');
+            return;
+        }
+
+        setIsSendingToTasks(true);
+        router.post(
+            '/notes/send-to-tasks',
+            {
+                project_id: targetProjectId || null,
+                use_ai: useAiTaskDesc,
+                items: selectedItems.map((it) => ({
+                    title: it.title,
+                    description: it.description,
+                })),
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setIsSendingToTasks(false);
+                    setIsSendTasksModalOpen(false);
+                    setAiNotice({
+                        type: 'success',
+                        message: `${selectedItems.length} poin revisi berhasil dibuat menjadi Tasks baru!`,
+                    });
+                    setTimeout(() => setAiNotice(null), 6000);
+                },
+                onError: (err) => {
+                    setIsSendingToTasks(false);
+                    alert('Gagal mengirim ke tasks: ' + (err.message || 'Terjadi kesalahan.'));
+                },
+            }
+        );
     };
 
     // Quick formatting insertion in editor textarea
@@ -680,6 +848,17 @@ export default function Notes({
                                         </button>
 
                                         <button
+                                            type="button"
+                                            onClick={handleOpenSendTasksModal}
+                                            disabled={!editorForm.content?.trim()}
+                                            title="Kirim poin-poin revisi dari catatan ini langsung menjadi tugas di halaman Tasks"
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-xs font-semibold shadow-xs transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-emerald-500/30"
+                                        >
+                                            <ListTodo className="w-3.5 h-3.5" />
+                                            <span>Kirim ke Tasks</span>
+                                        </button>
+
+                                        <button
                                             type="submit"
                                             disabled={isSaving}
                                             className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold shadow-xs transition-all cursor-pointer ${
@@ -962,6 +1141,164 @@ export default function Notes({
                                     className="px-5 py-2 rounded-md text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-colors cursor-pointer disabled:opacity-50"
                                 >
                                     {isCreating ? 'Menyimpan...' : 'Buat Catatan'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal: Kirim Catatan ke Tasks */}
+            {isSendTasksModalOpen && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-fadeIn"
+                    onClick={() => setIsSendTasksModalOpen(false)}
+                    role="dialog"
+                    aria-modal="true"
+                >
+                    <div
+                        className="relative bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#1e346e] rounded-xl shadow-2xl max-w-xl w-full overflow-hidden flex flex-col max-h-[90vh]"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        {/* Header */}
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-[#1b2b5a] shrink-0">
+                            <div>
+                                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <ListTodo className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                                    <span>Kirim Catatan ke Tasks</span>
+                                </h3>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                    Pilih poin revisi yang ingin langsung dibuatkan kartu tugas di halaman Tasks.
+                                </p>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setIsSendTasksModalOpen(false)}
+                                className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+
+                        {/* Form Content */}
+                        <form onSubmit={handleExecuteSendTasks} className="p-6 space-y-4 overflow-y-auto flex-1">
+                            {/* Project Target Selector */}
+                            <div className="space-y-1.5">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                    Target Proyek
+                                </label>
+                                <select
+                                    value={targetProjectId}
+                                    onChange={(e) => setTargetProjectId(e.target.value)}
+                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                >
+                                    <option value="">-- Tanpa Proyek (Umum) --</option>
+                                    {projects.map((proj) => (
+                                        <option key={proj.id} value={proj.id}>
+                                            {proj.name} {proj.github_repo_name ? `(${proj.github_repo_name})` : ''}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Optional AI Description Checkbox */}
+                            <label className="flex items-start gap-2.5 p-3 rounded-lg border border-indigo-100 dark:border-indigo-950/60 bg-indigo-50/50 dark:bg-indigo-950/30 cursor-pointer select-none">
+                                <input
+                                    type="checkbox"
+                                    checked={useAiTaskDesc}
+                                    onChange={(e) => setUseAiTaskDesc(e.target.checked)}
+                                    className="mt-0.5 rounded border-indigo-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                                />
+                                <div className="space-y-0.5">
+                                    <span className="text-xs font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5">
+                                        <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                                        Rapikan deskripsi standar dengan AI (Opsional)
+                                    </span>
+                                    <p className="text-[11px] text-indigo-700/80 dark:text-indigo-300/80 leading-relaxed">
+                                        Standar: tidak dicentang (langsung disalin apa adanya, hemat kuota). Jika dicentang, AI akan merangkum deskripsi standar 2-3 poin to-the-point.
+                                    </p>
+                                </div>
+                            </label>
+
+                            {/* Section: List of detected items */}
+                            <div className="space-y-2">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                                        Pilih Poin Tugas ({parsedTasks.filter((it) => it.selected).length} dari {parsedTasks.length} terpilih)
+                                    </span>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleSelectAllTasks(true)}
+                                            className="text-blue-600 dark:text-blue-400 hover:underline font-semibold cursor-pointer"
+                                        >
+                                            Pilih Semua
+                                        </button>
+                                        <span className="text-slate-300 dark:text-slate-600">|</span>
+                                        <button
+                                            type="button"
+                                            onClick={() => handleSelectAllTasks(false)}
+                                            className="text-slate-500 dark:text-slate-400 hover:underline cursor-pointer"
+                                        >
+                                            Batal Semua
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="max-h-60 overflow-y-auto space-y-2 pr-1">
+                                    {parsedTasks.map((task, index) => (
+                                        <div
+                                            key={task.id}
+                                            onClick={() => handleToggleTaskItem(index)}
+                                            className={`p-3 rounded-lg border transition-all cursor-pointer select-none ${
+                                                task.selected
+                                                    ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-500/60 ring-1 ring-emerald-500/20'
+                                                    : 'bg-slate-50 dark:bg-[#122352]/60 border-slate-200 dark:border-[#243e80] opacity-60'
+                                            }`}
+                                        >
+                                            <div className="flex items-start gap-2.5">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={task.selected}
+                                                    onChange={() => {}} // Handled by parent div
+                                                    className="mt-1 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                                                />
+                                                <div className="space-y-1 flex-1">
+                                                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+                                                        {index + 1}. {task.title}
+                                                    </h4>
+                                                    {task.description && (
+                                                        <p className="text-[11px] text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
+                                                            {task.description}
+                                                        </p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Modal Actions */}
+                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-[#1b2b5a]">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsSendTasksModalOpen(false)}
+                                    className="px-4 py-2 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={isSendingToTasks || parsedTasks.filter((t) => t.selected).length === 0}
+                                    className="px-5 py-2 rounded-md text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-xs transition-colors cursor-pointer disabled:opacity-50 inline-flex items-center gap-1.5"
+                                >
+                                    <ListTodo className="w-4 h-4" />
+                                    <span>
+                                        {isSendingToTasks
+                                            ? 'Memproses ke Tasks...'
+                                            : `Kirim (${parsedTasks.filter((t) => t.selected).length}) Tugas ke Tasks`}
+                                    </span>
                                 </button>
                             </div>
                         </form>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Note;
 use App\Models\Project;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -159,20 +160,30 @@ class NoteController extends Controller
         $rawTitle = $validated['title'] ?? '';
         $rawContent = $validated['content'];
 
-        $prompt = "Kamu adalah asisten developer profesional yang bertugas merapikan catatan revisi dan pekerjaan teknis. Catatan ini ditulis cepat oleh programmer, sehingga seringkali terdapat banyak typo, kata-kata disingkat (bahasa Indonesia sehari-hari atau slang teknis developer), atau format yang berantakan.
+        $prompt = "Kamu adalah asisten developer profesional yang bertugas merapikan catatan revisi proyek dan pekerjaan teknis software. Catatan ini ditulis cepat oleh programmer atau klien, sehingga seringkali terdapat banyak typo, kata-kata disingkat (bahasa Indonesia sehari-hari atau istilah teknis coding), atau format yang berantakan.
 
 Tugas kamu:
-1. Pahami inti maksud dari catatan mentah tersebut.
+1. Pahami inti maksud dari setiap poin revisi/pekerjaan.
 2. Perbaiki semua salah ketik (typo) dan tata bahasa agar rapi, jelas, dan profesional.
-3. Jabarkan singkatan yang lazim dalam komunikasi kerja atau pemrograman (contoh: 'bkin' -> 'Buat/Membuat', 'ftur' -> 'fitur', 'pke' -> 'menggunakan/pakai', 'jwt' -> 'JWT', 'bg'/'benerin bg' -> 'Perbaiki bug', 'tmbah' -> 'tambah/menambahkan', 'tgl' -> 'tanggal', 'kmrn' -> 'kemarin', 'sblm' -> 'sebelum', 'lgin' -> 'login', dll).
-4. Susun hasilnya menjadi daftar poin-poin (bullet points/checklist) yang terstruktur, runut, dan langsung bisa dieksekusi.
+3. Jabarkan singkatan yang lazim (contoh: 'bkin' -> 'Membuat', 'ftur' -> 'fitur', 'pke' -> 'menggunakan', 'jwt' -> 'JWT', 'bg' -> 'bug', 'tmbah' -> 'menambahkan', 'tgl' -> 'tanggal', 'kmrn' -> 'kemarin', 'sblm' -> 'sebelum', 'lgin' -> 'login', 'db' -> 'database', dll).
+4. Susun hasilnya menjadi daftar poin-poin bernomor dengan format persis seperti ini:
+   - Setiap nomor harus memiliki **Judul Modul / Fitur / Fase** yang dicetak TEBAL (bold).
+   - Di bawah judul tebal, sertakan penjelasan singkat atau poin rincian (*) perubahannya.
+   - Contoh format:
+     1. **Pra-Landbank Fase 1**
+        Tambahkan proses verifikasi/validasi oleh Kepala Legal dan Owner.
+
+     2. **Perubahan Form Fase 1**
+        * Hapus field Jenis Konstruksi Jalan.
+        * Ubah Luas Lahan menjadi Luas Lahan di Sertifikat.
+        * Tambahkan field Luas Lahan di Lapangan.
 5. Jika judul saat ini masih kosong atau kurang deskriptif, buatkan usulan judul singkat yang profesional (maksimal 6 kata).
 6. PENTING: Jangan tambahkan kata pembuka atau penutup (seperti 'Tentu, ini hasilnya', 'Semoga bermanfaat', dll). Langsung keluarkan teks catatan yang sudah bersih dan rapi.
 
 Format response WAJIB berupa JSON dengan struktur persis seperti ini:
 {
   \"title\": \"Judul singkat profesional\",
-  \"refined_content\": \"- Poin 1\\n- Poin 2\\n- Poin 3\"
+  \"refined_content\": \"1. **Nama Modul**\\n   Rincian penjelasan...\"
 }";
 
         try {
@@ -225,6 +236,8 @@ Format response WAJIB berupa JSON dengan struktur persis seperti ini:
                 Cache::increment($tokensKey, (int) $responseData['usageMetadata']['totalTokenCount']);
             }
 
+            $parsed = json_decode($cleaned, true);
+
             if (json_last_error() === JSON_ERROR_NONE && isset($parsed['refined_content'])) {
                 return response()->json([
                     'success'         => true,
@@ -245,6 +258,105 @@ Format response WAJIB berupa JSON dengan struktur persis seperti ini:
                 'message' => 'Terjadi kendala saat memproses dengan Gemini AI: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Send selected items from a note directly into the Tasks database.
+     */
+    public function sendToTasks(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'project_id' => ['nullable', 'exists:projects,id'],
+            'use_ai'     => ['nullable', 'boolean'],
+            'items'      => ['required', 'array', 'min:1'],
+            'items.*.title'       => ['required', 'string', 'max:255'],
+            'items.*.description' => ['nullable', 'string'],
+        ]);
+
+        $userId = Auth::id() ?? User::first()?->id;
+        $projectId = $validated['project_id'] ?? null;
+        $useAi = (bool) ($validated['use_ai'] ?? false);
+        $items = $validated['items'];
+
+        $apiKey = config('services.gemini.key');
+        $model = config('services.gemini.model', 'gemini-2.5-flash');
+
+        // Optional AI standard description cleanup if user checked the option
+        if ($useAi && !empty($apiKey)) {
+            $promptItems = [];
+            foreach ($items as $idx => $item) {
+                $desc = !empty($item['description']) ? $item['description'] : 'Implementasi perubahan';
+                $promptItems[] = "Item {$idx}: Judul: {$item['title']} | Rincian: {$desc}";
+            }
+            $allText = implode("\n", $promptItems);
+
+            $aiPrompt = "Kamu bertugas membuat deskripsi task yang standar, ringkas, dan to-the-point untuk developer software (maksimal 2-3 kalimat atau 2-3 poin ringkas per item, jangan panjang-panjang, jangan bertele-tele).
+Item tugas:
+{$allText}
+
+Keluarkan format JSON array saja tanpa teks lain:
+[
+  {\"index\": 0, \"clean_description\": \"Deskripsi standar ringkas\"}
+]";
+
+            try {
+                $response = Http::timeout(25)->post("https://generativelanguage.googleapis.com/v1beta/models/{$model}:generateContent?key={$apiKey}", [
+                    'contents' => [
+                        [
+                            'parts' => [
+                                ['text' => $aiPrompt]
+                            ]
+                        ]
+                    ],
+                    'generationConfig' => [
+                        'responseMimeType' => 'application/json',
+                    ],
+                ]);
+
+                if ($response->successful()) {
+                    $responseData = $response->json();
+                    $text = $responseData['candidates'][0]['content']['parts'][0]['text'] ?? '';
+                    $cleaned = trim($text);
+                    if (str_starts_with($cleaned, '```json')) $cleaned = substr($cleaned, 7);
+                    if (str_starts_with($cleaned, '```')) $cleaned = substr($cleaned, 3);
+                    if (str_ends_with($cleaned, '```')) $cleaned = substr($cleaned, 0, -3);
+                    $parsed = json_decode(trim($cleaned), true);
+
+                    if (is_array($parsed)) {
+                        foreach ($parsed as $resItem) {
+                            $idx = $resItem['index'] ?? null;
+                            if (isset($items[$idx]) && !empty($resItem['clean_description'])) {
+                                $items[$idx]['description'] = $resItem['clean_description'];
+                            }
+                        }
+                    }
+
+                    // Track usage in Cache
+                    $todayKey = 'gemini_requests_' . date('Y-m-d');
+                    Cache::add($todayKey, 0, now()->endOfDay());
+                    Cache::increment($todayKey);
+                    Cache::forever('gemini_last_request_at', now()->toDateTimeString());
+                }
+            } catch (\Exception $e) {
+                // If AI fails, gracefully fallback to raw description without breaking
+            }
+        }
+
+        $createdCount = 0;
+        foreach ($items as $item) {
+            Task::create([
+                'user_id'     => $userId,
+                'project_id'  => $projectId,
+                'title'       => $item['title'],
+                'description' => $item['description'] ?? null,
+                'type'        => 'revision',
+                'priority'    => 'Medium',
+                'status'      => 'todo',
+            ]);
+            $createdCount++;
+        }
+
+        return back()->with('message', "{$createdCount} tugas revisi berhasil dikirim ke Tasks!");
     }
 
     /**
