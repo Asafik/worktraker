@@ -183,7 +183,7 @@ class NoteController extends Controller
         ]);
 
         $apiKey = config('services.gemini.key');
-        $model = config('services.gemini.model', 'gemini-2.5-flash');
+        $model = config('services.gemini.model', 'gemini-3.7-flash');
 
         if (empty($apiKey)) {
             return response()->json([
@@ -320,7 +320,7 @@ Format response WAJIB berupa JSON dengan struktur persis seperti ini:
         $items = $validated['items'];
 
         $apiKey = config('services.gemini.key');
-        $model = config('services.gemini.model', 'gemini-2.5-flash');
+        $model = config('services.gemini.model', 'gemini-3.7-flash');
 
         // Optional AI standard description cleanup in INDONESIAN if user checked the option
         if ($useAi && !empty($apiKey)) {
