@@ -56,6 +56,12 @@ export default function Notes({
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [copiedNotice, setCopiedNotice] = useState(false);
 
+    // AI Refinement states (Google Gemini)
+    const [isRefiningAi, setIsRefiningAi] = useState(false);
+    const [aiTarget, setAiTarget] = useState(null); // 'editor' | 'create'
+    const [aiNotice, setAiNotice] = useState(null); // { type, message }
+    const [undoBackup, setUndoBackup] = useState(null);
+
     // Modal state for creating a new note
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [createForm, setCreateForm] = useState({
@@ -243,6 +249,96 @@ export default function Notes({
         navigator.clipboard.writeText(editorForm.content);
         setCopiedNotice(true);
         setTimeout(() => setCopiedNotice(false), 2000);
+    };
+
+    // AI Refine with Google Gemini
+    const handleAiRefine = async (target = 'editor') => {
+        const content = target === 'editor' ? editorForm.content : createForm.content;
+        const title = target === 'editor' ? editorForm.title : createForm.title;
+
+        if (!content || !content.trim()) {
+            setAiNotice({
+                type: 'error',
+                message: 'Silakan tuliskan isi catatan terlebih dahulu sebelum dirapikan oleh AI.',
+            });
+            setTimeout(() => setAiNotice(null), 4000);
+            return;
+        }
+
+        setIsRefiningAi(true);
+        setAiTarget(target);
+        setAiNotice(null);
+
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            const res = await fetch('/notes/ai-refine', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ title, content }),
+            });
+
+            const data = await res.json();
+
+            if (data.success && data.refined_content) {
+                if (target === 'editor') {
+                    setUndoBackup({
+                        content: editorForm.content,
+                        title: editorForm.title,
+                    });
+                    setEditorForm((prev) => ({
+                        ...prev,
+                        content: data.refined_content,
+                        title: (!prev.title || prev.title.toLowerCase().includes('catatan baru') || prev.title.toLowerCase().includes('revisi')) && data.title ? data.title : prev.title,
+                    }));
+                    setHasUnsavedChanges(true);
+                } else {
+                    setCreateForm((prev) => ({
+                        ...prev,
+                        content: data.refined_content,
+                        title: !prev.title && data.title ? data.title : prev.title,
+                    }));
+                }
+                setAiNotice({
+                    type: 'success',
+                    message: 'Catatan berhasil dirapikan dan distrukturkan oleh Google Gemini AI!',
+                });
+            } else {
+                setAiNotice({
+                    type: 'error',
+                    message: data.message || 'Gagal memproses perapian catatan dengan AI.',
+                });
+            }
+        } catch (err) {
+            setAiNotice({
+                type: 'error',
+                message: 'Terjadi kesalahan koneksi saat menghubungi AI: ' + err.message,
+            });
+        } finally {
+            setIsRefiningAi(false);
+            setAiTarget(null);
+            setTimeout(() => setAiNotice(null), 8000);
+        }
+    };
+
+    // Undo AI refinement
+    const handleUndoRefine = () => {
+        if (undoBackup) {
+            setEditorForm((prev) => ({
+                ...prev,
+                content: undoBackup.content,
+                title: undoBackup.title,
+            }));
+            setUndoBackup(null);
+            setAiNotice({
+                type: 'info',
+                message: 'Isi catatan dikembalikan ke teks sebelum dirapikan AI.',
+            });
+            setTimeout(() => setAiNotice(null), 3000);
+        }
     };
 
     // Quick formatting insertion in editor textarea
@@ -573,6 +669,17 @@ export default function Notes({
                                         </button>
 
                                         <button
+                                            type="button"
+                                            onClick={() => handleAiRefine('editor')}
+                                            disabled={isRefiningAi || !editorForm.content?.trim()}
+                                            title="Otomatis perbaiki typo, jabarkan singkatan, dan rapikan poin dengan Gemini AI"
+                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-md text-xs font-semibold shadow-xs transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-blue-500/30"
+                                        >
+                                            <Sparkles className={`w-3.5 h-3.5 ${isRefiningAi && aiTarget === 'editor' ? 'animate-spin' : ''}`} />
+                                            <span>{isRefiningAi && aiTarget === 'editor' ? 'Merapikan...' : 'Rapikan dengan AI'}</span>
+                                        </button>
+
+                                        <button
                                             type="submit"
                                             disabled={isSaving}
                                             className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold shadow-xs transition-all cursor-pointer ${
@@ -657,6 +764,45 @@ export default function Notes({
                                         Terakhir diupdate: {formatDate(activeNote.updated_at)}
                                     </span>
                                 </div>
+
+                                {/* AI Refinement Notice / Alert Banner */}
+                                {aiNotice && (
+                                    <div className={`px-4 py-2 text-xs flex items-center justify-between gap-2 border-b transition-all ${
+                                        aiNotice.type === 'success'
+                                            ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800/60'
+                                            : aiNotice.type === 'error'
+                                            ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-200 border-rose-200 dark:border-rose-800/60'
+                                            : 'bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-800/60'
+                                    }`}>
+                                        <div className="flex items-center gap-2">
+                                            {aiNotice.type === 'success' ? (
+                                                <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                                            ) : (
+                                                <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
+                                            )}
+                                            <span>{aiNotice.message}</span>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            {undoBackup && aiNotice.type === 'success' && (
+                                                <button
+                                                    type="button"
+                                                    onClick={handleUndoRefine}
+                                                    className="inline-flex items-center gap-1 font-semibold underline hover:no-underline text-emerald-700 dark:text-emerald-300 cursor-pointer"
+                                                >
+                                                    <RotateCcw className="w-3 h-3" />
+                                                    <span>Urungkan (Undo)</span>
+                                                </button>
+                                            )}
+                                            <button
+                                                type="button"
+                                                onClick={() => setAiNotice(null)}
+                                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                            >
+                                                <X className="w-3.5 h-3.5" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
 
                                 {/* Textarea Editor Area */}
                                 <div className="p-4 sm:p-5 flex-1 flex flex-col">
@@ -778,14 +924,25 @@ export default function Notes({
 
                             {/* Content Textarea */}
                             <div className="space-y-1.5">
-                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
-                                    Isi Catatan / Poin Revisi
-                                </label>
+                                <div className="flex items-center justify-between">
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                        Isi Catatan / Poin Revisi
+                                    </label>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleAiRefine('create')}
+                                        disabled={isRefiningAi || !createForm.content?.trim()}
+                                        className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-md text-[11px] font-semibold transition-all cursor-pointer disabled:opacity-50"
+                                    >
+                                        <Sparkles className={`w-3 h-3 ${isRefiningAi && aiTarget === 'create' ? 'animate-spin' : ''}`} />
+                                        <span>{isRefiningAi && aiTarget === 'create' ? 'Merapikan...' : 'Rapikan dengan AI'}</span>
+                                    </button>
+                                </div>
                                 <textarea
                                     rows={5}
                                     value={createForm.content}
                                     onChange={(e) => setCreateForm({ ...createForm, content: e.target.value })}
-                                    placeholder="Tuliskan catatan revisi panjang dari WhatsApp, email, atau instruksi meeting..."
+                                    placeholder="Tuliskan catatan revisi cepat, singkatan, atau instruksi meeting..."
                                     className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md p-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
                                 />
                             </div>

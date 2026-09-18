@@ -53,6 +53,7 @@ use App\Http\Controllers\NoteController;
 
 Route::get('/notes', [NoteController::class, 'index'])->name('notes');
 Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
+Route::post('/notes/ai-refine', [NoteController::class, 'aiRefine'])->name('notes.ai-refine');
 Route::post('/notes/{note}/update', [NoteController::class, 'update'])->name('notes.update');
 Route::delete('/notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
 
