@@ -211,6 +211,20 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
         }
     };
 
+    const formatCompletedDate = (dateStr) => {
+        if (!dateStr) return '';
+        try {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+            });
+        } catch (e) {
+            return dateStr;
+        }
+    };
+
     return (
         <DashboardLayout activePage="Tasks">
             <Head title="Tasks & Revisi - WorkTrack" />
@@ -560,13 +574,18 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                         </a>
                                                     )}
 
-                                                    {/* Due Date */}
-                                                    {task.due_date && (
+                                                    {/* Date: Completed Date (auto on check) or Target Due Date */}
+                                                    {isDone && task.completed_at ? (
+                                                        <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 px-2.5 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-900/50 ml-auto">
+                                                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                                                            <span>Selesai {formatCompletedDate(task.completed_at)}</span>
+                                                        </span>
+                                                    ) : task.due_date ? (
                                                         <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 dark:text-slate-400 ml-auto">
                                                             <Clock className="w-3 h-3" />
-                                                            <span>{task.due_date}</span>
+                                                            <span>Target: {task.due_date}</span>
                                                         </span>
-                                                    )}
+                                                    ) : null}
                                                 </div>
 
                                                 {/* Task Title */}
@@ -674,10 +693,15 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
 
                                                         {/* Bottom Actions */}
                                                         <div className="pt-2 border-t border-slate-200/60 dark:border-[#1e346e] flex items-center justify-between text-[11px]">
-                                                            {task.due_date ? (
-                                                                <span className="text-slate-400 flex items-center gap-1">
+                                                            {task.status === 'completed' && task.completed_at ? (
+                                                                <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 text-[10px]">
+                                                                    <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                                                                    <span>Selesai {formatCompletedDate(task.completed_at)}</span>
+                                                                </span>
+                                                            ) : task.due_date ? (
+                                                                <span className="text-slate-400 flex items-center gap-1 text-[10px]">
                                                                     <Clock className="w-3 h-3" />
-                                                                    <span>{task.due_date}</span>
+                                                                    <span>Target: {task.due_date}</span>
                                                                 </span>
                                                             ) : <span />}
 
@@ -824,7 +848,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
 
                                 <div className="space-y-1.5">
                                     <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
-                                        Tenggat Waktu (Due Date)
+                                        Target Deadline (Opsional)
                                     </label>
                                     <input
                                         type="date"
