@@ -215,7 +215,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
         <DashboardLayout activePage="Tasks">
             <Head title="Tasks & Revisi - WorkTrack" />
 
-            <div className="space-y-6 max-w-7xl mx-auto">
+            <div className="space-y-6 w-full">
                 {/* 1. Header & Quick Actions */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
