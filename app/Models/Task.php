@@ -13,6 +13,7 @@ class Task extends Model
     protected $fillable = [
         'user_id',
         'project_id',
+        'note_id',
         'title',
         'description',
         'type',
@@ -33,6 +34,14 @@ class Task extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
+    }
+
+    /**
+     * Get the note associated with this task.
+     */
+    public function note(): BelongsTo
+    {
+        return $this->belongsTo(Note::class);
     }
 
     /**

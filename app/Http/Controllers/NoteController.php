@@ -26,6 +26,7 @@ class NoteController extends Controller
 
         $query = Note::with([
             'project:id,name,slug,github_repo_name,github_repo_url,category,status,company_name',
+            'tasks:id,note_id,title,status',
         ])
         ->where(function ($q) use ($userId) {
             $q->where('user_id', $userId)->orWhereNull('user_id');
@@ -54,6 +55,40 @@ class NoteController extends Controller
         }
 
         $notes = $query->latest('updated_at')->get();
+
+        // Auto-reconcile [Masuk Tasks] tags in note content if tasks have been deleted from Tasks page
+        $activeTaskTitles = Task::where(function ($q) use ($userId) {
+            $q->where('user_id', $userId)->orWhereNull('user_id');
+        })->pluck('title')->map(fn ($t) => strtolower(trim(preg_replace('/\[Masuk Tasks\]|\(Masuk Tasks\)/i', '', $t))))->toArray();
+
+        foreach ($notes as $note) {
+            if (!empty($note->content) && (stripos($note->content, '[Masuk Tasks]') !== false || stripos($note->content, '(Masuk Tasks)') !== false)) {
+                $content = $note->content;
+                $pattern = '/(?:\*\*([^*]+)\*\*|([^\n\r*]+?))\s*(?:\[Masuk Tasks\]|\(Masuk Tasks\))/i';
+                $reconciled = preg_replace_callback($pattern, function ($matches) use ($activeTaskTitles, $note) {
+                    $rawTitle = trim(!empty($matches[1]) ? $matches[1] : $matches[2]);
+                    $cleanTitle = strtolower(trim(preg_replace('/^\d+\.\s*/', '', $rawTitle)));
+
+                    $taskExists = in_array($cleanTitle, $activeTaskTitles) ||
+                        $note->tasks->contains(function ($t) use ($cleanTitle) {
+                            $tClean = strtolower(trim(preg_replace('/\[Masuk Tasks\]|\(Masuk Tasks\)/i', '', $t->title)));
+                            return $tClean === $cleanTitle;
+                        });
+
+                    if ($taskExists) {
+                        return $matches[0];
+                    } else {
+                        // Task was deleted from Tasks page, so remove the tag
+                        return !empty($matches[1]) ? "**{$matches[1]}**" : $matches[2];
+                    }
+                }, $content);
+
+                if ($reconciled !== $content) {
+                    $note->update(['content' => $reconciled]);
+                    $note->content = $reconciled;
+                }
+            }
+        }
 
         // Projects for selector dropdown
         $projects = Project::where(function ($q) use ($userId) {
@@ -352,11 +387,20 @@ Keluarkan format JSON array saja tanpa teks lain:
             }
         }
 
+        $note = !empty($validated['note_id'])
+            ? Note::where('id', $validated['note_id'])
+                ->where(function ($q) use ($userId) {
+                    $q->where('user_id', $userId)->orWhereNull('user_id');
+                })
+                ->first()
+            : null;
+
         $createdCount = 0;
         foreach ($items as $item) {
             Task::create([
                 'user_id'     => $userId,
                 'project_id'  => $projectId,
+                'note_id'     => $note?->id,
                 'title'       => $item['title'],
                 'description' => $item['description'] ?? null,
                 'type'        => $taskType,
@@ -367,15 +411,8 @@ Keluarkan format JSON array saja tanpa teks lain:
         }
 
         // Mark items inside the note content so user knows which points are already in Tasks
-        if (!empty($validated['note_id'])) {
-            $note = Note::where('id', $validated['note_id'])
-                ->where(function ($q) use ($userId) {
-                    $q->where('user_id', $userId)->orWhereNull('user_id');
-                })
-                ->first();
-
-            if ($note && !empty($note->content)) {
-                $updatedContent = $note->content;
+        if ($note && !empty($note->content)) {
+            $updatedContent = $note->content;
                 foreach ($items as $item) {
                     $rawTitle = trim(preg_replace('/\[Masuk Tasks\]|\(Masuk Tasks\)/i', '', $item['title']));
                     if (empty($rawTitle)) continue;
@@ -393,7 +430,6 @@ Keluarkan format JSON array saja tanpa teks lain:
                 }
                 $note->update(['content' => $updatedContent]);
             }
-        }
 
         return back()->with('message', "{$createdCount} tugas berhasil dikirim ke Tasks!");
     }

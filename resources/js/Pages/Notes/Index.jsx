@@ -510,14 +510,25 @@ export default function Notes({
     };
 
     const finalizeParsedItem = (item, index) => {
-        const hasTag = /\[Masuk Tasks\]|\(Masuk Tasks\)/i.test(item.title) ||
-            item.rawDesc.some((d) => /\[Masuk Tasks\]|\(Masuk Tasks\)/i.test(d));
-
         let cleanTitle = item.title
             .replace(/\[Masuk Tasks\]|\(Masuk Tasks\)/gi, '')
             .replace(/^[*_#\s]+|[*_#\s]+$/g, '')
             .trim();
         if (!cleanTitle) cleanTitle = `Poin Revisi ${index}`;
+
+        // Verify with active note tasks in database
+        const isLinkedToActiveTask = (activeNote?.tasks || []).some((t) => {
+            const tClean = t.title.toLowerCase().trim();
+            return tClean === cleanTitle.toLowerCase() ||
+                tClean.includes(cleanTitle.toLowerCase()) ||
+                cleanTitle.toLowerCase().includes(tClean);
+        });
+
+        // If activeNote.tasks is available, use database relationship as source of truth
+        const hasTag = activeNote?.tasks !== undefined
+            ? isLinkedToActiveTask
+            : (/\[Masuk Tasks\]|\(Masuk Tasks\)/i.test(item.title) ||
+               item.rawDesc.some((d) => /\[Masuk Tasks\]|\(Masuk Tasks\)/i.test(d)));
 
         let cleanDesc = item.rawDesc
             .map((d) => d.replace(/\[Masuk Tasks\]|\(Masuk Tasks\)/gi, '').trim())
@@ -885,7 +896,7 @@ export default function Notes({
                                                     </span>
                                                 )}
 
-                                                {note.content && (/\[Masuk Tasks\]|\(Masuk Tasks\)/i.test(note.content)) && (
+                                                {(note.tasks !== undefined ? note.tasks.length > 0 : (note.content && /\[Masuk Tasks\]|\(Masuk Tasks\)/i.test(note.content))) && (
                                                     <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800/60">
                                                         <Check className="w-2.5 h-2.5" />
                                                         <span>Ada di Tasks</span>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Note;
 use App\Models\Project;
 use App\Models\Task;
 use App\Models\User;
@@ -215,10 +216,43 @@ class TaskController extends Controller
     }
 
     /**
-     * Delete a task.
+     * Delete a task and remove [Masuk Tasks] tag from origin note if applicable.
      */
     public function destroy(Task $task): RedirectResponse
     {
+        // Reconcile and remove [Masuk Tasks] tag from Note if this task originated from a note
+        $rawTitle = trim(preg_replace('/\[Masuk Tasks\]|\(Masuk Tasks\)/i', '', $task->title));
+        if (!empty($rawTitle)) {
+            $quoted = preg_quote($rawTitle, '/');
+            $notesToClean = collect();
+
+            if ($task->note_id && $task->note) {
+                $notesToClean->push($task->note);
+            } else {
+                // Fallback: search notes that contain this task's title and [Masuk Tasks]
+                $notesToClean = Note::where('content', 'LIKE', "%{$rawTitle}%")
+                    ->where(function ($q) {
+                        $q->where('content', 'LIKE', '%[Masuk Tasks]%')
+                          ->orWhere('content', 'LIKE', '%(Masuk Tasks)%');
+                    })
+                    ->get();
+            }
+
+            foreach ($notesToClean as $note) {
+                if (!empty($note->content)) {
+                    $cleanedContent = preg_replace(
+                        "/(?:\*\*" . $quoted . "\*\*|" . $quoted . ")\s*(?:\[Masuk Tasks\]|\(Masuk Tasks\))/i",
+                        str_contains($note->content, "**{$rawTitle}**") ? "**{$rawTitle}**" : $rawTitle,
+                        $note->content
+                    );
+
+                    if ($cleanedContent !== $note->content) {
+                        $note->update(['content' => $cleanedContent]);
+                    }
+                }
+            }
+        }
+
         $task->delete();
 
         return back()->with('message', 'Tugas berhasil dihapus.');
