@@ -164,11 +164,12 @@ class NoteController extends Controller
 
 Tugas kamu:
 1. Pahami inti maksud dari setiap poin revisi/pekerjaan.
-2. Perbaiki semua salah ketik (typo) dan tata bahasa agar rapi, jelas, dan profesional.
-3. Jabarkan singkatan yang lazim (contoh: 'bkin' -> 'Membuat', 'ftur' -> 'fitur', 'pke' -> 'menggunakan', 'jwt' -> 'JWT', 'bg' -> 'bug', 'tmbah' -> 'menambahkan', 'tgl' -> 'tanggal', 'kmrn' -> 'kemarin', 'sblm' -> 'sebelum', 'lgin' -> 'login', 'db' -> 'database', dll).
-4. Susun hasilnya menjadi daftar poin-poin bernomor dengan format persis seperti ini:
+2. WAJIB MENGGUNAKAN BAHASA INDONESIA yang baku, profesional, dan to-the-point! DILARANG KERAS menggunakan bahasa Inggris (kecuali istilah teknis lazim seperti JWT, API, bug, database).
+3. Perbaiki semua salah ketik (typo) dan tata bahasa agar rapi, jelas, dan profesional.
+4. Jabarkan singkatan yang lazim (contoh: 'bkin' -> 'Membuat', 'ftur' -> 'fitur', 'pke' -> 'menggunakan', 'jwt' -> 'JWT', 'bg' -> 'bug', 'tmbah' -> 'menambahkan', 'tgl' -> 'tanggal', 'kmrn' -> 'kemarin', 'sblm' -> 'sebelum', 'lgin' -> 'login', 'db' -> 'database', dll).
+5. Susun hasilnya menjadi daftar poin-poin bernomor dengan format persis seperti ini:
    - Setiap nomor harus memiliki **Judul Modul / Fitur / Fase** yang dicetak TEBAL (bold).
-   - Di bawah judul tebal, sertakan penjelasan singkat atau poin rincian (*) perubahannya.
+   - Di bawah judul tebal, sertakan penjelasan singkat atau poin rincian (*) perubahannya dalam Bahasa Indonesia.
    - Contoh format:
      1. **Pra-Landbank Fase 1**
         Tambahkan proses verifikasi/validasi oleh Kepala Legal dan Owner.
@@ -177,8 +178,8 @@ Tugas kamu:
         * Hapus field Jenis Konstruksi Jalan.
         * Ubah Luas Lahan menjadi Luas Lahan di Sertifikat.
         * Tambahkan field Luas Lahan di Lapangan.
-5. Jika judul saat ini masih kosong atau kurang deskriptif, buatkan usulan judul singkat yang profesional (maksimal 6 kata).
-6. PENTING: Jangan tambahkan kata pembuka atau penutup (seperti 'Tentu, ini hasilnya', 'Semoga bermanfaat', dll). Langsung keluarkan teks catatan yang sudah bersih dan rapi.
+6. Jika judul saat ini masih kosong atau kurang deskriptif, buatkan usulan judul singkat yang profesional dalam Bahasa Indonesia (maksimal 6 kata).
+7. PENTING: Jangan tambahkan kata pembuka atau penutup (seperti 'Tentu, ini hasilnya', 'Semoga bermanfaat', dll). Langsung keluarkan teks catatan yang sudah bersih dan rapi.
 
 Format response WAJIB berupa JSON dengan struktur persis seperti ini:
 {
@@ -267,6 +268,9 @@ Format response WAJIB berupa JSON dengan struktur persis seperti ini:
     {
         $validated = $request->validate([
             'project_id' => ['nullable', 'exists:projects,id'],
+            'note_id'    => ['nullable', 'exists:notes,id'],
+            'task_type'  => ['nullable', 'string', 'in:revision,feature,bugfix,general'],
+            'priority'   => ['nullable', 'string', 'in:Low,Medium,High,Urgent'],
             'use_ai'     => ['nullable', 'boolean'],
             'items'      => ['required', 'array', 'min:1'],
             'items.*.title'       => ['required', 'string', 'max:255'],
@@ -275,28 +279,34 @@ Format response WAJIB berupa JSON dengan struktur persis seperti ini:
 
         $userId = Auth::id() ?? User::first()?->id;
         $projectId = $validated['project_id'] ?? null;
+        $taskType = $validated['task_type'] ?? 'revision';
+        $priority = $validated['priority'] ?? 'Medium';
         $useAi = (bool) ($validated['use_ai'] ?? false);
         $items = $validated['items'];
 
         $apiKey = config('services.gemini.key');
         $model = config('services.gemini.model', 'gemini-2.5-flash');
 
-        // Optional AI standard description cleanup if user checked the option
+        // Optional AI standard description cleanup in INDONESIAN if user checked the option
         if ($useAi && !empty($apiKey)) {
             $promptItems = [];
             foreach ($items as $idx => $item) {
-                $desc = !empty($item['description']) ? $item['description'] : 'Implementasi perubahan';
+                $desc = !empty($item['description']) ? $item['description'] : 'Implementasi perubahan sesuai rincian.';
                 $promptItems[] = "Item {$idx}: Judul: {$item['title']} | Rincian: {$desc}";
             }
             $allText = implode("\n", $promptItems);
 
-            $aiPrompt = "Kamu bertugas membuat deskripsi task yang standar, ringkas, dan to-the-point untuk developer software (maksimal 2-3 kalimat atau 2-3 poin ringkas per item, jangan panjang-panjang, jangan bertele-tele).
-Item tugas:
+            $aiPrompt = "Kamu bertugas membuat deskripsi task yang standar, ringkas, dan to-the-point untuk developer software.
+ATURAN KETAT:
+1. WAJIB GUNAKAN BAHASA INDONESIA yang baku, profesional, dan to-the-point! DILARANG KERAS menggunakan bahasa Inggris (kecuali istilah teknis lazim seperti JWT, API, bug, database).
+2. Panjang maksimal: 2-3 kalimat ringkas atau 2-3 poin to-the-point per item. Jangan panjang-panjang, jangan bertele-tele.
+
+Item tugas yang perlu dirapikan:
 {$allText}
 
 Keluarkan format JSON array saja tanpa teks lain:
 [
-  {\"index\": 0, \"clean_description\": \"Deskripsi standar ringkas\"}
+  {\"index\": 0, \"clean_description\": \"Deskripsi standar ringkas dalam bahasa Indonesia\"}
 ]";
 
             try {
@@ -349,14 +359,43 @@ Keluarkan format JSON array saja tanpa teks lain:
                 'project_id'  => $projectId,
                 'title'       => $item['title'],
                 'description' => $item['description'] ?? null,
-                'type'        => 'revision',
-                'priority'    => 'Medium',
+                'type'        => $taskType,
+                'priority'    => $priority,
                 'status'      => 'todo',
             ]);
             $createdCount++;
         }
 
-        return back()->with('message', "{$createdCount} tugas revisi berhasil dikirim ke Tasks!");
+        // Mark items inside the note content so user knows which points are already in Tasks
+        if (!empty($validated['note_id'])) {
+            $note = Note::where('id', $validated['note_id'])
+                ->where(function ($q) use ($userId) {
+                    $q->where('user_id', $userId)->orWhereNull('user_id');
+                })
+                ->first();
+
+            if ($note && !empty($note->content)) {
+                $updatedContent = $note->content;
+                foreach ($items as $item) {
+                    $rawTitle = trim(preg_replace('/\[Masuk Tasks\]|\(Masuk Tasks\)/i', '', $item['title']));
+                    if (empty($rawTitle)) continue;
+
+                    $quoted = preg_quote($rawTitle, '/');
+                    // Check if already tagged
+                    if (!preg_match("/\*\*" . $quoted . "\*\*\s*\[Masuk Tasks\]/i", $updatedContent) &&
+                        !preg_match("/" . $quoted . "\s*\[Masuk Tasks\]/i", $updatedContent)) {
+                        if (preg_match("/\*\*" . $quoted . "\*\*/i", $updatedContent)) {
+                            $updatedContent = preg_replace("/\*\*" . $quoted . "\*\*/i", "**{$rawTitle}** [Masuk Tasks]", $updatedContent, 1);
+                        } else {
+                            $updatedContent = preg_replace("/" . $quoted . "/i", "{$rawTitle} [Masuk Tasks]", $updatedContent, 1);
+                        }
+                    }
+                }
+                $note->update(['content' => $updatedContent]);
+            }
+        }
+
+        return back()->with('message', "{$createdCount} tugas berhasil dikirim ke Tasks!");
     }
 
     /**

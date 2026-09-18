@@ -71,6 +71,8 @@ export default function Notes({
     const [isSendTasksModalOpen, setIsSendTasksModalOpen] = useState(false);
     const [parsedTasks, setParsedTasks] = useState([]);
     const [targetProjectId, setTargetProjectId] = useState('');
+    const [taskType, setTaskType] = useState('revision');
+    const [taskPriority, setTaskPriority] = useState('Medium');
     const [useAiTaskDesc, setUseAiTaskDesc] = useState(false); // Default FALSE as requested
     const [isSendingToTasks, setIsSendingToTasks] = useState(false);
 
@@ -416,16 +418,27 @@ export default function Notes({
     };
 
     const finalizeParsedItem = (item, index) => {
-        let cleanTitle = item.title.replace(/^[*_#\s]+|[*_#\s]+$/g, '').trim();
+        const hasTag = /\[Masuk Tasks\]|\(Masuk Tasks\)/i.test(item.title) ||
+            item.rawDesc.some((d) => /\[Masuk Tasks\]|\(Masuk Tasks\)/i.test(d));
+
+        let cleanTitle = item.title
+            .replace(/\[Masuk Tasks\]|\(Masuk Tasks\)/gi, '')
+            .replace(/^[*_#\s]+|[*_#\s]+$/g, '')
+            .trim();
         if (!cleanTitle) cleanTitle = `Poin Revisi ${index}`;
 
-        let cleanDesc = item.rawDesc.join('\n').trim();
+        let cleanDesc = item.rawDesc
+            .map((d) => d.replace(/\[Masuk Tasks\]|\(Masuk Tasks\)/gi, '').trim())
+            .filter(Boolean)
+            .join('\n')
+            .trim();
 
         return {
             id: `item-${index}`,
             title: cleanTitle,
             description: cleanDesc,
-            selected: true,
+            alreadyInTasks: hasTag,
+            selected: !hasTag,
         };
     };
 
@@ -452,6 +465,16 @@ export default function Notes({
 
         setParsedTasks(items);
         setTargetProjectId(editorForm.project_id || (projects[0]?.id ? String(projects[0].id) : ''));
+        if (editorForm.category === 'Idea') {
+            setTaskType('feature');
+        } else if (editorForm.category === 'Revision') {
+            setTaskType('revision');
+        } else if (editorForm.category === 'Technical') {
+            setTaskType('bugfix');
+        } else {
+            setTaskType('revision');
+        }
+        setTaskPriority('Medium');
         setUseAiTaskDesc(false);
         setIsSendTasksModalOpen(true);
     };
@@ -483,7 +506,10 @@ export default function Notes({
         router.post(
             '/notes/send-to-tasks',
             {
-                project_id: targetProjectId || null,
+                project_id: targetProjectId ? Number(targetProjectId) : null,
+                note_id: activeNote?.id || null,
+                task_type: taskType,
+                priority: taskPriority,
                 use_ai: useAiTaskDesc,
                 items: selectedItems.map((it) => ({
                     title: it.title,
@@ -495,9 +521,39 @@ export default function Notes({
                 onSuccess: () => {
                     setIsSendingToTasks(false);
                     setIsSendTasksModalOpen(false);
+
+                    // Update editor content locally with [Masuk Tasks] tag for sent items
+                    let newContent = editorForm.content;
+                    selectedItems.forEach((it) => {
+                        const rawTitle = it.title.trim();
+                        if (!rawTitle) return;
+                        const quoted = rawTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        if (
+                            !new RegExp('\\*\\*' + quoted + '\\*\\*\\s*\\[Masuk Tasks\\]', 'i').test(newContent) &&
+                            !new RegExp(quoted + '\\s*\\[Masuk Tasks\\]', 'i').test(newContent)
+                        ) {
+                            if (new RegExp('\\*\\*' + quoted + '\\*\\*', 'i').test(newContent)) {
+                                newContent = newContent.replace(
+                                    new RegExp('\\*\\*' + quoted + '\\*\\*', 'i'),
+                                    `**${rawTitle}** [Masuk Tasks]`
+                                );
+                            } else {
+                                newContent = newContent.replace(
+                                    new RegExp(quoted, 'i'),
+                                    `${rawTitle} [Masuk Tasks]`
+                                );
+                            }
+                        }
+                    });
+
+                    setEditorForm((prev) => ({
+                        ...prev,
+                        content: newContent,
+                    }));
+
                     setAiNotice({
                         type: 'success',
-                        message: `${selectedItems.length} poin revisi berhasil dibuat menjadi Tasks baru!`,
+                        message: `${selectedItems.length} tugas berhasil dikirim ke Tasks dan ditandai [Masuk Tasks] di catatan!`,
                     });
                     setTimeout(() => setAiNotice(null), 6000);
                 },
@@ -740,6 +796,13 @@ export default function Notes({
                                                 ) : (
                                                     <span className="text-[10px] text-slate-400 dark:text-slate-500">
                                                         (Umum)
+                                                    </span>
+                                                )}
+
+                                                {note.content && (/\[Masuk Tasks\]|\(Masuk Tasks\)/i.test(note.content)) && (
+                                                    <span className="inline-flex items-center gap-1 text-[10px] font-bold bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-200 dark:border-emerald-800/60">
+                                                        <Check className="w-2.5 h-2.5" />
+                                                        <span>Ada di Tasks</span>
                                                     </span>
                                                 )}
                                             </div>
@@ -1182,23 +1245,60 @@ export default function Notes({
 
                         {/* Form Content */}
                         <form onSubmit={handleExecuteSendTasks} className="p-6 space-y-4 overflow-y-auto flex-1">
-                            {/* Project Target Selector */}
-                            <div className="space-y-1.5">
-                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
-                                    Target Proyek
-                                </label>
-                                <select
-                                    value={targetProjectId}
-                                    onChange={(e) => setTargetProjectId(e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
-                                >
-                                    <option value="">-- Tanpa Proyek (Umum) --</option>
-                                    {projects.map((proj) => (
-                                        <option key={proj.id} value={proj.id}>
-                                            {proj.name} {proj.github_repo_name ? `(${proj.github_repo_name})` : ''}
-                                        </option>
-                                    ))}
-                                </select>
+                            {/* Selectors Grid: Project, Task Type, Priority */}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                {/* Target Proyek */}
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                        Target Proyek
+                                    </label>
+                                    <select
+                                        value={targetProjectId}
+                                        onChange={(e) => setTargetProjectId(e.target.value)}
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer truncate"
+                                    >
+                                        <option value="">-- Umum (Tanpa Proyek) --</option>
+                                        {projects.map((proj) => (
+                                            <option key={proj.id} value={proj.id}>
+                                                {proj.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                {/* Tipe Tugas */}
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                        Tipe Tugas
+                                    </label>
+                                    <select
+                                        value={taskType}
+                                        onChange={(e) => setTaskType(e.target.value)}
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                    >
+                                        <option value="revision">Revisi Proyek</option>
+                                        <option value="feature">Fitur Baru</option>
+                                        <option value="bugfix">Perbaikan Bug</option>
+                                        <option value="general">Tugas Umum</option>
+                                    </select>
+                                </div>
+
+                                {/* Prioritas */}
+                                <div className="space-y-1.5">
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                        Prioritas
+                                    </label>
+                                    <select
+                                        value={taskPriority}
+                                        onChange={(e) => setTaskPriority(e.target.value)}
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                    >
+                                        <option value="Medium">Sedang (Medium)</option>
+                                        <option value="High">Tinggi (High)</option>
+                                        <option value="Urgent">Mendesak (Urgent)</option>
+                                        <option value="Low">Rendah (Low)</option>
+                                    </select>
+                                </div>
                             </div>
 
                             {/* Optional AI Description Checkbox */}
@@ -1212,10 +1312,10 @@ export default function Notes({
                                 <div className="space-y-0.5">
                                     <span className="text-xs font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5">
                                         <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                                        Rapikan deskripsi standar dengan AI (Opsional)
+                                        Rapikan deskripsi tugas dengan AI (Opsional)
                                     </span>
                                     <p className="text-[11px] text-indigo-700/80 dark:text-indigo-300/80 leading-relaxed">
-                                        Standar: tidak dicentang (langsung disalin apa adanya, hemat kuota). Jika dicentang, AI akan merangkum deskripsi standar 2-3 poin to-the-point.
+                                        Standar: tidak dicentang (langsung disalin apa adanya). Jika dicentang, AI Gemini akan merangkum deskripsi standar 2-3 poin to-the-point dalam Bahasa Indonesia.
                                     </p>
                                 </div>
                             </label>
@@ -1253,6 +1353,8 @@ export default function Notes({
                                             className={`p-3 rounded-lg border transition-all cursor-pointer select-none ${
                                                 task.selected
                                                     ? 'bg-emerald-50/50 dark:bg-emerald-950/20 border-emerald-500/60 ring-1 ring-emerald-500/20'
+                                                    : task.alreadyInTasks
+                                                    ? 'bg-slate-50 dark:bg-[#101e47]/40 border-slate-200/80 dark:border-[#1e346e]/80 opacity-70'
                                                     : 'bg-slate-50 dark:bg-[#122352]/60 border-slate-200 dark:border-[#243e80] opacity-60'
                                             }`}
                                         >
@@ -1264,9 +1366,20 @@ export default function Notes({
                                                     className="mt-1 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
                                                 />
                                                 <div className="space-y-1 flex-1">
-                                                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">
-                                                        {index + 1}. {task.title}
-                                                    </h4>
+                                                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                                                        <h4 className="text-xs font-bold text-slate-900 dark:text-white">
+                                                            {index + 1}. {task.title}
+                                                        </h4>
+                                                        {task.alreadyInTasks ? (
+                                                            <span className="inline-flex items-center gap-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800">
+                                                                <Check className="w-2.5 h-2.5" /> Sudah di Tasks
+                                                            </span>
+                                                        ) : (
+                                                            <span className="inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                                                                Belum di Tasks
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                     {task.description && (
                                                         <p className="text-[11px] text-slate-600 dark:text-slate-300 line-clamp-2 leading-relaxed">
                                                             {task.description}
