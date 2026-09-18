@@ -238,11 +238,11 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
 
                     <div className="flex items-center gap-2.5 shrink-0">
                         {/* View Switcher */}
-                        <div className="flex items-center bg-white dark:bg-[#0c183b] p-1 rounded-xl border border-slate-200 dark:border-[#223974] shadow-2xs">
+                        <div className="flex items-center bg-white dark:bg-[#0e1d47] p-1 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs">
                             <button
                                 type="button"
                                 onClick={() => setViewMode('list')}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
                                     viewMode === 'list'
                                         ? 'bg-blue-600 text-white shadow-xs'
                                         : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
@@ -255,7 +255,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                             <button
                                 type="button"
                                 onClick={() => setViewMode('board')}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
                                     viewMode === 'board'
                                         ? 'bg-blue-600 text-white shadow-xs'
                                         : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
@@ -271,7 +271,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         <button
                             type="button"
                             onClick={openAddModal}
-                            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-sm shadow-blue-500/20 transition-all hover:shadow-md cursor-pointer"
+                            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-all hover:shadow-sm cursor-pointer"
                         >
                             <Plus className="w-4 h-4 stroke-[2.5]" />
                             <span>Tambah Tugas / Revisi</span>
@@ -279,25 +279,24 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                     </div>
                 </div>
 
-                {/* 2. Top Metric Cards */}
+                {/* 2. Top Metric Cards (Matches Dashboard style) */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
                     {/* Total Tasks */}
-                    <div className="bg-white dark:bg-[#0c183b] p-4 rounded-2xl border border-slate-200/80 dark:border-[#223974] shadow-xs flex items-center gap-3.5">
-                        <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                            <Layers className="w-5 h-5" />
+                    <div className="bg-white dark:bg-[#0e1d47] p-5 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex items-center gap-3.5 hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
+                        <div className="w-10 h-10 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                            <Layers className="w-5 h-5 fill-blue-600/20" />
                         </div>
                         <div>
                             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Tasks</p>
-                            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
+                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
                                 {stats.total || 0}
                             </h3>
                         </div>
                     </div>
 
                     {/* Active Revisions (Special Highlight) */}
-                    <div className="bg-white dark:bg-[#0c183b] p-4 rounded-2xl border border-amber-200/80 dark:border-amber-900/40 shadow-xs flex items-center gap-3.5 relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
-                        <div className="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                    <div className="bg-white dark:bg-[#0e1d47] p-5 rounded-lg border border-amber-200/80 dark:border-amber-900/50 shadow-xs flex items-center gap-3.5 hover:border-amber-300 dark:hover:border-amber-800 transition-colors relative overflow-hidden">
+                        <div className="w-10 h-10 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
                             <RotateCcw className="w-5 h-5 stroke-[2.2]" />
                         </div>
                         <div>
@@ -305,33 +304,33 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                 <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold">Revisi Aktif</p>
                                 <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
                             </div>
-                            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
+                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
                                 {stats.revisions || 0}
                             </h3>
                         </div>
                     </div>
 
                     {/* In Progress */}
-                    <div className="bg-white dark:bg-[#0c183b] p-4 rounded-2xl border border-slate-200/80 dark:border-[#223974] shadow-xs flex items-center gap-3.5">
-                        <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-                            <Clock className="w-5 h-5" />
+                    <div className="bg-white dark:bg-[#0e1d47] p-5 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex items-center gap-3.5 hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
+                        <div className="w-10 h-10 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                            <Clock className="w-5 h-5 fill-indigo-600/20" />
                         </div>
                         <div>
                             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Sedang Dikerjakan</p>
-                            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
+                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
                                 {stats.in_progress || 0}
                             </h3>
                         </div>
                     </div>
 
                     {/* Completed */}
-                    <div className="bg-white dark:bg-[#0c183b] p-4 rounded-2xl border border-slate-200/80 dark:border-[#223974] shadow-xs flex items-center gap-3.5">
-                        <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
-                            <CheckCircle2 className="w-5 h-5" />
+                    <div className="bg-white dark:bg-[#0e1d47] p-5 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex items-center gap-3.5 hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
+                        <div className="w-10 h-10 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+                            <CheckCircle2 className="w-5 h-5 fill-emerald-600/20" />
                         </div>
                         <div>
                             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Selesai</p>
-                            <h3 className="text-xl font-extrabold text-slate-900 dark:text-white mt-0.5">
+                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
                                 {stats.completed || 0}
                             </h3>
                         </div>
@@ -341,14 +340,14 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                 {/* 3. Quick Add Bar (Ultra-convenient) */}
                 <form
                     onSubmit={handleQuickAdd}
-                    className="bg-white dark:bg-[#0c183b] p-3 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-[#223974] shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-2.5"
+                    className="bg-white dark:bg-[#0e1d47] p-3 sm:p-4 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-2.5"
                 >
                     {/* Type Selector */}
                     <div className="w-full md:w-40 shrink-0">
                         <select
                             value={quickType}
                             onChange={(e) => setQuickType(e.target.value)}
-                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
                         >
                             <option value="revision">Revisi Proyek</option>
                             <option value="feature">Fitur Baru</option>
@@ -365,7 +364,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                             value={quickTitle}
                             onChange={(e) => setQuickTitle(e.target.value)}
                             placeholder="Tuliskan tugas atau revisi baru... (tekan Enter)"
-                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl px-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-[#0f1f4b]"
+                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-[#0f1f4b]"
                         />
                     </div>
 
@@ -374,7 +373,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         <select
                             value={quickProjectId}
                             onChange={(e) => setQuickProjectId(e.target.value)}
-                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
                         >
                             <option value="">-- Tanpa Proyek (Umum) --</option>
                             {projects.map((proj) => (
@@ -390,7 +389,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         <select
                             value={quickPriority}
                             onChange={(e) => setQuickPriority(e.target.value)}
-                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
                         >
                             <option value="Urgent">Urgent</option>
                             <option value="High">High</option>
@@ -403,7 +402,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                     <button
                         type="submit"
                         disabled={isSubmittingQuick || !quickTitle.trim()}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl text-xs sm:text-sm font-semibold shadow-xs transition-colors shrink-0 flex items-center justify-center gap-1.5 cursor-pointer"
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-md text-xs sm:text-sm font-semibold shadow-xs transition-colors shrink-0 flex items-center justify-center gap-1.5 cursor-pointer"
                     >
                         <Plus className="w-4 h-4" />
                         <span>Tambah</span>
@@ -411,7 +410,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                 </form>
 
                 {/* 4. Filter Bar & Search */}
-                <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-white dark:bg-[#0c183b] p-3 sm:p-4 rounded-2xl border border-slate-200/80 dark:border-[#223974] shadow-xs">
+                <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-white dark:bg-[#0e1d47] p-3 sm:p-4 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs">
                     {/* Search */}
                     <div className="relative w-full md:w-72">
                         <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -420,14 +419,14 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             placeholder="Cari tugas, revisi, repo..."
-                            className="w-full pl-9 pr-3.5 py-1.5 bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                            className="w-full pl-9 pr-3.5 py-1.5 bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
                         />
                     </div>
 
                     {/* Filter Pills */}
                     <div className="flex flex-wrap items-center gap-2">
                         {/* Type Filter */}
-                        <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#122352] p-1 rounded-xl">
+                        <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#122352] p-1 rounded-md">
                             {[
                                 { id: 'all', label: 'Semua' },
                                 { id: 'revision', label: 'Revisi' },
@@ -438,7 +437,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                     key={tab.id}
                                     type="button"
                                     onClick={() => setSelectedType(tab.id)}
-                                    className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold transition-all cursor-pointer ${
+                                    className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
                                         selectedType === tab.id
                                             ? 'bg-white dark:bg-[#1c3272] text-blue-600 dark:text-blue-300 shadow-2xs'
                                             : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -453,7 +452,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         <select
                             value={selectedStatus}
                             onChange={(e) => setSelectedStatus(e.target.value)}
-                            className="bg-slate-100 dark:bg-[#122352] border border-transparent dark:border-[#243e80] rounded-xl px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer"
+                            className="bg-slate-100 dark:bg-[#122352] border border-transparent dark:border-[#243e80] rounded-md px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer"
                         >
                             <option value="all">Semua Status</option>
                             <option value="todo">Antrean (To Do)</option>
@@ -465,7 +464,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         <select
                             value={selectedProject}
                             onChange={(e) => setSelectedProject(e.target.value)}
-                            className="bg-slate-100 dark:bg-[#122352] border border-transparent dark:border-[#243e80] rounded-xl px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer max-w-[180px] truncate"
+                            className="bg-slate-100 dark:bg-[#122352] border border-transparent dark:border-[#243e80] rounded-md px-2.5 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer max-w-[180px] truncate"
                         >
                             <option value="all">Semua Proyek</option>
                             {projects.map((proj) => (
@@ -480,11 +479,11 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                 {/* 5. Main Content: LIST VIEW or BOARD VIEW */}
                 {viewMode === 'list' ? (
                     /* ================= LIST VIEW ================= */
-                    <div className="bg-white dark:bg-[#0c183b] rounded-2xl border border-slate-200/80 dark:border-[#223974] shadow-xs overflow-hidden">
+                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs overflow-hidden">
                         {filteredTasks.length === 0 ? (
                             <div className="py-16 text-center space-y-3">
-                                <div className="w-16 h-16 mx-auto rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shadow-xs">
-                                    <CheckSquare className="w-8 h-8" />
+                                <div className="w-12 h-12 mx-auto rounded-md bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                                    <CheckSquare className="w-6 h-6" />
                                 </div>
                                 <h3 className="text-base font-bold text-slate-800 dark:text-white">
                                     Belum ada tugas atau revisi
@@ -494,7 +493,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                 </p>
                             </div>
                         ) : (
-                            <div className="divide-y divide-slate-100 dark:divide-[#1b2b5a]">
+                            <div className="divide-y divide-slate-100 dark:divide-[#17254d]">
                                 {filteredTasks.map((task) => {
                                     const typeConf = getTypeConfig(task.type);
                                     const isDone = task.status === 'completed';
@@ -521,13 +520,13 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                 {/* Top Meta Line: Badges */}
                                                 <div className="flex flex-wrap items-center gap-2">
                                                     {/* Type Badge */}
-                                                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-bold border ${typeConf.bg}`}>
+                                                    <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-bold border ${typeConf.bg}`}>
                                                         <TypeIcon className="w-3 h-3" />
                                                         <span>{typeConf.label}</span>
                                                     </span>
 
                                                     {/* Priority Badge */}
-                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-lg text-[10px] font-bold border ${getPriorityConfig(task.priority)}`}>
+                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-[10px] font-bold border ${getPriorityConfig(task.priority)}`}>
                                                         {task.priority}
                                                     </span>
 
@@ -535,13 +534,13 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                     {task.project ? (
                                                         <Link
                                                             href={`/projects/${task.project.slug || task.project.id}`}
-                                                            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[11px] font-semibold bg-slate-100 dark:bg-[#182c66] text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 border border-slate-200 dark:border-[#223974] transition-colors"
+                                                            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 dark:bg-[#182c66] text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 border border-slate-200 dark:border-[#223974] transition-colors"
                                                         >
                                                             <Folder className="w-3 h-3 text-blue-500" />
                                                             <span>{task.project.name}</span>
                                                         </Link>
                                                     ) : (
-                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg text-[10px] font-medium text-slate-400 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+                                                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md text-[10px] font-medium text-slate-400 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                                                             Umum
                                                         </span>
                                                     )}
@@ -552,7 +551,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                             href={task.project.github_repo_url || `https://github.com/${task.project.github_repo_name}`}
                                                             target="_blank"
                                                             rel="noreferrer"
-                                                            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg text-[10px] font-semibold bg-slate-900 text-white dark:bg-slate-800 dark:text-slate-200 hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+                                                            className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[10px] font-semibold bg-slate-900 text-white dark:bg-slate-800 dark:text-slate-200 hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
                                                             title={`Buka repositori GitHub ${task.project.github_repo_name}`}
                                                         >
                                                             <GithubIcon className="w-3 h-3" />
@@ -592,7 +591,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                 <button
                                                     type="button"
                                                     onClick={() => openEditModal(task)}
-                                                    className="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                                    className="p-1.5 rounded-md text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                                                     title="Edit Tugas"
                                                 >
                                                     <Edit3 className="w-4 h-4" />
@@ -600,7 +599,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                 <button
                                                     type="button"
                                                     onClick={() => handleDeleteTask(task.id)}
-                                                    className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
+                                                    className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-colors cursor-pointer"
                                                     title="Hapus Tugas"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
@@ -625,10 +624,10 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                             return (
                                 <div
                                     key={col.id}
-                                    className="bg-white dark:bg-[#0c183b] rounded-2xl border border-slate-200/80 dark:border-[#223974] shadow-xs flex flex-col h-full min-h-[450px]"
+                                    className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col h-full min-h-[450px]"
                                 >
                                     {/* Column Header */}
-                                    <div className={`px-4 py-3 border-b border-slate-100 dark:border-[#1b2b5a] flex items-center justify-between font-bold text-xs rounded-t-2xl ${col.bgHeader}`}>
+                                    <div className={`px-4 py-3 border-b border-slate-100 dark:border-[#1b2b5a] flex items-center justify-between font-bold text-xs rounded-t-lg ${col.bgHeader}`}>
                                         <span>{col.title}</span>
                                         <span className="px-2 py-0.5 rounded-full bg-white dark:bg-slate-900 text-[11px] shadow-2xs font-extrabold">
                                             {colTasks.length}
@@ -648,7 +647,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                 return (
                                                     <div
                                                         key={task.id}
-                                                        className="bg-slate-50 dark:bg-[#122352] p-3.5 rounded-xl border border-slate-200/90 dark:border-[#243e80] shadow-xs hover:shadow-md transition-all space-y-2 group"
+                                                        className="bg-slate-50 dark:bg-[#122352] p-3.5 rounded-md border border-slate-200/90 dark:border-[#243e80] shadow-xs hover:shadow-sm transition-all space-y-2 group"
                                                     >
                                                         {/* Badges */}
                                                         <div className="flex items-center justify-between gap-1">
@@ -686,14 +685,14 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => handleToggleTask(task.id)}
-                                                                    className="px-2.5 py-1 rounded-lg text-[10px] font-semibold bg-white dark:bg-[#1c3272] border border-slate-200 dark:border-[#2c4794] text-slate-700 dark:text-slate-200 hover:text-blue-600 transition-colors"
+                                                                    className="px-2.5 py-1 rounded-md text-[10px] font-semibold bg-white dark:bg-[#1c3272] border border-slate-200 dark:border-[#2c4794] text-slate-700 dark:text-slate-200 hover:text-blue-600 transition-colors"
                                                                 >
                                                                     {task.status === 'completed' ? 'Kembalikan' : 'Selesai'}
                                                                 </button>
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => openEditModal(task)}
-                                                                    className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white"
+                                                                    className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 dark:hover:text-white"
                                                                 >
                                                                     <Edit3 className="w-3.5 h-3.5" />
                                                                 </button>
@@ -720,7 +719,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                     aria-modal="true"
                 >
                     <div
-                        className="relative bg-white dark:bg-[#0c183b] border border-slate-200 dark:border-[#223974] rounded-3xl shadow-2xl max-w-lg w-full overflow-hidden"
+                        className="relative bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#1e346e] rounded-xl shadow-2xl max-w-lg w-full overflow-hidden"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-[#1b2b5a]">
@@ -730,7 +729,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                             <button
                                 type="button"
                                 onClick={() => setIsModalOpen(false)}
-                                className="p-1.5 rounded-xl text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                className="p-1.5 rounded-md text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -748,7 +747,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                     value={modalForm.title}
                                     onChange={(e) => setModalForm({ ...modalForm, title: e.target.value })}
                                     placeholder="Contoh: Revisi warna tombol navbar di mobile"
-                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
                                 />
                             </div>
 
@@ -760,7 +759,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                 <select
                                     value={modalForm.project_id}
                                     onChange={(e) => setModalForm({ ...modalForm, project_id: e.target.value })}
-                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
                                 >
                                     <option value="">-- Tanpa Proyek (Umum) --</option>
                                     {projects.map((proj) => (
@@ -780,7 +779,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                     <select
                                         value={modalForm.type}
                                         onChange={(e) => setModalForm({ ...modalForm, type: e.target.value })}
-                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
                                     >
                                         <option value="revision">Revisi Proyek</option>
                                         <option value="feature">Pengerjaan Fitur</option>
@@ -796,7 +795,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                     <select
                                         value={modalForm.priority}
                                         onChange={(e) => setModalForm({ ...modalForm, priority: e.target.value })}
-                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
                                     >
                                         <option value="Urgent">Urgent</option>
                                         <option value="High">High</option>
@@ -815,7 +814,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                     <select
                                         value={modalForm.status}
                                         onChange={(e) => setModalForm({ ...modalForm, status: e.target.value })}
-                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
                                     >
                                         <option value="todo">Antrean (To Do)</option>
                                         <option value="in_progress">Sedang Dikerjakan</option>
@@ -831,7 +830,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                         type="date"
                                         value={modalForm.due_date}
                                         onChange={(e) => setModalForm({ ...modalForm, due_date: e.target.value })}
-                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
                                     />
                                 </div>
                             </div>
@@ -846,7 +845,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                     value={modalForm.description}
                                     onChange={(e) => setModalForm({ ...modalForm, description: e.target.value })}
                                     placeholder="Tuliskan catatan revisi dari klien atau detail instruksi perbaikan..."
-                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-xl p-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md p-3 text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
                                 />
                             </div>
 
@@ -855,13 +854,13 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                 <button
                                     type="button"
                                     onClick={() => setIsModalOpen(false)}
-                                    className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                                    className="px-4 py-2 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-colors cursor-pointer"
+                                    className="px-5 py-2 rounded-md text-xs font-semibold bg-blue-600 hover:bg-blue-700 text-white shadow-xs transition-colors cursor-pointer"
                                 >
                                     {editingTask ? 'Simpan Perubahan' : 'Tambah Tugas'}
                                 </button>
