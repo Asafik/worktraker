@@ -789,6 +789,8 @@ export default function Notes({
                                     options={projectFilterOptions}
                                     placeholder="Semua Proyek"
                                     buttonClassName="!py-1.5 !px-2.5 !text-xs"
+                                    searchable={true}
+                                    searchPlaceholder="Cari proyek..."
                                 />
                             </div>
                         </div>
@@ -939,6 +941,8 @@ export default function Notes({
                                                         placeholder="-- Tanpa Proyek --"
                                                         className="w-44 sm:w-52"
                                                         buttonClassName="!py-1 !px-2.5 !text-xs"
+                                                        searchable={true}
+                                                        searchPlaceholder="Cari proyek..."
                                                     />
                                                 )}
                                             </div>
@@ -1187,6 +1191,8 @@ export default function Notes({
                             options={createProjectOptions}
                             placeholder="-- Tanpa Proyek (Catatan Umum) --"
                             buttonClassName="!py-2 !px-3.5 !text-xs sm:!text-sm"
+                            searchable={true}
+                            searchPlaceholder="Cari nama atau repo proyek..."
                         />
                     </div>
 
@@ -1267,6 +1273,8 @@ export default function Notes({
                                     options={targetProjectOptions}
                                     placeholder="-- Umum (Tanpa Proyek) --"
                                     buttonClassName="!py-2 !px-3 !text-xs"
+                                    searchable={true}
+                                    searchPlaceholder="Cari target proyek..."
                                 />
                             )}
                         </div>
