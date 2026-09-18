@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import Modal from '@/Components/Modal';
+import CustomSelect from '@/Components/CustomSelect';
 import {
     Home,
     Plus,
@@ -35,6 +36,37 @@ import {
     ArrowRight,
 } from 'lucide-react';
 
+const CATEGORY_FILTER_OPTIONS = [
+    { value: 'all', label: 'Semua Kategori' },
+    { value: 'Revision', label: 'Revisi' },
+    { value: 'Idea', label: 'Ide Fitur' },
+    { value: 'Meeting', label: 'Meeting' },
+    { value: 'Technical', label: 'Teknis' },
+    { value: 'General', label: 'Umum' },
+];
+
+const CATEGORY_SELECT_OPTIONS = [
+    { value: 'Revision', label: 'Revisi Proyek' },
+    { value: 'Idea', label: 'Ide Fitur' },
+    { value: 'Meeting', label: 'Catatan Meeting' },
+    { value: 'Technical', label: 'Dokumentasi Teknis' },
+    { value: 'General', label: 'Catatan Umum' },
+];
+
+const TASK_TYPE_OPTIONS = [
+    { value: 'revision', label: 'Revisi Proyek' },
+    { value: 'feature', label: 'Fitur Baru' },
+    { value: 'bugfix', label: 'Perbaikan Bug' },
+    { value: 'general', label: 'Tugas Umum' },
+];
+
+const TASK_PRIORITY_OPTIONS = [
+    { value: 'Medium', label: 'Sedang (Medium)' },
+    { value: 'High', label: 'Tinggi (High)' },
+    { value: 'Urgent', label: 'Mendesak (Urgent)' },
+    { value: 'Low', label: 'Rendah (Low)' },
+];
+
 export default function Notes({
     notes = [],
     projects = [],
@@ -46,6 +78,30 @@ export default function Notes({
     const [searchQuery, setSearchQuery] = useState(filters.search || '');
     const [selectedCategory, setSelectedCategory] = useState(filters.category || 'all');
     const [selectedProject, setSelectedProject] = useState(filters.project_id || 'all');
+
+    // Derived project options for CustomSelect
+    const projectFilterOptions = [
+        { value: 'all', label: 'Semua Proyek' },
+        ...projects.map((p) => ({ value: String(p.id), label: p.name })),
+    ];
+
+    const editorProjectOptions = [
+        { value: '', label: '-- Tanpa Proyek (Umum) --' },
+        ...projects.map((proj) => ({ value: String(proj.id), label: proj.name })),
+    ];
+
+    const createProjectOptions = [
+        { value: '', label: '-- Tanpa Proyek (Catatan Umum) --' },
+        ...projects.map((proj) => ({
+            value: String(proj.id),
+            label: `${proj.name}${proj.github_repo_name ? ` (${proj.github_repo_name})` : ''}`,
+        })),
+    ];
+
+    const targetProjectOptions = [
+        { value: '', label: '-- Umum (Tanpa Proyek) --' },
+        ...projects.map((proj) => ({ value: String(proj.id), label: proj.name })),
+    ];
 
     // Active Note for viewing & editing
     const [selectedNoteId, setSelectedNoteId] = useState(notes[0]?.id || null);
@@ -125,16 +181,16 @@ export default function Notes({
         applyFilters(val, selectedCategory, selectedProject);
     };
 
-    const handleCategoryChange = (e) => {
-        const val = e.target.value;
-        setSelectedCategory(val);
-        applyFilters(searchQuery, val, selectedProject);
+    const handleCategoryChange = (val) => {
+        const resolvedVal = val?.target ? val.target.value : val;
+        setSelectedCategory(resolvedVal);
+        applyFilters(searchQuery, resolvedVal, selectedProject);
     };
 
-    const handleProjectChange = (e) => {
-        const val = e.target.value;
-        setSelectedProject(val);
-        applyFilters(searchQuery, selectedCategory, val);
+    const handleProjectChange = (val) => {
+        const resolvedVal = val?.target ? val.target.value : val;
+        setSelectedProject(resolvedVal);
+        applyFilters(searchQuery, selectedCategory, resolvedVal);
     };
 
     // Category style helpers
@@ -719,31 +775,21 @@ export default function Notes({
 
                             {/* Dropdowns: Category & Project */}
                             <div className="grid grid-cols-2 gap-2">
-                                <select
+                                <CustomSelect
                                     value={selectedCategory}
                                     onChange={handleCategoryChange}
-                                    className="bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer truncate"
-                                >
-                                    <option value="all">Semua Kategori</option>
-                                    <option value="Revision">Revisi</option>
-                                    <option value="Idea">Ide Fitur</option>
-                                    <option value="Meeting">Meeting</option>
-                                    <option value="Technical">Teknis</option>
-                                    <option value="General">Umum</option>
-                                </select>
+                                    options={CATEGORY_FILTER_OPTIONS}
+                                    placeholder="Semua Kategori"
+                                    buttonClassName="!py-1.5 !px-2.5 !text-xs"
+                                />
 
-                                <select
+                                <CustomSelect
                                     value={selectedProject}
                                     onChange={handleProjectChange}
-                                    className="bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer truncate"
-                                >
-                                    <option value="all">Semua Proyek</option>
-                                    {projects.map((p) => (
-                                        <option key={p.id} value={p.id}>
-                                            {p.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                    options={projectFilterOptions}
+                                    placeholder="Semua Proyek"
+                                    buttonClassName="!py-1.5 !px-2.5 !text-xs"
+                                />
                             </div>
                         </div>
 
@@ -860,22 +906,18 @@ export default function Notes({
                                         {/* Meta Selectors: Category & Project */}
                                         <div className="flex flex-wrap items-center gap-2">
                                             {/* Category Selector */}
-                                            <div className="flex items-center gap-1">
+                                            <div className="flex items-center gap-1.5">
                                                 <span className="text-[11px] text-slate-400 font-medium">Kategori:</span>
-                                                <select
+                                                <CustomSelect
                                                     value={editorForm.category}
-                                                    onChange={(e) => {
-                                                        setEditorForm({ ...editorForm, category: e.target.value });
+                                                    onChange={(val) => {
+                                                        setEditorForm({ ...editorForm, category: val });
                                                         setHasUnsavedChanges(true);
                                                     }}
-                                                    className="bg-white dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-2 py-1 text-xs font-semibold text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer"
-                                                >
-                                                    <option value="Revision">Revisi Proyek</option>
-                                                    <option value="Idea">Ide Fitur</option>
-                                                    <option value="Meeting">Catatan Meeting</option>
-                                                    <option value="Technical">Dokumentasi Teknis</option>
-                                                    <option value="General">Catatan Umum</option>
-                                                </select>
+                                                    options={CATEGORY_SELECT_OPTIONS}
+                                                    className="w-36 sm:w-44"
+                                                    buttonClassName="!py-1 !px-2.5 !text-xs font-semibold"
+                                                />
                                             </div>
 
                                             {/* Project Relation Selector / Display */}
@@ -887,21 +929,17 @@ export default function Notes({
                                                         <span className="truncate max-w-[150px]">{activeNote.project.name}</span>
                                                     </div>
                                                 ) : (
-                                                    <select
+                                                    <CustomSelect
                                                         value={editorForm.project_id}
-                                                        onChange={(e) => {
-                                                            setEditorForm({ ...editorForm, project_id: e.target.value });
+                                                        onChange={(val) => {
+                                                            setEditorForm({ ...editorForm, project_id: val });
                                                             setHasUnsavedChanges(true);
                                                         }}
-                                                        className="bg-white dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-2 py-1 text-xs text-slate-700 dark:text-slate-200 focus:outline-none cursor-pointer max-w-[180px] truncate"
-                                                    >
-                                                        <option value="">-- Tanpa Proyek (Umum) --</option>
-                                                        {projects.map((proj) => (
-                                                            <option key={proj.id} value={proj.id}>
-                                                                {proj.name}
-                                                            </option>
-                                                        ))}
-                                                    </select>
+                                                        options={editorProjectOptions}
+                                                        placeholder="-- Tanpa Proyek --"
+                                                        className="w-44 sm:w-52"
+                                                        buttonClassName="!py-1 !px-2.5 !text-xs"
+                                                    />
                                                 )}
                                             </div>
                                         </div>
@@ -1143,18 +1181,13 @@ export default function Notes({
                         <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
                             Terkait Proyek (Opsional)
                         </label>
-                        <select
+                        <CustomSelect
                             value={createForm.project_id}
-                            onChange={(e) => setCreateForm({ ...createForm, project_id: e.target.value })}
-                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
-                        >
-                            <option value="">-- Tanpa Proyek (Catatan Umum) --</option>
-                            {projects.map((proj) => (
-                                <option key={proj.id} value={proj.id}>
-                                    {proj.name} {proj.github_repo_name ? `(${proj.github_repo_name})` : ''}
-                                </option>
-                            ))}
-                        </select>
+                            onChange={(val) => setCreateForm({ ...createForm, project_id: val })}
+                            options={createProjectOptions}
+                            placeholder="-- Tanpa Proyek (Catatan Umum) --"
+                            buttonClassName="!py-2 !px-3.5 !text-xs sm:!text-sm"
+                        />
                     </div>
 
                     {/* Category Selector */}
@@ -1162,17 +1195,13 @@ export default function Notes({
                         <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
                             Kategori Catatan *
                         </label>
-                        <select
+                        <CustomSelect
                             value={createForm.category}
-                            onChange={(e) => setCreateForm({ ...createForm, category: e.target.value })}
-                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
-                        >
-                            <option value="Revision">Revisi Proyek</option>
-                            <option value="Idea">Ide Fitur</option>
-                            <option value="Meeting">Catatan Meeting</option>
-                            <option value="Technical">Dokumentasi Teknis</option>
-                            <option value="General">Catatan Umum</option>
-                        </select>
+                            onChange={(val) => setCreateForm({ ...createForm, category: val })}
+                            options={CATEGORY_SELECT_OPTIONS}
+                            placeholder="Pilih Kategori..."
+                            buttonClassName="!py-2 !px-3.5 !text-xs sm:!text-sm font-semibold"
+                        />
                     </div>
 
                     {/* Content Textarea */}
@@ -1232,18 +1261,13 @@ export default function Notes({
                                     <span className="truncate">{activeNote.project.name}</span>
                                 </div>
                             ) : (
-                                <select
+                                <CustomSelect
                                     value={targetProjectId}
-                                    onChange={(e) => setTargetProjectId(e.target.value)}
-                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer truncate"
-                                >
-                                    <option value="">-- Umum (Tanpa Proyek) --</option>
-                                    {projects.map((proj) => (
-                                        <option key={proj.id} value={proj.id}>
-                                            {proj.name}
-                                        </option>
-                                    ))}
-                                </select>
+                                    onChange={(val) => setTargetProjectId(val)}
+                                    options={targetProjectOptions}
+                                    placeholder="-- Umum (Tanpa Proyek) --"
+                                    buttonClassName="!py-2 !px-3 !text-xs"
+                                />
                             )}
                         </div>
 
@@ -1252,16 +1276,13 @@ export default function Notes({
                             <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
                                 Tipe Tugas
                             </label>
-                            <select
+                            <CustomSelect
                                 value={taskType}
-                                onChange={(e) => setTaskType(e.target.value)}
-                                className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
-                            >
-                                <option value="revision">Revisi Proyek</option>
-                                <option value="feature">Fitur Baru</option>
-                                <option value="bugfix">Perbaikan Bug</option>
-                                <option value="general">Tugas Umum</option>
-                            </select>
+                                onChange={(val) => setTaskType(val)}
+                                options={TASK_TYPE_OPTIONS}
+                                placeholder="Pilih Tipe Tugas..."
+                                buttonClassName="!py-2 !px-3 !text-xs font-semibold"
+                            />
                         </div>
 
                         {/* Prioritas */}
@@ -1269,16 +1290,13 @@ export default function Notes({
                             <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
                                 Prioritas
                             </label>
-                            <select
+                            <CustomSelect
                                 value={taskPriority}
-                                onChange={(e) => setTaskPriority(e.target.value)}
-                                className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
-                            >
-                                <option value="Medium">Sedang (Medium)</option>
-                                <option value="High">Tinggi (High)</option>
-                                <option value="Urgent">Mendesak (Urgent)</option>
-                                <option value="Low">Rendah (Low)</option>
-                            </select>
+                                onChange={(val) => setTaskPriority(val)}
+                                options={TASK_PRIORITY_OPTIONS}
+                                placeholder="Pilih Prioritas..."
+                                buttonClassName="!py-2 !px-3 !text-xs font-semibold"
+                            />
                         </div>
                     </div>
 

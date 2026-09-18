@@ -13,6 +13,7 @@ export default function CustomSelect({
     options = [],
     placeholder = 'Pilih opsi...',
     className = '',
+    buttonClassName = '',
     disabled = false,
 }) {
     // Normalize options format: support array of { value, label } or array of strings
@@ -33,16 +34,15 @@ export default function CustomSelect({
     );
 
     return (
-        <div className={`relative select-none ${className}`}>
-            <Listbox value={value} onChange={onChange} disabled={disabled}>
-                {({ open }) => (
-                    <>
-                        <ListboxButton
+        <Listbox value={value} onChange={onChange} disabled={disabled}>
+            {({ open }) => (
+                <div className={`relative select-none ${open ? 'z-30' : ''} ${className}`}>
+                    <ListboxButton
                             className={`w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3.5 py-2.5 text-xs sm:text-sm text-slate-800 dark:text-slate-100 flex items-center justify-between gap-2 text-left transition-all duration-150 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none ${
                                 open
                                     ? 'border-blue-500 dark:border-blue-500 ring-2 ring-blue-500/20 shadow-sm'
                                     : 'hover:border-slate-300 dark:hover:border-[#3353a8]'
-                            }`}
+                            } ${buttonClassName}`}
                         >
                             <span className="truncate font-medium">
                                 {selectedOption ? (
@@ -77,13 +77,12 @@ export default function CustomSelect({
                                                 <Check className="w-4 h-4 text-blue-600 dark:text-blue-400 flex-shrink-0" />
                                             )}
                                         </>
-                                    )}
+                                     )}
                                 </ListboxOption>
                             ))}
                         </ListboxOptions>
-                    </>
+                    </div>
                 )}
             </Listbox>
-        </div>
-    );
+        );
 }
