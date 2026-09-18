@@ -110,7 +110,7 @@ class SettingsController extends Controller
                     'connected'        => $isGeminiConnected,
                     'account'          => 'Google AI Studio (API Key)',
                     'accountType'      => 'Gemini Free Tier Quota',
-                    'model'            => config('services.gemini.model', 'gemini-2.5-flash'),
+                    'model'            => config('services.gemini.model', 'gemini-3.7-flash'),
                     'dailyLimit'       => $geminiDailyLimit,
                     'usedToday'        => $geminiUsedToday,
                     'remainingToday'   => $geminiRemaining,
