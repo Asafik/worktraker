@@ -3,6 +3,8 @@ import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import Modal from '@/Components/Modal';
 import CustomSelect from '@/Components/CustomSelect';
+import LoadingOverlay from '@/Components/LoadingOverlay';
+import { toast } from 'sonner';
 import {
     Home,
     Plus,
@@ -286,9 +288,11 @@ export default function Notes({
                     isManuallyUnlocked: false,
                 });
                 setIsCreating(false);
+                toast.success('Catatan baru berhasil dibuat!');
             },
             onError: () => {
                 setIsCreating(false);
+                toast.error('Gagal membuat catatan baru.');
             },
         });
     };
@@ -309,9 +313,11 @@ export default function Notes({
             onSuccess: () => {
                 setIsSaving(false);
                 setHasUnsavedChanges(false);
+                toast.success('Perubahan catatan berhasil disimpan!');
             },
             onError: () => {
                 setIsSaving(false);
+                toast.error('Gagal menyimpan perubahan catatan.');
             },
         });
     };
@@ -329,6 +335,10 @@ export default function Notes({
                     } else {
                         setSelectedNoteId(null);
                     }
+                    toast.success('Catatan berhasil dihapus.');
+                },
+                onError: () => {
+                    toast.error('Gagal menghapus catatan.');
                 },
             });
         }
@@ -339,6 +349,7 @@ export default function Notes({
         if (!editorForm.content) return;
         navigator.clipboard.writeText(editorForm.content);
         setCopiedNotice(true);
+        toast.success('Isi catatan berhasil disalin ke clipboard!');
         setTimeout(() => setCopiedNotice(false), 2000);
     };
 
@@ -397,17 +408,20 @@ export default function Notes({
                     type: 'success',
                     message: 'Catatan berhasil dirapikan dan distrukturkan oleh Google Gemini AI!',
                 });
+                toast.success('Catatan berhasil dirapikan dengan AI Gemini!');
             } else {
                 setAiNotice({
                     type: 'error',
                     message: data.message || 'Gagal memproses perapian catatan dengan AI.',
                 });
+                toast.error(data.message || 'Gagal merapikan catatan dengan AI.');
             }
         } catch (err) {
             setAiNotice({
                 type: 'error',
                 message: 'Terjadi kesalahan koneksi saat menghubungi AI: ' + err.message,
             });
+            toast.error('Gagal menghubungi AI: ' + err.message);
         } finally {
             setIsRefiningAi(false);
             setAiTarget(null);
@@ -428,6 +442,7 @@ export default function Notes({
                 type: 'info',
                 message: 'Isi catatan dikembalikan ke teks sebelum dirapikan AI.',
             });
+            toast.info('Isi catatan dikembalikan ke versi sebelum dirapikan AI.');
             setTimeout(() => setAiNotice(null), 3000);
         }
     };
@@ -633,11 +648,12 @@ export default function Notes({
                         type: 'success',
                         message: `${selectedItems.length} tugas berhasil dikirim ke Tasks dan ditandai [Masuk Tasks] di catatan!`,
                     });
+                    toast.success(`${selectedItems.length} tugas berhasil dikirim ke halaman Tasks!`);
                     setTimeout(() => setAiNotice(null), 6000);
                 },
                 onError: (err) => {
                     setIsSendingToTasks(false);
-                    alert('Gagal mengirim ke tasks: ' + (err.message || 'Terjadi kesalahan.'));
+                    toast.error('Gagal mengirim ke tasks: ' + (err.message || 'Terjadi kesalahan.'));
                 },
             }
         );
@@ -888,8 +904,13 @@ export default function Notes({
                         {activeNote ? (
                             <form
                                 onSubmit={handleSaveActiveNote}
-                                className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col min-h-[620px] overflow-hidden"
+                                className="relative bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col min-h-[620px] overflow-hidden"
                             >
+                                <LoadingOverlay
+                                    show={isSaving || (isRefiningAi && aiTarget === 'editor')}
+                                    message={isRefiningAi && aiTarget === 'editor' ? 'AI sedang merapikan catatan...' : 'Menyimpan perubahan catatan...'}
+                                    description={isRefiningAi && aiTarget === 'editor' ? 'Menganalisis poin-poin dengan Gemini AI' : ''}
+                                />
                                 {/* Note Top Header / Meta Toolbar */}
                                 <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-[#17254d] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50 dark:bg-[#0b1739]">
                                     <div className="flex-1 space-y-2">
@@ -1164,7 +1185,8 @@ export default function Notes({
                 title="Tambah Catatan Baru"
                 maxWidth="lg"
             >
-                <form onSubmit={handleCreateNote} className="space-y-4">
+                <form onSubmit={handleCreateNote} className="space-y-4 relative">
+                    <LoadingOverlay show={isCreating} message="Membuat catatan baru..." />
                     {/* Title */}
                     <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
@@ -1253,7 +1275,12 @@ export default function Notes({
                 icon={ListTodo}
                 maxWidth="xl"
             >
-                <form onSubmit={handleExecuteSendTasks} className="space-y-4">
+                <form onSubmit={handleExecuteSendTasks} className="space-y-4 relative">
+                    <LoadingOverlay
+                        show={isSendingToTasks}
+                        message="Sedang mengirim tugas ke Tasks..."
+                        description="Menyiapkan kartu tugas dan sinkronisasi"
+                    />
                     {/* Selectors Grid: Project, Task Type, Priority */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {/* Target Proyek */}
