@@ -20,58 +20,6 @@ class TaskController extends Controller
     {
         $userId = Auth::id() ?? User::first()?->id;
 
-        // Auto-seed initial project & tasks if database is empty so user can see immediate relationships
-        if (Project::count() === 0) {
-            Project::create([
-                'user_id'          => $userId,
-                'name'             => 'WorkTrack App',
-                'slug'             => 'worktrack-app',
-                'description'      => 'Aplikasi manajemen proyek, kalender, dan produktivitas harian developer.',
-                'category'         => 'Web App',
-                'company_name'     => 'Personal Workspace',
-                'role'             => 'Full Stack Developer',
-                'status'           => 'In Progress',
-                'tech_stack'       => ['Laravel', 'React', 'TailwindCSS', 'SQLite'],
-                'github_repo_name' => 'Asafik/worktraker',
-                'github_repo_url'  => 'https://github.com/Asafik/worktraker',
-            ]);
-        }
-
-        if (Task::count() === 0) {
-            $firstProj = Project::first();
-            Task::create([
-                'user_id'      => $userId,
-                'project_id'   => $firstProj?->id,
-                'title'        => 'Revisi tata letak kolom tabel pada halaman proyek',
-                'description'  => 'Permintaan perbaikan: hapus kolom deskripsi dan due date, tambahkan kolom GitHub repo dan Company.',
-                'type'         => 'revision',
-                'priority'     => 'High',
-                'status'       => 'in_progress',
-                'due_date'     => now()->addDays(2)->format('Y-m-d'),
-            ]);
-            Task::create([
-                'user_id'      => $userId,
-                'project_id'   => $firstProj?->id,
-                'title'        => 'Integrasi login dengan username atau email',
-                'description'  => 'Fitur baru autentikasi fleksibel dengan deteksi otomatis username / email.',
-                'type'         => 'feature',
-                'priority'     => 'Medium',
-                'status'       => 'completed',
-                'due_date'     => now()->subDay()->format('Y-m-d'),
-                'completed_at' => now(),
-            ]);
-            Task::create([
-                'user_id'      => $userId,
-                'project_id'   => $firstProj?->id,
-                'title'        => 'Fix bug preview perbesar foto profil di pengaturan',
-                'description'  => 'Perbaikan popup lightbox agar muncul modal ukuran besar saat foto profil diklik.',
-                'type'         => 'bugfix',
-                'priority'     => 'Urgent',
-                'status'       => 'todo',
-                'due_date'     => now()->addDay()->format('Y-m-d'),
-            ]);
-        }
-
         $query = Task::with([
             'project:id,name,slug,github_repo_name,github_repo_url,category,status,company_name',
         ])
