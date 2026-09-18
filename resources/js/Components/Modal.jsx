@@ -13,6 +13,7 @@ export default function Modal({
     showCloseButton = true,
     closeOnOverlayClick = true,
     closeOnEscape = true,
+    backdropClassName = 'bg-black/40 backdrop-blur-sm',
 }) {
     // Close on Escape key press
     useEffect(() => {
@@ -57,7 +58,7 @@ export default function Modal({
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-md animate-fadeIn"
+            className={`fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 ${backdropClassName} transition-all animate-fadeIn`}
             onClick={closeOnOverlayClick ? onClose : undefined}
             role="dialog"
             aria-modal="true"
