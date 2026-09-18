@@ -14,7 +14,7 @@ export default function LoadingOverlay({
 
     if (!visible) return null;
 
-    const positionClass = fullScreen ? 'fixed inset-0 z-50' : 'absolute inset-0 z-40 rounded-lg';
+    const positionClass = fullScreen ? 'fixed inset-0 z-[60]' : 'absolute inset-0 z-40 rounded-lg';
     const backdropClass = blur ? 'backdrop-blur-xs' : '';
 
     return (

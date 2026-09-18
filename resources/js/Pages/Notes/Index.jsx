@@ -4,6 +4,7 @@ import DashboardLayout from '@/Layouts/DashboardLayout';
 import Modal from '@/Components/Modal';
 import CustomSelect from '@/Components/CustomSelect';
 import LoadingOverlay from '@/Components/LoadingOverlay';
+import Checkbox from '@/Components/Checkbox';
 import { toast } from 'sonner';
 import {
     Home,
@@ -117,6 +118,7 @@ export default function Notes({
         content: '',
     });
     const [isSaving, setIsSaving] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [copiedNotice, setCopiedNotice] = useState(false);
 
@@ -326,9 +328,11 @@ export default function Notes({
     const handleDeleteNote = (id) => {
         if (!id) return;
         if (confirm('Yakin ingin menghapus catatan ini?')) {
+            setIsDeleting(true);
             router.delete(`/notes/${id}`, {
                 preserveScroll: true,
                 onSuccess: () => {
+                    setIsDeleting(false);
                     const remaining = notes.filter((n) => n.id !== id);
                     if (remaining.length > 0) {
                         setSelectedNoteId(remaining[0].id);
@@ -338,6 +342,7 @@ export default function Notes({
                     toast.success('Catatan berhasil dihapus.');
                 },
                 onError: () => {
+                    setIsDeleting(false);
                     toast.error('Gagal menghapus catatan.');
                 },
             });
@@ -918,9 +923,10 @@ export default function Notes({
                                 className="relative bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col min-h-[620px] overflow-hidden"
                             >
                                 <LoadingOverlay
-                                    show={isSaving || (isRefiningAi && aiTarget === 'editor')}
-                                    message={isRefiningAi && aiTarget === 'editor' ? 'AI sedang merapikan catatan...' : 'Menyimpan perubahan catatan...'}
-                                    description={isRefiningAi && aiTarget === 'editor' ? 'Menganalisis poin-poin dengan Gemini AI' : ''}
+                                    show={isRefiningAi && aiTarget === 'editor'}
+                                    message="AI sedang merapikan catatan..."
+                                    description="Menganalisis poin-poin dengan Gemini AI"
+                                    fullScreen={false}
                                 />
                                 {/* Note Top Header / Meta Toolbar */}
                                 <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-[#17254d] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50 dark:bg-[#0b1739]">
@@ -1197,7 +1203,6 @@ export default function Notes({
                 maxWidth="lg"
             >
                 <form onSubmit={handleCreateNote} className="space-y-4 relative">
-                    <LoadingOverlay show={isCreating} message="Membuat catatan baru..." />
                     {/* Title */}
                     <div className="space-y-1.5">
                         <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
@@ -1287,11 +1292,6 @@ export default function Notes({
                 maxWidth="xl"
             >
                 <form onSubmit={handleExecuteSendTasks} className="space-y-4 relative">
-                    <LoadingOverlay
-                        show={isSendingToTasks}
-                        message="Sedang mengirim tugas ke Tasks..."
-                        description="Menyiapkan kartu tugas dan sinkronisasi"
-                    />
                     {/* Selectors Grid: Project, Task Type, Priority */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                         {/* Target Proyek */}
@@ -1347,23 +1347,23 @@ export default function Notes({
                     </div>
 
                     {/* Optional AI Description Checkbox */}
-                    <label className="flex items-start gap-2.5 p-3 rounded-lg border border-indigo-100 dark:border-indigo-950/60 bg-indigo-50/50 dark:bg-indigo-950/30 cursor-pointer select-none">
-                        <input
-                            type="checkbox"
+                    <div className="p-3 rounded-lg border border-indigo-100 dark:border-indigo-950/60 bg-indigo-50/50 dark:bg-indigo-950/30">
+                        <Checkbox
                             checked={useAiTaskDesc}
-                            onChange={(e) => setUseAiTaskDesc(e.target.checked)}
-                            className="mt-0.5 rounded border-indigo-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
-                        />
-                        <div className="space-y-0.5">
-                            <span className="text-xs font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5">
-                                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
-                                Rapikan deskripsi tugas dengan AI (Opsional)
-                            </span>
-                            <p className="text-[11px] text-indigo-700/80 dark:text-indigo-300/80 leading-relaxed">
-                                Standar: tidak dicentang (langsung disalin apa adanya). Jika dicentang, AI Gemini akan merangkum deskripsi standar 2-3 poin to-the-point dalam Bahasa Indonesia.
-                            </p>
-                        </div>
-                    </label>
+                            onChange={(val) => setUseAiTaskDesc(val)}
+                            size="sm"
+                        >
+                            <div className="space-y-0.5">
+                                <span className="text-xs font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5">
+                                    <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                                    Rapikan deskripsi tugas dengan AI (Opsional)
+                                </span>
+                                <p className="text-[11px] text-indigo-700/80 dark:text-indigo-300/80 leading-relaxed">
+                                    Standar: tidak dicentang (langsung disalin apa adanya). Jika dicentang, AI Gemini akan merangkum deskripsi standar 2-3 poin to-the-point dalam Bahasa Indonesia.
+                                </p>
+                            </div>
+                        </Checkbox>
+                    </div>
 
                     {/* Section: List of detected items */}
                     <div className="space-y-2">
@@ -1404,12 +1404,13 @@ export default function Notes({
                                     }`}
                                 >
                                     <div className="flex items-start gap-2.5">
-                                        <input
-                                            type="checkbox"
-                                            checked={task.selected}
-                                            onChange={() => {}} // Handled by parent div
-                                            className="mt-1 rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500 cursor-pointer"
-                                        />
+                                        <div className="pt-0.5" onClick={(e) => e.stopPropagation()}>
+                                            <Checkbox
+                                                checked={task.selected}
+                                                onChange={() => handleToggleTaskItem(index)}
+                                                size="sm"
+                                            />
+                                        </div>
                                         <div className="space-y-1 flex-1">
                                             <div className="flex items-center justify-between gap-2 flex-wrap">
                                                 <h4 className="text-xs font-bold text-slate-900 dark:text-white">
@@ -1461,6 +1462,30 @@ export default function Notes({
                     </div>
                 </form>
             </Modal>
+
+            {/* Global Full-Screen Loading Overlay for CRUD & Sending Tasks */}
+            <LoadingOverlay
+                show={isSaving || isCreating || isDeleting || isSendingToTasks}
+                fullScreen={true}
+                message={
+                    isSaving
+                        ? 'Menyimpan perubahan catatan...'
+                        : isCreating
+                        ? 'Membuat catatan baru...'
+                        : isDeleting
+                        ? 'Menghapus catatan...'
+                        : 'Sedang mengirim tugas ke Tasks...'
+                }
+                description={
+                    isSendingToTasks
+                        ? 'Menyiapkan kartu tugas baru di halaman Tasks'
+                        : isCreating
+                        ? 'Menyimpan catatan dan sinkronisasi proyek'
+                        : isDeleting
+                        ? 'Menghapus data dari sistem'
+                        : 'Memperbarui data di server'
+                }
+            />
         </DashboardLayout>
     );
 }
