@@ -60,4 +60,12 @@ class Project extends Model
     {
         return $this->hasMany(Task::class);
     }
+
+    /**
+     * Get the notes associated with this project.
+     */
+    public function notes(): HasMany
+    {
+        return $this->hasMany(Note::class);
+    }
 }

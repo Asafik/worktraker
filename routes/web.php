@@ -49,9 +49,12 @@ Route::post('/tasks/{task}/update', [TaskController::class, 'update'])->name('ta
 Route::post('/tasks/{task}/toggle', [TaskController::class, 'toggle'])->name('tasks.toggle');
 Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
-Route::get('/notes', function () {
-    return Inertia::render('Notes/Index');
-})->name('notes');
+use App\Http\Controllers\NoteController;
+
+Route::get('/notes', [NoteController::class, 'index'])->name('notes');
+Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
+Route::post('/notes/{note}/update', [NoteController::class, 'update'])->name('notes.update');
+Route::delete('/notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
 
 use App\Http\Controllers\CalendarController;
 
