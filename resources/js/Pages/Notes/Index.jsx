@@ -32,7 +32,6 @@ import {
     Square,
     ArrowUpRight,
     ArrowRight,
-    Lock,
 } from 'lucide-react';
 
 export default function Notes({
@@ -876,14 +875,15 @@ export default function Notes({
                                                     <option value="Technical">Dokumentasi Teknis</option>
                                                     <option value="General">Catatan Umum</option>
                                                 </select>
-                                            </div>                                             {/* Project Relation Selector / Locked Badge */}
+                                            </div>
+
+                                            {/* Project Relation Selector / Display */}
                                             <div className="flex items-center gap-1.5">
                                                 <span className="text-[11px] text-slate-400 font-medium">Proyek:</span>
                                                 {activeNote.project ? (
-                                                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60 text-xs font-bold" title="Catatan ini terikat dengan proyek ini">
+                                                    <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-[#122352] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#243e80] text-xs font-semibold">
                                                         <Folder className="w-3.5 h-3.5 text-blue-500 shrink-0" />
                                                         <span className="truncate max-w-[150px]">{activeNote.project.name}</span>
-                                                        <Lock className="w-2.5 h-2.5 text-blue-400 shrink-0 ml-0.5" />
                                                     </div>
                                                 ) : (
                                                     <select
@@ -1155,48 +1155,23 @@ export default function Notes({
                                 />
                             </div>
 
-                            {/* Project Connection (Auto-synchronized / Selectable) */}
+                            {/* Project Connection */}
                             <div className="space-y-1.5">
-                                <div className="flex items-center justify-between">
-                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
-                                        Terkait Proyek
-                                    </label>
-                                    {createForm.project_id && !createForm.isManuallyUnlocked && (
-                                        <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                                            <Lock className="w-2.5 h-2.5" /> Sinkron otomatis
-                                        </span>
-                                    )}
-                                </div>
-                                {createForm.project_id && !createForm.isManuallyUnlocked ? (
-                                    <div className="w-full bg-blue-50/70 dark:bg-[#122352] border border-blue-200 dark:border-[#243e80] rounded-md px-3.5 py-2 text-xs font-bold text-blue-900 dark:text-blue-200 flex items-center justify-between">
-                                        <div className="flex items-center gap-2 truncate">
-                                            <Folder className="w-4 h-4 text-blue-600 dark:text-blue-400 shrink-0" />
-                                            <span className="truncate">
-                                                {projects.find((p) => String(p.id) === String(createForm.project_id))?.name || 'Proyek Terpilih'}
-                                            </span>
-                                        </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => setCreateForm((prev) => ({ ...prev, isManuallyUnlocked: true }))}
-                                            className="text-[11px] text-blue-600 dark:text-blue-400 hover:underline font-normal ml-2 shrink-0 cursor-pointer"
-                                        >
-                                            Ganti Proyek
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <select
-                                        value={createForm.project_id}
-                                        onChange={(e) => setCreateForm({ ...createForm, project_id: e.target.value })}
-                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
-                                    >
-                                        <option value="">-- Tanpa Proyek (Catatan Umum) --</option>
-                                        {projects.map((proj) => (
-                                            <option key={proj.id} value={proj.id}>
-                                                {proj.name} {proj.github_repo_name ? `(${proj.github_repo_name})` : ''}
-                                            </option>
-                                        ))}
-                                    </select>
-                                )}
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                    Terkait Proyek (Opsional)
+                                </label>
+                                <select
+                                    value={createForm.project_id}
+                                    onChange={(e) => setCreateForm({ ...createForm, project_id: e.target.value })}
+                                    className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 cursor-pointer"
+                                >
+                                    <option value="">-- Tanpa Proyek (Catatan Umum) --</option>
+                                    {projects.map((proj) => (
+                                        <option key={proj.id} value={proj.id}>
+                                            {proj.name} {proj.github_repo_name ? `(${proj.github_repo_name})` : ''}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
 
                             {/* Category Selector */}
@@ -1302,18 +1277,11 @@ export default function Notes({
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                                 {/* Target Proyek */}
                                 <div className="space-y-1.5">
-                                    <div className="flex items-center justify-between">
-                                        <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
-                                            Target Proyek
-                                        </label>
-                                        {activeNote?.project && (
-                                            <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                                                <Lock className="w-2.5 h-2.5" /> Terkunci otomatis
-                                            </span>
-                                        )}
-                                    </div>
+                                    <label className="text-xs font-semibold text-slate-700 dark:text-slate-300 block">
+                                        Target Proyek
+                                    </label>
                                     {activeNote?.project ? (
-                                        <div className="w-full bg-blue-50/70 dark:bg-[#122352] border border-blue-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs font-bold text-blue-900 dark:text-blue-200 flex items-center gap-2">
+                                        <div className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                                             <Folder className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 shrink-0" />
                                             <span className="truncate">{activeNote.project.name}</span>
                                         </div>
