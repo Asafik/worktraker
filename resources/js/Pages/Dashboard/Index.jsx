@@ -67,25 +67,7 @@ export default function Dashboard({
             });
     }, [recent_projects]);
 
-    const handleToggleTask = (e, taskId) => {
-        e.preventDefault();
-        e.stopPropagation();
 
-        setLocalTasks((prev) =>
-            prev.map((t) => (t.id === taskId ? { ...t, done: !t.done } : t))
-        );
-
-        router.post(
-            `/tasks/${taskId}/toggle`,
-            {},
-            {
-                preserveScroll: true,
-                onError: () => {
-                    setLocalTasks(upcoming_tasks || []);
-                },
-            }
-        );
-    };
 
     // Calculate dynamic coordinates for Productivity Overview Area Chart
     const {
@@ -307,29 +289,30 @@ export default function Dashboard({
             </div>
 
             {/* 2. Top 4 Metric Stat Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            {/* 2. Top 4 Metric Stat Cards (Responsive 2-cols on mobile like Projects/Tasks) */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
                 {/* Card 1: Total Projects */}
                 <Link
                     href="/projects"
-                    className="bg-white dark:bg-[#0e1d47] rounded-lg p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-blue-300 dark:hover:border-blue-700/60 hover:shadow-md transition-all group"
+                    className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 sm:p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-blue-300 dark:hover:border-blue-700/60 hover:shadow-md transition-all group"
                 >
                     <div className="flex items-start justify-between">
-                        <div className="w-10 h-10 rounded-md bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-transform">
-                            <Folder className="w-5 h-5 fill-blue-600/20" />
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-md bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-transform">
+                            <Folder className="w-4 h-4 sm:w-5 sm:h-5 fill-blue-600/20" />
                         </div>
-                        <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 hidden sm:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <span>View</span>
                             <ArrowRight className="w-3.5 h-3.5" />
                         </span>
                     </div>
-                    <div className="mt-4">
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Projects</p>
-                        <h3 className="text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">
+                    <div className="mt-3 sm:mt-4">
+                        <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">Total Projects</p>
+                        <h3 className="text-xl sm:text-2xl lg:text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">
                             {stats?.total_projects ?? 0}
                         </h3>
-                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1.5">
-                            <ArrowUp className="w-3.5 h-3.5" />
-                            <span>
+                        <p className="text-[10px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1 sm:mt-1.5 truncate">
+                            <ArrowUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+                            <span className="truncate">
                                 {stats?.projects_in_progress ?? 0} active in progress
                             </span>
                         </p>
@@ -339,47 +322,47 @@ export default function Dashboard({
                 {/* Card 2: Tasks Completed */}
                 <Link
                     href="/tasks"
-                    className="bg-white dark:bg-[#0e1d47] rounded-lg p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-emerald-300 dark:hover:border-emerald-700/60 hover:shadow-md transition-all group"
+                    className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 sm:p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-emerald-300 dark:hover:border-emerald-700/60 hover:shadow-md transition-all group"
                 >
                     <div className="flex items-start justify-between">
-                        <div className="w-10 h-10 rounded-md bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-105 transition-transform">
-                            <CheckCircle2 className="w-5 h-5 fill-emerald-600/20" />
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-md bg-emerald-50 dark:bg-emerald-950/60 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover:scale-105 transition-transform">
+                            <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 fill-emerald-600/20" />
                         </div>
-                        <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 hidden sm:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <span>View</span>
                             <ArrowRight className="w-3.5 h-3.5" />
                         </span>
                     </div>
-                    <div className="mt-4">
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Tasks Completed</p>
-                        <h3 className="text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">
+                    <div className="mt-3 sm:mt-4">
+                        <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">Tasks Completed</p>
+                        <h3 className="text-xl sm:text-2xl lg:text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">
                             {stats?.tasks_completed ?? 0}
                         </h3>
-                        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1.5">
-                            <ArrowUp className="w-3.5 h-3.5" />
-                            <span>
-                                {stats?.tasks_completion_rate ?? 0}% completed ({stats?.tasks_completed ?? 0}/{stats?.total_tasks ?? 0})
+                        <p className="text-[10px] sm:text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 mt-1 sm:mt-1.5 truncate">
+                            <ArrowUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+                            <span className="truncate">
+                                {stats?.tasks_completion_rate ?? 0}% ({stats?.tasks_completed ?? 0}/{stats?.total_tasks ?? 0})
                             </span>
                         </p>
                     </div>
                 </Link>
 
                 {/* Card 3: Coming Soon */}
-                <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-purple-300 dark:hover:border-purple-700/60 transition-colors group">
+                <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 sm:p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-purple-300 dark:hover:border-purple-700/60 transition-colors group">
                     <div className="flex items-start justify-between">
-                        <div className="w-10 h-10 rounded-md bg-purple-50 dark:bg-purple-950/60 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-105 transition-transform">
-                            <Sparkles className="w-5 h-5 fill-purple-600/20" />
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-md bg-purple-50 dark:bg-purple-950/60 flex items-center justify-center text-purple-600 dark:text-purple-400 group-hover:scale-105 transition-transform">
+                            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 fill-purple-600/20" />
                         </div>
-                        <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-200/70 dark:border-purple-900/60">
+                        <span className="text-[9px] sm:text-[10px] font-semibold px-2 py-0.5 rounded-full bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-200/70 dark:border-purple-900/60">
                             Soon
                         </span>
                     </div>
-                    <div className="mt-4">
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">New Feature</p>
-                        <h3 className="text-[24px] sm:text-[26px] font-bold text-slate-900 dark:text-white mt-0.5">
+                    <div className="mt-3 sm:mt-4">
+                        <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">New Feature</p>
+                        <h3 className="text-xl sm:text-2xl lg:text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">
                             Coming Soon
                         </h3>
-                        <p className="text-xs text-slate-400 dark:text-slate-500 font-medium mt-1.5 flex items-center gap-1">
+                        <p className="text-[10px] sm:text-xs text-slate-400 dark:text-slate-500 font-medium mt-1 sm:mt-1.5 truncate">
                             <span>In active development</span>
                         </p>
                     </div>
@@ -388,34 +371,34 @@ export default function Dashboard({
                 {/* Card 4: Total Notes */}
                 <Link
                     href="/notes"
-                    className="bg-white dark:bg-[#0e1d47] rounded-lg p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-amber-300 dark:hover:border-amber-700/60 hover:shadow-md transition-all group"
+                    className="bg-white dark:bg-[#0e1d47] rounded-lg p-3.5 sm:p-5 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between hover:border-amber-300 dark:hover:border-amber-700/60 hover:shadow-md transition-all group"
                 >
                     <div className="flex items-start justify-between">
-                        <div className="w-10 h-10 rounded-md bg-amber-50 dark:bg-amber-950/60 flex items-center justify-center text-amber-600 dark:text-amber-400 group-hover:scale-105 transition-transform">
-                            <FileText className="w-5 h-5 fill-amber-600/20" />
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-md bg-amber-50 dark:bg-amber-950/60 flex items-center justify-center text-amber-600 dark:text-amber-400 group-hover:scale-105 transition-transform">
+                            <FileText className="w-4 h-4 sm:w-5 sm:h-5 fill-amber-600/20" />
                         </div>
-                        <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 hidden sm:flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                             <span>View</span>
                             <ArrowRight className="w-3.5 h-3.5" />
                         </span>
                     </div>
-                    <div className="mt-4">
-                        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Notes</p>
-                        <h3 className="text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">
+                    <div className="mt-3 sm:mt-4">
+                        <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 font-medium">Total Notes</p>
+                        <h3 className="text-xl sm:text-2xl lg:text-[28px] font-bold text-slate-900 dark:text-white mt-0.5">
                             {stats?.total_notes ?? 0}
                         </h3>
-                        <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1.5">
-                            <ArrowUp className="w-3.5 h-3.5" />
-                            <span>{stats?.notes_this_month ?? 0} notes this month</span>
+                        <p className="text-[10px] sm:text-xs text-amber-600 dark:text-amber-400 font-semibold flex items-center gap-1 mt-1 sm:mt-1.5 truncate">
+                            <ArrowUp className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+                            <span className="truncate">{stats?.notes_this_month ?? 0} notes this month</span>
                         </p>
                     </div>
                 </Link>
             </div>
 
             {/* 3. Middle Charts Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
                 {/* Productivity Overview (Area Chart) */}
-                <div className="lg:col-span-2 bg-white dark:bg-[#0e1d47] rounded-xl p-5 sm:p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between overflow-hidden">
+                <div className="lg:col-span-2 bg-white dark:bg-[#0e1d47] rounded-xl p-4 sm:p-5 lg:p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between overflow-hidden">
                     <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800/80">
                         <div className="flex items-center gap-2.5">
                             <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
@@ -621,7 +604,7 @@ export default function Dashboard({
                 </div>
 
                 {/* Task Status (Donut Chart) */}
-                <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between">
+                <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-4 sm:p-5 lg:p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between">
                     <div className="flex items-center justify-between pb-2">
                         <div className="flex items-center gap-2">
                             <CheckSquare className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -754,10 +737,10 @@ export default function Dashboard({
                 </div>
             </div>
 
-            {/* 4. Bottom Row 3-Columns Section */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {/* 4. Bottom Row 3-Columns Section (Responsive 1-col on mobile, 2-col on tablet, 3-col on desktop) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
                 {/* Column 1: Recent Projects */}
-                <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between">
+                <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-4 sm:p-5 lg:p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between">
                     <div>
                         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800/80">
                             <div className="flex items-center gap-2">
@@ -861,7 +844,7 @@ export default function Dashboard({
                 </div>
 
                 {/* Column 2: Upcoming Tasks */}
-                <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between">
+                <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-4 sm:p-5 lg:p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between">
                     <div>
                         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800/80">
                             <div className="flex items-center gap-2">
@@ -879,29 +862,22 @@ export default function Dashboard({
                             </Link>
                         </div>
 
-                        {/* Interactive Tasks List with Direct Toggle */}
+                        {/* Upcoming Tasks List (Read-only on Dashboard - managed exclusively on Tasks page) */}
                         <div className="divide-y divide-slate-100 dark:divide-slate-800/80">
                             {localTasks && localTasks.length > 0 ? (
                                 localTasks.map((task) => (
-                                    <div
+                                    <Link
                                         key={task.id}
-                                        onClick={(e) => handleToggleTask(e, task.id)}
-                                        className="py-3.5 flex items-center justify-between cursor-pointer group hover:bg-slate-50/70 dark:hover:bg-[#10204c]/60 px-1 rounded-md transition-colors"
+                                        href="/tasks"
+                                        className="py-3.5 flex items-center justify-between group hover:bg-slate-50/70 dark:hover:bg-[#10204c]/60 px-1 rounded-md transition-colors"
+                                        title="Buka halaman Tasks untuk mengelola atau menyelesaikan tugas"
                                     >
                                         <div className="flex items-center gap-3 min-w-0">
-                                            {task.done ? (
-                                                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                                            ) : (
-                                                <div className="w-4 h-4 rounded border border-slate-300 dark:border-slate-600 group-hover:border-blue-500 shrink-0 transition-colors"></div>
-                                            )}
+                                            <div className="w-8 h-8 rounded-md bg-blue-50 dark:bg-blue-950/60 flex items-center justify-center shrink-0 text-blue-600 dark:text-blue-400 group-hover:scale-105 transition-transform">
+                                                <Clock className="w-4 h-4" />
+                                            </div>
                                             <div className="min-w-0">
-                                                <span
-                                                    className={`text-xs sm:text-sm font-medium block truncate transition-colors ${
-                                                        task.done
-                                                            ? 'line-through text-slate-400 dark:text-slate-500'
-                                                            : 'text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400'
-                                                    }`}
-                                                >
+                                                <span className="text-xs sm:text-sm font-medium block truncate text-slate-800 dark:text-slate-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                                                     {task.title}
                                                 </span>
                                                 {task.project_name && (
@@ -924,8 +900,9 @@ export default function Dashboard({
                                             >
                                                 {task.priority || 'Normal'}
                                             </span>
+                                            <ArrowRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 group-hover:text-blue-600 dark:group-hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-all -translate-x-1 group-hover:translate-x-0" />
                                         </div>
-                                    </div>
+                                    </Link>
                                 ))
                             ) : (
                                 <div className="py-8 text-center text-slate-400 dark:text-slate-500">
@@ -945,7 +922,7 @@ export default function Dashboard({
                 </div>
 
                 {/* Column 3: Notes */}
-                <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between">
+                <div className="bg-white dark:bg-[#0e1d47] rounded-lg p-4 sm:p-5 lg:p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between md:col-span-2 lg:col-span-1">
                     <div>
                         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800/80">
                             <div className="flex items-center gap-2">
