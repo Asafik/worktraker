@@ -138,6 +138,70 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
     // Active selected archive item for right column preview
     const activeArchive = archives.find((a) => a.id === selectedId) || archives[0] || null;
 
+    // Auto-save notes state & logic
+    const [currentNotes, setCurrentNotes] = useState(() => activeArchive?.notes || '');
+    const [notesSaveStatus, setNotesSaveStatus] = useState('idle'); // 'idle' | 'saving' | 'saved'
+    const notesDebounceTimerRef = useRef(null);
+
+    useEffect(() => {
+        if (activeArchive) {
+            setCurrentNotes(activeArchive.notes || '');
+            setNotesSaveStatus('idle');
+        }
+    }, [activeArchive?.id]);
+
+    const saveNotesToServer = async (noteText, archiveId) => {
+        if (!archiveId) return;
+        setNotesSaveStatus('saving');
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            const res = await fetch(`/archive/${archiveId}/notes`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({ notes: noteText }),
+            });
+            if (res.ok) {
+                setNotesSaveStatus('saved');
+                setArchives((prev) =>
+                    prev.map((a) => (a.id === archiveId ? { ...a, notes: noteText } : a))
+                );
+                setTimeout(() => {
+                    setNotesSaveStatus((curr) => (curr === 'saved' ? 'idle' : curr));
+                }, 2000);
+            } else {
+                setNotesSaveStatus('idle');
+            }
+        } catch (err) {
+            console.error('Gagal menyimpan catatan:', err);
+            setNotesSaveStatus('idle');
+        }
+    };
+
+    const handleNotesChange = (e) => {
+        const val = e.target.value;
+        setCurrentNotes(val);
+        setNotesSaveStatus('saving');
+
+        if (notesDebounceTimerRef.current) {
+            clearTimeout(notesDebounceTimerRef.current);
+        }
+
+        notesDebounceTimerRef.current = setTimeout(() => {
+            saveNotesToServer(val, activeArchive?.id);
+        }, 800);
+    };
+
+    const handleNotesBlur = () => {
+        if (notesDebounceTimerRef.current) {
+            clearTimeout(notesDebounceTimerRef.current);
+        }
+        saveNotesToServer(currentNotes, activeArchive?.id);
+    };
+
     // Filter logic
     const filteredArchives = archives.filter((item) => {
         const matchesTab =
@@ -733,24 +797,35 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                                             <FileText className="w-3.5 h-3.5 text-slate-400" />
                                             <span>Notes</span>
                                         </div>
-                                        <button
-                                            onClick={() => {
-                                                const newNote = prompt('Edit catatan:', activeArchive.notes);
-                                                if (newNote !== null) {
-                                                    setArchives(
-                                                        archives.map((a) =>
-                                                            a.id === activeArchive.id ? { ...a, notes: newNote } : a
-                                                        )
-                                                    );
-                                                }
-                                            }}
-                                            className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
-                                        >
-                                            <Edit3 className="w-3.5 h-3.5" />
-                                        </button>
+                                        <div className="flex items-center gap-1.5 text-[11px] font-normal">
+                                            {notesSaveStatus === 'saving' && (
+                                                <span className="flex items-center gap-1 text-blue-600 dark:text-blue-400 font-medium">
+                                                    <Loader2 className="w-3 h-3 animate-spin" />
+                                                    <span>Menyimpan...</span>
+                                                </span>
+                                            )}
+                                            {notesSaveStatus === 'saved' && (
+                                                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
+                                                    <Check className="w-3 h-3 stroke-[2.5]" />
+                                                    <span>Tersimpan otomatis</span>
+                                                </span>
+                                            )}
+                                            {notesSaveStatus === 'idle' && (
+                                                <span className="text-[10px] text-slate-400 dark:text-slate-500">
+                                                    Auto-save
+                                                </span>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="p-3 bg-slate-50 dark:bg-[#0c183b] rounded-lg text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border border-slate-100 dark:border-slate-800/80">
-                                        {activeArchive.notes || 'Tidak ada catatan.'}
+                                    <div className="relative">
+                                        <textarea
+                                            rows={3}
+                                            value={currentNotes}
+                                            onChange={handleNotesChange}
+                                            onBlur={handleNotesBlur}
+                                            placeholder="Tulis catatan arsip di sini... (otomatis tersimpan ke sistem)"
+                                            className="w-full p-2.5 bg-slate-50 dark:bg-[#0c183b] rounded-lg text-xs sm:text-sm text-slate-700 dark:text-slate-200 leading-relaxed border border-slate-200/80 dark:border-slate-800/80 focus:border-blue-500 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-[#0e1d47] focus:outline-hidden focus:ring-1 focus:ring-blue-500/20 transition-all resize-none placeholder:text-slate-400"
+                                        />
                                     </div>
                                 </div>
 

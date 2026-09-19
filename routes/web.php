@@ -68,6 +68,7 @@ use App\Http\Controllers\ArchiveController;
 
 Route::get('/archive', [ArchiveController::class, 'index'])->name('archive');
 Route::post('/archive', [ArchiveController::class, 'store'])->name('archive.store');
+Route::post('/archive/{id}/notes', [ArchiveController::class, 'updateNotes'])->name('archive.update-notes');
 Route::delete('/archive/{id}', [ArchiveController::class, 'destroy'])->name('archive.destroy');
 
 Route::get('/portfolio', function () {

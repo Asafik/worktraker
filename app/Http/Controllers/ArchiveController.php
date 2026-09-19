@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\JsonResponse;
 
 class ArchiveController extends Controller
 {
@@ -119,6 +120,27 @@ class ArchiveController extends Controller
         ]);
 
         return back()->with('message', 'File arsip berhasil disimpan ke Google Drive dan metadata tersimpan di database!');
+    }
+
+    /**
+     * Update archive notes in SQLite database.
+     */
+    public function updateNotes(Request $request, $id): JsonResponse
+    {
+        $request->validate([
+            'notes' => 'nullable|string|max:2000',
+        ]);
+
+        $archive = Archive::findOrFail($id);
+        $archive->update([
+            'notes' => $request->input('notes'),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Catatan berhasil diperbarui!',
+            'notes' => $archive->notes,
+        ]);
     }
 
     /**
