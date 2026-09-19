@@ -268,7 +268,7 @@ export default function Dashboard({
             <Head title="Dashboard - WorkTrack" />
 
             {/* 1. Hero Greeting Section */}
-            <div className="relative pt-2 pb-4 flex flex-col md:flex-row items-start md:items-center justify-between min-h-[130px]">
+            <div className="relative pt-0.5 sm:pt-2 pb-0 sm:pb-3 flex flex-col md:flex-row items-start md:items-center justify-between sm:min-h-[110px] md:min-h-[130px]">
                 {/* Background Illustration */}
                 <div className="absolute left-1/2 -translate-x-1/2 md:translate-x-0 md:left-auto md:right-48 top-1/2 -translate-y-1/2 pointer-events-none opacity-90 hidden sm:block">
                     <img
@@ -279,11 +279,11 @@ export default function Dashboard({
                 </div>
 
                 {/* Left Content */}
-                <div className="relative z-10 space-y-1 max-w-md">
+                <div className="relative z-10 space-y-0.5 sm:space-y-1 max-w-md">
                     <p className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
                         {greeting?.date || 'Sunday, 20 September 2026'}
                     </p>
-                    <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                    <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                         {greeting?.time || 'Good day'}, {greeting?.name || 'Developer'}!
                     </h2>
                     <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-normal">
