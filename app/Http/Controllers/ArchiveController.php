@@ -61,13 +61,17 @@ class ArchiveController extends Controller
      */
     public function store(Request $request, GoogleDriveService $driveService): RedirectResponse
     {
+        // Support large uploads without script timeout
+        set_time_limit(0);
+        ini_set('max_execution_time', '0');
+
         $request->validate([
             'name' => 'required|string|max:255',
             'projectName' => 'nullable|string|max:255',
             'category' => 'required|string|in:Project,Backup,Other',
             'description' => 'nullable|string|max:1000',
             'notes' => 'nullable|string|max:1000',
-            'file' => 'nullable|file|max:102400', // max 100MB
+            'file' => 'nullable|file|max:614400', // max 600MB
         ]);
 
         $fileData = null;

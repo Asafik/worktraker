@@ -9,6 +9,8 @@ export default function LoadingOverlay({
     fullScreen = false,
     className = '',
     blur = true,
+    progress = null,
+    subInfo = '',
 }) {
     const visible = isShow !== undefined ? isShow : show;
 
@@ -17,11 +19,11 @@ export default function LoadingOverlay({
     if (fullScreen) {
         return (
             <div
-                className="fixed inset-0 z-[70] bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 transition-all"
+                className="fixed inset-0 z-[70] bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 transition-all animate-in fade-in"
                 role="status"
                 aria-live="polite"
             >
-                <div className="relative bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#1e346e] rounded-2xl shadow-2xl p-6 sm:p-7 max-w-sm w-full mx-auto flex flex-col items-center text-center">
+                <div className="relative bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#1e346e] rounded-2xl shadow-2xl p-6 sm:p-7 max-w-md w-full mx-auto flex flex-col items-center text-center">
                     {/* Centered spinner badge */}
                     <div className="relative mb-4 flex items-center justify-center">
                         <div className="absolute w-14 h-14 rounded-full bg-blue-500/20 dark:bg-blue-400/20 blur-md animate-pulse pointer-events-none" />
@@ -39,15 +41,34 @@ export default function LoadingOverlay({
 
                     {/* Description */}
                     {description && (
-                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed max-w-xs">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed max-w-sm">
                             {description}
                         </p>
                     )}
 
-                    {/* Progress pulse track */}
-                    <div className="w-full bg-slate-100 dark:bg-[#152759] h-1.5 rounded-full mt-5 overflow-hidden">
-                        <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full animate-pulse" />
-                    </div>
+                    {/* Progress Bar & Details or Pulse Track */}
+                    {progress !== null && progress !== undefined ? (
+                        <div className="w-full mt-5 space-y-2">
+                            <div className="flex items-center justify-between text-xs font-semibold">
+                                <span className="text-slate-600 dark:text-slate-300 font-mono">
+                                    {subInfo || 'Mengunggah...'}
+                                </span>
+                                <span className="text-blue-600 dark:text-blue-400 font-bold font-mono">
+                                    {Math.round(progress)}%
+                                </span>
+                            </div>
+                            <div className="w-full bg-slate-100 dark:bg-[#152759] h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200/60 dark:border-slate-800">
+                                <div
+                                    className="h-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 rounded-full transition-all duration-150 ease-out shadow-xs"
+                                    style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+                                />
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="w-full bg-slate-100 dark:bg-[#152759] h-1.5 rounded-full mt-5 overflow-hidden">
+                            <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full animate-pulse" />
+                        </div>
+                    )}
                 </div>
             </div>
         );

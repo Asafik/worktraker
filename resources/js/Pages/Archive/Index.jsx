@@ -44,6 +44,19 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
     const [uploadNotes, setUploadNotes] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [uploadProgress, setUploadProgress] = useState(null);
+    const [uploadLoadedBytes, setUploadLoadedBytes] = useState(0);
+    const [uploadTotalBytes, setUploadTotalBytes] = useState(0);
+    const [uploadStage, setUploadStage] = useState('idle'); // 'idle' | 'uploading' | 'saving_drive'
+
+    const formatFileSize = (bytes) => {
+        if (!bytes || bytes <= 0) return '0 MB';
+        const mb = bytes / (1024 * 1024);
+        if (mb < 1) {
+            return (bytes / 1024).toFixed(1) + ' KB';
+        }
+        return mb.toFixed(1) + ' MB';
+    };
 
     const categoryOptions = [
         { value: 'Project', label: 'Project' },
@@ -84,6 +97,10 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
         setUploadDesc('');
         setUploadNotes('');
         setSelectedFile(null);
+        setUploadProgress(null);
+        setUploadLoadedBytes(0);
+        setUploadTotalBytes(0);
+        setUploadStage('idle');
         setIsUploadModalOpen(true);
     };
 
@@ -189,6 +206,11 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
         }
 
         setIsSubmitting(true);
+        setUploadProgress(0);
+        setUploadLoadedBytes(0);
+        setUploadTotalBytes(selectedFile.size || 0);
+        setUploadStage('uploading');
+
         const formData = new FormData();
         formData.append('name', uploadName.trim());
         formData.append('projectName', uploadProjectName.trim());
@@ -200,10 +222,21 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
         router.post('/archive', formData, {
             forceFormData: true,
             preserveScroll: true,
+            onProgress: (progress) => {
+                const pct = progress.percentage ?? 0;
+                setUploadProgress(pct);
+                setUploadLoadedBytes(progress.loaded ?? 0);
+                setUploadTotalBytes(progress.total ?? (selectedFile ? selectedFile.size : 0));
+                if (pct >= 100) {
+                    setUploadStage('saving_drive');
+                }
+            },
             onSuccess: () => {
                 setIsSubmitting(false);
+                setUploadStage('idle');
+                setUploadProgress(null);
                 setIsUploadModalOpen(false);
-                toast.success('Arsip berhasil diunggah ke Google Drive!');
+                toast.success('Arsip berhasil diunggah dan disimpan ke Google Drive!');
                 setSelectedProjectId('');
                 setUploadName('');
                 setUploadProjectName('');
@@ -213,6 +246,8 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
             },
             onError: (err) => {
                 setIsSubmitting(false);
+                setUploadStage('idle');
+                setUploadProgress(null);
                 const msg = Object.values(err)[0] || 'Terjadi kesalahan saat mengunggah arsip ke Google Drive.';
                 toast.error('Gagal mengunggah arsip: ' + msg);
             },
@@ -697,12 +732,26 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                 </div>
             </div>
 
-            {/* Loading Overlay saat proses upload ke Google Drive */}
+            {/* Loading Overlay saat proses upload ke Google Drive dengan real-time progress bar */}
             <LoadingOverlay
                 fullScreen
                 isShow={isSubmitting}
-                message="Mengunggah Arsip ke Google Drive..."
-                description="Mohon tunggu sebentar, file sedang diunggah dan disimpan ke cloud storage."
+                progress={uploadStage === 'uploading' ? uploadProgress : null}
+                subInfo={
+                    uploadStage === 'uploading'
+                        ? `${formatFileSize(uploadLoadedBytes)} / ${formatFileSize(uploadTotalBytes)}`
+                        : ''
+                }
+                message={
+                    uploadStage === 'saving_drive'
+                        ? 'Menyimpan ke Google Drive...'
+                        : `Mengunggah Berkas ke Server (${Math.round(uploadProgress || 0)}%)...`
+                }
+                description={
+                    uploadStage === 'saving_drive'
+                        ? 'File berhasil ditransfer dari komputer Anda! Server sedang mengalirkan dan mengamankan berkas ke Google Drive WorkTrack.'
+                        : 'Mohon tunggu, proses transfer data sedang berlangsung. Jangan menutup jendela browser.'
+                }
             />
 
             {/* Upload Modal (Standard Modal Component) */}
@@ -845,6 +894,34 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                             )}
                         </label>
                     </div>
+
+                    {/* Live Upload Progress Indicator in Modal */}
+                    {isSubmitting && (
+                        <div className="p-3.5 bg-blue-50/80 dark:bg-[#11214d] border border-blue-100 dark:border-blue-900/50 rounded-lg space-y-2 animate-in fade-in">
+                            <div className="flex items-center justify-between text-xs font-semibold">
+                                <span className="text-slate-700 dark:text-slate-200">
+                                    {uploadStage === 'saving_drive'
+                                        ? 'Menyimpan ke Google Drive (Cloud)...'
+                                        : 'Mentransfer file dari komputer Anda...'}
+                                </span>
+                                <span className="text-blue-600 dark:text-blue-400 font-bold font-mono">
+                                    {uploadStage === 'saving_drive' ? 'Memproses...' : `${Math.round(uploadProgress || 0)}%`}
+                                </span>
+                            </div>
+                            <div className="w-full bg-slate-200 dark:bg-[#1a2e63] h-2 rounded-full overflow-hidden">
+                                <div
+                                    className={`h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full transition-all duration-150 ${
+                                        uploadStage === 'saving_drive' ? 'w-full animate-pulse' : ''
+                                    }`}
+                                    style={uploadStage !== 'saving_drive' ? { width: `${uploadProgress || 0}%` } : {}}
+                                />
+                            </div>
+                            <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 font-mono">
+                                <span>{formatFileSize(uploadLoadedBytes)} / {formatFileSize(uploadTotalBytes)}</span>
+                                <span className="truncate max-w-[200px]">{selectedFile?.name}</span>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Modal Actions */}
                     <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-[#1b2b5a]">
