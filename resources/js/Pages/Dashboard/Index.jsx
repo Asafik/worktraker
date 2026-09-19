@@ -249,6 +249,20 @@ export default function Dashboard({
         return <FileText className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
     };
 
+    // Helper to get task priority badge styling (100% consistent with Tasks page)
+    const getPriorityConfig = (priority) => {
+        switch (priority) {
+            case 'Urgent':
+                return 'bg-red-500/10 text-red-600 dark:text-red-400 border-red-200 dark:border-red-900/50';
+            case 'High':
+                return 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-200 dark:border-amber-900/50';
+            case 'Medium':
+                return 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-900/50';
+            default:
+                return 'bg-slate-500/10 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700';
+        }
+    };
+
     return (
         <>
             <Head title="Dashboard - WorkTrack" />
@@ -889,15 +903,7 @@ export default function Dashboard({
                                         </div>
 
                                         <div className="flex items-center gap-2 shrink-0 ml-2">
-                                            <span
-                                                className={`text-[10px] font-semibold px-2 py-0.5 rounded-md ${
-                                                    task.priority === 'High' || task.priority === 'Urgent'
-                                                        ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400'
-                                                        : task.priority === 'Medium'
-                                                        ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400'
-                                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-                                                }`}
-                                            >
+                                            <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${getPriorityConfig(task.priority)}`}>
                                                 {task.priority || 'Normal'}
                                             </span>
                                             <ArrowRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 group-hover:text-blue-600 dark:group-hover:text-blue-400 opacity-0 group-hover:opacity-100 transition-all -translate-x-1 group-hover:translate-x-0" />
