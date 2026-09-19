@@ -88,7 +88,18 @@ export default function Dashboard({
     };
 
     // Calculate dynamic coordinates for Productivity Overview Area Chart
-    const computedPoints = useMemo(() => {
+    const {
+        computedPoints,
+        yAxisLabels,
+        linePath,
+        areaPath,
+        totalTasksThisWeek,
+        padLeft,
+        padRight,
+        padTop,
+        padBottom,
+        usableHeight,
+    } = useMemo(() => {
         const rawDays =
             chart_days && chart_days.length > 0
                 ? chart_days
@@ -102,21 +113,74 @@ export default function Dashboard({
                       { day: 'Sun', val: 0, date: '21 Sep' },
                   ];
 
-        const maxVal = Math.max(...rawDays.map((d) => d.val || 0), 4);
-        const yTop = 45;
-        const yBottom = 165;
-        const yRange = yBottom - yTop;
+        const peak = Math.max(...rawDays.map((d) => d.val || 0), 1);
+        // Step size for 4 intervals
+        const step = peak <= 4 ? 1 : Math.ceil(peak / 4);
+        const yMax = step * 4;
 
-        return rawDays.map((d, i) => {
-            const x = 20 + i * 55;
+        const yAxisLabels = [
+            { val: yMax, ratio: 0 },
+            { val: step * 3, ratio: 0.25 },
+            { val: step * 2, ratio: 0.5 },
+            { val: step, ratio: 0.75 },
+            { val: 0, ratio: 1.0 },
+        ];
+
+        // Coordinate space in SVG viewBox: 0 0 700 230
+        const padLeft = 42;
+        const padRight = 24;
+        const padTop = 24;
+        const padBottom = 180;
+        const usableWidth = 700 - padLeft - padRight;
+        const usableHeight = padBottom - padTop;
+
+        const n = rawDays.length;
+        const xStep = n > 1 ? usableWidth / (n - 1) : 0;
+
+        const points = rawDays.map((d, i) => {
             const val = d.val || 0;
-            const y = yBottom - (val / maxVal) * yRange;
+            const x = padLeft + i * xStep;
+            const y = padBottom - (val / yMax) * usableHeight;
             return {
                 ...d,
                 x,
                 y,
+                val,
             };
         });
+
+        // Generate smooth Bezier curve
+        let path = '';
+        if (points.length > 0) {
+            path = `M ${points[0].x} ${points[0].y}`;
+            for (let i = 1; i < points.length; i++) {
+                const prev = points[i - 1];
+                const curr = points[i];
+                const cx1 = prev.x + (curr.x - prev.x) * 0.45;
+                const cx2 = prev.x + (curr.x - prev.x) * 0.55;
+                path += ` C ${cx1} ${prev.y}, ${cx2} ${curr.y}, ${curr.x} ${curr.y}`;
+            }
+        }
+
+        const area =
+            points.length > 0
+                ? `${path} L ${points[points.length - 1].x} ${padBottom} L ${points[0].x} ${padBottom} Z`
+                : '';
+
+        const totalTasksThisWeek = rawDays.reduce((acc, curr) => acc + (curr.val || 0), 0);
+
+        return {
+            computedPoints: points,
+            yAxisLabels,
+            linePath: path,
+            areaPath: area,
+            totalTasksThisWeek,
+            padLeft,
+            padRight,
+            padTop,
+            padBottom,
+            usableHeight,
+        };
     }, [chart_days]);
 
     const [activePoint, setActivePoint] = useState(null);
@@ -127,24 +191,6 @@ export default function Dashboard({
             const todayPoint = computedPoints.find((p) => p.is_today) || computedPoints[computedPoints.length - 1];
             setActivePoint(todayPoint);
         }
-    }, [computedPoints]);
-
-    // Build smooth bezier curves for chart
-    const { linePath, areaPath } = useMemo(() => {
-        if (!computedPoints || computedPoints.length === 0) {
-            return { linePath: '', areaPath: '' };
-        }
-
-        let path = `M ${computedPoints[0].x} ${computedPoints[0].y}`;
-        for (let i = 1; i < computedPoints.length; i++) {
-            const prev = computedPoints[i - 1];
-            const curr = computedPoints[i];
-            const cx = prev.x + (curr.x - prev.x) / 2;
-            path += ` C ${cx} ${prev.y}, ${cx} ${curr.y}, ${curr.x} ${curr.y}`;
-        }
-
-        const area = `${path} L ${computedPoints[computedPoints.length - 1].x} 185 L ${computedPoints[0].x} 185 Z`;
-        return { linePath: path, areaPath: area };
     }, [computedPoints]);
 
     // Donut chart calculations
@@ -370,113 +416,203 @@ export default function Dashboard({
             {/* 3. Middle Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 {/* Productivity Overview (Area Chart) */}
-                <div className="lg:col-span-2 bg-white dark:bg-[#0e1d47] rounded-lg p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between">
-                    <div className="flex items-center justify-between pb-4">
-                        <div className="flex items-center gap-2">
-                            <BarChart2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                Productivity Overview
-                            </h3>
+                <div className="lg:col-span-2 bg-white dark:bg-[#0e1d47] rounded-xl p-5 sm:p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between">
+                    <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800/80">
+                        <div className="flex items-center gap-2.5">
+                            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                                <BarChart2 className="w-4.5 h-4.5" />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2">
+                                    <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
+                                        Productivity Overview
+                                    </h3>
+                                    {totalTasksThisWeek > 0 && (
+                                        <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/40">
+                                            {totalTasksThisWeek} completed
+                                        </span>
+                                    )}
+                                </div>
+                                <p className="text-xs text-slate-400 dark:text-slate-500">
+                                    Completed tasks activity across the past 7 days
+                                </p>
+                            </div>
                         </div>
 
                         {/* Filter Tag */}
-                        <div className="inline-flex items-center gap-1.5 bg-[#f8fafc] dark:bg-[#10204c] border border-slate-200 dark:border-[#1f3468] text-xs font-medium text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-md">
+                        <div className="inline-flex items-center gap-1.5 bg-[#f8fafc] dark:bg-[#10204c] border border-slate-200 dark:border-[#1f3468] text-xs font-medium text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-md self-start sm:self-auto">
                             <CalendarIcon className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                             <span>Last 7 days</span>
                         </div>
                     </div>
 
                     {/* Chart Canvas */}
-                    <div className="relative pt-6 pb-2 w-full">
-                        {/* Horizontal Grid Lines */}
-                        <div className="absolute inset-0 flex flex-col justify-between pointer-events-none text-[10px] text-slate-400 dark:text-slate-500 pl-6 pr-2 pt-6 pb-8">
-                            {[10, 8, 6, 4, 2, 0].map((val, idx) => (
-                                <div key={idx} className="flex items-center w-full">
-                                    <span className="w-4 text-right pr-2">{val}</span>
-                                    <div className="flex-1 border-b border-dashed border-slate-100 dark:border-[#17254d]"></div>
+                    <div className="relative pt-4 pb-2 w-full">
+                        {/* Active Point Smart Tooltip (with horizontal edge clamping) */}
+                        {activePoint && (
+                            <div
+                                className="absolute top-1 pointer-events-none transition-all duration-150 transform -translate-x-1/2 z-20"
+                                style={{
+                                    left: `${Math.min(
+                                        Math.max((activePoint.x / 700) * 100, 14),
+                                        86
+                                    )}%`,
+                                }}
+                            >
+                                <div className="bg-slate-900/95 dark:bg-[#07112d]/95 backdrop-blur-md text-white text-[11px] rounded-lg px-3 py-1.5 shadow-xl border border-slate-700/60 dark:border-[#223974] text-center space-y-0.5 whitespace-nowrap">
+                                    <div className="font-bold flex items-center justify-center gap-1.5 text-white">
+                                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                        <span>
+                                            {activePoint.val}{' '}
+                                            {activePoint.val === 1 ? 'task' : 'tasks'} completed
+                                        </span>
+                                    </div>
+                                    <div className="text-[10px] text-slate-400 font-medium">
+                                        {activePoint.date}
+                                    </div>
                                 </div>
-                            ))}
-                        </div>
+                                <div className="w-2 h-2 bg-slate-900/95 dark:bg-[#07112d]/95 transform rotate-45 mx-auto -mt-1 border-r border-b border-slate-700/60 dark:border-[#223974]"></div>
+                            </div>
+                        )}
 
-                        {/* SVG Area & Smooth Curve */}
-                        <div className="ml-6 relative h-48 w-[calc(100%-24px)]">
+                        {/* High-Precision Synchronized SVG Line Chart */}
+                        <div className="relative w-full">
                             <svg
-                                viewBox="0 0 380 200"
-                                preserveAspectRatio="none"
-                                className="w-full h-full overflow-visible"
+                                viewBox="0 0 700 230"
+                                className="w-full h-48 sm:h-56 overflow-visible select-none"
                             >
                                 <defs>
                                     <linearGradient id="curveGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor="#2563eb" stopOpacity="0.3" />
+                                        <stop offset="0%" stopColor="#2563eb" stopOpacity="0.28" />
+                                        <stop offset="70%" stopColor="#2563eb" stopOpacity="0.06" />
                                         <stop offset="100%" stopColor="#2563eb" stopOpacity="0.0" />
                                     </linearGradient>
+                                    <filter id="lineGlow" x="-10%" y="-10%" width="120%" height="130%">
+                                        <feDropShadow
+                                            dx="0"
+                                            dy="3"
+                                            stdDeviation="3.5"
+                                            floodColor="#2563eb"
+                                            floodOpacity="0.28"
+                                        />
+                                    </filter>
                                 </defs>
 
-                                {/* Shaded Area under Curve */}
+                                {/* Horizontal Grid lines & Dynamic Y-Axis Labels */}
+                                {yAxisLabels.map((item, idx) => {
+                                    const yPos = padTop + item.ratio * usableHeight;
+                                    return (
+                                        <g key={idx}>
+                                            <text
+                                                x={padLeft - 12}
+                                                y={yPos + 4}
+                                                textAnchor="end"
+                                                className="text-[11px] font-medium fill-slate-400 dark:fill-slate-500"
+                                            >
+                                                {item.val}
+                                            </text>
+                                            <line
+                                                x1={padLeft}
+                                                y1={yPos}
+                                                x2={700 - padRight}
+                                                y2={yPos}
+                                                stroke="currentColor"
+                                                strokeDasharray="4 4"
+                                                className="text-slate-100 dark:text-[#182a57]"
+                                                strokeWidth="1"
+                                            />
+                                        </g>
+                                    );
+                                })}
+
+                                {/* Shaded Gradient Area under Curve */}
                                 {areaPath && <path d={areaPath} fill="url(#curveGradient)" />}
 
-                                {/* Smooth Blue Line */}
+                                {/* Active Guide Line (Dashed vertical line when point is hovered/active) */}
+                                {activePoint && (
+                                    <line
+                                        x1={activePoint.x}
+                                        y1={padTop}
+                                        x2={activePoint.x}
+                                        y2={padBottom}
+                                        stroke="#3b82f6"
+                                        strokeWidth="1.5"
+                                        strokeDasharray="3 3"
+                                        opacity="0.75"
+                                    />
+                                )}
+
+                                {/* Smooth Bezier Curve with Glow Filter */}
                                 {linePath && (
                                     <path
                                         d={linePath}
                                         fill="none"
-                                        stroke="#3b82f6"
-                                        strokeWidth="2.5"
+                                        stroke="#2563eb"
+                                        strokeWidth="3"
                                         strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        filter="url(#lineGlow)"
+                                        className="dark:stroke-[#3b82f6]"
                                     />
                                 )}
 
-                                {/* Interactive Data Points */}
-                                {computedPoints.map((pt, idx) => (
-                                    <g key={idx} className="cursor-pointer" onClick={() => setActivePoint(pt)}>
-                                        <circle
-                                            cx={pt.x}
-                                            cy={pt.y}
-                                            r={activePoint?.day === pt.day ? 5.5 : 3.5}
-                                            className={`${
-                                                activePoint?.day === pt.day
-                                                    ? 'fill-blue-500 stroke-white dark:stroke-[#0c183b] stroke-[2.5px]'
-                                                    : 'fill-blue-500 hover:fill-blue-400'
-                                            } transition-all`}
-                                        />
-                                    </g>
-                                ))}
+                                {/* Synchronized Data Points & X-Axis Day Labels */}
+                                {computedPoints.map((pt, idx) => {
+                                    const isActive = activePoint?.day === pt.day;
+                                    return (
+                                        <g key={idx}>
+                                            {/* Synchronized Day Label (100% vertically aligned with dot) */}
+                                            <text
+                                                x={pt.x}
+                                                y="212"
+                                                textAnchor="middle"
+                                                onClick={() => setActivePoint(pt)}
+                                                className={`text-[12px] cursor-pointer transition-all ${
+                                                    isActive
+                                                        ? 'font-bold fill-blue-600 dark:fill-blue-400'
+                                                        : 'font-medium fill-slate-400 dark:fill-slate-400 hover:fill-slate-600 dark:hover:fill-slate-200'
+                                                }`}
+                                            >
+                                                {pt.day}
+                                            </text>
+
+                                            {/* Outer Glow Ring on Active Point */}
+                                            {isActive && (
+                                                <circle
+                                                    cx={pt.x}
+                                                    cy={pt.y}
+                                                    r="11"
+                                                    className="fill-blue-500/20 dark:fill-blue-400/25 animate-pulse"
+                                                />
+                                            )}
+
+                                            {/* Circle Data Point */}
+                                            <circle
+                                                cx={pt.x}
+                                                cy={pt.y}
+                                                r={isActive ? 5.5 : 3.5}
+                                                className={`${
+                                                    isActive
+                                                        ? 'fill-blue-600 stroke-white dark:stroke-[#0e1d47] stroke-[2.5px]'
+                                                        : 'fill-blue-500 hover:fill-blue-400 dark:fill-blue-400'
+                                                } transition-all pointer-events-none`}
+                                            />
+
+                                            {/* Wide Invisible Column Hit-Box for Smooth Hover Interaction */}
+                                            <rect
+                                                x={pt.x - 38}
+                                                y="0"
+                                                width="76"
+                                                height="230"
+                                                fill="transparent"
+                                                className="cursor-pointer"
+                                                onClick={() => setActivePoint(pt)}
+                                                onMouseEnter={() => setActivePoint(pt)}
+                                            />
+                                        </g>
+                                    );
+                                })}
                             </svg>
-
-                            {/* Active Point Hover Tooltip */}
-                            {activePoint && (
-                                <div
-                                    className="absolute -top-3 z-20 pointer-events-none transform -translate-x-1/2 transition-all duration-150"
-                                    style={{ left: `${(activePoint.x / 380) * 100}%` }}
-                                >
-                                    <div className="bg-[#0f172a] text-white text-[11px] rounded-lg px-2.5 py-1.5 shadow-xl text-center space-y-0.5 border border-slate-700/50">
-                                        <div className="font-bold text-white whitespace-nowrap">
-                                            {activePoint.val} tasks completed
-                                        </div>
-                                        <div className="text-[10px] text-slate-400 whitespace-nowrap">
-                                            {activePoint.date}
-                                        </div>
-                                    </div>
-                                    <div className="w-2 h-2 bg-[#0f172a] transform rotate-45 mx-auto -mt-1 border-r border-b border-slate-700/50"></div>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* X-Axis Days Labels */}
-                        <div className="flex justify-between pl-8 pr-2 pt-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-                            {computedPoints.map((pt) => (
-                                <span
-                                    key={pt.day}
-                                    onClick={() => setActivePoint(pt)}
-                                    className={`cursor-pointer hover:text-blue-500 transition-colors ${
-                                        activePoint?.day === pt.day
-                                            ? 'font-bold text-blue-500 dark:text-blue-400'
-                                            : ''
-                                    }`}
-                                >
-                                    {pt.day}
-                                </span>
-                            ))}
                         </div>
                     </div>
                 </div>
