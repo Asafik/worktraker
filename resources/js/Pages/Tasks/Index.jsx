@@ -449,21 +449,21 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                 {/* 3. Main Tasks Card (Search, Filters & List/Board) */}
                 <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs overflow-hidden">
                     {/* Search & Filter Bar Header */}
-                    <div className="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#17254d] flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                    <div className="p-3 sm:p-4 border-b border-slate-100 dark:border-[#17254d] flex flex-col xl:flex-row xl:items-center justify-between gap-3">
                         {/* Search */}
-                        <div className="relative w-full lg:w-72">
+                        <div className="relative w-full xl:w-72">
                             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                             <input
                                 type="text"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 placeholder="Cari tugas, revisi, repo..."
-                                className="w-full pl-9 pr-3.5 py-1.5 bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
+                                className="w-full pl-9 pr-3.5 py-1.5 bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors"
                             />
                         </div>
 
-                        {/* Dropdown Filters */}
-                        <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2">
+                        {/* Dropdown Filters & View Switcher */}
+                        <div className="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 sm:gap-2.5 w-full xl:w-auto">
                             {/* Type Filter */}
                             <div className="w-full sm:w-36">
                                 <CustomSelect
@@ -485,7 +485,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                             </div>
 
                             {/* Project Filter */}
-                            <div className="w-full sm:w-48 sm:min-w-[180px]">
+                            <div className="col-span-2 sm:col-span-1 w-full sm:w-48 sm:min-w-[170px]">
                                 <CustomSelect
                                     value={selectedProject}
                                     onChange={(val) => setSelectedProject(val)}
@@ -497,11 +497,11 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                             </div>
 
                             {/* View Switcher */}
-                            <div className="inline-flex items-center bg-slate-100 dark:bg-[#122352] p-0.5 rounded-md border border-slate-200 dark:border-[#243e80]">
+                            <div className="col-span-2 sm:col-span-1 inline-flex rounded-md bg-slate-100 dark:bg-[#122352] p-0.5 border border-slate-200 dark:border-[#243e80] w-full sm:w-auto justify-center">
                                 <button
                                     type="button"
                                     onClick={() => setViewMode('list')}
-                                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
+                                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold transition-all cursor-pointer ${
                                         viewMode === 'list'
                                             ? 'bg-blue-600 text-white shadow-xs'
                                             : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
@@ -514,7 +514,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                 <button
                                     type="button"
                                     onClick={() => setViewMode('board')}
-                                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
+                                    className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded text-xs font-semibold transition-all cursor-pointer ${
                                         viewMode === 'board'
                                             ? 'bg-blue-600 text-white shadow-xs'
                                             : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
