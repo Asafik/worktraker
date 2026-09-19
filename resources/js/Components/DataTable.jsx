@@ -178,17 +178,19 @@ export default function DataTable({
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <tr key={headerGroup.id}>
                                     {renderExpandedRow && (
-                                        <th className={`w-10 px-3 py-3.5 text-center ${expandBreakpoint}`}></th>
+                                        <th className={`w-1 whitespace-nowrap pl-3 pr-1 py-3.5 text-center ${expandBreakpoint}`}></th>
                                     )}
                                     {headerGroup.headers.map((header) => {
                                         const meta = header.column.columnDef.meta || {};
                                         const headerResponsiveClass = meta.responsiveClass || '';
                                         const isSortable = header.column.getCanSort();
+                                        const hasCustomPadding = meta.headerClassName && /\b(px-|pl-|pr-|p-)\S+/.test(meta.headerClassName);
+                                        const paddingClass = hasCustomPadding ? '' : 'px-3 sm:px-4';
 
                                         return (
                                             <th
                                                 key={header.id}
-                                                className={`py-3.5 px-3 sm:px-4 ${headerResponsiveClass} ${
+                                                className={`py-3.5 ${paddingClass} ${headerResponsiveClass} ${
                                                     meta.headerClassName || ''
                                                 }`}
                                             >
@@ -267,7 +269,7 @@ export default function DataTable({
                                                 {/* Expand / Collapse Control Button */}
                                                 {renderExpandedRow && (
                                                     <td
-                                                        className={`w-10 px-3 py-3.5 text-center align-middle ${expandBreakpoint}`}
+                                                        className={`w-1 whitespace-nowrap pl-3 pr-1 py-3.5 text-center align-middle shrink-0 ${expandBreakpoint}`}
                                                         onClick={(e) => e.stopPropagation()}
                                                     >
                                                         <button
@@ -291,11 +293,13 @@ export default function DataTable({
                                                 {row.getVisibleCells().map((cell) => {
                                                     const meta = cell.column.columnDef.meta || {};
                                                     const cellResponsiveClass = meta.responsiveClass || '';
+                                                    const hasCustomCellPadding = meta.cellClassName && /\b(px-|pl-|pr-|p-)\S+/.test(meta.cellClassName);
+                                                    const cellPaddingClass = hasCustomCellPadding ? '' : 'px-3 sm:px-4';
 
                                                     return (
                                                         <td
                                                             key={cell.id}
-                                                            className={`py-3.5 px-3 sm:px-4 ${cellResponsiveClass} ${
+                                                            className={`py-3.5 ${cellPaddingClass} ${cellResponsiveClass} ${
                                                                 meta.cellClassName || ''
                                                             }`}
                                                         >

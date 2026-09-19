@@ -221,7 +221,7 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
     const columns = useMemo(() => [
         {
             id: 'index',
-            header: () => <span className="text-center block w-8">No</span>,
+            header: () => <span className="text-center block">No</span>,
             cell: ({ row }) => (
                 <div className="text-center text-xs font-semibold text-slate-400 dark:text-slate-500">
                     {row.index + 1}
@@ -229,8 +229,8 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
             ),
             enableSorting: false,
             meta: {
-                headerClassName: 'w-12 text-center text-xs',
-                cellClassName: 'text-center text-xs font-semibold text-slate-400 dark:text-slate-500',
+                headerClassName: 'w-1 whitespace-nowrap pl-1 pr-2 text-center text-xs',
+                cellClassName: 'w-1 whitespace-nowrap pl-1 pr-2 text-center text-xs font-semibold text-slate-400 dark:text-slate-500',
             },
         },
         {
@@ -243,13 +243,13 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                 const iconColor = item.iconColor || 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400';
 
                 return (
-                    <div className="flex items-center gap-3">
-                        <div className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 ${iconColor}`}>
-                            <Icon className="w-4.5 h-4.5" />
+                    <div className="flex items-center gap-2.5">
+                        <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-md flex items-center justify-center shrink-0 ${iconColor}`}>
+                            <Icon className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
                         </div>
                         <div className="min-w-0">
                             <h4
-                                className={`font-semibold text-sm truncate transition-colors ${
+                                className={`font-semibold text-xs sm:text-sm truncate transition-colors ${
                                     isSelected
                                         ? 'text-blue-600 dark:text-blue-400'
                                         : 'text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400'
@@ -257,12 +257,16 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                             >
                                 {item.name}
                             </h4>
-                            <p className="text-xs text-slate-400 dark:text-slate-400 truncate mt-0.5">
+                            <p className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-400 truncate mt-0.5">
                                 {item.subtitle}
                             </p>
                         </div>
                     </div>
                 );
+            },
+            meta: {
+                headerClassName: 'pl-2 pr-3 py-3.5',
+                cellClassName: 'pl-2 pr-3 py-3.5',
             },
         },
         {
@@ -333,51 +337,7 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                 responsiveClass: 'hidden xl:table-cell',
             },
         },
-        {
-            id: 'actions',
-            header: () => <span className="block text-center">Actions</span>,
-            cell: ({ row }) => {
-                const item = row.original;
-                return (
-                    <div className="flex items-center justify-center gap-1.5 text-slate-400">
-                        <button
-                            type="button"
-                            title="Download dari Drive"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                if (item.googleDriveDownloadLink) {
-                                    window.open(item.googleDriveDownloadLink, '_blank');
-                                    toast.info(`Membuka unduhan ${item.name}...`);
-                                } else {
-                                    window.open(googleDriveFolderUrl, '_blank');
-                                    toast.info(`Membuka folder Google Drive...`);
-                                }
-                            }}
-                            className="p-1 hover:text-blue-600 dark:hover:text-blue-400 rounded transition-colors cursor-pointer"
-                        >
-                            <Download className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                            type="button"
-                            title="Hapus Arsip"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                handleDeleteArchive(item);
-                            }}
-                            className="p-1 hover:text-rose-600 dark:hover:text-rose-400 rounded transition-colors cursor-pointer"
-                        >
-                            <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                    </div>
-                );
-            },
-            enableSorting: false,
-            meta: {
-                headerClassName: 'text-center',
-                cellClassName: 'text-center',
-            },
-        },
-    ], [selectedId, googleDriveFolderUrl]);
+    ], [selectedId]);
 
     // Responsive Child Accordion Row (Displays hidden fields on tablet & mobile)
     const renderExpandedRow = ({ item }) => {
@@ -422,29 +382,31 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                     </div>
                 )}
 
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                    <span className="text-[11px] text-slate-400">Aksi Cepat:</span>
+                <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+                    <span className="text-[11px] text-slate-400 font-medium">Aksi:</span>
                     <div className="flex items-center gap-2">
                         <button
                             type="button"
                             onClick={() => {
                                 if (item.googleDriveDownloadLink) {
                                     window.open(item.googleDriveDownloadLink, '_blank');
+                                    toast.info(`Membuka unduhan ${item.name}...`);
                                 } else {
                                     window.open(googleDriveFolderUrl, '_blank');
+                                    toast.info(`Membuka folder Google Drive...`);
                                 }
                             }}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:bg-blue-100 transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs font-semibold shadow-xs hover:shadow-blue-600/30 transition-all cursor-pointer"
                         >
-                            <Download className="w-3 h-3" />
-                            <span>Unduh</span>
+                            <Download className="w-3.5 h-3.5" />
+                            <span>Download dari Drive</span>
                         </button>
                         <button
                             type="button"
                             onClick={() => handleDeleteArchive(item)}
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 text-xs font-semibold hover:bg-rose-100 transition-colors cursor-pointer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#0e1d47] hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 rounded-md text-xs font-semibold shadow-xs transition-colors cursor-pointer"
                         >
-                            <Trash2 className="w-3 h-3" />
+                            <Trash2 className="w-3.5 h-3.5" />
                             <span>Hapus</span>
                         </button>
                     </div>
