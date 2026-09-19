@@ -101,6 +101,10 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
     const [taskToDelete, setTaskToDelete] = useState(null);
     const [isDeletingTask, setIsDeletingTask] = useState(false);
 
+    // Uncomplete confirmation modal state
+    const [isUncompleteModalOpen, setIsUncompleteModalOpen] = useState(false);
+    const [taskToUncomplete, setTaskToUncomplete] = useState(null);
+
     // Status toggling state
     const [isTogglingTask, setIsTogglingTask] = useState(false);
 
@@ -157,8 +161,8 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
         });
     };
 
-    // Toggle completion
-    const handleToggleTask = (taskId) => {
+    // Execute toggle task status via API
+    const executeToggleTask = (taskId) => {
         if (!taskId) return;
         setIsTogglingTask(true);
         router.post(`/tasks/${taskId}/toggle`, {}, {
@@ -172,6 +176,26 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                 toast.error('Gagal memperbarui status tugas.');
             },
         });
+    };
+
+    // Toggle completion: direct check for uncompleted tasks, but requires confirmation modal when unchecking
+    const handleToggleTask = (task) => {
+        if (!task) return;
+        if (task.status === 'completed') {
+            setTaskToUncomplete(task);
+            setIsUncompleteModalOpen(true);
+        } else {
+            executeToggleTask(task.id);
+        }
+    };
+
+    // Confirm and execute uncompleting task (returning to To Do)
+    const handleConfirmUncomplete = () => {
+        if (!taskToUncomplete?.id) return;
+        const id = taskToUncomplete.id;
+        setIsUncompleteModalOpen(false);
+        executeToggleTask(id);
+        setTaskToUncomplete(null);
     };
 
     // Open delete confirmation modal
@@ -638,7 +662,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                             <div className="pt-0.5">
                                                 <Checkbox
                                                     checked={isDone}
-                                                    onChange={() => handleToggleTask(task.id)}
+                                                    onChange={() => handleToggleTask(task)}
                                                     size="md"
                                                 />
                                             </div>
@@ -822,7 +846,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                                             <div className="flex items-center gap-1">
                                                                 <button
                                                                     type="button"
-                                                                    onClick={() => handleToggleTask(task.id)}
+                                                                    onClick={() => handleToggleTask(task)}
                                                                     className="px-2.5 py-1 rounded-md text-[10px] font-semibold bg-white dark:bg-[#1c3272] border border-slate-200 dark:border-[#2c4794] text-slate-700 dark:text-slate-200 hover:text-blue-600 transition-colors"
                                                                 >
                                                                     {task.status === 'completed' ? 'Kembalikan' : 'Selesai'}
@@ -982,6 +1006,64 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         </button>
                     </div>
                 </form>
+            </Modal>
+
+            {/* Modal: Konfirmasi Kembalikan Tugas / Hilangkan Centang Selesai */}
+            <Modal
+                isOpen={isUncompleteModalOpen}
+                onClose={() => setIsUncompleteModalOpen(false)}
+                title="Kembalikan Tugas ke Antrean"
+                icon={RotateCcw}
+                maxWidth="md"
+            >
+                <div className="space-y-4">
+                    <div className="p-4 rounded-xl bg-amber-50/90 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/50 flex items-start gap-3.5">
+                        <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                            <RotateCcw className="w-5 h-5 stroke-[2.2]" />
+                        </div>
+                        <div className="space-y-1.5 flex-1">
+                            <h4 className="text-xs sm:text-sm font-bold text-amber-950 dark:text-amber-200">
+                                Apakah Anda yakin ingin membatalkan status selesai?
+                            </h4>
+                            <p className="text-xs text-amber-800/90 dark:text-amber-300/80 leading-relaxed">
+                                Tugas{' '}
+                                <strong className="font-semibold text-amber-950 dark:text-amber-100">
+                                    "{taskToUncomplete?.title}"
+                                </strong>{' '}
+                                akan diaktifkan kembali menjadi status <strong>Antrean (To Do)</strong>.
+                            </p>
+                            {taskToUncomplete?.completed_at && (
+                                <div className="mt-2 p-2.5 rounded-lg bg-white/80 dark:bg-[#0c183b] border border-amber-200/70 dark:border-amber-800/40 text-xs text-slate-600 dark:text-slate-300 space-y-1">
+                                    <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200 text-[11px]">
+                                        <Clock className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                                        <span>Tanggal selesai sebelumnya: {formatCompletedDate(taskToUncomplete.completed_at)}</span>
+                                    </div>
+                                    <p className="text-[10px] text-amber-700 dark:text-amber-400 leading-relaxed">
+                                        * Catatan tanggal penyelesaian ini akan <strong>dihapus/direset</strong> dan baru akan diperbarui lagi saat tugas selesai nanti.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#1b2b5a]">
+                        <button
+                            type="button"
+                            onClick={() => setIsUncompleteModalOpen(false)}
+                            className="px-4 py-2 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                        >
+                            Batal
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleConfirmUncomplete}
+                            className="px-4 py-2 rounded-md text-xs font-semibold bg-amber-600 hover:bg-amber-700 text-white shadow-xs transition-colors cursor-pointer inline-flex items-center gap-1.5"
+                        >
+                            <RotateCcw className="w-3.5 h-3.5 stroke-[2.2]" />
+                            <span>Ya, Kembalikan ke Antrean</span>
+                        </button>
+                    </div>
+                </div>
             </Modal>
 
             {/* Modal: Konfirmasi Hapus Tugas */}
