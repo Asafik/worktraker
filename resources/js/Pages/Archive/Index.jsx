@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import Modal from '@/Components/Modal';
 import CustomSelect from '@/Components/CustomSelect';
 import LoadingOverlay from '@/Components/LoadingOverlay';
+import DataTable from '@/Components/DataTable';
 import { toast } from 'sonner';
 import {
     Home,
@@ -33,9 +34,7 @@ import {
 
 export default function ArchivePage({ initialArchives = [], projects = [], isGoogleDriveConnected = true, googleDriveFolderUrl = 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69', flash = {} }) {
     const [selectedTab, setSelectedTab] = useState('All'); // All, Projects, Backups, Others
-    const [searchQuery, setSearchQuery] = useState('');
     const [selectedId, setSelectedId] = useState(() => initialArchives.length > 0 ? initialArchives[0].id : 1);
-    const [checkedIds, setCheckedIds] = useState([]);
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
     const [selectedProjectId, setSelectedProjectId] = useState('');
     const [uploadName, setUploadName] = useState('');
@@ -199,47 +198,259 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
         saveNotesToServer(currentNotes, activeArchive?.id);
     };
 
-    // Filter logic
-    const filteredArchives = archives.filter((item) => {
-        const matchesTab =
-            selectedTab === 'All' ||
-            (selectedTab === 'Projects' && item.category === 'Project') ||
-            (selectedTab === 'Backups' && item.category === 'Backup') ||
-            (selectedTab === 'Others' && item.category === 'Other');
-
-        const matchesSearch =
-            (item.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (item.subtitle || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-            (Array.isArray(item.tags) ? item.tags : Object.values(item.tags || [])).some((t) =>
-                (t || '').toLowerCase().includes(searchQuery.toLowerCase())
-            );
-
-        return matchesTab && matchesSearch;
-    });
+    // Category Filter logic for DataTable
+    const tabFilteredArchives = useMemo(() => {
+        return archives.filter((item) => {
+            if (selectedTab === 'All') return true;
+            if (selectedTab === 'Projects') return item.category === 'Project';
+            if (selectedTab === 'Backups') return item.category === 'Backup';
+            if (selectedTab === 'Others') return item.category === 'Other';
+            return true;
+        });
+    }, [archives, selectedTab]);
 
     // Count statistics
-    const counts = {
+    const counts = useMemo(() => ({
         All: archives.length,
         Projects: archives.filter((a) => a.category === 'Project').length,
         Backups: archives.filter((a) => a.category === 'Backup').length,
         Others: archives.filter((a) => a.category === 'Other').length,
-    };
+    }), [archives]);
 
-    // Checkbox toggles
-    const handleSelectAll = (e) => {
-        if (e.target.checked) {
-            setCheckedIds(filteredArchives.map((a) => a.id));
-        } else {
-            setCheckedIds([]);
-        }
-    };
+    // TanStack DataTables Columns Definition with Responsive Breakpoints
+    const columns = useMemo(() => [
+        {
+            id: 'index',
+            header: () => <span className="text-center block w-8">No</span>,
+            cell: ({ row }) => (
+                <div className="text-center text-xs font-semibold text-slate-400 dark:text-slate-500">
+                    {row.index + 1}
+                </div>
+            ),
+            enableSorting: false,
+            meta: {
+                headerClassName: 'w-12 text-center text-xs',
+                cellClassName: 'text-center text-xs font-semibold text-slate-400 dark:text-slate-500',
+            },
+        },
+        {
+            accessorKey: 'name',
+            header: 'Name',
+            cell: ({ row }) => {
+                const item = row.original;
+                const Icon = item.icon || Folder;
+                const isSelected = item.id === selectedId;
+                const iconColor = item.iconColor || 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400';
 
-    const handleToggleCheck = (id) => {
-        if (checkedIds.includes(id)) {
-            setCheckedIds(checkedIds.filter((item) => item !== id));
-        } else {
-            setCheckedIds([...checkedIds, id]);
-        }
+                return (
+                    <div className="flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 ${iconColor}`}>
+                            <Icon className="w-4.5 h-4.5" />
+                        </div>
+                        <div className="min-w-0">
+                            <h4
+                                className={`font-semibold text-sm truncate transition-colors ${
+                                    isSelected
+                                        ? 'text-blue-600 dark:text-blue-400'
+                                        : 'text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                                }`}
+                            >
+                                {item.name}
+                            </h4>
+                            <p className="text-xs text-slate-400 dark:text-slate-400 truncate mt-0.5">
+                                {item.subtitle}
+                            </p>
+                        </div>
+                    </div>
+                );
+            },
+        },
+        {
+            accessorKey: 'category',
+            header: 'Type',
+            cell: ({ row }) => {
+                const item = row.original;
+                return (
+                    <span className={`inline-block text-xs font-semibold px-2.5 py-0.5 rounded-md ${item.typeBadge || 'bg-blue-50 text-blue-600'}`}>
+                        {item.category}
+                    </span>
+                );
+            },
+            meta: {
+                responsiveClass: 'hidden sm:table-cell',
+            },
+        },
+        {
+            accessorKey: 'size',
+            header: 'Size',
+            cell: ({ row }) => (
+                <span className="text-slate-600 dark:text-slate-300 font-medium text-xs sm:text-sm whitespace-nowrap">
+                    {row.original.size}
+                </span>
+            ),
+            meta: {
+                responsiveClass: 'hidden md:table-cell',
+            },
+        },
+        {
+            accessorKey: 'archivedAt',
+            header: 'Archived At',
+            cell: ({ row }) => {
+                const text = row.original.archivedAt || '';
+                return (
+                    <div className="text-slate-500 dark:text-slate-400 text-xs whitespace-nowrap">
+                        <div>{text.split(' ').slice(0, 3).join(' ')}</div>
+                        <div className="text-[11px] text-slate-400">
+                            {text.split(' ').slice(3).join(' ')}
+                        </div>
+                    </div>
+                );
+            },
+            meta: {
+                responsiveClass: 'hidden lg:table-cell',
+            },
+        },
+        {
+            id: 'tags',
+            header: 'Tags',
+            cell: ({ row }) => {
+                const tags = Array.isArray(row.original.tags) ? row.original.tags : Object.values(row.original.tags || []);
+                return (
+                    <div className="flex flex-wrap items-center gap-1.5 max-w-[200px]">
+                        {tags.map((tag, idx) => (
+                            <span
+                                key={idx}
+                                className="px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40 whitespace-nowrap"
+                            >
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+                );
+            },
+            enableSorting: false,
+            meta: {
+                responsiveClass: 'hidden xl:table-cell',
+            },
+        },
+        {
+            id: 'actions',
+            header: () => <span className="block text-center">Actions</span>,
+            cell: ({ row }) => {
+                const item = row.original;
+                return (
+                    <div className="flex items-center justify-center gap-1.5 text-slate-400">
+                        <button
+                            type="button"
+                            title="Download dari Drive"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (item.googleDriveDownloadLink) {
+                                    window.open(item.googleDriveDownloadLink, '_blank');
+                                    toast.info(`Membuka unduhan ${item.name}...`);
+                                } else {
+                                    window.open(googleDriveFolderUrl, '_blank');
+                                    toast.info(`Membuka folder Google Drive...`);
+                                }
+                            }}
+                            className="p-1 hover:text-blue-600 dark:hover:text-blue-400 rounded transition-colors cursor-pointer"
+                        >
+                            <Download className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                            type="button"
+                            title="Hapus Arsip"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteArchive(item);
+                            }}
+                            className="p-1 hover:text-rose-600 dark:hover:text-rose-400 rounded transition-colors cursor-pointer"
+                        >
+                            <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                    </div>
+                );
+            },
+            enableSorting: false,
+            meta: {
+                headerClassName: 'text-center',
+                cellClassName: 'text-center',
+            },
+        },
+    ], [selectedId, googleDriveFolderUrl]);
+
+    // Responsive Child Accordion Row (Displays hidden fields on tablet & mobile)
+    const renderExpandedRow = ({ item }) => {
+        const tags = Array.isArray(item.tags) ? item.tags : Object.values(item.tags || []);
+        return (
+            <div className="bg-white dark:bg-[#0e1d47] p-3.5 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs space-y-2.5">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <span className="font-semibold text-slate-800 dark:text-slate-100 text-xs flex items-center gap-1.5">
+                        <Folder className="w-3.5 h-3.5 text-blue-500" />
+                        <span>Detail Arsip</span>
+                    </span>
+                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md ${item.typeBadge || 'bg-blue-50 text-blue-600'}`}>
+                        {item.category}
+                    </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                        <span className="text-slate-400 block text-[11px]">Ukuran File:</span>
+                        <span className="font-medium text-slate-700 dark:text-slate-200">{item.size}</span>
+                    </div>
+                    <div>
+                        <span className="text-slate-400 block text-[11px]">Tipe:</span>
+                        <span className="font-medium text-slate-700 dark:text-slate-200">{item.fileType || 'ZIP Archive'}</span>
+                    </div>
+                    <div className="col-span-2">
+                        <span className="text-slate-400 block text-[11px]">Diarsipkan Pada:</span>
+                        <span className="font-medium text-slate-700 dark:text-slate-200">{item.archivedAt}</span>
+                    </div>
+                </div>
+
+                {tags.length > 0 && (
+                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+                        <span className="text-slate-400 block text-[11px] mb-1">Tags:</span>
+                        <div className="flex flex-wrap gap-1">
+                            {tags.map((t, idx) => (
+                                <span key={idx} className="px-2 py-0.5 rounded text-[10px] font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40">
+                                    {t}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                    <span className="text-[11px] text-slate-400">Aksi Cepat:</span>
+                    <div className="flex items-center gap-2">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (item.googleDriveDownloadLink) {
+                                    window.open(item.googleDriveDownloadLink, '_blank');
+                                } else {
+                                    window.open(googleDriveFolderUrl, '_blank');
+                                }
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:bg-blue-100 transition-colors cursor-pointer"
+                        >
+                            <Download className="w-3 h-3" />
+                            <span>Unduh</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => handleDeleteArchive(item)}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 text-xs font-semibold hover:bg-rose-100 transition-colors cursor-pointer"
+                        >
+                            <Trash2 className="w-3 h-3" />
+                            <span>Hapus</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
     };
 
     // Delete active archive with real SQLite & Google Drive deletion
@@ -416,24 +627,17 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
 
                 {/* 2. Main 2-Column Responsive Layout */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                    {/* Left Column (8 cols): Table Card */}
-                    <div className="lg:col-span-8 space-y-4">
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs overflow-hidden">
-                            {/* Search & Filter Bar Header (1 sama tabel) */}
-                            <div className="p-3 sm:p-4 border-b border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                                {/* Search */}
-                                <div className="relative w-full sm:w-64 md:w-72">
-                                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                                    <input
-                                        type="text"
-                                        placeholder="Search archive..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md pl-9 pr-3.5 py-1.5 sm:py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors shadow-2xs"
-                                    />
-                                </div>
-
-                                {/* Filter Category Pills */}
+                    {/* Left Column (8 cols): Table Card with DataTables & Responsive Accordion */}
+                    <div className="lg:col-span-8">
+                        <DataTable
+                            data={tabFilteredArchives}
+                            columns={columns}
+                            renderExpandedRow={renderExpandedRow}
+                            expandBreakpoint="xl:hidden"
+                            searchPlaceholder="Search archive..."
+                            onRowClick={(item) => setSelectedId(item.id)}
+                            selectedRowId={selectedId}
+                            filterSlot={
                                 <div className="flex flex-wrap items-center gap-1.5">
                                     {[
                                         { key: 'All', label: 'All', count: counts.All },
@@ -443,8 +647,9 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                                     ].map((tab) => (
                                         <button
                                             key={tab.key}
+                                            type="button"
                                             onClick={() => setSelectedTab(tab.key)}
-                                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all shadow-xs ${
+                                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all shadow-xs cursor-pointer ${
                                                 selectedTab === tab.key
                                                     ? 'bg-[#2563eb] text-white'
                                                     : 'bg-white dark:bg-[#0c183b] border border-slate-200/90 dark:border-[#1e346e] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352]'
@@ -463,186 +668,13 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                                         </button>
                                     ))}
                                 </div>
-                            </div>
-                            {/* Table Container */}
-                            <div className="overflow-x-auto">
-                                <table className="w-full text-left text-xs sm:text-sm">
-                                    <thead className="bg-[#f8fafc] dark:bg-[#0c183b] text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-100 dark:border-slate-800/80">
-                                        <tr>
-                                            <th className="py-3.5 px-4 w-12 text-center text-xs">No</th>
-                                            <th className="py-3.5 px-4">Name</th>
-                                            <th className="py-3.5 px-3">Type</th>
-                                            <th className="py-3.5 px-3">Size</th>
-                                            <th className="py-3.5 px-4">
-                                                <div className="flex items-center gap-1 cursor-pointer hover:text-slate-800 dark:hover:text-slate-200">
-                                                    <span>Archived At</span>
-                                                    <ChevronDown className="w-3.5 h-3.5" />
-                                                </div>
-                                            </th>
-                                            <th className="py-3.5 px-4">Tags</th>
-                                            <th className="py-3.5 px-4 text-center">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
-                                        {filteredArchives.map((item, index) => {
-                                            const Icon = item.icon || Folder;
-                                            const isSelected = item.id === selectedId;
-                                            const iconColor = item.iconColor || 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400';
-
-                                            return (
-                                                <tr
-                                                    key={item.id}
-                                                    onClick={() => setSelectedId(item.id)}
-                                                    className={`cursor-pointer transition-colors group ${
-                                                        isSelected
-                                                            ? 'bg-blue-50/40 dark:bg-blue-950/20'
-                                                            : 'hover:bg-slate-50/70 dark:hover:bg-[#122352]/40'
-                                                    }`}
-                                                >
-                                                    {/* Nomor Urut */}
-                                                    <td className="py-3.5 px-4 text-center text-xs font-semibold text-slate-400 dark:text-slate-500">
-                                                        {index + 1}
-                                                    </td>
-
-                                                    {/* Name + Icon + Subtitle */}
-                                                    <td className="py-3.5 px-4">
-                                                        <div className="flex items-center gap-3">
-                                                            <div
-                                                                className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 ${iconColor}`}
-                                                            >
-                                                                <Icon className="w-4.5 h-4.5" />
-                                                            </div>
-                                                            <div className="min-w-0">
-                                                                <h4
-                                                                    className={`font-semibold text-sm truncate transition-colors ${
-                                                                        isSelected
-                                                                            ? 'text-blue-600 dark:text-blue-400'
-                                                                            : 'text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400'
-                                                                    }`}
-                                                                >
-                                                                    {item.name}
-                                                                </h4>
-                                                                <p className="text-xs text-slate-400 dark:text-slate-400 truncate mt-0.5">
-                                                                    {item.subtitle}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-
-                                                    {/* Type Badge */}
-                                                    <td className="py-3.5 px-3">
-                                                        <span
-                                                            className={`inline-block text-xs font-semibold px-2.5 py-0.5 rounded-md ${item.typeBadge}`}
-                                                        >
-                                                            {item.category}
-                                                        </span>
-                                                    </td>
-
-                                                    {/* Size */}
-                                                    <td className="py-3.5 px-3 text-slate-600 dark:text-slate-300 font-medium text-xs sm:text-sm whitespace-nowrap">
-                                                        {item.size}
-                                                    </td>
-
-                                                    {/* Archived At */}
-                                                    <td className="py-3.5 px-4 text-slate-500 dark:text-slate-400 text-xs whitespace-nowrap">
-                                                        <div>{(item.archivedAt || '').split(' ').slice(0, 3).join(' ')}</div>
-                                                        <div className="text-[11px] text-slate-400">
-                                                            {(item.archivedAt || '').split(' ').slice(3).join(' ')}
-                                                        </div>
-                                                    </td>
-
-                                                    {/* Tags */}
-                                                    <td className="py-3.5 px-4">
-                                                        <div className="flex flex-wrap items-center gap-1.5">
-                                                            {(Array.isArray(item.tags) ? item.tags : Object.values(item.tags || [])).map((tag, idx) => (
-                                                                <span
-                                                                    key={idx}
-                                                                    className="px-2 py-0.5 rounded text-[11px] font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40 whitespace-nowrap"
-                                                                >
-                                                                    {tag}
-                                                                </span>
-                                                            ))}
-                                                        </div>
-                                                    </td>
-
-                                                    {/* Actions */}
-                                                    <td
-                                                        className="py-3.5 px-4 text-center"
-                                                        onClick={(e) => e.stopPropagation()}
-                                                    >
-                                                        <div className="flex items-center justify-center gap-1.5 text-slate-400">
-                                                            <button
-                                                                title="Download dari Drive"
-                                                                onClick={() => {
-                                                                    if (item.googleDriveDownloadLink) {
-                                                                        window.open(item.googleDriveDownloadLink, '_blank');
-                                                                        toast.info(`Membuka unduhan ${item.name}...`);
-                                                                    } else {
-                                                                        window.open(googleDriveFolderUrl, '_blank');
-                                                                        toast.info(`Membuka folder Google Drive...`);
-                                                                    }
-                                                                }}
-                                                                className="p-1 hover:text-blue-600 dark:hover:text-blue-400 rounded transition-colors cursor-pointer"
-                                                            >
-                                                                <Download className="w-3.5 h-3.5" />
-                                                            </button>
-                                                            <button
-                                                                title="Hapus Arsip"
-                                                                onClick={() => handleDeleteArchive(item)}
-                                                                className="p-1 hover:text-rose-600 dark:hover:text-rose-400 rounded transition-colors cursor-pointer"
-                                                            >
-                                                                <Trash2 className="w-3.5 h-3.5" />
-                                                            </button>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            );
-                                        })}
-
-                                        {filteredArchives.length === 0 && (
-                                            <tr>
-                                                <td colSpan={7} className="py-8 text-center text-sm text-slate-400">
-                                                    Tidak ada arsip yang cocok dengan pencarian.
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            {/* Table Pagination footer */}
-                            <div className="p-4 sm:px-6 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-                                <div>
-                                    Showing <span className="font-semibold text-slate-800 dark:text-slate-200">1</span> to{' '}
-                                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                                        {filteredArchives.length}
-                                    </span>{' '}
-                                    of{' '}
-                                    <span className="font-semibold text-slate-800 dark:text-slate-200">
-                                        {archives.length}
-                                    </span>{' '}
-                                    archives
-                                </div>
-
-                                <div className="flex items-center gap-1.5">
-                                    <button
-                                        disabled
-                                        className="w-8 h-8 rounded-md border border-slate-200 dark:border-[#243e80] flex items-center justify-center text-slate-400 opacity-60 cursor-not-allowed"
-                                    >
-                                        <ChevronRight className="w-4 h-4 rotate-180" />
-                                    </button>
-                                    <button className="w-8 h-8 rounded-md bg-[#2563eb] text-white font-semibold flex items-center justify-center shadow-xs">
-                                        1
-                                    </button>
-                                    <button
-                                        disabled
-                                        className="w-8 h-8 rounded-md border border-slate-200 dark:border-[#243e80] flex items-center justify-center text-slate-400 opacity-60 cursor-not-allowed"
-                                    >
-                                        <ChevronRight className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+                            }
+                            emptyTitle="Tidak ada arsip"
+                            emptyMessage="Tidak ada arsip yang cocok dengan pencarian atau filter yang dipilih."
+                            totalLabel="archives"
+                            defaultPageSize={10}
+                            pageSizeOptions={[10, 25, 50]}
+                        />
                     </div>
 
                     {/* Right Column (4 cols): Archive Detail Panel */}

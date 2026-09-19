@@ -57,6 +57,10 @@ export default function DataTable({
     expandBreakpoint = '2xl:hidden',
     wrapperClassName = '',
     rowIdKey = 'id',
+    onRowClick = null,
+    selectedRowId = null,
+    cardMode = true,
+    totalLabel = 'results',
 }) {
     const [sorting, setSorting] = useState([]);
     const [globalFilter, setGlobalFilter] = useState(initialSearch);
@@ -105,15 +109,19 @@ export default function DataTable({
     const fromItem = totalRows > 0 ? currentPage * currentSize + 1 : 0;
     const toItem = totalRows > 0 ? Math.min((currentPage + 1) * currentSize, totalRows) : 0;
 
+    const cardWrapperClass = cardMode
+        ? `bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs overflow-hidden ${wrapperClassName}`
+        : `space-y-4 ${wrapperClassName}`;
+
     return (
-        <div className={`space-y-4 ${wrapperClassName}`}>
+        <div className={cardWrapperClass}>
             {/* Top Toolbar: Search, Filters & Page Size */}
             {(showSearch || filterSlot || showPageSize) && (
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className={`p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${cardMode ? 'border-b border-slate-100 dark:border-slate-800/80' : ''}`}>
                     <div className="flex items-center gap-3 flex-wrap flex-1">
                         {showSearch && (
-                            <div className="relative min-w-[220px] max-w-sm flex-1">
-                                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                            <div className="relative min-w-[200px] max-w-sm flex-1">
+                                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
                                 <input
                                     type="text"
                                     value={globalFilter ?? ''}
@@ -122,7 +130,7 @@ export default function DataTable({
                                         setPagination((prev) => ({ ...prev, pageIndex: 0 }));
                                     }}
                                     placeholder={searchPlaceholder}
-                                    className="w-full pl-9.5 pr-8 py-2 bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#1e346e] rounded-lg text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-2xs"
+                                    className="w-full pl-9 pr-8 py-1.5 sm:py-2 bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors shadow-2xs"
                                 />
                                 {globalFilter && (
                                     <button
@@ -143,17 +151,18 @@ export default function DataTable({
                     </div>
 
                     {showPageSize && (
-                        <div className="flex items-center gap-2 self-end md:self-auto shrink-0">
+                        <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
                             <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                                 Show:
                             </span>
-                            <div className="w-32">
+                            <div className="w-28 sm:w-32">
                                 <CustomSelect
                                     value={currentSize}
                                     onChange={(newSize) => {
                                         table.setPageSize(Number(newSize));
                                     }}
                                     options={pageSizeSelectOptions}
+                                    buttonClassName="!py-1.5 !px-2.5 !text-xs font-semibold"
                                 />
                             </div>
                         </div>
@@ -162,10 +171,10 @@ export default function DataTable({
             )}
 
             {/* Table Container */}
-            <div className="bg-white dark:bg-[#0c183b] rounded-xl border border-slate-200/80 dark:border-[#1c2e5c] shadow-xs overflow-hidden">
+            <div className={cardMode ? '' : 'bg-white dark:bg-[#0c183b] rounded-xl border border-slate-200/80 dark:border-[#1c2e5c] shadow-xs overflow-hidden'}>
                 <div className="overflow-x-auto">
                     <table className="w-full text-left text-xs sm:text-sm border-collapse">
-                        <thead className="bg-[#f8fafc] dark:bg-[#0a1533] text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-100 dark:border-slate-800/80">
+                        <thead className="bg-[#f8fafc] dark:bg-[#0c183b] text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-100 dark:border-slate-800/80">
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <tr key={headerGroup.id}>
                                     {renderExpandedRow && (
@@ -237,20 +246,36 @@ export default function DataTable({
                                     const item = row.original;
                                     const rowId = item[rowIdKey] ?? row.id;
                                     const isExpanded = !!expandedRows[rowId];
+                                    const isSelected = selectedRowId !== null && selectedRowId !== undefined && item[rowIdKey] === selectedRowId;
 
                                     return (
                                         <React.Fragment key={row.id}>
                                             <tr
-                                                className={`hover:bg-slate-50/70 dark:hover:bg-[#122352]/40 transition-colors group ${
-                                                    isExpanded ? 'bg-blue-50/25 dark:bg-[#122352]/25' : ''
+                                                onClick={(e) => {
+                                                    if (onRowClick) onRowClick(item, row, e);
+                                                }}
+                                                className={`transition-colors group ${
+                                                    onRowClick ? 'cursor-pointer' : ''
+                                                } ${
+                                                    isSelected
+                                                        ? 'bg-blue-50/40 dark:bg-blue-950/20'
+                                                        : isExpanded
+                                                        ? 'bg-blue-50/25 dark:bg-[#122352]/25'
+                                                        : 'hover:bg-slate-50/70 dark:hover:bg-[#122352]/40'
                                                 }`}
                                             >
                                                 {/* Expand / Collapse Control Button */}
                                                 {renderExpandedRow && (
-                                                    <td className={`w-10 px-3 py-4 text-center align-middle ${expandBreakpoint}`}>
+                                                    <td
+                                                        className={`w-10 px-3 py-3.5 text-center align-middle ${expandBreakpoint}`}
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    >
                                                         <button
                                                             type="button"
-                                                            onClick={() => toggleRowExpand(rowId)}
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                toggleRowExpand(rowId);
+                                                            }}
                                                             className={`w-5 h-5 rounded-full inline-flex items-center justify-center font-bold text-xs transition-all shadow-xs cursor-pointer ${
                                                                 isExpanded
                                                                     ? 'bg-rose-500 hover:bg-rose-600 text-white'
@@ -270,7 +295,7 @@ export default function DataTable({
                                                     return (
                                                         <td
                                                             key={cell.id}
-                                                            className={`py-4 px-3 sm:px-4 ${cellResponsiveClass} ${
+                                                            className={`py-3.5 px-3 sm:px-4 ${cellResponsiveClass} ${
                                                                 meta.cellClassName || ''
                                                             }`}
                                                         >
@@ -324,10 +349,10 @@ export default function DataTable({
                                 <span className="font-semibold text-slate-800 dark:text-slate-200">
                                     {totalRows}
                                 </span>{' '}
-                                results
+                                {totalLabel}
                             </span>
                         ) : (
-                            <span>No records to display</span>
+                            <span>No {totalLabel} to display</span>
                         )}
                     </div>
 
