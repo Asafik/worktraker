@@ -19,7 +19,11 @@ class ArchiveController extends Controller
     {
         $projects = Project::orderBy('name')->get(['id', 'name', 'description', 'company_name', 'github_repo_name']);
 
-        $archives = Archive::latest()->get()->map(function ($a) {
+        $isGoogleDriveConnected = !empty(config('services.google_drive.client_id'))
+            && !empty(config('services.google_drive.client_secret'))
+            && !empty(config('services.google_drive.refresh_token'));
+
+        $archives = Archive::latest()->get()->map(function ($a) use ($isGoogleDriveConnected) {
             return [
                 'id' => $a->id,
                 'name' => $a->name,
@@ -37,7 +41,7 @@ class ArchiveController extends Controller
                 'description' => $a->description ?: 'File disimpan secara aman di Google Drive.',
                 'fileType' => $a->file_type ?: 'ZIP',
                 'storageLocation' => 'Google Drive',
-                'storageConnected' => true,
+                'storageConnected' => $isGoogleDriveConnected,
                 'detailTags' => array_values(array_unique(array_merge([$a->category, 'Google Drive'], (array) ($a->tags ?: [])))),
                 'notes' => $a->notes ?: 'Tersimpan di folder Google Drive WorkTrack.',
                 'googleDriveFileId' => $a->google_drive_file_id,
@@ -49,7 +53,10 @@ class ArchiveController extends Controller
         return Inertia::render('Archive/Index', [
             'initialArchives' => $archives,
             'projects' => $projects,
-            'googleDriveFolderUrl' => 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69',
+            'isGoogleDriveConnected' => $isGoogleDriveConnected,
+            'googleDriveFolderUrl' => config('services.google_drive.folder_id')
+                ? 'https://drive.google.com/drive/folders/' . config('services.google_drive.folder_id')
+                : 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69',
             'flash' => [
                 'message' => session('message'),
             ],

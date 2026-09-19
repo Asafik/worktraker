@@ -34,7 +34,7 @@ import {
     AlertCircle,
 } from 'lucide-react';
 
-export default function ArchivePage({ initialArchives = [], projects = [], googleDriveFolderUrl = 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69', flash = {} }) {
+export default function ArchivePage({ initialArchives = [], projects = [], isGoogleDriveConnected = true, googleDriveFolderUrl = 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69', flash = {} }) {
     const [selectedTab, setSelectedTab] = useState('All'); // All, Projects, Backups, Others
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedId, setSelectedId] = useState(() => initialArchives.length > 0 ? initialArchives[0].id : 1);
@@ -684,9 +684,13 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                                             <span>Storage Location</span>
                                         </div>
                                         <div className="flex items-center gap-2">
-                                            {activeArchive.storageConnected && (
+                                            {activeArchive.storageConnected ? (
                                                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40">
                                                     Connected
+                                                </span>
+                                            ) : (
+                                                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40">
+                                                    Disconnected
                                                 </span>
                                             )}
                                             <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200">
@@ -910,6 +914,15 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                 maxWidth="xl"
             >
                 <form onSubmit={handleUploadSubmit} className="space-y-4">
+                    {!isGoogleDriveConnected && (
+                        <div className="p-3 rounded-lg bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40 text-amber-800 dark:text-amber-300 text-xs flex items-center gap-2">
+                            <AlertCircle className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                            <span>
+                                Status Google Drive saat ini <strong>Disconnected</strong>. Pastikan integrasi Google Drive aktif di menu <Link href="/settings" className="underline font-semibold hover:text-amber-950 dark:hover:text-amber-200">Settings &gt; Integrations</Link>.
+                            </span>
+                        </div>
+                    )}
+
                     {/* 1. Pilih Proyek Relasi (Auto-fill) */}
                     <div>
                         <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
