@@ -374,36 +374,6 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                     </div>
 
                     <div className="flex items-center gap-2.5 shrink-0">
-                        {/* View Switcher */}
-                        <div className="flex items-center bg-white dark:bg-[#0e1d47] p-1 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs">
-                            <button
-                                type="button"
-                                onClick={() => setViewMode('list')}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-                                    viewMode === 'list'
-                                        ? 'bg-blue-600 text-white shadow-xs'
-                                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                                }`}
-                                title="Tampilan Daftar"
-                            >
-                                <LayoutList className="w-3.5 h-3.5" />
-                                <span>List</span>
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setViewMode('board')}
-                                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
-                                    viewMode === 'board'
-                                        ? 'bg-blue-600 text-white shadow-xs'
-                                        : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-                                }`}
-                                title="Tampilan Papan Kanban"
-                            >
-                                <Kanban className="w-3.5 h-3.5" />
-                                <span>Board</span>
-                            </button>
-                        </div>
-
                         {/* Add Task Button */}
                         <button
                             type="button"
@@ -524,6 +494,36 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                     searchable={true}
                                     searchPlaceholder="Cari proyek..."
                                 />
+                            </div>
+
+                            {/* View Switcher */}
+                            <div className="inline-flex items-center bg-slate-100 dark:bg-[#122352] p-0.5 rounded-md border border-slate-200 dark:border-[#243e80]">
+                                <button
+                                    type="button"
+                                    onClick={() => setViewMode('list')}
+                                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
+                                        viewMode === 'list'
+                                            ? 'bg-blue-600 text-white shadow-xs'
+                                            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                                    }`}
+                                    title="Tampilan Daftar"
+                                >
+                                    <LayoutList className="w-3.5 h-3.5" />
+                                    <span>List</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setViewMode('board')}
+                                    className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-xs font-semibold transition-all cursor-pointer ${
+                                        viewMode === 'board'
+                                            ? 'bg-blue-600 text-white shadow-xs'
+                                            : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                                    }`}
+                                    title="Tampilan Papan Kanban"
+                                >
+                                    <Kanban className="w-3.5 h-3.5" />
+                                    <span>Board</span>
+                                </button>
                             </div>
                         </div>
                     </div>
