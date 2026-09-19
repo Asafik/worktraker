@@ -44,6 +44,12 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [toastMessage, setToastMessage] = useState(flash?.message || null);
 
+    const categoryOptions = [
+        { value: 'Project', label: 'Project' },
+        { value: 'Backup', label: 'Backup' },
+        { value: 'Other', label: 'Other' },
+    ];
+
     // Derived project options for CustomSelect auto-fill
     const projectOptions = [
         { value: '', label: '-- Pilih Proyek (Auto-fill) atau Input Manual --' },
@@ -738,20 +744,18 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                         </div>
                     </div>
 
-                    {/* 3. Kategori (Folder Tujuan Dihapus) */}
+                    {/* 3. Kategori */}
                     <div>
                         <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                             Kategori
                         </label>
-                        <select
+                        <CustomSelect
                             value={uploadCategory}
-                            onChange={(e) => setUploadCategory(e.target.value)}
-                            className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:border-blue-500"
-                        >
-                            <option value="Project">Project</option>
-                            <option value="Backup">Backup</option>
-                            <option value="Other">Other</option>
-                        </select>
+                            onChange={(val) => setUploadCategory(val)}
+                            options={categoryOptions}
+                            placeholder="Pilih Kategori"
+                            buttonClassName="!py-2 !px-3 !text-xs sm:!text-sm"
+                        />
                     </div>
 
                     {/* 4. Deskripsi Singkat */}
