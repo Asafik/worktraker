@@ -965,9 +965,9 @@ export default function Notes({
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
                     {/* Left Column: List & Filter (4 cols on lg) */}
-                    <div className={`lg:col-span-4 space-y-3 ${mobileTab === 'editor' ? 'hidden lg:block' : 'block'}`}>
+                    <div className={`lg:col-span-4 lg:h-[calc(100vh-270px)] lg:min-h-[580px] flex flex-col gap-3 ${mobileTab === 'editor' ? 'hidden lg:flex' : 'flex'}`}>
                         {/* Search & Filters */}
-                        <div className="bg-white dark:bg-[#0e1d47] p-3 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs space-y-2.5">
+                        <div className="shrink-0 bg-white dark:bg-[#0e1d47] p-3 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs space-y-2.5">
                             {/* Search */}
                             <div className="relative w-full">
                                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -1003,7 +1003,7 @@ export default function Notes({
                         </div>
 
                         {/* List of Notes */}
-                        <div className="space-y-2 max-h-[680px] overflow-y-auto pr-0.5">
+                        <div className="flex-1 min-h-0 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                             {notes.length === 0 ? (
                                 <div className="bg-white dark:bg-[#0e1d47] p-8 rounded-lg border border-slate-200/80 dark:border-[#1e346e] text-center space-y-3">
                                     <div className="w-12 h-12 mx-auto rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
@@ -1094,11 +1094,11 @@ export default function Notes({
                     </div>
 
                     {/* Right Column: Note Detail / Editor (8 cols on lg) */}
-                    <div className={`lg:col-span-8 ${mobileTab === 'list' ? 'hidden lg:block' : 'block'}`}>
+                    <div className={`lg:col-span-8 lg:h-[calc(100vh-270px)] lg:min-h-[580px] ${mobileTab === 'list' ? 'hidden lg:block' : 'block'}`}>
                         {activeNote ? (
                             <form
                                 onSubmit={handleSaveActiveNote}
-                                className="relative bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col min-h-[620px] overflow-hidden"
+                                className="relative bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col h-full overflow-hidden"
                             >
                                 <LoadingOverlay
                                     show={isRefiningAi && aiTarget === 'editor'}
@@ -1107,7 +1107,7 @@ export default function Notes({
                                     fullScreen={false}
                                 />
                                 {/* Note Top Header / Meta Toolbar */}
-                                <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-[#17254d] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50 dark:bg-[#0b1739]">
+                                <div className="shrink-0 p-4 sm:p-5 border-b border-slate-100 dark:border-[#17254d] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50 dark:bg-[#0b1739]">
                                     <div className="flex-1 space-y-2">
                                         {/* Back to List on Mobile */}
                                         <button
@@ -1248,7 +1248,7 @@ export default function Notes({
                                 </div>
 
                                 {/* Text Formatting Quick Toolbar & View Mode Toggle */}
-                                <div className="px-4 py-2 bg-slate-50/90 dark:bg-[#0c183b] border-b border-slate-100 dark:border-[#17254d] flex items-center justify-between gap-2 text-slate-600 dark:text-slate-300 text-xs flex-wrap">
+                                <div className="shrink-0 px-4 py-2 bg-slate-50/90 dark:bg-[#0c183b] border-b border-slate-100 dark:border-[#17254d] flex items-center justify-between gap-2 text-slate-600 dark:text-slate-300 text-xs flex-wrap">
                                     {/* Segmented View Mode: Edit vs Preview */}
                                     <div className="flex items-center gap-2">
                                         <div className="flex items-center bg-slate-200/70 dark:bg-[#122352] p-0.5 rounded-lg text-xs font-semibold">
@@ -1345,7 +1345,7 @@ export default function Notes({
 
                                 {/* AI Refinement Notice / Alert Banner */}
                                 {aiNotice && (
-                                    <div className={`px-4 py-2 text-xs flex items-center justify-between gap-2 border-b transition-all ${
+                                    <div className={`shrink-0 px-4 py-2 text-xs flex items-center justify-between gap-2 border-b transition-all ${
                                         aiNotice.type === 'success'
                                             ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-200 border-emerald-200 dark:border-emerald-800/60'
                                             : aiNotice.type === 'error'
@@ -1386,13 +1386,13 @@ export default function Notes({
                                 {editorMode === 'preview' ? (
                                     <div
                                         onDoubleClick={() => setEditorMode('edit')}
-                                        className="p-5 sm:p-6 flex-1 overflow-y-auto cursor-text select-text bg-white dark:bg-[#0e1d47]"
+                                        className="p-5 sm:p-6 flex-1 min-h-0 overflow-y-auto cursor-text select-text bg-white dark:bg-[#0e1d47] leading-relaxed custom-scrollbar"
                                         title="Klik ganda untuk beralih ke mode edit"
                                     >
                                         {renderMarkdownWithBadges(editorForm.content)}
                                     </div>
                                 ) : (
-                                    <div className="p-4 sm:p-5 flex-1 flex flex-col bg-white dark:bg-[#0e1d47]">
+                                    <div className="p-4 sm:p-5 flex-1 min-h-0 flex flex-col bg-white dark:bg-[#0e1d47]">
                                         <textarea
                                             id="note-editor-textarea"
                                             value={editorForm.content}
@@ -1401,14 +1401,13 @@ export default function Notes({
                                                 setHasUnsavedChanges(true);
                                             }}
                                             placeholder="Ketik catatan revisi, instruksi klien, atau dokumentasi bebas di sini..."
-                                            rows={18}
-                                            className="w-full flex-1 bg-transparent text-sm leading-relaxed text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none resize-none font-sans"
+                                            className="w-full flex-1 min-h-0 overflow-y-auto bg-transparent text-sm leading-relaxed text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none resize-none font-sans custom-scrollbar"
                                         />
                                     </div>
                                 )}
                             </form>
                         ) : (
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-12 text-center shadow-xs">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-12 text-center shadow-xs h-full flex flex-col items-center justify-center">
                                 <div className="w-16 h-16 mx-auto rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                                     <FileText className="w-8 h-8" />
                                 </div>
