@@ -25,9 +25,10 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.attempt');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard/Index');
-})->name('dashboard');
+use App\Http\Controllers\DashboardController;
+
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard/github-commit-dates', [DashboardController::class, 'getLatestCommitDates'])->name('dashboard.github-commit-dates');
 
 use App\Http\Controllers\ProjectController;
 

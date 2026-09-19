@@ -22,7 +22,7 @@ export default function Navbar({
             <div className="flex items-center gap-4 flex-1 max-w-lg">
                 <button
                     onClick={() => setSidebarOpen(true)}
-                    className="lg:hidden p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors"
+                    className="xl:hidden p-2 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
                     aria-label="Open sidebar"
                 >
                     <Menu className="w-5 h-5" />
@@ -66,7 +66,7 @@ export default function Navbar({
                 <Link
                     href="/settings"
                     className="flex items-center gap-3 pl-1 cursor-pointer select-none group"
-                    title="Pengaturan Profil"
+                    title="Profile Settings"
                 >
                     <img
                         src={effectiveAvatar}

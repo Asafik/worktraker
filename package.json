@@ -19,6 +19,7 @@
     "dependencies": {
         "@headlessui/react": "^2.2.10",
         "@inertiajs/react": "^3.7.1",
+        "@tanstack/react-table": "^8.20.6",
         "@vitejs/plugin-react": "^6.1.1",
         "lucide-react": "^1.46.0",
         "react": "^19.3.0",

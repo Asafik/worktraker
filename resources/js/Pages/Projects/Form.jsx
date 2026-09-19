@@ -788,7 +788,7 @@ export default function ProjectForm({ mode = 'create', project = null, prefill =
                             </div>
                             <div className="space-y-1.5">
                                 <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
-                                    Target Selesai / Deadline (Opsional)
+                                    Completion Date (Optional)
                                 </label>
                                 <input
                                     type="date"

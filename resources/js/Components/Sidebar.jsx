@@ -42,17 +42,17 @@ export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSide
 
     return (
         <>
-            {/* Mobile Sidebar Overlay */}
+            {/* Mobile/Tablet Sidebar Overlay */}
             {sidebarOpen && (
                 <div
-                    className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm lg:hidden"
+                    className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm xl:hidden"
                     onClick={() => setSidebarOpen(false)}
                 />
             )}
 
             {/* Sidebar Container (Deep Royal Navy #0b1739) */}
             <aside
-                className={`fixed inset-y-0 left-0 z-50 w-64 h-screen bg-[#0b1739] text-slate-300 flex flex-col justify-between flex-shrink-0 transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 ${
+                className={`fixed inset-y-0 left-0 z-50 w-64 h-screen bg-[#0b1739] text-slate-300 flex flex-col justify-between flex-shrink-0 transition-transform duration-300 ease-in-out xl:static xl:translate-x-0 ${
                     sidebarOpen ? 'translate-x-0' : '-translate-x-full'
                 }`}
             >
@@ -76,7 +76,7 @@ export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSide
                         </Link>
                         <button
                             onClick={() => setSidebarOpen(false)}
-                            className="lg:hidden text-slate-400 hover:text-white p-1"
+                            className="xl:hidden text-slate-400 hover:text-white p-1 cursor-pointer"
                             aria-label="Close sidebar"
                         >
                             <X className="w-5 h-5" />
@@ -93,6 +93,7 @@ export default function Sidebar({ activePage = 'Dashboard', sidebarOpen, setSide
                                     key={item.name}
                                     href={item.href}
                                     prefetch
+                                    onClick={() => setSidebarOpen(false)}
                                     className={`flex items-center gap-3.5 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-150 ${
                                         isActive
                                             ? 'bg-[#3b52d4] text-white shadow-md shadow-blue-900/40'
