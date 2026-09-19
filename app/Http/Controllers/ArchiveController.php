@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Archive;
+use App\Models\Project;
 use App\Services\GoogleDriveService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -16,6 +17,8 @@ class ArchiveController extends Controller
      */
     public function index(): Response
     {
+        $projects = Project::orderBy('name')->get(['id', 'name', 'description', 'company_name', 'github_repo_name']);
+
         $archives = Archive::latest()->get()->map(function ($a) {
             return [
                 'id' => $a->id,
@@ -45,6 +48,7 @@ class ArchiveController extends Controller
 
         return Inertia::render('Archive/Index', [
             'initialArchives' => $archives,
+            'projects' => $projects,
             'googleDriveFolderUrl' => 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69',
             'flash' => [
                 'message' => session('message'),

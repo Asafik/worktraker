@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
+import Modal from '@/Components/Modal';
+import CustomSelect from '@/Components/CustomSelect';
 import {
     Home,
     ChevronRight,
@@ -26,12 +28,13 @@ import {
     Loader2,
 } from 'lucide-react';
 
-export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl = 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69', flash = {} }) {
+export default function ArchivePage({ initialArchives = [], projects = [], googleDriveFolderUrl = 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69', flash = {} }) {
     const [selectedTab, setSelectedTab] = useState('All'); // All, Projects, Backups, Others
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedId, setSelectedId] = useState(() => initialArchives.length > 0 ? initialArchives[0].id : 1);
     const [checkedIds, setCheckedIds] = useState([]);
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+    const [selectedProjectId, setSelectedProjectId] = useState('');
     const [uploadName, setUploadName] = useState('');
     const [uploadProjectName, setUploadProjectName] = useState('');
     const [uploadCategory, setUploadCategory] = useState('Project');
@@ -40,6 +43,42 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
     const [selectedFile, setSelectedFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [toastMessage, setToastMessage] = useState(flash?.message || null);
+
+    // Derived project options for CustomSelect auto-fill
+    const projectOptions = [
+        { value: '', label: '-- Pilih Proyek (Auto-fill) atau Input Manual --' },
+        ...projects.map((p) => ({
+            value: String(p.id),
+            label: `${p.name}${p.company_name ? ` (${p.company_name})` : ''}`,
+        })),
+    ];
+
+    // Handle project selection: auto-fill archive name, project name, and description
+    const handleSelectProject = (projId) => {
+        setSelectedProjectId(projId);
+        if (!projId) return;
+
+        const proj = projects.find((p) => String(p.id) === String(projId));
+        if (proj) {
+            setUploadProjectName(proj.name);
+            setUploadName(`${proj.name} - Archive`);
+            if (proj.description) {
+                setUploadDesc(proj.description);
+            }
+            setUploadCategory('Project');
+        }
+    };
+
+    const handleOpenUploadModal = () => {
+        setSelectedProjectId('');
+        setUploadName('');
+        setUploadProjectName('');
+        setUploadCategory('Project');
+        setUploadDesc('');
+        setUploadNotes('');
+        setSelectedFile(null);
+        setIsUploadModalOpen(true);
+    };
 
     // Synchronize archives from Inertia props
     const [archives, setArchives] = useState(initialArchives);
@@ -149,6 +188,7 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
             onSuccess: () => {
                 setIsSubmitting(false);
                 setIsUploadModalOpen(false);
+                setSelectedProjectId('');
                 setUploadName('');
                 setUploadProjectName('');
                 setUploadDesc('');
@@ -236,8 +276,8 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
                             </div>
 
                             <button
-                                onClick={() => setIsUploadModalOpen(true)}
-                                className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all shrink-0"
+                                onClick={handleOpenUploadModal}
+                                className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all shrink-0 cursor-pointer"
                             >
                                 <Upload className="w-4 h-4" />
                                 <span>Upload</span>
@@ -640,184 +680,179 @@ export default function ArchivePage({ initialArchives = [], googleDriveFolderUrl
                 </div>
             )}
 
-            {/* Upload Modal (Upload directly to Google Drive folder) */}
-            {isUploadModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-lg p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                            <div>
-                                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                    <span>Simpan Arsip ke Google Drive</span>
-                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/60">
-                                        Google Drive
-                                    </span>
-                                </h3>
-                                <p className="text-xs text-slate-400 mt-0.5">
-                                    File disimpan di cloud folder Google Drive, metadata tersimpan di SQLite.
-                                </p>
-                            </div>
-                            <button
-                                onClick={() => !isSubmitting && setIsUploadModalOpen(false)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        <form onSubmit={handleUploadSubmit} className="space-y-3.5">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Nama Arsip <span className="text-rose-500">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Contoh: Company Website v2"
-                                        value={uploadName}
-                                        onChange={(e) => setUploadName(e.target.value)}
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Nama Project
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Contoh: WorkTrack System"
-                                        value={uploadProjectName}
-                                        onChange={(e) => setUploadProjectName(e.target.value)}
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Kategori
-                                    </label>
-                                    <select
-                                        value={uploadCategory}
-                                        onChange={(e) => setUploadCategory(e.target.value)}
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:border-blue-500"
-                                    >
-                                        <option value="Project">Project</option>
-                                        <option value="Backup">Backup</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Folder Tujuan
-                                    </label>
-                                    <div className="flex items-center gap-1.5 px-3 py-2 rounded-md bg-slate-100 dark:bg-[#0c183b] border border-slate-200/80 dark:border-[#1e346e] text-xs text-slate-600 dark:text-slate-300">
-                                        <Cloud className="w-3.5 h-3.5 text-blue-500 shrink-0" />
-                                        <span className="truncate">Folder: 1LZwvt7...--69</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Deskripsi Singkat
-                                </label>
-                                <textarea
-                                    rows={2}
-                                    placeholder="Tuliskan keterangan isi arsip..."
-                                    value={uploadDesc}
-                                    onChange={(e) => setUploadDesc(e.target.value)}
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 resize-none"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Catatan Tambahan (Notes)
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Contoh: Versi final sebelum rilis production"
-                                    value={uploadNotes}
-                                    onChange={(e) => setUploadNotes(e.target.value)}
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
-                                />
-                            </div>
-
-                            {/* Real File Input Dropzone */}
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Pilih File untuk Diunggah ke Google Drive
-                                </label>
-                                <label className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg cursor-pointer bg-[#f8fafc] dark:bg-[#0c183b] transition-all">
-                                    <input
-                                        type="file"
-                                        className="hidden"
-                                        onChange={(e) => {
-                                            if (e.target.files && e.target.files[0]) {
-                                                setSelectedFile(e.target.files[0]);
-                                                if (!uploadName) {
-                                                    setUploadName(e.target.files[0].name.replace(/\.[^/.]+$/, ''));
-                                                }
-                                            }
-                                        }}
-                                    />
-                                    <Upload className="w-6 h-6 text-blue-500 mb-1.5" />
-                                    {selectedFile ? (
-                                        <div className="text-center">
-                                            <p className="text-xs font-bold text-slate-900 dark:text-white">
-                                                {selectedFile.name}
-                                            </p>
-                                            <p className="text-[11px] text-slate-400 mt-0.5">
-                                                {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • Siap dikirim ke Google Drive
-                                            </p>
-                                        </div>
-                                    ) : (
-                                        <div className="text-center">
-                                            <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
-                                                Klik untuk memilih file dari komputer Anda
-                                            </p>
-                                            <p className="text-[10px] text-slate-400 mt-1">
-                                                Mendukung ZIP, TAR, SQL, PDF, DOCX, dll
-                                            </p>
-                                        </div>
-                                    )}
-                                </label>
-                            </div>
-
-                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                                <button
-                                    type="button"
-                                    disabled={isSubmitting}
-                                    onClick={() => setIsUploadModalOpen(false)}
-                                    className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors disabled:opacity-50 cursor-pointer"
-                                >
-                                    Batal
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={isSubmitting}
-                                    className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-colors flex items-center gap-2 disabled:opacity-75 cursor-pointer"
-                                >
-                                    {isSubmitting ? (
-                                        <>
-                                            <Loader2 className="w-4 h-4 animate-spin" />
-                                            <span>Mengunggah ke Drive...</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Cloud className="w-4 h-4" />
-                                            <span>Simpan ke Google Drive</span>
-                                        </>
-                                    )}
-                                </button>
-                            </div>
-                        </form>
+            {/* Upload Modal (Standard Modal Component) */}
+            <Modal
+                isOpen={isUploadModalOpen}
+                onClose={() => !isSubmitting && setIsUploadModalOpen(false)}
+                title="Simpan Arsip ke Google Drive"
+                description="File disimpan di cloud folder Google Drive, metadata tersimpan di SQLite."
+                icon={Cloud}
+                maxWidth="xl"
+            >
+                <form onSubmit={handleUploadSubmit} className="space-y-4">
+                    {/* 1. Pilih Proyek Relasi (Auto-fill) */}
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Pilih dari Proyek (Auto-fill)
+                        </label>
+                        <CustomSelect
+                            value={selectedProjectId}
+                            onChange={handleSelectProject}
+                            options={projectOptions}
+                            placeholder="-- Pilih Proyek (Opsional) --"
+                            searchable={true}
+                            searchPlaceholder="Cari proyek..."
+                            buttonClassName="!py-2 !px-3 !text-xs sm:!text-sm"
+                        />
+                        <p className="text-[11px] text-slate-400 mt-1">
+                            Memilih proyek akan otomatis mengisi Nama Arsip, Nama Proyek, dan Deskripsi. Anda tetap bisa mengedit atau mengisinya secara manual.
+                        </p>
                     </div>
-                </div>
-            )}
+
+                    {/* 2. Grid: Nama Arsip & Nama Proyek */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Nama Arsip <span className="text-rose-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Contoh: Company Website v2"
+                                value={uploadName}
+                                onChange={(e) => setUploadName(e.target.value)}
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Nama Project
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Contoh: WorkTrack System"
+                                value={uploadProjectName}
+                                onChange={(e) => setUploadProjectName(e.target.value)}
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                            />
+                        </div>
+                    </div>
+
+                    {/* 3. Kategori (Folder Tujuan Dihapus) */}
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Kategori
+                        </label>
+                        <select
+                            value={uploadCategory}
+                            onChange={(e) => setUploadCategory(e.target.value)}
+                            className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-700 dark:text-slate-200 focus:outline-none focus:border-blue-500"
+                        >
+                            <option value="Project">Project</option>
+                            <option value="Backup">Backup</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    {/* 4. Deskripsi Singkat */}
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Deskripsi Singkat
+                        </label>
+                        <textarea
+                            rows={2}
+                            placeholder="Tuliskan keterangan isi arsip..."
+                            value={uploadDesc}
+                            onChange={(e) => setUploadDesc(e.target.value)}
+                            className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 resize-none"
+                        />
+                    </div>
+
+                    {/* 5. Catatan Tambahan (Notes) */}
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Catatan Tambahan (Notes)
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Contoh: Versi final sebelum rilis production"
+                            value={uploadNotes}
+                            onChange={(e) => setUploadNotes(e.target.value)}
+                            className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
+
+                    {/* 6. Real File Input Dropzone */}
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Pilih File untuk Diunggah ke Google Drive
+                        </label>
+                        <label className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-500 dark:hover:border-blue-500 rounded-lg cursor-pointer bg-[#f8fafc] dark:bg-[#0c183b] transition-all">
+                            <input
+                                type="file"
+                                className="hidden"
+                                onChange={(e) => {
+                                    if (e.target.files && e.target.files[0]) {
+                                        setSelectedFile(e.target.files[0]);
+                                        if (!uploadName) {
+                                            setUploadName(e.target.files[0].name.replace(/\.[^/.]+$/, ''));
+                                        }
+                                    }
+                                }}
+                            />
+                            <Upload className="w-6 h-6 text-blue-500 mb-1.5" />
+                            {selectedFile ? (
+                                <div className="text-center">
+                                    <p className="text-xs font-bold text-slate-900 dark:text-white">
+                                        {selectedFile.name}
+                                    </p>
+                                    <p className="text-[11px] text-slate-400 mt-0.5">
+                                        {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB • Siap dikirim ke Google Drive
+                                    </p>
+                                </div>
+                            ) : (
+                                <div className="text-center">
+                                    <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
+                                        Klik untuk memilih file dari komputer Anda
+                                    </p>
+                                    <p className="text-[10px] text-slate-400 mt-1">
+                                        Mendukung ZIP, TAR, SQL, PDF, DOCX, dll
+                                    </p>
+                                </div>
+                            )}
+                        </label>
+                    </div>
+
+                    {/* Modal Actions */}
+                    <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-[#1b2b5a]">
+                        <button
+                            type="button"
+                            disabled={isSubmitting}
+                            onClick={() => setIsUploadModalOpen(false)}
+                            className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors disabled:opacity-50 cursor-pointer"
+                        >
+                            Batal
+                        </button>
+                        <button
+                            type="submit"
+                            disabled={isSubmitting}
+                            className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-colors flex items-center gap-2 disabled:opacity-75 cursor-pointer"
+                        >
+                            {isSubmitting ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    <span>Mengunggah ke Drive...</span>
+                                </>
+                            ) : (
+                                <>
+                                    <Cloud className="w-4 h-4" />
+                                    <span>Simpan ke Google Drive</span>
+                                </>
+                            )}
+                        </button>
+                    </div>
+                </form>
+            </Modal>
         </>
     );
 }
