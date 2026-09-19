@@ -117,54 +117,59 @@ export default function DataTable({
         <div className={cardWrapperClass}>
             {/* Top Toolbar: Search, Filters & Page Size */}
             {(showSearch || filterSlot || showPageSize) && (
-                <div className={`p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${cardMode ? 'border-b border-slate-100 dark:border-slate-800/80' : ''}`}>
-                    <div className="flex items-center gap-3 flex-wrap flex-1">
-                        {showSearch && (
-                            <div className="relative min-w-[200px] max-w-sm flex-1">
-                                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                                <input
-                                    type="text"
-                                    value={globalFilter ?? ''}
-                                    onChange={(e) => {
-                                        setGlobalFilter(e.target.value);
+                <div className={`p-3.5 sm:p-4 sm:px-6 flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4 ${cardMode ? 'border-b border-slate-100 dark:border-slate-800/80' : ''}`}>
+                    {/* Left: Search Bar */}
+                    {showSearch && (
+                        <div className="relative w-full sm:w-64 md:w-72 shrink-0">
+                            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                            <input
+                                type="text"
+                                value={globalFilter ?? ''}
+                                onChange={(e) => {
+                                    setGlobalFilter(e.target.value);
+                                    setPagination((prev) => ({ ...prev, pageIndex: 0 }));
+                                }}
+                                placeholder={searchPlaceholder}
+                                className="w-full pl-9 pr-8 py-1.5 sm:py-2 bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors shadow-2xs"
+                            />
+                            {globalFilter && (
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setGlobalFilter('');
                                         setPagination((prev) => ({ ...prev, pageIndex: 0 }));
                                     }}
-                                    placeholder={searchPlaceholder}
-                                    className="w-full pl-9 pr-8 py-1.5 sm:py-2 bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors shadow-2xs"
-                                />
-                                {globalFilter && (
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setGlobalFilter('');
-                                            setPagination((prev) => ({ ...prev, pageIndex: 0 }));
-                                        }}
-                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5"
-                                        title="Clear search"
-                                    >
-                                        <X className="w-3.5 h-3.5" />
-                                    </button>
-                                )}
-                            </div>
-                        )}
-                        {filterSlot}
-                    </div>
+                                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-0.5 cursor-pointer"
+                                    title="Clear search"
+                                >
+                                    <X className="w-3.5 h-3.5" />
+                                </button>
+                            )}
+                        </div>
+                    )}
 
-                    {showPageSize && (
-                        <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                                Show:
-                            </span>
-                            <div className="w-28 sm:w-32">
-                                <CustomSelect
-                                    value={currentSize}
-                                    onChange={(newSize) => {
-                                        table.setPageSize(Number(newSize));
-                                    }}
-                                    options={pageSizeSelectOptions}
-                                    buttonClassName="!py-1.5 !px-2.5 !text-xs font-semibold"
-                                />
-                            </div>
+                    {/* Right: Filters / Tabs & Optional Page Size */}
+                    {(filterSlot || showPageSize) && (
+                        <div className="flex flex-wrap items-center justify-start md:justify-end gap-2 sm:gap-3 flex-1">
+                            {filterSlot}
+
+                            {showPageSize && (
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                                        Show:
+                                    </span>
+                                    <div className="w-28 sm:w-32">
+                                        <CustomSelect
+                                            value={currentSize}
+                                            onChange={(newSize) => {
+                                                table.setPageSize(Number(newSize));
+                                            }}
+                                            options={pageSizeSelectOptions}
+                                            buttonClassName="!py-1.5 !px-2.5 !text-xs font-semibold"
+                                        />
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     )}
                 </div>
