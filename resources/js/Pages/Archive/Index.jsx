@@ -131,6 +131,18 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
         }
     }, [flash]);
 
+    // Prevent accidental tab close or page reload during large upload
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (isSubmitting) {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [isSubmitting]);
+
 
     // Active selected archive item for right column preview
     const activeArchive = archives.find((a) => a.id === selectedId) || archives[0] || null;

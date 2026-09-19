@@ -20,9 +20,10 @@ export default function LoadingOverlay({
     if (fullScreen) {
         return (
             <div
-                className="fixed inset-0 z-[70] bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 transition-all animate-in fade-in"
+                className="fixed inset-0 z-[70] bg-slate-950/60 dark:bg-black/75 backdrop-blur-xs flex items-center justify-center p-4 transition-all animate-in fade-in select-none cursor-wait"
                 role="status"
                 aria-live="polite"
+                onClick={(e) => e.stopPropagation()}
             >
                 <div className={`relative bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#1e346e] rounded-2xl shadow-2xl p-6 sm:p-7 max-w-md w-full mx-auto flex flex-col items-center text-center ${className}`}>
                     {children ? children : (
