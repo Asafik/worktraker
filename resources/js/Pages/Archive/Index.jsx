@@ -12,15 +12,12 @@ import {
     Search,
     Upload,
     Download,
-    Eye,
-    MoreHorizontal,
     Folder,
     FileText,
     Layers,
     Calendar,
     HardDrive,
     Tag,
-    Edit3,
     ExternalLink,
     Trash2,
     Check,
@@ -573,9 +570,9 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                                                         className="py-3.5 px-4 text-center"
                                                         onClick={(e) => e.stopPropagation()}
                                                     >
-                                                        <div className="flex items-center justify-center gap-1 text-slate-400">
+                                                        <div className="flex items-center justify-center gap-1.5 text-slate-400">
                                                             <button
-                                                                title="Download"
+                                                                title="Download dari Drive"
                                                                 onClick={() => {
                                                                     if (item.googleDriveDownloadLink) {
                                                                         window.open(item.googleDriveDownloadLink, '_blank');
@@ -588,13 +585,6 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                                                                 className="p-1 hover:text-blue-600 dark:hover:text-blue-400 rounded transition-colors cursor-pointer"
                                                             >
                                                                 <Download className="w-3.5 h-3.5" />
-                                                            </button>
-                                                            <button
-                                                                title="Preview"
-                                                                onClick={() => setSelectedId(item.id)}
-                                                                className="p-1 hover:text-slate-700 dark:hover:text-slate-200 rounded transition-colors"
-                                                            >
-                                                                <Eye className="w-3.5 h-3.5" />
                                                             </button>
                                                             <button
                                                                 title="Hapus Arsip"
