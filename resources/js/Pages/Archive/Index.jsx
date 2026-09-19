@@ -276,17 +276,20 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
         },
         {
             accessorKey: 'category',
-            header: 'Type',
+            header: () => <span className="text-center block">Type</span>,
             cell: ({ row }) => {
                 const item = row.original;
                 return (
-                    <span className={`inline-block text-xs font-semibold px-2.5 py-0.5 rounded-md ${item.typeBadge || 'bg-blue-50 text-blue-600'}`}>
-                        {item.category}
-                    </span>
+                    <div className="text-center">
+                        <span className={`inline-block text-[11px] sm:text-xs font-semibold px-2 py-0.5 rounded-md whitespace-nowrap ${item.typeBadge || 'bg-blue-50 text-blue-600'}`}>
+                            {item.category}
+                        </span>
+                    </div>
                 );
             },
             meta: {
-                responsiveClass: 'hidden sm:table-cell',
+                headerClassName: 'text-center w-20 sm:w-24 px-2',
+                cellClassName: 'text-center w-20 sm:w-24 px-2',
             },
         },
         {
