@@ -94,8 +94,6 @@ export default function Dashboard({
         linePath,
         areaPath,
         totalTasksThisWeek,
-        padLeft,
-        padRight,
         padTop,
         padBottom,
         usableHeight,
@@ -114,7 +112,6 @@ export default function Dashboard({
                   ];
 
         const peak = Math.max(...rawDays.map((d) => d.val || 0), 1);
-        // Step size for 4 intervals
         const step = peak <= 4 ? 1 : Math.ceil(peak / 4);
         const yMax = step * 4;
 
@@ -126,12 +123,12 @@ export default function Dashboard({
             { val: 0, ratio: 1.0 },
         ];
 
-        // Coordinate space in SVG viewBox: 0 0 700 230
-        const padLeft = 42;
-        const padRight = 24;
-        const padTop = 24;
-        const padBottom = 180;
-        const usableWidth = 700 - padLeft - padRight;
+        // Coordinate space: width 1000, height 200
+        const padLeft = 32;
+        const padRight = 32;
+        const padTop = 18;
+        const padBottom = 168;
+        const usableWidth = 1000 - padLeft - padRight;
         const usableHeight = padBottom - padTop;
 
         const n = rawDays.length;
@@ -141,10 +138,14 @@ export default function Dashboard({
             const val = d.val || 0;
             const x = padLeft + i * xStep;
             const y = padBottom - (val / yMax) * usableHeight;
+            const xPct = (x / 1000) * 100;
+            const yPct = (y / 200) * 100;
             return {
                 ...d,
                 x,
                 y,
+                xPct,
+                yPct,
                 val,
             };
         });
@@ -175,8 +176,6 @@ export default function Dashboard({
             linePath: path,
             areaPath: area,
             totalTasksThisWeek,
-            padLeft,
-            padRight,
             padTop,
             padBottom,
             usableHeight,
@@ -416,7 +415,7 @@ export default function Dashboard({
             {/* 3. Middle Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                 {/* Productivity Overview (Area Chart) */}
-                <div className="lg:col-span-2 bg-white dark:bg-[#0e1d47] rounded-xl p-5 sm:p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between">
+                <div className="lg:col-span-2 bg-white dark:bg-[#0e1d47] rounded-xl p-5 sm:p-6 border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col justify-between overflow-hidden">
                     <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800/80">
                         <div className="flex items-center gap-2.5">
                             <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
@@ -446,80 +445,81 @@ export default function Dashboard({
                         </div>
                     </div>
 
-                    {/* Chart Canvas */}
-                    <div className="relative pt-4 pb-2 w-full">
-                        {/* Active Point Smart Tooltip (with horizontal edge clamping) */}
+                    {/* Chart Canvas: Full bleed edge-to-edge */}
+                    <div className="relative pt-6 pb-2 w-full -mx-5 sm:-mx-6">
+                        {/* Active Point Smart Tooltip (Dynamic Light & Dark Mode) */}
                         {activePoint && (
                             <div
-                                className="absolute top-1 pointer-events-none transition-all duration-150 transform -translate-x-1/2 z-20"
+                                className="absolute -top-1 pointer-events-none transition-all duration-150 transform -translate-x-1/2 z-20"
                                 style={{
                                     left: `${Math.min(
-                                        Math.max((activePoint.x / 700) * 100, 14),
-                                        86
+                                        Math.max(activePoint.xPct, 12),
+                                        88
                                     )}%`,
                                 }}
                             >
-                                <div className="bg-slate-900/95 dark:bg-[#07112d]/95 backdrop-blur-md text-white text-[11px] rounded-lg px-3 py-1.5 shadow-xl border border-slate-700/60 dark:border-[#223974] text-center space-y-0.5 whitespace-nowrap">
-                                    <div className="font-bold flex items-center justify-center gap-1.5 text-white">
-                                        <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                                <div className="bg-white/95 dark:bg-[#0a1533]/95 backdrop-blur-md text-slate-900 dark:text-white text-[11px] rounded-lg px-3 py-1.5 shadow-lg shadow-slate-200/70 dark:shadow-2xl border border-slate-200/90 dark:border-[#1e346e] text-center space-y-0.5 whitespace-nowrap">
+                                    <div className="font-bold flex items-center justify-center gap-1.5 text-slate-900 dark:text-white">
+                                        <span className="w-2 h-2 rounded-full bg-blue-600 dark:bg-blue-400"></span>
                                         <span>
                                             {activePoint.val}{' '}
                                             {activePoint.val === 1 ? 'task' : 'tasks'} completed
                                         </span>
                                     </div>
-                                    <div className="text-[10px] text-slate-400 font-medium">
+                                    <div className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
                                         {activePoint.date}
                                     </div>
                                 </div>
-                                <div className="w-2 h-2 bg-slate-900/95 dark:bg-[#07112d]/95 transform rotate-45 mx-auto -mt-1 border-r border-b border-slate-700/60 dark:border-[#223974]"></div>
+                                <div className="w-2.5 h-2.5 bg-white/95 dark:bg-[#0a1533]/95 transform rotate-45 mx-auto -mt-1 border-r border-b border-slate-200/90 dark:border-[#1e346e]"></div>
                             </div>
                         )}
 
-                        {/* High-Precision Synchronized SVG Line Chart */}
-                        <div className="relative w-full">
+                        {/* Edge-to-Edge SVG Surface */}
+                        <div className="relative w-full h-48 sm:h-56">
                             <svg
-                                viewBox="0 0 700 230"
-                                className="w-full h-48 sm:h-56 overflow-visible select-none"
+                                viewBox="0 0 1000 200"
+                                preserveAspectRatio="none"
+                                className="w-full h-full select-none"
                             >
                                 <defs>
                                     <linearGradient id="curveGradient" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="0%" stopColor="#2563eb" stopOpacity="0.28" />
-                                        <stop offset="70%" stopColor="#2563eb" stopOpacity="0.06" />
+                                        <stop offset="0%" stopColor="#2563eb" stopOpacity="0.25" />
+                                        <stop offset="70%" stopColor="#2563eb" stopOpacity="0.05" />
                                         <stop offset="100%" stopColor="#2563eb" stopOpacity="0.0" />
                                     </linearGradient>
                                     <filter id="lineGlow" x="-10%" y="-10%" width="120%" height="130%">
                                         <feDropShadow
                                             dx="0"
                                             dy="3"
-                                            stdDeviation="3.5"
+                                            stdDeviation="3"
                                             floodColor="#2563eb"
-                                            floodOpacity="0.28"
+                                            floodOpacity="0.25"
                                         />
                                     </filter>
                                 </defs>
 
-                                {/* Horizontal Grid lines & Dynamic Y-Axis Labels */}
+                                {/* Horizontal Grid lines (100% full width of card) & Floating Y-Axis Labels */}
                                 {yAxisLabels.map((item, idx) => {
                                     const yPos = padTop + item.ratio * usableHeight;
                                     return (
                                         <g key={idx}>
                                             <text
-                                                x={padLeft - 12}
-                                                y={yPos + 4}
-                                                textAnchor="end"
-                                                className="text-[11px] font-medium fill-slate-400 dark:fill-slate-500"
+                                                x="24"
+                                                y={yPos - 5}
+                                                className="text-[10px] font-semibold fill-slate-400 dark:fill-slate-500 select-none"
                                             >
                                                 {item.val}
                                             </text>
                                             <line
-                                                x1={padLeft}
+                                                x1="0"
                                                 y1={yPos}
-                                                x2={700 - padRight}
+                                                x2="1000"
                                                 y2={yPos}
                                                 stroke="currentColor"
                                                 strokeDasharray="4 4"
                                                 className="text-slate-100 dark:text-[#182a57]"
                                                 strokeWidth="1"
+                                                vectorEffect="non-scaling-stroke"
                                             />
                                         </g>
                                     );
@@ -528,21 +528,7 @@ export default function Dashboard({
                                 {/* Shaded Gradient Area under Curve */}
                                 {areaPath && <path d={areaPath} fill="url(#curveGradient)" />}
 
-                                {/* Active Guide Line (Dashed vertical line when point is hovered/active) */}
-                                {activePoint && (
-                                    <line
-                                        x1={activePoint.x}
-                                        y1={padTop}
-                                        x2={activePoint.x}
-                                        y2={padBottom}
-                                        stroke="#3b82f6"
-                                        strokeWidth="1.5"
-                                        strokeDasharray="3 3"
-                                        opacity="0.75"
-                                    />
-                                )}
-
-                                {/* Smooth Bezier Curve with Glow Filter */}
+                                {/* Smooth Bezier Curve with Non-Scaling Stroke */}
                                 {linePath && (
                                     <path
                                         d={linePath}
@@ -552,67 +538,84 @@ export default function Dashboard({
                                         strokeLinecap="round"
                                         strokeLinejoin="round"
                                         filter="url(#lineGlow)"
+                                        vectorEffect="non-scaling-stroke"
                                         className="dark:stroke-[#3b82f6]"
                                     />
                                 )}
+                            </svg>
 
-                                {/* Synchronized Data Points & X-Axis Day Labels */}
+                            {/* HTML Layer: Vertical Guide Line & Perfect Circles (immune to SVG aspect ratio distortion) */}
+                            <div className="absolute inset-0 pointer-events-none">
+                                {activePoint && (
+                                    <div
+                                        className="absolute top-3 bottom-5 border-l border-dashed border-blue-500 dark:border-blue-400 opacity-70 transition-all duration-150"
+                                        style={{ left: `${activePoint.xPct}%` }}
+                                    />
+                                )}
+
                                 {computedPoints.map((pt, idx) => {
                                     const isActive = activePoint?.day === pt.day;
                                     return (
-                                        <g key={idx}>
-                                            {/* Synchronized Day Label (100% vertically aligned with dot) */}
-                                            <text
-                                                x={pt.x}
-                                                y="212"
-                                                textAnchor="middle"
-                                                onClick={() => setActivePoint(pt)}
-                                                className={`text-[12px] cursor-pointer transition-all ${
-                                                    isActive
-                                                        ? 'font-bold fill-blue-600 dark:fill-blue-400'
-                                                        : 'font-medium fill-slate-400 dark:fill-slate-400 hover:fill-slate-600 dark:hover:fill-slate-200'
-                                                }`}
+                                        <React.Fragment key={idx}>
+                                            {/* Circular Data Point */}
+                                            <div
+                                                className="absolute -translate-x-1/2 -translate-y-1/2 transition-all duration-150 flex items-center justify-center pointer-events-none"
+                                                style={{ left: `${pt.xPct}%`, top: `${pt.yPct}%` }}
                                             >
-                                                {pt.day}
-                                            </text>
-
-                                            {/* Outer Glow Ring on Active Point */}
-                                            {isActive && (
-                                                <circle
-                                                    cx={pt.x}
-                                                    cy={pt.y}
-                                                    r="11"
-                                                    className="fill-blue-500/20 dark:fill-blue-400/25 animate-pulse"
+                                                {isActive && (
+                                                    <span className="absolute w-6 h-6 rounded-full bg-blue-500/20 dark:bg-blue-400/25 animate-ping" />
+                                                )}
+                                                <span
+                                                    className={`rounded-full transition-all ${
+                                                        isActive
+                                                            ? 'w-3.5 h-3.5 bg-blue-600 dark:bg-blue-500 ring-4 ring-white dark:ring-[#0e1d47] shadow-sm'
+                                                            : 'w-2.5 h-2.5 bg-blue-500 dark:bg-blue-400'
+                                                    }`}
                                                 />
-                                            )}
+                                            </div>
 
-                                            {/* Circle Data Point */}
-                                            <circle
-                                                cx={pt.x}
-                                                cy={pt.y}
-                                                r={isActive ? 5.5 : 3.5}
-                                                className={`${
-                                                    isActive
-                                                        ? 'fill-blue-600 stroke-white dark:stroke-[#0e1d47] stroke-[2.5px]'
-                                                        : 'fill-blue-500 hover:fill-blue-400 dark:fill-blue-400'
-                                                } transition-all pointer-events-none`}
-                                            />
-
-                                            {/* Wide Invisible Column Hit-Box for Smooth Hover Interaction */}
-                                            <rect
-                                                x={pt.x - 38}
-                                                y="0"
-                                                width="76"
-                                                height="230"
-                                                fill="transparent"
-                                                className="cursor-pointer"
+                                            {/* Column Hover Hit-Box */}
+                                            <div
                                                 onClick={() => setActivePoint(pt)}
                                                 onMouseEnter={() => setActivePoint(pt)}
+                                                style={{
+                                                    left: `${Math.max(0, pt.xPct - 7)}%`,
+                                                    width: '14%',
+                                                }}
+                                                className="absolute top-0 bottom-0 pointer-events-auto cursor-pointer"
                                             />
-                                        </g>
+                                        </React.Fragment>
                                     );
                                 })}
-                            </svg>
+                            </div>
+                        </div>
+
+                        {/* Synchronized Day Labels (in HTML for crisp unskewed typography) */}
+                        <div className="relative w-full h-5 mt-2 px-1">
+                            {computedPoints.map((pt, idx) => {
+                                const isActive = activePoint?.day === pt.day;
+                                const alignClass =
+                                    idx === 0
+                                        ? 'left-[3.2%] text-left'
+                                        : idx === computedPoints.length - 1
+                                        ? 'left-[96.8%] -translate-x-full text-right'
+                                        : '-translate-x-1/2 text-center';
+                                return (
+                                    <button
+                                        key={pt.day}
+                                        type="button"
+                                        onClick={() => setActivePoint(pt)}
+                                        style={{ left: `${pt.xPct}%` }}
+                                        className={`absolute top-0 text-xs transition-colors cursor-pointer select-none ${alignClass} ${
+                                            isActive
+                                                ? 'font-bold text-blue-600 dark:text-blue-400'
+                                                : 'font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                                        }`}
+                                    >
+                                        {pt.day}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
