@@ -131,18 +131,6 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
         }
     }, [flash]);
 
-    // Prevent accidental tab close or page reload during large upload
-    useEffect(() => {
-        const handleBeforeUnload = (e) => {
-            if (isSubmitting) {
-                e.preventDefault();
-                e.returnValue = '';
-            }
-        };
-        window.addEventListener('beforeunload', handleBeforeUnload);
-        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-    }, [isSubmitting]);
-
 
     // Active selected archive item for right column preview
     const activeArchive = archives.find((a) => a.id === selectedId) || archives[0] || null;
@@ -829,17 +817,26 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                         <div className="flex items-center justify-between text-xs font-semibold">
                             <span className="text-slate-600 dark:text-slate-300">
                                 {uploadStage === 'saving_drive'
-                                    ? 'Tahap 2: Google Drive Cloud Sync'
-                                    : 'Tahap 1: Transfer dari Perangkat'}
+                                    ? 'Tahap 2 dari 2: Mengalirkan ke Google Drive'
+                                    : 'Tahap 1 dari 2: Mengunggah dari Perangkat'}
                             </span>
-                            <span className="text-blue-600 dark:text-blue-400 font-bold font-mono text-sm">
-                                {uploadStage === 'saving_drive' ? '100%' : `${Math.round(uploadProgress || 0)}%`}
+                            <span className="text-blue-600 dark:text-blue-400 font-bold font-mono text-xs sm:text-sm flex items-center gap-1.5">
+                                {uploadStage === 'saving_drive' ? (
+                                    <>
+                                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                        <span>Menyimpan...</span>
+                                    </>
+                                ) : (
+                                    `${Math.round(uploadProgress || 0)}%`
+                                )}
                             </span>
                         </div>
                         <div className="w-full bg-slate-100 dark:bg-[#152759] h-3 rounded-full overflow-hidden p-0.5 border border-slate-200/70 dark:border-slate-800 shadow-inner">
                             <div
-                                className={`h-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 rounded-full transition-all duration-200 ease-out shadow-xs ${
-                                    uploadStage === 'saving_drive' ? 'w-full animate-pulse' : ''
+                                className={`h-full rounded-full transition-all duration-200 ease-out shadow-xs ${
+                                    uploadStage === 'saving_drive'
+                                        ? 'w-full bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-600 animate-pulse'
+                                        : 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500'
                                 }`}
                                 style={uploadStage !== 'saving_drive' ? { width: `${Math.min(100, Math.max(0, uploadProgress || 0))}%` } : {}}
                             />
@@ -869,10 +866,10 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                         <div className="bg-slate-50 dark:bg-[#101f4a] p-2.5 rounded-lg border border-slate-100 dark:border-[#1e346e]/60 text-center">
                             <div className="flex items-center justify-center gap-1 text-[10px] text-slate-400 dark:text-slate-400 mb-0.5">
                                 <Clock className="w-3 h-3 text-blue-500" />
-                                <span>Sisa Waktu</span>
+                                <span>Status</span>
                             </div>
                             <p className="text-xs font-bold text-slate-800 dark:text-slate-200 font-mono">
-                                {uploadStage === 'saving_drive' ? 'Menyimpan' : (uploadEta || '-')}
+                                {uploadStage === 'saving_drive' ? 'Memproses' : (uploadEta || '-')}
                             </p>
                         </div>
                     </div>
