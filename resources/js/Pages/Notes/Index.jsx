@@ -37,6 +37,7 @@ import {
     Square,
     ArrowUpRight,
     ArrowRight,
+    ArrowLeft,
     Eye,
     PenLine,
 } from 'lucide-react';
@@ -111,6 +112,7 @@ export default function Notes({
 
     // Active Note for viewing & editing
     const [selectedNoteId, setSelectedNoteId] = useState(notes[0]?.id || null);
+    const [mobileTab, setMobileTab] = useState('list'); // 'list' or 'editor'
 
     // Format Markdown content with interactive green badge for [Masuk Tasks] tags
     const renderMarkdownWithBadges = (content) => {
@@ -933,9 +935,37 @@ export default function Notes({
                 </div>
 
                 {/* 3. Main Workspace: 2-Column Split View */}
+                {/* Mobile View Switcher */}
+                <div className="lg:hidden flex items-center bg-white dark:bg-[#0e1d47] p-1 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs">
+                    <button
+                        type="button"
+                        onClick={() => setMobileTab('list')}
+                        className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                            mobileTab === 'list'
+                                ? 'bg-blue-600 text-white shadow-xs'
+                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        }`}
+                    >
+                        <FileText className="w-3.5 h-3.5" />
+                        <span>Daftar Catatan ({notes.length})</span>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setMobileTab('editor')}
+                        className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-md text-xs font-bold transition-all cursor-pointer ${
+                            mobileTab === 'editor'
+                                ? 'bg-blue-600 text-white shadow-xs'
+                                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                        }`}
+                    >
+                        <PenLine className="w-3.5 h-3.5" />
+                        <span>Detail & Editor</span>
+                    </button>
+                </div>
+
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
                     {/* Left Column: List & Filter (4 cols on lg) */}
-                    <div className="lg:col-span-4 space-y-3">
+                    <div className={`lg:col-span-4 space-y-3 ${mobileTab === 'editor' ? 'hidden lg:block' : 'block'}`}>
                         {/* Search & Filters */}
                         <div className="bg-white dark:bg-[#0e1d47] p-3 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs space-y-2.5">
                             {/* Search */}
@@ -1004,7 +1034,10 @@ export default function Notes({
                                     return (
                                         <div
                                             key={note.id}
-                                            onClick={() => setSelectedNoteId(note.id)}
+                                            onClick={() => {
+                                                setSelectedNoteId(note.id);
+                                                setMobileTab('editor');
+                                            }}
                                             className={`p-3.5 rounded-lg border transition-all cursor-pointer shadow-xs ${
                                                 isSelected
                                                     ? 'bg-blue-50/40 dark:bg-blue-950/30 border-blue-500/80 dark:border-blue-500/80 ring-1 ring-blue-500/20'
@@ -1061,7 +1094,7 @@ export default function Notes({
                     </div>
 
                     {/* Right Column: Note Detail / Editor (8 cols on lg) */}
-                    <div className="lg:col-span-8">
+                    <div className={`lg:col-span-8 ${mobileTab === 'list' ? 'hidden lg:block' : 'block'}`}>
                         {activeNote ? (
                             <form
                                 onSubmit={handleSaveActiveNote}
@@ -1076,6 +1109,15 @@ export default function Notes({
                                 {/* Note Top Header / Meta Toolbar */}
                                 <div className="p-4 sm:p-5 border-b border-slate-100 dark:border-[#17254d] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50 dark:bg-[#0b1739]">
                                     <div className="flex-1 space-y-2">
+                                        {/* Back to List on Mobile */}
+                                        <button
+                                            type="button"
+                                            onClick={() => setMobileTab('list')}
+                                            className="lg:hidden inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-[#122352] text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-[#243e80] text-xs font-semibold mb-1 hover:bg-slate-200 dark:hover:bg-[#1a3272] transition-colors cursor-pointer"
+                                        >
+                                            <ArrowLeft className="w-3.5 h-3.5" />
+                                            <span>Kembali ke Daftar</span>
+                                        </button>
                                         {/* Editable Title */}
                                         <input
                                             type="text"
@@ -1133,12 +1175,12 @@ export default function Notes({
                                     </div>
 
                                     {/* Action Buttons */}
-                                    <div className="flex items-center gap-2 shrink-0 self-end sm:self-auto">
+                                    <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 shrink-0 w-full sm:w-auto justify-start sm:justify-end">
                                         <button
                                             type="button"
                                             onClick={handleCopyContent}
                                             title="Salin isi catatan"
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-md text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
+                                            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-md text-xs font-semibold transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
                                         >
                                             {copiedNotice ? (
                                                 <>
@@ -1158,10 +1200,13 @@ export default function Notes({
                                             onClick={() => handleAiRefine('editor')}
                                             disabled={isRefiningAi || !editorForm.content?.trim()}
                                             title="Otomatis perbaiki typo, jabarkan singkatan, dan rapikan poin dengan Gemini AI"
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-md text-xs font-semibold shadow-xs transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-blue-500/30"
+                                            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-md text-xs font-semibold shadow-xs transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-blue-500/30"
                                         >
                                             <Sparkles className={`w-3.5 h-3.5 ${isRefiningAi && aiTarget === 'editor' ? 'animate-spin' : ''}`} />
-                                            <span>{isRefiningAi && aiTarget === 'editor' ? 'Merapikan...' : 'Rapikan dengan AI'}</span>
+                                            <span>
+                                                {isRefiningAi && aiTarget === 'editor' ? 'Merapikan...' : 'Rapikan'}
+                                                <span className="hidden sm:inline"> dengan AI</span>
+                                            </span>
                                         </button>
 
                                         <button
@@ -1169,16 +1214,18 @@ export default function Notes({
                                             onClick={handleOpenSendTasksModal}
                                             disabled={!editorForm.content?.trim()}
                                             title="Kirim poin-poin revisi dari catatan ini langsung menjadi tugas di halaman Tasks"
-                                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-xs font-semibold shadow-xs transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-emerald-500/30"
+                                            className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md text-xs font-semibold shadow-xs transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed border border-emerald-500/30"
                                         >
                                             <ListTodo className="w-3.5 h-3.5" />
-                                            <span>Kirim ke Tasks</span>
+                                            <span>
+                                                Kirim<span className="hidden sm:inline"> ke Tasks</span>
+                                            </span>
                                         </button>
 
                                         <button
                                             type="submit"
                                             disabled={isSaving}
-                                            className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md text-xs font-semibold shadow-xs transition-all cursor-pointer ${
+                                            className={`inline-flex items-center gap-1.5 px-3 sm:px-3.5 py-1.5 rounded-md text-xs font-semibold shadow-xs transition-all cursor-pointer ${
                                                 hasUnsavedChanges
                                                     ? 'bg-blue-600 hover:bg-blue-700 text-white animate-pulse'
                                                     : 'bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white'
