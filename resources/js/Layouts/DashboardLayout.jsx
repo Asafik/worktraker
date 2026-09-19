@@ -3,7 +3,7 @@ import { usePage } from '@inertiajs/react';
 import Sidebar from '@/Components/Sidebar';
 import Navbar from '@/Components/Navbar';
 
-export default function DashboardLayout({ children, activePage = 'Dashboard', user }) {
+export default function DashboardLayout({ children, activePage = 'Dashboard', user, noScroll = false }) {
     const { auth } = usePage().props;
     const currentUser = user || auth?.user;
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -51,8 +51,8 @@ export default function DashboardLayout({ children, activePage = 'Dashboard', us
                 />
 
                 {/* Page Content */}
-                <main className="flex-1 overflow-y-auto px-4 sm:px-6 py-5 bg-[#f4f7fc] dark:bg-[#070c1e] transition-colors duration-200">
-                    <div className="w-full space-y-5">
+                <main className={`flex-1 ${noScroll ? 'overflow-y-auto lg:overflow-hidden lg:flex lg:flex-col' : 'overflow-y-auto'} px-4 sm:px-6 py-4 sm:py-5 bg-[#f4f7fc] dark:bg-[#070c1e] transition-colors duration-200`}>
+                    <div className={`w-full ${noScroll ? 'space-y-4 lg:flex-1 lg:min-h-0 lg:flex lg:flex-col' : 'space-y-5'}`}>
                         {children}
                     </div>
                 </main>

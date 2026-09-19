@@ -844,12 +844,12 @@ export default function Notes({
     };
 
     return (
-        <DashboardLayout activePage="Notes">
+        <DashboardLayout activePage="Notes" noScroll={true}>
             <Head title="Catatan & Revisi - WorkTrack" />
 
-            <div className="space-y-6 w-full">
+            <div className="space-y-3.5 w-full lg:flex-1 lg:min-h-0 lg:flex lg:flex-col">
                 {/* 1. Header Section */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="shrink-0 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                         {/* Breadcrumbs */}
                         <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
@@ -861,10 +861,10 @@ export default function Notes({
                             <span className="text-slate-700 dark:text-slate-200 font-semibold">Notes & Dokumen</span>
                         </div>
 
-                        <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-1">
+                        <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white mt-0.5">
                             Catatan & Revisi Mentah
                         </h1>
-                        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                             Tampung ide, instruksi meeting, dan catatan revisi panjang dari klien sebelum dipilah menjadi task.
                         </p>
                     </div>
@@ -872,7 +872,7 @@ export default function Notes({
                     <button
                         type="button"
                         onClick={handleOpenCreateModal}
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-all hover:shadow-sm cursor-pointer self-start sm:self-auto shrink-0"
+                        className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg text-xs font-semibold shadow-xs transition-all hover:shadow-sm cursor-pointer self-start sm:self-auto shrink-0"
                     >
                         <Plus className="w-4 h-4 stroke-[2.5]" />
                         <span>Catatan Baru</span>
@@ -880,54 +880,54 @@ export default function Notes({
                 </div>
 
                 {/* 2. Stat Cards (Matches Dashboard style) */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                <div className="shrink-0 grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3">
                     {/* Total Notes */}
-                    <div className="bg-white dark:bg-[#0e1d47] p-5 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex items-center gap-3.5 hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
-                        <div className="w-10 h-10 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
-                            <FileText className="w-5 h-5 fill-blue-600/20" />
+                    <div className="bg-white dark:bg-[#0e1d47] p-3 sm:p-3.5 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex items-center gap-3 hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                            <FileText className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-blue-600/20" />
                         </div>
                         <div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Total Catatan</p>
-                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Total Catatan</p>
+                            <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-tight">
                                 {stats.total || 0}
                             </h3>
                         </div>
                     </div>
 
                     {/* Revisions Count */}
-                    <div className="bg-white dark:bg-[#0e1d47] p-5 rounded-lg border border-amber-200/80 dark:border-amber-900/50 shadow-xs flex items-center gap-3.5 hover:border-amber-300 dark:hover:border-amber-800 transition-colors">
-                        <div className="w-10 h-10 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
-                            <RotateCcw className="w-5 h-5 stroke-[2.2]" />
+                    <div className="bg-white dark:bg-[#0e1d47] p-3 sm:p-3.5 rounded-lg border border-amber-200/80 dark:border-amber-900/50 shadow-xs flex items-center gap-3 hover:border-amber-300 dark:hover:border-amber-800 transition-colors">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0">
+                            <RotateCcw className="w-4 h-4 sm:w-4.5 sm:h-4.5 stroke-[2.2]" />
                         </div>
                         <div>
-                            <p className="text-xs text-amber-700 dark:text-amber-400 font-semibold">Catatan Revisi</p>
-                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
+                            <p className="text-[11px] text-amber-700 dark:text-amber-400 font-semibold">Catatan Revisi</p>
+                            <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-tight">
                                 {stats.revisions || 0}
                             </h3>
                         </div>
                     </div>
 
                     {/* Ideas Count */}
-                    <div className="bg-white dark:bg-[#0e1d47] p-5 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex items-center gap-3.5 hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
-                        <div className="w-10 h-10 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
-                            <Lightbulb className="w-5 h-5 fill-indigo-600/20" />
+                    <div className="bg-white dark:bg-[#0e1d47] p-3 sm:p-3.5 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex items-center gap-3 hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
+                            <Lightbulb className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-indigo-600/20" />
                         </div>
                         <div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Ide & Konsep</p>
-                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Ide & Konsep</p>
+                            <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-tight">
                                 {stats.ideas || 0}
                             </h3>
                         </div>
                     </div>
 
                     {/* Meetings Count */}
-                    <div className="bg-white dark:bg-[#0e1d47] p-5 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex items-center gap-3.5 hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
-                        <div className="w-10 h-10 rounded-md bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
-                            <Users className="w-5 h-5 fill-purple-600/20" />
+                    <div className="bg-white dark:bg-[#0e1d47] p-3 sm:p-3.5 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex items-center gap-3 hover:border-slate-300 dark:hover:border-[#2b4486] transition-colors">
+                        <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-md bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0">
+                            <Users className="w-4 h-4 sm:w-4.5 sm:h-4.5 fill-purple-600/20" />
                         </div>
                         <div>
-                            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Diskusi / Meeting</p>
-                            <h3 className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Diskusi / Meeting</p>
+                            <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white leading-tight">
                                 {stats.meetings || 0}
                             </h3>
                         </div>
@@ -936,7 +936,7 @@ export default function Notes({
 
                 {/* 3. Main Workspace: 2-Column Split View */}
                 {/* Mobile View Switcher */}
-                <div className="lg:hidden flex items-center bg-white dark:bg-[#0e1d47] p-1 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs">
+                <div className="shrink-0 lg:hidden flex items-center bg-white dark:bg-[#0e1d47] p-1 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs">
                     <button
                         type="button"
                         onClick={() => setMobileTab('list')}
@@ -963,11 +963,11 @@ export default function Notes({
                     </button>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:flex-1 lg:min-h-0">
                     {/* Left Column: List & Filter (4 cols on lg) */}
-                    <div className={`lg:col-span-4 lg:h-[calc(100vh-270px)] lg:min-h-[580px] flex flex-col gap-3 ${mobileTab === 'editor' ? 'hidden lg:flex' : 'flex'}`}>
+                    <div className={`lg:col-span-4 h-full flex flex-col gap-2.5 min-h-0 overflow-hidden ${mobileTab === 'editor' ? 'hidden lg:flex' : 'flex'}`}>
                         {/* Search & Filters */}
-                        <div className="shrink-0 bg-white dark:bg-[#0e1d47] p-3 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs space-y-2.5">
+                        <div className="shrink-0 bg-white dark:bg-[#0e1d47] p-2.5 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs space-y-2">
                             {/* Search */}
                             <div className="relative w-full">
                                 <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -1003,7 +1003,7 @@ export default function Notes({
                         </div>
 
                         {/* List of Notes */}
-                        <div className="flex-1 min-h-0 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                        <div className="flex-1 min-h-0 overflow-y-auto space-y-2 pr-1.5 custom-scrollbar">
                             {notes.length === 0 ? (
                                 <div className="bg-white dark:bg-[#0e1d47] p-8 rounded-lg border border-slate-200/80 dark:border-[#1e346e] text-center space-y-3">
                                     <div className="w-12 h-12 mx-auto rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
@@ -1094,7 +1094,7 @@ export default function Notes({
                     </div>
 
                     {/* Right Column: Note Detail / Editor (8 cols on lg) */}
-                    <div className={`lg:col-span-8 lg:h-[calc(100vh-270px)] lg:min-h-[580px] ${mobileTab === 'list' ? 'hidden lg:block' : 'block'}`}>
+                    <div className={`lg:col-span-8 h-full min-h-0 overflow-hidden ${mobileTab === 'list' ? 'hidden lg:block' : 'block'}`}>
                         {activeNote ? (
                             <form
                                 onSubmit={handleSaveActiveNote}
@@ -1107,7 +1107,7 @@ export default function Notes({
                                     fullScreen={false}
                                 />
                                 {/* Note Top Header / Meta Toolbar */}
-                                <div className="shrink-0 p-4 sm:p-5 border-b border-slate-100 dark:border-[#17254d] flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50 dark:bg-[#0b1739]">
+                                <div className="shrink-0 p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#17254d] flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 bg-slate-50/50 dark:bg-[#0b1739]">
                                     <div className="flex-1 space-y-2">
                                         {/* Back to List on Mobile */}
                                         <button
@@ -1248,7 +1248,7 @@ export default function Notes({
                                 </div>
 
                                 {/* Text Formatting Quick Toolbar & View Mode Toggle */}
-                                <div className="shrink-0 px-4 py-2 bg-slate-50/90 dark:bg-[#0c183b] border-b border-slate-100 dark:border-[#17254d] flex items-center justify-between gap-2 text-slate-600 dark:text-slate-300 text-xs flex-wrap">
+                                <div className="shrink-0 px-3.5 py-1.5 bg-slate-50/90 dark:bg-[#0c183b] border-b border-slate-100 dark:border-[#17254d] flex items-center justify-between gap-2 text-slate-600 dark:text-slate-300 text-xs flex-wrap">
                                     {/* Segmented View Mode: Edit vs Preview */}
                                     <div className="flex items-center gap-2">
                                         <div className="flex items-center bg-slate-200/70 dark:bg-[#122352] p-0.5 rounded-lg text-xs font-semibold">
