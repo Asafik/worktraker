@@ -472,17 +472,7 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                                 <table className="w-full text-left text-xs sm:text-sm">
                                     <thead className="bg-[#f8fafc] dark:bg-[#0c183b] text-slate-500 dark:text-slate-400 font-semibold border-b border-slate-100 dark:border-slate-800/80">
                                         <tr>
-                                            <th className="py-3.5 px-4 w-10 text-center">
-                                                <input
-                                                    type="checkbox"
-                                                    onChange={handleSelectAll}
-                                                    checked={
-                                                        filteredArchives.length > 0 &&
-                                                        checkedIds.length === filteredArchives.length
-                                                    }
-                                                    className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                                />
-                                            </th>
+                                            <th className="py-3.5 px-4 w-12 text-center text-xs">No</th>
                                             <th className="py-3.5 px-4">Name</th>
                                             <th className="py-3.5 px-3">Type</th>
                                             <th className="py-3.5 px-3">Size</th>
@@ -497,10 +487,9 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80">
-                                        {filteredArchives.map((item) => {
+                                        {filteredArchives.map((item, index) => {
                                             const Icon = item.icon || Folder;
                                             const isSelected = item.id === selectedId;
-                                            const isChecked = checkedIds.includes(item.id);
                                             const iconColor = item.iconColor || 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400';
 
                                             return (
@@ -513,17 +502,9 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                                                             : 'hover:bg-slate-50/70 dark:hover:bg-[#122352]/40'
                                                     }`}
                                                 >
-                                                    {/* Checkbox */}
-                                                    <td
-                                                        className="py-3.5 px-4 text-center"
-                                                        onClick={(e) => e.stopPropagation()}
-                                                    >
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={isChecked}
-                                                            onChange={() => handleToggleCheck(item.id)}
-                                                            className="w-4 h-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                                                        />
+                                                    {/* Nomor Urut */}
+                                                    <td className="py-3.5 px-4 text-center text-xs font-semibold text-slate-400 dark:text-slate-500">
+                                                        {index + 1}
                                                     </td>
 
                                                     {/* Name + Icon + Subtitle */}
