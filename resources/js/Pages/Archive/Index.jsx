@@ -275,14 +275,15 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
             },
         },
         {
-            accessorKey: 'category',
+            accessorKey: 'fileType',
             header: () => <span className="text-center block">Type</span>,
             cell: ({ row }) => {
                 const item = row.original;
+                const format = (item.fileType || 'ZIP').replace(/\s+archive$/i, '').toUpperCase();
                 return (
                     <div className="text-center">
-                        <span className={`inline-block text-[11px] sm:text-xs font-semibold px-2 py-0.5 rounded-md whitespace-nowrap ${item.typeBadge || 'bg-blue-50 text-blue-600'}`}>
-                            {item.category}
+                        <span className="inline-block text-[11px] sm:text-xs font-semibold px-2 py-0.5 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40 whitespace-nowrap">
+                            {format}
                         </span>
                     </div>
                 );
