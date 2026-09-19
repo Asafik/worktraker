@@ -396,70 +396,24 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                     </div>
 
                     {/* Main Header Bar */}
-                    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
-                            <div>
-                                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-                                    Archive
-                                </h1>
-                                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-                                    Your saved projects, backups, and important files.
-                                </p>
-                            </div>
-
-                            {/* Filter Category Pills */}
-                            <div className="flex flex-wrap items-center gap-1.5 self-start sm:self-auto sm:pt-1">
-                                {[
-                                    { key: 'All', label: 'All', count: counts.All },
-                                    { key: 'Projects', label: 'Projects', count: counts.Projects },
-                                    { key: 'Backups', label: 'Backups', count: counts.Backups },
-                                    { key: 'Others', label: 'Others', count: counts.Others },
-                                ].map((tab) => (
-                                    <button
-                                        key={tab.key}
-                                        onClick={() => setSelectedTab(tab.key)}
-                                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all shadow-xs ${
-                                            selectedTab === tab.key
-                                                ? 'bg-[#2563eb] text-white'
-                                                : 'bg-white dark:bg-[#0e1d47] border border-slate-200/90 dark:border-[#1e346e] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352]'
-                                        }`}
-                                    >
-                                        <span>{tab.label}</span>
-                                        <span
-                                            className={`px-1.5 py-0.2 rounded text-[11px] font-bold ${
-                                                selectedTab === tab.key
-                                                    ? 'bg-blue-700/80 text-white'
-                                                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
-                                            }`}
-                                        >
-                                            {tab.count}
-                                        </span>
-                                    </button>
-                                ))}
-                            </div>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                                Archive
+                            </h1>
+                            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                Your saved projects, backups, and important files.
+                            </p>
                         </div>
 
-                        {/* Right: Search & Upload button */}
-                        <div className="flex items-center gap-3 self-start lg:self-auto">
-                            <div className="relative">
-                                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                                <input
-                                    type="text"
-                                    placeholder="Search archive..."
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    className="w-48 sm:w-60 bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#243e80] rounded-md pl-9 pr-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 shadow-xs transition-all"
-                                />
-                            </div>
-
-                            <button
-                                onClick={handleOpenUploadModal}
-                                className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all shrink-0 cursor-pointer"
-                            >
-                                <Upload className="w-4 h-4" />
-                                <span>Upload</span>
-                            </button>
-                        </div>
+                        {/* Upload button */}
+                        <button
+                            onClick={handleOpenUploadModal}
+                            className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all shrink-0 cursor-pointer self-start sm:self-auto"
+                        >
+                            <Upload className="w-4 h-4" />
+                            <span>Upload</span>
+                        </button>
                     </div>
                 </div>
 
@@ -468,6 +422,51 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                     {/* Left Column (8 cols): Table Card */}
                     <div className="lg:col-span-8 space-y-4">
                         <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs overflow-hidden">
+                            {/* Search & Filter Bar Header (1 sama tabel) */}
+                            <div className="p-3 sm:p-4 border-b border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                {/* Search */}
+                                <div className="relative w-full sm:w-64 md:w-72">
+                                    <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                                    <input
+                                        type="text"
+                                        placeholder="Search archive..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md pl-9 pr-3.5 py-1.5 sm:py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 transition-colors shadow-2xs"
+                                    />
+                                </div>
+
+                                {/* Filter Category Pills */}
+                                <div className="flex flex-wrap items-center gap-1.5">
+                                    {[
+                                        { key: 'All', label: 'All', count: counts.All },
+                                        { key: 'Projects', label: 'Projects', count: counts.Projects },
+                                        { key: 'Backups', label: 'Backups', count: counts.Backups },
+                                        { key: 'Others', label: 'Others', count: counts.Others },
+                                    ].map((tab) => (
+                                        <button
+                                            key={tab.key}
+                                            onClick={() => setSelectedTab(tab.key)}
+                                            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold transition-all shadow-xs ${
+                                                selectedTab === tab.key
+                                                    ? 'bg-[#2563eb] text-white'
+                                                    : 'bg-white dark:bg-[#0c183b] border border-slate-200/90 dark:border-[#1e346e] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352]'
+                                            }`}
+                                        >
+                                            <span>{tab.label}</span>
+                                            <span
+                                                className={`px-1.5 py-0.2 rounded text-[11px] font-bold ${
+                                                    selectedTab === tab.key
+                                                        ? 'bg-blue-700/80 text-white'
+                                                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                                                }`}
+                                            >
+                                                {tab.count}
+                                            </span>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                             {/* Table Container */}
                             <div className="overflow-x-auto">
                                 <table className="w-full text-left text-xs sm:text-sm">
