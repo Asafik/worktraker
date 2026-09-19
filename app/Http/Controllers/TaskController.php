@@ -121,7 +121,7 @@ class TaskController extends Controller
             'title'       => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
             'project_id'  => ['nullable', 'exists:projects,id'],
-            'type'        => ['required', 'string', 'in:feature,revision,bugfix,general'],
+            'type'        => ['required', 'string', 'in:feature,revision,technical,bugfix,general'],
             'priority'    => ['required', 'string', 'in:Low,Medium,High,Urgent'],
             'status'      => ['required', 'string', 'in:todo,in_progress,completed'],
             'due_date'    => ['nullable', 'date'],
@@ -145,10 +145,11 @@ class TaskController extends Controller
         ]);
 
         $typeLabel = match ($task->type) {
-            'revision' => 'Revisi',
-            'bugfix'   => 'Perbaikan Bug',
-            'feature'  => 'Pengerjaan Fitur',
-            default    => 'Tugas',
+            'revision'  => 'Revisi',
+            'bugfix'    => 'Perbaikan Bug',
+            'feature'   => 'Pengerjaan Fitur',
+            'technical' => 'Tugas Teknis',
+            default     => 'Tugas',
         };
 
         return back()->with('message', "{$typeLabel} berhasil ditambahkan!");
@@ -163,7 +164,7 @@ class TaskController extends Controller
             'title'       => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:2000'],
             'project_id'  => ['nullable', 'exists:projects,id'],
-            'type'        => ['required', 'string', 'in:feature,revision,bugfix,general'],
+            'type'        => ['required', 'string', 'in:feature,revision,technical,bugfix,general'],
             'priority'    => ['required', 'string', 'in:Low,Medium,High,Urgent'],
             'status'      => ['required', 'string', 'in:todo,in_progress,completed'],
             'due_date'    => ['nullable', 'date'],

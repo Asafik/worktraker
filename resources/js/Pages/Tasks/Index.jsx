@@ -29,6 +29,7 @@ import {
     X,
     Check,
     ArrowRight,
+    Settings,
 } from 'lucide-react';
 
 // GitHub SVG Icon
@@ -41,6 +42,7 @@ const GithubIcon = ({ className = 'w-3.5 h-3.5' }) => (
 const TASK_TYPE_OPTIONS = [
     { value: 'revision', label: 'Revisi Proyek' },
     { value: 'feature', label: 'Fitur Baru' },
+    { value: 'technical', label: 'Pekerjaan Teknis' },
     { value: 'bugfix', label: 'Perbaikan Bug' },
     { value: 'general', label: 'Tugas Umum' },
 ];
@@ -309,6 +311,12 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                     bg: 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-800/60',
                     icon: Sparkles,
                 };
+            case 'technical':
+                return {
+                    label: 'Teknis',
+                    bg: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/60',
+                    icon: Settings,
+                };
             default:
                 return {
                     label: 'Umum',
@@ -554,6 +562,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                 { id: 'all', label: 'Semua' },
                                 { id: 'revision', label: 'Revisi' },
                                 { id: 'feature', label: 'Fitur' },
+                                { id: 'technical', label: 'Teknis' },
                                 { id: 'bugfix', label: 'Bug Fix' },
                             ].map((tab) => (
                                 <button

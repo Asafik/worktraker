@@ -61,6 +61,7 @@ const CATEGORY_SELECT_OPTIONS = [
 const TASK_TYPE_OPTIONS = [
     { value: 'revision', label: 'Revisi Proyek' },
     { value: 'feature', label: 'Fitur Baru' },
+    { value: 'technical', label: 'Pekerjaan Teknis' },
     { value: 'bugfix', label: 'Perbaikan Bug' },
     { value: 'general', label: 'Tugas Umum' },
 ];
@@ -720,7 +721,7 @@ export default function Notes({
         } else if (editorForm.category === 'Revision') {
             setTaskType('revision');
         } else if (editorForm.category === 'Technical') {
-            setTaskType('bugfix');
+            setTaskType('technical');
         } else {
             setTaskType('revision');
         }

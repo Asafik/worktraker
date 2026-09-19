@@ -304,7 +304,7 @@ Format response WAJIB berupa JSON dengan struktur persis seperti ini:
         $validated = $request->validate([
             'project_id' => ['nullable', 'exists:projects,id'],
             'note_id'    => ['nullable', 'exists:notes,id'],
-            'task_type'  => ['nullable', 'string', 'in:revision,feature,bugfix,general'],
+            'task_type'  => ['nullable', 'string', 'in:revision,feature,technical,bugfix,general'],
             'priority'   => ['nullable', 'string', 'in:Low,Medium,High,Urgent'],
             'use_ai'     => ['nullable', 'boolean'],
             'items'      => ['required', 'array', 'min:1'],
