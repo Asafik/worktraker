@@ -31,6 +31,7 @@ import {
     Clock,
     Zap,
     CheckCircle2,
+    AlertCircle,
 } from 'lucide-react';
 
 export default function ArchivePage({ initialArchives = [], projects = [], googleDriveFolderUrl = 'https://drive.google.com/drive/folders/1LZwvt7UvPM1OOcIr366mnpmY5ITT--69', flash = {} }) {
@@ -53,6 +54,8 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
     const [uploadSpeed, setUploadSpeed] = useState('');
     const [uploadEta, setUploadEta] = useState('');
     const [uploadStage, setUploadStage] = useState('idle'); // 'idle' | 'uploading' | 'saving_drive'
+    const [archiveToDelete, setArchiveToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
     const uploadStartTimeRef = useRef(null);
 
     const formatFileSize = (bytes) => {
@@ -179,14 +182,21 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
     };
 
     // Delete active archive with real SQLite & Google Drive deletion
-    const handleDeleteArchive = (id) => {
-        if (!confirm(`Yakin ingin menghapus arsip "${activeArchive?.name || 'ini'}"? File akan dihapus dari Google Drive & database.`)) {
-            return;
-        }
+    const handleDeleteArchive = (archive) => {
+        setArchiveToDelete(archive);
+    };
+
+    const handleConfirmDelete = () => {
+        if (!archiveToDelete) return;
+
+        const id = archiveToDelete.id;
+        setIsDeleting(true);
 
         router.delete(`/archive/${id}`, {
             preserveScroll: true,
             onSuccess: () => {
+                setIsDeleting(false);
+                setArchiveToDelete(null);
                 toast.success('Arsip berhasil dihapus dari Google Drive & database.');
                 const remaining = archives.filter((a) => a.id !== id);
                 setArchives(remaining);
@@ -195,6 +205,7 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                 }
             },
             onError: (err) => {
+                setIsDeleting(false);
                 const msg = Object.values(err)[0] || 'Terjadi kesalahan saat menghapus arsip.';
                 toast.error('Gagal menghapus arsip: ' + msg);
             },
@@ -542,10 +553,11 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                                                                 <Eye className="w-3.5 h-3.5" />
                                                             </button>
                                                             <button
-                                                                title="More"
-                                                                className="p-1 hover:text-slate-700 dark:hover:text-slate-200 rounded transition-colors"
+                                                                title="Hapus Arsip"
+                                                                onClick={() => handleDeleteArchive(item)}
+                                                                className="p-1 hover:text-rose-600 dark:hover:text-rose-400 rounded transition-colors cursor-pointer"
                                                             >
-                                                                <MoreHorizontal className="w-3.5 h-3.5" />
+                                                                <Trash2 className="w-3.5 h-3.5" />
                                                             </button>
                                                         </div>
                                                     </td>
@@ -671,15 +683,20 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                                             <Cloud className="w-4 h-4 text-slate-400" />
                                             <span>Storage Location</span>
                                         </div>
-                                        <div className="flex items-center gap-1.5">
-                                            <span className="font-semibold text-slate-800 dark:text-slate-200">
-                                                {activeArchive.storageLocation}
-                                            </span>
+                                        <div className="flex items-center gap-2">
                                             {activeArchive.storageConnected && (
                                                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40">
                                                     Connected
                                                 </span>
                                             )}
+                                            <div className="flex items-center gap-1.5 font-semibold text-slate-800 dark:text-slate-200">
+                                                <img
+                                                    src="/images/svg/google_drive.svg"
+                                                    alt="Google Drive"
+                                                    className="w-4 h-4 object-contain"
+                                                />
+                                                <span>{activeArchive.storageLocation || 'Google Drive'}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -764,7 +781,7 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                                     </button>
 
                                     <button
-                                        onClick={() => handleDeleteArchive(activeArchive.id)}
+                                        onClick={() => handleDeleteArchive(activeArchive)}
                                         className="w-full py-2.5 bg-white dark:bg-[#0e1d47] hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 rounded-md text-xs sm:text-sm font-semibold flex items-center justify-center gap-2 transition-colors shadow-xs cursor-pointer"
                                     >
                                         <Trash2 className="w-4 h-4" />
@@ -1053,6 +1070,63 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                         </button>
                     </div>
                 </form>
+            </Modal>
+
+            {/* Loading Overlay saat proses Hapus Arsip */}
+            <LoadingOverlay
+                fullScreen
+                isShow={isDeleting}
+                message="Menghapus Berkas Arsip..."
+                description="Sedang menghapus berkas dari Google Drive dan database..."
+            />
+
+            {/* Modal: Konfirmasi Hapus Arsip */}
+            <Modal
+                isOpen={!!archiveToDelete}
+                onClose={() => !isDeleting && setArchiveToDelete(null)}
+                title="Hapus Arsip"
+                icon={Trash2}
+                maxWidth="md"
+            >
+                <div className="space-y-4">
+                    <div className="p-4 rounded-xl bg-rose-50/80 dark:bg-rose-950/30 border border-rose-200/80 dark:border-rose-900/50 flex items-start gap-3.5">
+                        <div className="w-10 h-10 rounded-lg bg-rose-100 dark:bg-rose-900/60 text-rose-600 dark:text-rose-400 flex items-center justify-center shrink-0">
+                            <AlertCircle className="w-5 h-5" />
+                        </div>
+                        <div className="space-y-1 flex-1">
+                            <h4 className="text-xs sm:text-sm font-bold text-rose-900 dark:text-rose-200">
+                                Apakah Anda yakin ingin menghapus arsip ini?
+                            </h4>
+                            <p className="text-xs text-rose-700/90 dark:text-rose-300/80 leading-relaxed">
+                                Berkas{' '}
+                                <strong className="font-semibold text-rose-950 dark:text-rose-100">
+                                    "{archiveToDelete?.name}"
+                                </strong>{' '}
+                                akan dihapus secara permanen dari penyimpanan Google Drive dan database sistem.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-[#1b2b5a]">
+                        <button
+                            type="button"
+                            onClick={() => setArchiveToDelete(null)}
+                            disabled={isDeleting}
+                            className="px-4 py-2 rounded-md text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer disabled:opacity-50"
+                        >
+                            Batal
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleConfirmDelete}
+                            disabled={isDeleting}
+                            className="px-4 py-2 rounded-md text-xs font-semibold bg-rose-600 hover:bg-rose-700 text-white shadow-xs transition-colors cursor-pointer inline-flex items-center gap-1.5 disabled:opacity-50"
+                        >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Hapus Arsip</span>
+                        </button>
+                    </div>
+                </div>
             </Modal>
         </>
     );
