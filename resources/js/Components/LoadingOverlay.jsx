@@ -11,6 +11,7 @@ export default function LoadingOverlay({
     blur = true,
     progress = null,
     subInfo = '',
+    children,
 }) {
     const visible = isShow !== undefined ? isShow : show;
 
@@ -23,7 +24,9 @@ export default function LoadingOverlay({
                 role="status"
                 aria-live="polite"
             >
-                <div className="relative bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#1e346e] rounded-2xl shadow-2xl p-6 sm:p-7 max-w-md w-full mx-auto flex flex-col items-center text-center">
+                <div className={`relative bg-white dark:bg-[#0e1d47] border border-slate-200 dark:border-[#1e346e] rounded-2xl shadow-2xl p-6 sm:p-7 max-w-md w-full mx-auto flex flex-col items-center text-center ${className}`}>
+                    {children ? children : (
+                        <>
                     {/* Centered spinner badge */}
                     <div className="relative mb-4 flex items-center justify-center">
                         <div className="absolute w-14 h-14 rounded-full bg-blue-500/20 dark:bg-blue-400/20 blur-md animate-pulse pointer-events-none" />
@@ -68,6 +71,8 @@ export default function LoadingOverlay({
                         <div className="w-full bg-slate-100 dark:bg-[#152759] h-1.5 rounded-full mt-5 overflow-hidden">
                             <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full animate-pulse" />
                         </div>
+                    )}
+                    </>
                     )}
                 </div>
             </div>
