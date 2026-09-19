@@ -37,6 +37,8 @@ import {
     Square,
     ArrowUpRight,
     ArrowRight,
+    Eye,
+    PenLine,
 } from 'lucide-react';
 
 const CATEGORY_FILTER_OPTIONS = [
@@ -109,6 +111,126 @@ export default function Notes({
     // Active Note for viewing & editing
     const [selectedNoteId, setSelectedNoteId] = useState(notes[0]?.id || null);
 
+    // Format Markdown content with interactive green badge for [Masuk Tasks] tags
+    const renderMarkdownWithBadges = (content) => {
+        if (!content || !content.trim()) {
+            return (
+                <div className="py-8 text-center text-slate-400 dark:text-slate-500 italic text-sm">
+                    Belum ada isi catatan... Klik tab <strong>Edit</strong> untuk mulai menulis.
+                </div>
+            );
+        }
+
+        const lines = content.split('\n');
+
+        const parseInline = (text) => {
+            const regex = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+            const parts = text.split(regex);
+
+            return parts.map((part, pIdx) => {
+                if (part.startsWith('**') && part.endsWith('**')) {
+                    return (
+                        <strong key={pIdx} className="font-bold text-slate-900 dark:text-white">
+                            {part.slice(2, -2)}
+                        </strong>
+                    );
+                }
+                if (part.startsWith('`') && part.endsWith('`')) {
+                    return (
+                        <code
+                            key={pIdx}
+                            className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-[#152554] text-blue-600 dark:text-blue-400 font-mono text-xs border border-slate-200 dark:border-[#223974]"
+                        >
+                            {part.slice(1, -1)}
+                        </code>
+                    );
+                }
+                return part;
+            });
+        };
+
+        const renderMasukTasksBadge = () => (
+            <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 border border-emerald-300/80 dark:border-emerald-800 shadow-2xs select-none ml-1.5 align-middle">
+                <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400 stroke-[2.5]" />
+                <span>Masuk Tasks</span>
+            </span>
+        );
+
+        return (
+            <div className="space-y-2 text-sm leading-relaxed text-slate-800 dark:text-slate-100 font-sans">
+                {lines.map((line, lineIdx) => {
+                    const trimmed = line.trim();
+                    if (!trimmed) {
+                        return <div key={lineIdx} className="h-2" />;
+                    }
+
+                    const hasMasukTasks = /\[Masuk Tasks\]|\(Masuk Tasks\)/i.test(line);
+                    const cleanLine = line.replace(/\[Masuk Tasks\]|\(Masuk Tasks\)/gi, '');
+
+                    // Quotes
+                    if (/^>\s+/.test(trimmed)) {
+                        return (
+                            <blockquote
+                                key={lineIdx}
+                                className="pl-3.5 border-l-2 border-blue-500 text-slate-600 dark:text-slate-300 italic my-1.5"
+                            >
+                                {parseInline(cleanLine.replace(/^>\s+/, ''))}
+                                {hasMasukTasks && renderMasukTasksBadge()}
+                            </blockquote>
+                        );
+                    }
+
+                    // Bullets
+                    if (/^[-*•]\s+/.test(trimmed)) {
+                        return (
+                            <div
+                                key={lineIdx}
+                                className="flex items-start gap-2 pl-4 sm:pl-6 text-slate-700 dark:text-slate-300"
+                            >
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-2 shrink-0" />
+                                <div className="flex-1">
+                                    {parseInline(cleanLine.replace(/^[-*•]\s+/, ''))}
+                                    {hasMasukTasks && renderMasukTasksBadge()}
+                                </div>
+                            </div>
+                        );
+                    }
+
+                    // Numbered lists
+                    if (/^\d+\.\s+/.test(trimmed)) {
+                        const numMatch = trimmed.match(/^(\d+\.)\s+(.*)$/);
+                        const numPrefix = numMatch ? numMatch[1] : '';
+                        const restText = numMatch
+                            ? numMatch[2].replace(/\[Masuk Tasks\]|\(Masuk Tasks\)/gi, '')
+                            : cleanLine;
+
+                        return (
+                            <div
+                                key={lineIdx}
+                                className="flex items-start gap-2 pt-1 font-medium text-slate-800 dark:text-slate-200"
+                            >
+                                <span className="text-blue-600 dark:text-blue-400 font-bold shrink-0">
+                                    {numPrefix}
+                                </span>
+                                <div className="flex-1 flex flex-wrap items-center gap-1">
+                                    <span>{parseInline(restText)}</span>
+                                    {hasMasukTasks && renderMasukTasksBadge()}
+                                </div>
+                            </div>
+                        );
+                    }
+
+                    return (
+                        <div key={lineIdx} className="flex flex-wrap items-center gap-1">
+                            <span>{parseInline(cleanLine)}</span>
+                            {hasMasukTasks && renderMasukTasksBadge()}
+                        </div>
+                    );
+                })}
+            </div>
+        );
+    };
+
     // Form state for active note editor
     const activeNote = notes.find((n) => n.id === selectedNoteId) || null;
     const [editorForm, setEditorForm] = useState({
@@ -129,6 +251,7 @@ export default function Notes({
     const [aiTarget, setAiTarget] = useState(null); // 'editor' | 'create'
     const [aiNotice, setAiNotice] = useState(null); // { type, message }
     const [undoBackup, setUndoBackup] = useState(null);
+    const [editorMode, setEditorMode] = useState('preview'); // 'preview' | 'edit'
 
     // Modal state for sending note items to Tasks
     const [isSendTasksModalOpen, setIsSendTasksModalOpen] = useState(false);
@@ -159,6 +282,7 @@ export default function Notes({
                 content: activeNote.content || '',
             });
             setHasUnsavedChanges(false);
+            setEditorMode('preview');
         } else if (notes.length > 0) {
             setSelectedNoteId(notes[0].id);
         }
@@ -1075,62 +1199,96 @@ export default function Notes({
                                     </div>
                                 </div>
 
-                                {/* Text Formatting Quick Toolbar */}
-                                <div className="px-4 py-2 bg-slate-50/90 dark:bg-[#0c183b] border-b border-slate-100 dark:border-[#17254d] flex items-center gap-1 text-slate-600 dark:text-slate-300 text-xs">
-                                    <button
-                                        type="button"
-                                        onClick={() => insertFormat('**', '**')}
-                                        className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
-                                        title="Tebal (Bold)"
-                                    >
-                                        <Bold className="w-3.5 h-3.5" />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => insertFormat('*', '*')}
-                                        className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
-                                        title="Miring (Italic)"
-                                    >
-                                        <Italic className="w-3.5 h-3.5" />
-                                    </button>
+                                {/* Text Formatting Quick Toolbar & View Mode Toggle */}
+                                <div className="px-4 py-2 bg-slate-50/90 dark:bg-[#0c183b] border-b border-slate-100 dark:border-[#17254d] flex items-center justify-between gap-2 text-slate-600 dark:text-slate-300 text-xs flex-wrap">
+                                    {/* Segmented View Mode: Edit vs Preview */}
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex items-center bg-slate-200/70 dark:bg-[#122352] p-0.5 rounded-lg text-xs font-semibold">
+                                            <button
+                                                type="button"
+                                                onClick={() => setEditorMode('edit')}
+                                                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                                                    editorMode === 'edit'
+                                                        ? 'bg-white dark:bg-[#1d3575] text-blue-600 dark:text-blue-300 shadow-2xs'
+                                                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                                                }`}
+                                            >
+                                                <PenLine className="w-3.5 h-3.5" />
+                                                <span>Edit</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setEditorMode('preview')}
+                                                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-md transition-all cursor-pointer ${
+                                                    editorMode === 'preview'
+                                                        ? 'bg-white dark:bg-[#1d3575] text-blue-600 dark:text-blue-300 shadow-2xs'
+                                                        : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                                                }`}
+                                            >
+                                                <Eye className="w-3.5 h-3.5" />
+                                                <span>Preview</span>
+                                            </button>
+                                        </div>
 
-                                    <div className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1" />
-
-                                    <button
-                                        type="button"
-                                        onClick={() => insertFormat('- ')}
-                                        className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
-                                        title="Poin List"
-                                    >
-                                        <List className="w-3.5 h-3.5" />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => insertFormat('1. ')}
-                                        className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
-                                        title="Nomor Urut"
-                                    >
-                                        <ListOrdered className="w-3.5 h-3.5" />
-                                    </button>
-
-                                    <div className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1" />
-
-                                    <button
-                                        type="button"
-                                        onClick={() => insertFormat('`', '`')}
-                                        className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
-                                        title="Potongan Kode (Inline Code)"
-                                    >
-                                        <Code className="w-3.5 h-3.5" />
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => insertFormat('> ')}
-                                        className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
-                                        title="Kutipan (Quote)"
-                                    >
-                                        <Quote className="w-3.5 h-3.5" />
-                                    </button>
+                                        {editorMode === 'edit' ? (
+                                            <div className="flex items-center gap-1">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => insertFormat('**', '**')}
+                                                    className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
+                                                    title="Tebal (Bold)"
+                                                >
+                                                    <Bold className="w-3.5 h-3.5" />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => insertFormat('*', '*')}
+                                                    className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
+                                                    title="Miring (Italic)"
+                                                >
+                                                    <Italic className="w-3.5 h-3.5" />
+                                                </button>
+                                                <div className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => insertFormat('- ')}
+                                                    className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
+                                                    title="Poin List"
+                                                >
+                                                    <List className="w-3.5 h-3.5" />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => insertFormat('1. ')}
+                                                    className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
+                                                    title="Nomor Urut"
+                                                >
+                                                    <ListOrdered className="w-3.5 h-3.5" />
+                                                </button>
+                                                <div className="w-px h-4 bg-slate-200 dark:bg-slate-700 mx-1" />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => insertFormat('`', '`')}
+                                                    className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
+                                                    title="Potongan Kode (Inline Code)"
+                                                >
+                                                    <Code className="w-3.5 h-3.5" />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => insertFormat('> ')}
+                                                    className="p-1.5 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-md transition-colors"
+                                                    title="Kutipan (Quote)"
+                                                >
+                                                    <Quote className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <span className="text-[11px] text-slate-400 dark:text-slate-500 italic hidden md:inline">
+                                                Mode Tampilan (Klik Edit atau klik ganda untuk mengubah)
+                                            </span>
+                                        )}
+                                    </div>
 
                                     <span className="text-[11px] text-slate-400 ml-auto hidden sm:inline">
                                         Terakhir diupdate: {formatDate(activeNote.updated_at)}
@@ -1176,20 +1334,30 @@ export default function Notes({
                                     </div>
                                 )}
 
-                                {/* Textarea Editor Area */}
-                                <div className="p-4 sm:p-5 flex-1 flex flex-col">
-                                    <textarea
-                                        id="note-editor-textarea"
-                                        value={editorForm.content}
-                                        onChange={(e) => {
-                                            setEditorForm({ ...editorForm, content: e.target.value });
-                                            setHasUnsavedChanges(true);
-                                        }}
-                                        placeholder="Ketik catatan revisi, instruksi klien, atau dokumentasi bebas di sini..."
-                                        rows={18}
-                                        className="w-full flex-1 bg-transparent text-sm leading-relaxed text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none resize-none font-sans"
-                                    />
-                                </div>
+                                {/* Editor Area: Toggle between Preview with Badges and Textarea */}
+                                {editorMode === 'preview' ? (
+                                    <div
+                                        onDoubleClick={() => setEditorMode('edit')}
+                                        className="p-5 sm:p-6 flex-1 overflow-y-auto cursor-text select-text bg-white dark:bg-[#0e1d47]"
+                                        title="Klik ganda untuk beralih ke mode edit"
+                                    >
+                                        {renderMarkdownWithBadges(editorForm.content)}
+                                    </div>
+                                ) : (
+                                    <div className="p-4 sm:p-5 flex-1 flex flex-col bg-white dark:bg-[#0e1d47]">
+                                        <textarea
+                                            id="note-editor-textarea"
+                                            value={editorForm.content}
+                                            onChange={(e) => {
+                                                setEditorForm({ ...editorForm, content: e.target.value });
+                                                setHasUnsavedChanges(true);
+                                            }}
+                                            placeholder="Ketik catatan revisi, instruksi klien, atau dokumentasi bebas di sini..."
+                                            rows={18}
+                                            className="w-full flex-1 bg-transparent text-sm leading-relaxed text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none resize-none font-sans"
+                                        />
+                                    </div>
+                                )}
                             </form>
                         ) : (
                             <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-12 text-center shadow-xs">
