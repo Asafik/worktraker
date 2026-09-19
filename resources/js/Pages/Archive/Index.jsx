@@ -434,10 +434,12 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
 
                 <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
                     <span className="text-[11px] text-slate-400 font-medium">Aksi:</span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 text-slate-400">
                         <button
                             type="button"
-                            onClick={() => {
+                            title="Download dari Drive"
+                            onClick={(e) => {
+                                e.stopPropagation();
                                 if (item.googleDriveDownloadLink) {
                                     window.open(item.googleDriveDownloadLink, '_blank');
                                     toast.info(`Membuka unduhan ${item.name}...`);
@@ -446,18 +448,20 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                                     toast.info(`Membuka folder Google Drive...`);
                                 }
                             }}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs font-semibold shadow-xs hover:shadow-blue-600/30 transition-all cursor-pointer"
+                            className="p-1.5 hover:text-blue-600 dark:hover:text-blue-400 rounded transition-colors cursor-pointer"
                         >
-                            <Download className="w-3.5 h-3.5" />
-                            <span>Download dari Drive</span>
+                            <Download className="w-4 h-4" />
                         </button>
                         <button
                             type="button"
-                            onClick={() => handleDeleteArchive(item)}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white dark:bg-[#0e1d47] hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/50 rounded-md text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                            title="Hapus Arsip"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteArchive(item);
+                            }}
+                            className="p-1.5 hover:text-rose-600 dark:hover:text-rose-400 rounded transition-colors cursor-pointer"
                         >
-                            <Trash2 className="w-3.5 h-3.5" />
-                            <span>Hapus</span>
+                            <Trash2 className="w-4 h-4" />
                         </button>
                     </div>
                 </div>
