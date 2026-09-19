@@ -684,7 +684,7 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                             emptyMessage="Tidak ada arsip yang cocok dengan pencarian atau filter yang dipilih."
                             totalLabel="archives"
                             defaultPageSize={10}
-                            pageSizeOptions={[10, 25, 50]}
+                            showPageSize={false}
                         />
                     </div>
 
