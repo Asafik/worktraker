@@ -67,6 +67,15 @@ const FILTER_STATUS_OPTIONS = [
     { value: 'completed', label: 'Selesai' },
 ];
 
+const FILTER_TYPE_OPTIONS = [
+    { value: 'all', label: 'Semua Tipe' },
+    { value: 'revision', label: 'Revisi' },
+    { value: 'feature', label: 'Fitur' },
+    { value: 'technical', label: 'Teknis' },
+    { value: 'bugfix', label: 'Bug Fix' },
+    { value: 'general', label: 'Umum' },
+];
+
 export default function Tasks({ tasks = [], projects = [], stats = {}, filters = {}, flash = {} }) {
     const [viewMode, setViewMode] = useState('list'); // 'list' or 'board'
     const [searchQuery, setSearchQuery] = useState(filters.search || '');
@@ -467,75 +476,62 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
 
 
 
-                {/* 4. Filter Bar & Search */}
-                <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-white dark:bg-[#0e1d47] p-3 sm:p-4 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs">
-                    {/* Search */}
-                    <div className="relative w-full md:w-72">
-                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                        <input
-                            type="text"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            placeholder="Cari tugas, revisi, repo..."
-                            className="w-full pl-9 pr-3.5 py-1.5 bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
-                        />
-                    </div>
-
-                    {/* Filter Pills */}
-                    <div className="flex flex-wrap items-center gap-2">
-                        {/* Type Filter */}
-                        <div className="flex items-center gap-1 bg-slate-100 dark:bg-[#122352] p-1 rounded-md">
-                            {[
-                                { id: 'all', label: 'Semua' },
-                                { id: 'revision', label: 'Revisi' },
-                                { id: 'feature', label: 'Fitur' },
-                                { id: 'technical', label: 'Teknis' },
-                                { id: 'bugfix', label: 'Bug Fix' },
-                            ].map((tab) => (
-                                <button
-                                    key={tab.id}
-                                    type="button"
-                                    onClick={() => setSelectedType(tab.id)}
-                                    className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all cursor-pointer ${
-                                        selectedType === tab.id
-                                            ? 'bg-white dark:bg-[#1c3272] text-blue-600 dark:text-blue-300 shadow-2xs'
-                                            : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                                    }`}
-                                >
-                                    {tab.label}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Status Filter */}
-                        <div className="w-36 sm:w-40">
-                            <CustomSelect
-                                value={selectedStatus}
-                                onChange={(val) => setSelectedStatus(val)}
-                                options={FILTER_STATUS_OPTIONS}
-                                buttonClassName="!py-1.5 !px-2.5 !text-xs font-semibold"
+                {/* 3. Main Tasks Card (Search, Filters & List/Board) */}
+                <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs overflow-hidden">
+                    {/* Search & Filter Bar Header */}
+                    <div className="p-3.5 sm:p-4 border-b border-slate-100 dark:border-[#17254d] flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+                        {/* Search */}
+                        <div className="relative w-full lg:w-72">
+                            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Cari tugas, revisi, repo..."
+                                className="w-full pl-9 pr-3.5 py-1.5 bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md text-xs text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500"
                             />
                         </div>
 
-                        {/* Project Filter */}
-                        <div className="w-44 sm:w-52">
-                            <CustomSelect
-                                value={selectedProject}
-                                onChange={(val) => setSelectedProject(val)}
-                                options={projectFilterOptions}
-                                buttonClassName="!py-1.5 !px-2.5 !text-xs font-semibold"
-                                searchable={true}
-                                searchPlaceholder="Cari proyek..."
-                            />
+                        {/* Dropdown Filters */}
+                        <div className="grid grid-cols-1 sm:flex sm:flex-wrap items-center gap-2">
+                            {/* Type Filter */}
+                            <div className="w-full sm:w-36">
+                                <CustomSelect
+                                    value={selectedType}
+                                    onChange={(val) => setSelectedType(val)}
+                                    options={FILTER_TYPE_OPTIONS}
+                                    buttonClassName="!py-1.5 !px-2.5 !text-xs font-semibold"
+                                />
+                            </div>
+
+                            {/* Status Filter */}
+                            <div className="w-full sm:w-36">
+                                <CustomSelect
+                                    value={selectedStatus}
+                                    onChange={(val) => setSelectedStatus(val)}
+                                    options={FILTER_STATUS_OPTIONS}
+                                    buttonClassName="!py-1.5 !px-2.5 !text-xs font-semibold"
+                                />
+                            </div>
+
+                            {/* Project Filter */}
+                            <div className="w-full sm:w-48 sm:min-w-[180px]">
+                                <CustomSelect
+                                    value={selectedProject}
+                                    onChange={(val) => setSelectedProject(val)}
+                                    options={projectFilterOptions}
+                                    buttonClassName="!py-1.5 !px-2.5 !text-xs font-semibold"
+                                    searchable={true}
+                                    searchPlaceholder="Cari proyek..."
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {/* 5. Main Content: LIST VIEW or BOARD VIEW */}
-                {viewMode === 'list' ? (
-                    /* ================= LIST VIEW ================= */
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs overflow-hidden">
-                        {filteredTasks.length === 0 ? (
+                    {/* Content: LIST VIEW or BOARD VIEW */}
+                    {viewMode === 'list' ? (
+                        /* ================= LIST VIEW ================= */
+                        filteredTasks.length === 0 ? (
                             <div className="py-16 text-center space-y-3">
                                 <div className="w-12 h-12 mx-auto rounded-md bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 flex items-center justify-center">
                                     <CheckSquare className="w-6 h-6" />
@@ -669,119 +665,121 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                                     );
                                 })}
                             </div>
-                        )}
-                    </div>
-                ) : (
-                    /* ================= BOARD (KANBAN) VIEW ================= */
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        {[
-                            { id: 'todo', title: 'Antrean (To Do)', color: 'border-slate-300 dark:border-slate-700', bgHeader: 'bg-slate-100 dark:bg-slate-800' },
-                            { id: 'in_progress', title: 'Sedang Dikerjakan', color: 'border-blue-300 dark:border-blue-900', bgHeader: 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300' },
-                            { id: 'completed', title: 'Selesai', color: 'border-emerald-300 dark:border-emerald-900', bgHeader: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300' },
-                        ].map((col) => {
-                            const colTasks = filteredTasks.filter((t) => t.status === col.id);
+                        )
+                    ) : (
+                        /* ================= BOARD (KANBAN) VIEW ================= */
+                        <div className="p-4 sm:p-5 bg-slate-50/50 dark:bg-[#0a1533]/40">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                {[
+                                    { id: 'todo', title: 'Antrean (To Do)', color: 'border-slate-300 dark:border-slate-700', bgHeader: 'bg-slate-100 dark:bg-slate-800' },
+                                    { id: 'in_progress', title: 'Sedang Dikerjakan', color: 'border-blue-300 dark:border-blue-900', bgHeader: 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300' },
+                                    { id: 'completed', title: 'Selesai', color: 'border-emerald-300 dark:border-emerald-900', bgHeader: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300' },
+                                ].map((col) => {
+                                    const colTasks = filteredTasks.filter((t) => t.status === col.id);
 
-                            return (
-                                <div
-                                    key={col.id}
-                                    className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col h-full min-h-[450px]"
-                                >
-                                    {/* Column Header */}
-                                    <div className={`px-4 py-3 border-b border-slate-100 dark:border-[#1b2b5a] flex items-center justify-between font-bold text-xs rounded-t-lg ${col.bgHeader}`}>
-                                        <span>{col.title}</span>
-                                        <span className="px-2 py-0.5 rounded-full bg-white dark:bg-slate-900 text-[11px] shadow-2xs font-extrabold">
-                                            {colTasks.length}
-                                        </span>
-                                    </div>
-
-                                    {/* Column Tasks */}
-                                    <div className="p-3 space-y-3 flex-1 overflow-y-auto">
-                                        {colTasks.length === 0 ? (
-                                            <div className="py-10 text-center text-xs text-slate-400">
-                                                Tidak ada tugas
+                                    return (
+                                        <div
+                                            key={col.id}
+                                            className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col h-full min-h-[450px]"
+                                        >
+                                            {/* Column Header */}
+                                            <div className={`px-4 py-3 border-b border-slate-100 dark:border-[#1b2b5a] flex items-center justify-between font-bold text-xs rounded-t-lg ${col.bgHeader}`}>
+                                                <span>{col.title}</span>
+                                                <span className="px-2 py-0.5 rounded-full bg-white dark:bg-slate-900 text-[11px] shadow-2xs font-extrabold">
+                                                    {colTasks.length}
+                                                </span>
                                             </div>
-                                        ) : (
-                                            colTasks.map((task) => {
-                                                const typeConf = getTypeConfig(task.type);
 
-                                                return (
-                                                    <div
-                                                        key={task.id}
-                                                        className="bg-slate-50 dark:bg-[#122352] p-3.5 rounded-md border border-slate-200/90 dark:border-[#243e80] shadow-xs hover:shadow-sm transition-all space-y-2 group"
-                                                    >
-                                                        {/* Badges */}
-                                                        <div className="flex items-center justify-between gap-1">
-                                                            <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold border ${typeConf.bg}`}>
-                                                                {typeConf.label}
-                                                            </span>
-                                                            <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold border ${getPriorityConfig(task.priority)}`}>
-                                                                {task.priority}
-                                                            </span>
-                                                        </div>
-
-                                                        {/* Title */}
-                                                        <h5 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-tight">
-                                                            {task.title}
-                                                        </h5>
-
-                                                        {/* Related Project */}
-                                                        {task.project && (
-                                                            <div className="text-[11px] text-slate-500 dark:text-slate-300 flex items-center gap-1 truncate font-medium">
-                                                                <Folder className="w-3 h-3 text-blue-500 shrink-0" />
-                                                                <span className="truncate">{task.project.name}</span>
-                                                            </div>
-                                                        )}
-
-                                                        {/* Bottom Actions */}
-                                                        <div className="pt-2 border-t border-slate-200/60 dark:border-[#1e346e] flex items-center justify-between text-[11px]">
-                                                            {task.status === 'completed' && task.completed_at ? (
-                                                                <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 text-[10px]">
-                                                                    <CheckCircle2 className="w-3 h-3 text-emerald-500" />
-                                                                    <span>Selesai {formatCompletedDate(task.completed_at)}</span>
-                                                                </span>
-                                                            ) : task.due_date ? (
-                                                                <span className="text-slate-400 flex items-center gap-1 text-[10px]">
-                                                                    <Clock className="w-3 h-3" />
-                                                                    <span>Target: {task.due_date}</span>
-                                                                </span>
-                                                            ) : <span />}
-
-                                                            <div className="flex items-center gap-1">
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => handleToggleTask(task)}
-                                                                    className="px-2.5 py-1 rounded-md text-[10px] font-semibold bg-white dark:bg-[#1c3272] border border-slate-200 dark:border-[#2c4794] text-slate-700 dark:text-slate-200 hover:text-blue-600 transition-colors"
-                                                                >
-                                                                    {task.status === 'completed' ? 'Kembalikan' : 'Selesai'}
-                                                                </button>
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => openEditModal(task)}
-                                                                    className="p-1.5 rounded-md text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
-                                                                    title="Edit Tugas"
-                                                                >
-                                                                    <Edit3 className="w-3.5 h-3.5" />
-                                                                </button>
-                                                                <button
-                                                                    type="button"
-                                                                    onClick={() => handleOpenDeleteModal(task)}
-                                                                    className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
-                                                                    title="Hapus Tugas"
-                                                                >
-                                                                    <Trash2 className="w-3.5 h-3.5" />
-                                                                </button>
-                                                            </div>
-                                                        </div>
+                                            {/* Column Tasks */}
+                                            <div className="p-3 space-y-3 flex-1 overflow-y-auto">
+                                                {colTasks.length === 0 ? (
+                                                    <div className="py-10 text-center text-xs text-slate-400">
+                                                        Tidak ada tugas
                                                     </div>
-                                                );
-                                            })
-                                        )}
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
+                                                ) : (
+                                                    colTasks.map((task) => {
+                                                        const typeConf = getTypeConfig(task.type);
+
+                                                        return (
+                                                            <div
+                                                                key={task.id}
+                                                                className="bg-slate-50 dark:bg-[#122352] p-3.5 rounded-md border border-slate-200/90 dark:border-[#243e80] shadow-xs hover:shadow-sm transition-all space-y-2 group"
+                                                            >
+                                                                {/* Badges */}
+                                                                <div className="flex items-center justify-between gap-1">
+                                                                    <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold border ${typeConf.bg}`}>
+                                                                        {typeConf.label}
+                                                                    </span>
+                                                                    <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold border ${getPriorityConfig(task.priority)}`}>
+                                                                        {task.priority}
+                                                                    </span>
+                                                                </div>
+
+                                                                {/* Title */}
+                                                                <h5 className="text-xs sm:text-sm font-bold text-slate-900 dark:text-white leading-tight">
+                                                                    {task.title}
+                                                                </h5>
+
+                                                                {/* Related Project */}
+                                                                {task.project && (
+                                                                    <div className="text-[11px] text-slate-500 dark:text-slate-300 flex items-center gap-1 truncate font-medium">
+                                                                        <Folder className="w-3 h-3 text-blue-500 shrink-0" />
+                                                                        <span className="truncate">{task.project.name}</span>
+                                                                    </div>
+                                                                )}
+
+                                                                {/* Bottom Actions */}
+                                                                <div className="pt-2 border-t border-slate-200/60 dark:border-[#1e346e] flex items-center justify-between text-[11px]">
+                                                                    {task.status === 'completed' && task.completed_at ? (
+                                                                        <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1 text-[10px]">
+                                                                            <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                                                                            <span>Selesai {formatCompletedDate(task.completed_at)}</span>
+                                                                        </span>
+                                                                    ) : task.due_date ? (
+                                                                        <span className="text-slate-400 flex items-center gap-1 text-[10px]">
+                                                                            <Clock className="w-3 h-3" />
+                                                                            <span>Target: {task.due_date}</span>
+                                                                        </span>
+                                                                    ) : <span />}
+
+                                                                    <div className="flex items-center gap-1">
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => handleToggleTask(task)}
+                                                                            className="px-2.5 py-1 rounded-md text-[10px] font-semibold bg-white dark:bg-[#1c3272] border border-slate-200 dark:border-[#2c4794] text-slate-700 dark:text-slate-200 hover:text-blue-600 transition-colors"
+                                                                        >
+                                                                            {task.status === 'completed' ? 'Kembalikan' : 'Selesai'}
+                                                                        </button>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => openEditModal(task)}
+                                                                            className="p-1.5 rounded-md text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors cursor-pointer"
+                                                                            title="Edit Tugas"
+                                                                        >
+                                                                            <Edit3 className="w-3.5 h-3.5" />
+                                                                        </button>
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => handleOpenDeleteModal(task)}
+                                                                            className="p-1.5 rounded-md text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
+                                                                            title="Hapus Tugas"
+                                                                        >
+                                                                            <Trash2 className="w-3.5 h-3.5" />
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })
+                                                )}
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Modal Tambah / Edit Tugas */}
