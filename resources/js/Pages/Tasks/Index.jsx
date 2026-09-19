@@ -74,13 +74,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
     const [selectedStatus, setSelectedStatus] = useState(filters.status || 'all');
     const [selectedProject, setSelectedProject] = useState(filters.project_id || 'all');
 
-    // Quick Add input state
-    const [quickTitle, setQuickTitle] = useState('');
-    const [quickType, setQuickType] = useState('revision');
-    const [quickProjectId, setQuickProjectId] = useState(projects[0]?.id ? String(projects[0].id) : '');
-    const [quickPriority, setQuickPriority] = useState('High');
-    const [quickDueDate, setQuickDueDate] = useState('');
-    const [isSubmittingQuick, setIsSubmittingQuick] = useState(false);
+
 
     // Modal state for Add/Edit
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -117,13 +111,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
         })),
     ], [projects]);
 
-    const quickProjectOptions = useMemo(() => [
-        { value: '', label: '-- Tanpa Proyek (Umum) --' },
-        ...projects.map((proj) => ({
-            value: String(proj.id),
-            label: `${proj.name}${proj.github_repo_name ? ` (${proj.github_repo_name})` : ''}`,
-        })),
-    ], [projects]);
+
 
     const modalProjectOptions = useMemo(() => [
         { value: '', label: '-- Tanpa Proyek (Umum) --' },
@@ -133,33 +121,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
         })),
     ], [projects]);
 
-    // Handle quick submit
-    const handleQuickAdd = (e) => {
-        e.preventDefault();
-        if (!quickTitle.trim()) return;
 
-        setIsSubmittingQuick(true);
-        router.post('/tasks', {
-            title: quickTitle.trim(),
-            type: quickType,
-            project_id: quickProjectId ? Number(quickProjectId) : null,
-            priority: quickPriority,
-            status: 'todo',
-            due_date: quickDueDate || null,
-        }, {
-            preserveScroll: true,
-            onSuccess: () => {
-                setQuickTitle('');
-                setQuickDueDate('');
-                setIsSubmittingQuick(false);
-                toast.success('Tugas baru berhasil ditambahkan!');
-            },
-            onError: () => {
-                setIsSubmittingQuick(false);
-                toast.error('Gagal menambahkan tugas.');
-            },
-        });
-    };
 
     // Execute toggle task status via API
     const executeToggleTask = (taskId) => {
@@ -503,66 +465,7 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                     </div>
                 </div>
 
-                {/* 3. Quick Add Bar (Ultra-convenient) */}
-                <form
-                    onSubmit={handleQuickAdd}
-                    className="bg-white dark:bg-[#0e1d47] p-3 sm:p-4 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs flex flex-col md:flex-row items-stretch md:items-center gap-2.5"
-                >
-                    {/* Type Selector */}
-                    <div className="w-full md:w-40 shrink-0">
-                        <CustomSelect
-                            value={quickType}
-                            onChange={(val) => setQuickType(val)}
-                            options={TASK_TYPE_OPTIONS}
-                            buttonClassName="!py-2 !px-3 !text-xs font-semibold"
-                        />
-                    </div>
 
-                    {/* Title Input */}
-                    <div className="flex-1 relative">
-                        <input
-                            type="text"
-                            required
-                            value={quickTitle}
-                            onChange={(e) => setQuickTitle(e.target.value)}
-                            placeholder="Tuliskan tugas atau revisi baru... (tekan Enter)"
-                            className="w-full bg-slate-50 dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3.5 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:bg-white dark:focus:bg-[#0f1f4b]"
-                        />
-                    </div>
-
-                    {/* Project Selector (Direct Connection to Database Projects) */}
-                    <div className="w-full md:w-56 shrink-0">
-                        <CustomSelect
-                            value={quickProjectId}
-                            onChange={(val) => setQuickProjectId(val)}
-                            options={quickProjectOptions}
-                            placeholder="-- Tanpa Proyek --"
-                            buttonClassName="!py-2 !px-3 !text-xs"
-                            searchable={true}
-                            searchPlaceholder="Cari proyek..."
-                        />
-                    </div>
-
-                    {/* Priority Selector */}
-                    <div className="w-full md:w-36 shrink-0">
-                        <CustomSelect
-                            value={quickPriority}
-                            onChange={(val) => setQuickPriority(val)}
-                            options={TASK_PRIORITY_OPTIONS}
-                            buttonClassName="!py-2 !px-3 !text-xs font-semibold"
-                        />
-                    </div>
-
-                    {/* Submit Button */}
-                    <button
-                        type="submit"
-                        disabled={isSubmittingQuick || !quickTitle.trim()}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-md text-xs sm:text-sm font-semibold shadow-xs transition-colors shrink-0 flex items-center justify-center gap-1.5 cursor-pointer"
-                    >
-                        <Plus className="w-4 h-4" />
-                        <span>Tambah</span>
-                    </button>
-                </form>
 
                 {/* 4. Filter Bar & Search */}
                 <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 bg-white dark:bg-[#0e1d47] p-3 sm:p-4 rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xs">
@@ -1115,15 +1018,13 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
 
             {/* Global Centered Loading Overlay for Tasks */}
             <LoadingOverlay
-                show={isSavingTask || isSubmittingQuick || isDeletingTask || isTogglingTask}
+                show={isSavingTask || isDeletingTask || isTogglingTask}
                 fullScreen={true}
                 message={
                     isDeletingTask
                         ? 'Menghapus tugas...'
                         : isTogglingTask
                         ? 'Memperbarui status tugas...'
-                        : isSubmittingQuick
-                        ? 'Menambahkan tugas baru...'
                         : editingTask
                         ? 'Menyimpan perubahan tugas...'
                         : 'Menambahkan tugas baru...'
@@ -1133,8 +1034,6 @@ export default function Tasks({ tasks = [], projects = [], stats = {}, filters =
                         ? 'Menghapus tugas dari sistem dan proyek terkait'
                         : isTogglingTask
                         ? 'Menyinkronkan status penyelesaian tugas'
-                        : isSubmittingQuick
-                        ? 'Menyimpan tugas cepat ke antrean'
                         : 'Memperbarui data di server'
                 }
             />
