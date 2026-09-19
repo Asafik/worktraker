@@ -3,6 +3,8 @@ import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import Modal from '@/Components/Modal';
 import CustomSelect from '@/Components/CustomSelect';
+import LoadingOverlay from '@/Components/LoadingOverlay';
+import { toast } from 'sonner';
 import {
     Home,
     ChevronRight,
@@ -42,7 +44,6 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
     const [uploadNotes, setUploadNotes] = useState('');
     const [selectedFile, setSelectedFile] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [toastMessage, setToastMessage] = useState(flash?.message || null);
 
     const categoryOptions = [
         { value: 'Project', label: 'Project' },
@@ -100,9 +101,7 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
 
     useEffect(() => {
         if (flash?.message) {
-            setToastMessage(flash.message);
-            const timer = setTimeout(() => setToastMessage(null), 4000);
-            return () => clearTimeout(timer);
+            toast.success(flash.message);
         }
     }, [flash]);
 
@@ -153,7 +152,6 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
         }
     };
 
-    // Delete active archive
     // Delete active archive with real SQLite & Google Drive deletion
     const handleDeleteArchive = (id) => {
         if (!confirm(`Yakin ingin menghapus arsip "${activeArchive?.name || 'ini'}"? File akan dihapus dari Google Drive & database.`)) {
@@ -163,11 +161,16 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
         router.delete(`/archive/${id}`, {
             preserveScroll: true,
             onSuccess: () => {
+                toast.success('Arsip berhasil dihapus dari Google Drive & database.');
                 const remaining = archives.filter((a) => a.id !== id);
                 setArchives(remaining);
                 if (remaining.length > 0) {
                     setSelectedId(remaining[0].id);
                 }
+            },
+            onError: (err) => {
+                const msg = Object.values(err)[0] || 'Terjadi kesalahan saat menghapus arsip.';
+                toast.error('Gagal menghapus arsip: ' + msg);
             },
         });
     };
@@ -175,18 +178,24 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
     // Real upload submit to Google Drive and SQLite
     const handleUploadSubmit = (e) => {
         e.preventDefault();
-        if (!uploadName.trim()) return;
+        if (!uploadName.trim()) {
+            toast.warning('Nama arsip wajib diisi!');
+            return;
+        }
+
+        if (!selectedFile) {
+            toast.warning('Silakan pilih file yang akan diunggah ke Google Drive!');
+            return;
+        }
 
         setIsSubmitting(true);
         const formData = new FormData();
-        formData.append('name', uploadName);
-        formData.append('projectName', uploadProjectName);
+        formData.append('name', uploadName.trim());
+        formData.append('projectName', uploadProjectName.trim());
         formData.append('category', uploadCategory);
-        formData.append('description', uploadDesc);
-        formData.append('notes', uploadNotes);
-        if (selectedFile) {
-            formData.append('file', selectedFile);
-        }
+        formData.append('description', uploadDesc.trim());
+        formData.append('notes', uploadNotes.trim());
+        formData.append('file', selectedFile);
 
         router.post('/archive', formData, {
             forceFormData: true,
@@ -194,6 +203,7 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
             onSuccess: () => {
                 setIsSubmitting(false);
                 setIsUploadModalOpen(false);
+                toast.success('Arsip berhasil diunggah ke Google Drive!');
                 setSelectedProjectId('');
                 setUploadName('');
                 setUploadProjectName('');
@@ -203,7 +213,8 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
             },
             onError: (err) => {
                 setIsSubmitting(false);
-                alert('Gagal mengunggah arsip ke Google Drive: ' + (Object.values(err)[0] || 'Terjadi kesalahan.'));
+                const msg = Object.values(err)[0] || 'Terjadi kesalahan saat mengunggah arsip ke Google Drive.';
+                toast.error('Gagal mengunggah arsip: ' + msg);
             },
         });
     };
@@ -425,8 +436,16 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                                                         <div className="flex items-center justify-center gap-1 text-slate-400">
                                                             <button
                                                                 title="Download"
-                                                                onClick={() => alert(`Mengunduh ${item.name}...`)}
-                                                                className="p-1 hover:text-blue-600 dark:hover:text-blue-400 rounded transition-colors"
+                                                                onClick={() => {
+                                                                    if (item.googleDriveDownloadLink) {
+                                                                        window.open(item.googleDriveDownloadLink, '_blank');
+                                                                        toast.info(`Membuka unduhan ${item.name}...`);
+                                                                    } else {
+                                                                        window.open(googleDriveFolderUrl, '_blank');
+                                                                        toast.info(`Membuka folder Google Drive...`);
+                                                                    }
+                                                                }}
+                                                                className="p-1 hover:text-blue-600 dark:hover:text-blue-400 rounded transition-colors cursor-pointer"
                                                             >
                                                                 <Download className="w-3.5 h-3.5" />
                                                             </button>
@@ -678,13 +697,13 @@ export default function ArchivePage({ initialArchives = [], projects = [], googl
                 </div>
             </div>
 
-            {/* Toast Notification */}
-            {toastMessage && (
-                <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 px-4 py-3 rounded-lg bg-emerald-600 text-white shadow-lg text-xs sm:text-sm font-semibold animate-in fade-in slide-in-from-bottom-5">
-                    <Check className="w-4 h-4 shrink-0" />
-                    <span>{toastMessage}</span>
-                </div>
-            )}
+            {/* Loading Overlay saat proses upload ke Google Drive */}
+            <LoadingOverlay
+                fullScreen
+                isShow={isSubmitting}
+                message="Mengunggah Arsip ke Google Drive..."
+                description="Mohon tunggu sebentar, file sedang diunggah dan disimpan ke cloud storage."
+            />
 
             {/* Upload Modal (Standard Modal Component) */}
             <Modal
