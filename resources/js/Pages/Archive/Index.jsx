@@ -217,6 +217,11 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
         Others: archives.filter((a) => a.category === 'Other').length,
     }), [archives]);
 
+    // Delete active archive with real SQLite & Google Drive deletion
+    const handleDeleteArchive = (archive) => {
+        setArchiveToDelete(archive);
+    };
+
     // TanStack DataTables Columns Definition with Responsive Breakpoints
     const columns = useMemo(() => [
         {
@@ -337,7 +342,52 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                 responsiveClass: 'hidden xl:table-cell',
             },
         },
-    ], [selectedId]);
+        {
+            id: 'actions',
+            header: () => <span className="block text-center">Actions</span>,
+            cell: ({ row }) => {
+                const item = row.original;
+                return (
+                    <div className="flex items-center justify-center gap-1.5 text-slate-400">
+                        <button
+                            type="button"
+                            title="Download dari Drive"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (item.googleDriveDownloadLink) {
+                                    window.open(item.googleDriveDownloadLink, '_blank');
+                                    toast.info(`Membuka unduhan ${item.name}...`);
+                                } else {
+                                    window.open(googleDriveFolderUrl, '_blank');
+                                    toast.info(`Membuka folder Google Drive...`);
+                                }
+                            }}
+                            className="p-1 hover:text-blue-600 dark:hover:text-blue-400 rounded transition-colors cursor-pointer"
+                        >
+                            <Download className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                            type="button"
+                            title="Hapus Arsip"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleDeleteArchive(item);
+                            }}
+                            className="p-1 hover:text-rose-600 dark:hover:text-rose-400 rounded transition-colors cursor-pointer"
+                        >
+                            <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                    </div>
+                );
+            },
+            enableSorting: false,
+            meta: {
+                responsiveClass: 'hidden lg:table-cell',
+                headerClassName: 'text-center w-20',
+                cellClassName: 'text-center w-20',
+            },
+        },
+    ], [selectedId, googleDriveFolderUrl]);
 
     // Responsive Child Accordion Row (Displays hidden fields on tablet & mobile)
     const renderExpandedRow = ({ item }) => {
@@ -413,11 +463,6 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                 </div>
             </div>
         );
-    };
-
-    // Delete active archive with real SQLite & Google Drive deletion
-    const handleDeleteArchive = (archive) => {
-        setArchiveToDelete(archive);
     };
 
     const handleConfirmDelete = () => {
@@ -595,7 +640,7 @@ export default function ArchivePage({ initialArchives = [], projects = [], isGoo
                             data={tabFilteredArchives}
                             columns={columns}
                             renderExpandedRow={renderExpandedRow}
-                            expandBreakpoint="xl:hidden"
+                            expandBreakpoint="lg:hidden"
                             searchPlaceholder="Search archive..."
                             onRowClick={(item) => setSelectedId(item.id)}
                             selectedRowId={selectedId}
