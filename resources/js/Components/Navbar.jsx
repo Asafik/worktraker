@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, usePage } from '@inertiajs/react';
-import { Search, Moon, Sun, Bell, ChevronDown, Menu } from 'lucide-react';
+import { Search, Moon, Sun, ChevronDown, Menu } from 'lucide-react';
 
 export default function Navbar({
     setSidebarOpen,
@@ -48,15 +48,6 @@ export default function Navbar({
                     aria-label="Toggle Theme"
                 >
                     {darkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4" />}
-                </button>
-
-                {/* Notifications */}
-                <button
-                    className="w-9 h-9 flex items-center justify-center rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors relative"
-                    title="Notifications"
-                >
-                    <Bell className="w-4 h-4" />
-                    <span className="w-2 h-2 bg-rose-500 rounded-full absolute top-2 right-2 ring-2 ring-white dark:ring-[#0b1739]"></span>
                 </button>
 
                 {/* Divider */}
