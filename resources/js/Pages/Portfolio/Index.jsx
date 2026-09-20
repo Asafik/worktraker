@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Head, Link } from '@inertiajs/react';
+import React, { useState, useEffect } from 'react';
+import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
 import {
     ExternalLink,
@@ -37,16 +37,20 @@ import {
     ArrowDown,
     Save,
     Quote,
+    Search,
+    Image as ImageIcon,
 } from 'lucide-react';
 
-export default function PortfolioPage() {
+export default function PortfolioPage({ projects: initialProjects = [], userProfile = null }) {
     // Active navigation tab: Projects, About, Experience, Skills, Testimonials, Appearance
     const [activeTab, setActiveTab] = useState('Projects');
     const [isLiveNoticeOpen, setIsLiveNoticeOpen] = useState(true);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const [savedToast, setSavedToast] = useState(false);
+    const [toastMessage, setToastMessage] = useState('Perubahan berhasil disimpan!');
 
-    const triggerSaveNotice = () => {
+    const triggerSaveNotice = (msg = 'Perubahan berhasil disimpan!') => {
+        setToastMessage(msg);
         setSavedToast(true);
         setTimeout(() => setSavedToast(false), 2500);
     };
@@ -55,20 +59,20 @@ export default function PortfolioPage() {
     // 1. ABOUT STATE
     // ==========================================
     const [aboutData, setAboutData] = useState({
-        name: 'Asafik Daroini',
-        headline: 'Full Stack Web Developer',
-        bio: 'I build modern web applications and turn ideas into reality. Focused on clean architecture, responsive UX, and scalable backend solutions.',
-        location: 'Jawa Timur, Indonesia',
+        name: userProfile?.fullName || 'Asafik Daroini',
+        headline: userProfile?.headline || 'Full Stack Web Developer',
+        bio: userProfile?.bio || 'I build modern web applications and turn ideas into reality. Focused on clean architecture, responsive UX, and scalable backend solutions.',
+        location: userProfile?.location || 'Jawa Timur, Indonesia',
         showLocation: true,
-        email: 'asafik@example.com',
+        email: userProfile?.email || 'asafik.dev@gmail.com',
         showEmail: true,
-        avatar: '/images/avatar1.png',
+        avatar: userProfile?.avatar || '/images/avatar1.png',
         stats: {
-            projects: '10+',
+            projects: `${initialProjects?.length || 10}+`,
             experience: '2+',
             passion: '100%',
         },
-        socials: {
+        socials: userProfile?.socials || {
             github: 'https://github.com/asafik',
             linkedin: 'https://linkedin.com/in/asafik',
             twitter: 'https://x.com/asafik',
@@ -78,116 +82,110 @@ export default function PortfolioPage() {
     // ==========================================
     // 2. PROJECTS STATE & MODALS
     // ==========================================
-    const [projects, setProjects] = useState([
-        {
-            id: 1,
-            title: 'Monitoring System',
-            featured: true,
-            description:
-                'Sistem monitoring dan pelaporan data secara real-time dengan dashboard interaktif.',
-            tags: ['Laravel', 'MySQL', 'Tailwind CSS'],
-            tagColors: [
-                'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40',
-                'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-                'bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 border border-cyan-100 dark:border-cyan-900/40',
-            ],
-            githubUrl: 'https://github.com/asafik/monitoring-system',
-            liveUrl: 'https://monitoring.example.com',
-            published: true,
-            previewType: 'dashboard',
-        },
-        {
-            id: 2,
-            title: 'Mobile App Absensi',
-            featured: false,
-            description:
-                'Aplikasi mobile untuk absensi karyawan dengan fitur GPS dan laporan otomatis.',
-            tags: ['React Native', 'Firebase', 'API'],
-            tagColors: [
-                'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-                'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/40',
-                'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40',
-            ],
-            githubUrl: 'https://github.com/asafik/absensi-mobile',
-            liveUrl: '',
-            published: true,
-            previewType: 'mobile',
-        },
-        {
-            id: 3,
-            title: 'Admin Dashboard',
-            featured: false,
-            description:
-                'Dashboard admin dengan manajemen data, user, dan laporan statistik.',
-            tags: ['Laravel', 'Livewire', 'Chart.js'],
-            tagColors: [
-                'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40',
-                'bg-pink-50 dark:bg-pink-950/60 text-pink-600 dark:text-pink-400 border border-pink-100 dark:border-pink-900/40',
-                'bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/40',
-            ],
-            githubUrl: 'https://github.com/asafik/admin-dashboard',
-            liveUrl: 'https://admin-demo.example.com',
-            published: true,
-            previewType: 'admin',
-        },
-        {
-            id: 4,
-            title: 'Company Website',
-            featured: false,
-            description: 'Website profil perusahaan dengan desain modern dan responsif.',
-            tags: ['Laravel', 'Tailwind CSS', 'Alpine.js'],
-            tagColors: [
-                'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40',
-                'bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 border border-cyan-100 dark:border-cyan-900/40',
-                'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-900/40',
-            ],
-            githubUrl: 'https://github.com/asafik/company-profile',
-            liveUrl: 'https://pt-karya.example.com',
-            published: true,
-            previewType: 'website',
-        },
-        {
-            id: 5,
-            title: 'API Integration',
-            featured: false,
-            description:
-                'Integrasi API dengan third-party services untuk kebutuhan sistem internal.',
-            tags: ['Laravel', 'Postman', 'REST API'],
-            tagColors: [
-                'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40',
-                'bg-orange-50 dark:bg-orange-950/60 text-orange-600 dark:text-orange-400 border border-orange-100 dark:border-orange-900/40',
-                'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-            ],
-            githubUrl: 'https://github.com/asafik/api-service-gateway',
-            liveUrl: '',
-            published: false,
-            previewType: 'api',
-        },
-        {
-            id: 6,
-            title: 'UI/UX Redesign',
-            featured: false,
-            description:
-                'Redesign antarmuka aplikasi dengan fokus pada user experience.',
-            tags: ['Figma', 'UI/UX', 'Design System'],
-            tagColors: [
-                'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40',
-                'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-                'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40',
-            ],
-            githubUrl: '',
-            liveUrl: 'https://figma.com/file/example',
-            published: false,
-            previewType: 'design',
-        },
-    ]);
+    const formatProject = (p, idx) => ({
+        id: p.id,
+        name: p.name || p.title || 'Untitled Project',
+        title: p.name || p.title || 'Untitled Project',
+        description: p.description || '',
+        category: p.category || 'Web Application',
+        tags: Array.isArray(p.tech_stack) && p.tech_stack.length > 0
+            ? p.tech_stack
+            : (Array.isArray(p.tags) && p.tags.length > 0 ? p.tags : ['Laravel', 'MySQL']),
+        tagColors: p.tagColors || [
+            'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
+            'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40',
+            'bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 border border-cyan-100 dark:border-cyan-900/40',
+        ],
+        githubUrl: p.github_repo_url || p.githubUrl || '',
+        liveUrl: p.live_url || p.liveUrl || '',
+        published: typeof p.is_portfolio !== 'undefined' ? !!p.is_portfolio : (typeof p.published !== 'undefined' ? !!p.published : true),
+        is_portfolio: typeof p.is_portfolio !== 'undefined' ? !!p.is_portfolio : !!p.published,
+        featured: typeof p.is_featured !== 'undefined' ? !!p.is_featured : (typeof p.featured !== 'undefined' ? !!p.featured : false),
+        is_featured: typeof p.is_featured !== 'undefined' ? !!p.is_featured : !!p.featured,
+        portfolio_order: p.portfolio_order ?? idx,
+        portfolio_cover: p.portfolio_cover || null,
+        cover_image_url: p.cover_image_url || (Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : null),
+        images: Array.isArray(p.images) ? p.images : [],
+        previewType: p.previewType || (p.category === 'Mobile' ? 'mobile' : (p.category === 'UI/UX' ? 'design' : 'dashboard')),
+    });
+
+    const [projects, setProjects] = useState(() => {
+        if (initialProjects && initialProjects.length > 0) {
+            return initialProjects.map(formatProject);
+        }
+        return [
+            {
+                id: 1,
+                title: 'Monitoring System',
+                featured: true,
+                description:
+                    'Sistem monitoring dan pelaporan data secara real-time dengan dashboard interaktif.',
+                tags: ['Laravel', 'MySQL', 'Tailwind CSS'],
+                tagColors: [
+                    'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-100 dark:border-rose-900/40',
+                    'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
+                    'bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 border border-cyan-100 dark:border-cyan-900/40',
+                ],
+                githubUrl: 'https://github.com/asafik/monitoring-system',
+                liveUrl: 'https://monitoring.example.com',
+                published: true,
+                previewType: 'dashboard',
+            },
+        ];
+    });
+
+    useEffect(() => {
+        if (initialProjects && initialProjects.length > 0) {
+            setProjects(initialProjects.map(formatProject));
+        }
+    }, [initialProjects]);
 
     const [isAddProjectOpen, setIsAddProjectOpen] = useState(false);
     const [editProjectItem, setEditProjectItem] = useState(null);
+    const [projectSearchQuery, setProjectSearchQuery] = useState('');
+    const [projectFilterTab, setProjectFilterTab] = useState('all'); // 'all', 'published', 'hidden'
 
     const togglePublishProject = (id) => {
-        setProjects(
-            projects.map((p) => (p.id === id ? { ...p, published: !p.published } : p))
+        setProjects((prev) =>
+            prev.map((p) => {
+                if (p.id === id) {
+                    const nextVal = !p.published;
+                    return { ...p, published: nextVal, is_portfolio: nextVal };
+                }
+                return p;
+            })
+        );
+
+        router.post(
+            `/portfolio/projects/${id}/toggle-publish`,
+            {},
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => triggerSaveNotice('Status portofolio diperbarui!'),
+            }
+        );
+    };
+
+    const toggleFeaturedProject = (id) => {
+        setProjects((prev) =>
+            prev.map((p) => {
+                if (p.id === id) {
+                    const nextVal = !p.featured;
+                    return { ...p, featured: nextVal, is_featured: nextVal };
+                }
+                return p;
+            })
+        );
+
+        router.post(
+            `/portfolio/projects/${id}/toggle-featured`,
+            {},
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => triggerSaveNotice('Status unggulan (featured) diperbarui!'),
+            }
         );
     };
 
@@ -199,6 +197,17 @@ export default function PortfolioPage() {
         updated[index] = updated[targetIndex];
         updated[targetIndex] = temp;
         setProjects(updated);
+
+        const orderIds = updated.map((p) => p.id);
+        router.post(
+            '/portfolio/projects/update-order',
+            { order: orderIds },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => triggerSaveNotice('Urutan proyek berhasil diperbarui!'),
+            }
+        );
     };
 
     // ==========================================
@@ -407,7 +416,7 @@ export default function PortfolioPage() {
             {savedToast && (
                 <div className="fixed top-5 right-5 z-50 flex items-center gap-2 px-4 py-3 rounded-lg bg-emerald-600 text-white text-xs sm:text-sm font-semibold shadow-lg shadow-emerald-600/30 animate-in fade-in slide-in-from-top-3 duration-200">
                     <CheckCircle2 className="w-4 h-4" />
-                    <span>Perubahan berhasil disimpan!</span>
+                    <span>{toastMessage}</span>
                 </div>
             )}
 
@@ -478,133 +487,202 @@ export default function PortfolioPage() {
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800/80">
                                     <div>
                                         <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                                            Featured Projects
+                                            Daftar Proyek Portofolio
                                         </h2>
                                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                                            Pilih project untuk ditampilkan di portfolio publik, atur urutan dan visibilitas.
+                                            Kelola proyek dari WorkTrack yang tampil di portofolio publik. Foto sampul otomatis mengambil screenshot pertama proyek.
                                         </p>
                                     </div>
 
                                     <button
                                         onClick={() => setIsAddProjectOpen(true)}
-                                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-xs hover:shadow-blue-600/40 transition-all self-start sm:self-auto"
+                                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-xs hover:shadow-blue-600/40 transition-all self-start sm:self-auto cursor-pointer"
                                     >
                                         <Plus className="w-4 h-4 stroke-[2.5]" />
-                                        <span>Add from Projects</span>
+                                        <span>Pilih dari Proyek WorkTrack</span>
+                                    </button>
+                                </div>
+
+                                {/* Filter Pills */}
+                                <div className="flex items-center gap-2 pb-1">
+                                    <button
+                                        onClick={() => setProjectFilterTab('all')}
+                                        className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+                                            projectFilterTab === 'all'
+                                                ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900/60'
+                                                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                                        }`}
+                                    >
+                                        Semua ({projects.length})
+                                    </button>
+                                    <button
+                                        onClick={() => setProjectFilterTab('published')}
+                                        className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+                                            projectFilterTab === 'published'
+                                                ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900/60'
+                                                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                                        }`}
+                                    >
+                                        Ditampilkan ({projects.filter((p) => p.published).length})
+                                    </button>
+                                    <button
+                                        onClick={() => setProjectFilterTab('hidden')}
+                                        className={`px-3 py-1 text-xs font-semibold rounded-md transition-colors cursor-pointer ${
+                                            projectFilterTab === 'hidden'
+                                                ? 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700'
+                                                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
+                                        }`}
+                                    >
+                                        Disembunyikan ({projects.filter((p) => !p.published).length})
                                     </button>
                                 </div>
 
                                 {/* Project List Items */}
                                 <div className="divide-y divide-slate-100 dark:divide-slate-800/80">
-                                    {projects.map((project, idx) => (
-                                        <div
-                                            key={project.id}
-                                            className="py-4 flex items-center justify-between gap-4 group transition-colors"
-                                        >
-                                            {/* Left group */}
-                                            <div className="flex items-center gap-3.5 min-w-0 flex-1">
-                                                <span className="w-5 text-center font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-300">
-                                                    {idx + 1}
-                                                </span>
+                                    {projects
+                                        .filter((p) => {
+                                            if (projectFilterTab === 'published') return p.published;
+                                            if (projectFilterTab === 'hidden') return !p.published;
+                                            return true;
+                                        })
+                                        .map((project, idx) => (
+                                            <div
+                                                key={project.id}
+                                                className="py-4 flex items-center justify-between gap-4 group transition-colors"
+                                            >
+                                                {/* Left group */}
+                                                <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                                                    <span className="w-5 text-center font-bold text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+                                                        {idx + 1}
+                                                    </span>
 
-                                                {/* Reorder Buttons */}
-                                                <div className="flex flex-col gap-0.5">
-                                                    <button
-                                                        onClick={() => moveProject(idx, -1)}
-                                                        disabled={idx === 0}
-                                                        className="text-slate-400 hover:text-blue-500 disabled:opacity-20 transition-colors p-0.5"
-                                                        title="Pindah ke atas"
-                                                    >
-                                                        <ArrowUp className="w-3.5 h-3.5" />
-                                                    </button>
-                                                    <button
-                                                        onClick={() => moveProject(idx, 1)}
-                                                        disabled={idx === projects.length - 1}
-                                                        className="text-slate-400 hover:text-blue-500 disabled:opacity-20 transition-colors p-0.5"
-                                                        title="Pindah ke bawah"
-                                                    >
-                                                        <ArrowDown className="w-3.5 h-3.5" />
-                                                    </button>
-                                                </div>
+                                                    {/* Reorder Buttons */}
+                                                    <div className="flex flex-col gap-0.5">
+                                                        <button
+                                                            onClick={() => moveProject(idx, -1)}
+                                                            disabled={idx === 0}
+                                                            className="text-slate-400 hover:text-blue-500 disabled:opacity-20 transition-colors p-0.5 cursor-pointer"
+                                                            title="Pindah ke atas"
+                                                        >
+                                                            <ArrowUp className="w-3.5 h-3.5" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => moveProject(idx, 1)}
+                                                            disabled={idx === projects.length - 1}
+                                                            className="text-slate-400 hover:text-blue-500 disabled:opacity-20 transition-colors p-0.5 cursor-pointer"
+                                                            title="Pindah ke bawah"
+                                                        >
+                                                            <ArrowDown className="w-3.5 h-3.5" />
+                                                        </button>
+                                                    </div>
 
-                                                {/* Mockup Thumbnail */}
-                                                <div className="w-20 sm:w-24 h-14 sm:h-16 rounded-md overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs">
-                                                    {renderPreviewMockup(project.previewType)}
-                                                </div>
-
-                                                {/* Project Info & Tags */}
-                                                <div className="min-w-0 flex-1 space-y-1">
-                                                    <div className="flex items-center gap-2">
-                                                        <h3 className="font-bold text-sm text-slate-900 dark:text-white truncate">
-                                                            {project.title}
-                                                        </h3>
-                                                        {project.featured && (
-                                                            <span className="text-[10px] font-semibold px-2 py-0.2 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40">
-                                                                Featured
-                                                            </span>
+                                                    {/* Thumbnail: First project screenshot or preview mockup */}
+                                                    <div className="w-20 sm:w-24 h-14 sm:h-16 rounded-md overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs relative bg-slate-100 dark:bg-slate-900">
+                                                        {project.cover_image_url ? (
+                                                            <img
+                                                                src={project.cover_image_url}
+                                                                alt={project.title}
+                                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                                onError={(e) => {
+                                                                    e.currentTarget.style.display = 'none';
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            renderPreviewMockup(project.previewType)
                                                         )}
                                                     </div>
 
-                                                    <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
-                                                        {project.description}
-                                                    </p>
-
-                                                    {/* Tags */}
-                                                    <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
-                                                        {project.tags.map((tag, tIdx) => (
-                                                            <span
-                                                                key={tIdx}
-                                                                className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
-                                                                    project.tagColors?.[tIdx] ||
-                                                                    'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400'
+                                                    {/* Project Info & Tags */}
+                                                    <div className="min-w-0 flex-1 space-y-1">
+                                                        <div className="flex items-center gap-2">
+                                                            <h3 className="font-bold text-sm text-slate-900 dark:text-white truncate">
+                                                                {project.title}
+                                                            </h3>
+                                                            {/* Toggle featured star */}
+                                                            <button
+                                                                type="button"
+                                                                onClick={() => toggleFeaturedProject(project.id)}
+                                                                title={project.featured ? "Hapus dari Unggulan (Featured)" : "Jadikan Proyek Unggulan (Featured)"}
+                                                                className={`p-1 rounded-md transition-colors cursor-pointer ${
+                                                                    project.featured 
+                                                                        ? 'text-amber-500 hover:text-amber-600 bg-amber-50 dark:bg-amber-950/40' 
+                                                                        : 'text-slate-300 dark:text-slate-600 hover:text-amber-500'
                                                                 }`}
                                                             >
-                                                                {tag}
-                                                            </span>
-                                                        ))}
+                                                                <Star className={`w-3.5 h-3.5 ${project.featured ? 'fill-amber-500' : ''}`} />
+                                                            </button>
+                                                            {project.featured && (
+                                                                <span className="text-[10px] font-semibold px-2 py-0.2 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/40">
+                                                                    Featured
+                                                                </span>
+                                                            )}
+                                                            {project.category && (
+                                                                <span className="text-[10px] font-semibold px-2 py-0.2 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                                                                    {project.category}
+                                                                </span>
+                                                            )}
+                                                        </div>
+
+                                                        <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
+                                                            {project.description || 'Tidak ada deskripsi.'}
+                                                        </p>
+
+                                                        {/* Tags */}
+                                                        <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                                                            {project.tags.map((tag, tIdx) => (
+                                                                <span
+                                                                    key={tIdx}
+                                                                    className={`px-2 py-0.2 rounded text-[10px] font-semibold ${
+                                                                        project.tagColors?.[tIdx] ||
+                                                                        'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40'
+                                                                    }`}
+                                                                >
+                                                                    {tag}
+                                                                </span>
+                                                            ))}
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
 
-                                            {/* Right group */}
-                                            <div className="flex items-center gap-3 shrink-0">
-                                                <div className="flex items-center gap-2">
-                                                    <button
-                                                        onClick={() => togglePublishProject(project.id)}
-                                                        className={`w-9 h-5 rounded-full transition-colors relative focus:outline-none ${
-                                                            project.published
-                                                                ? 'bg-[#2563eb]'
-                                                                : 'bg-slate-300 dark:bg-slate-700'
-                                                        }`}
-                                                    >
-                                                        <span
-                                                            className={`block w-4 h-4 rounded-full bg-white transition-transform ${
+                                                {/* Right group */}
+                                                <div className="flex items-center gap-3 shrink-0">
+                                                    <div className="flex items-center gap-2">
+                                                        <button
+                                                            onClick={() => togglePublishProject(project.id)}
+                                                            className={`w-9 h-5 rounded-full transition-colors relative focus:outline-none cursor-pointer ${
                                                                 project.published
-                                                                    ? 'translate-x-4.5'
-                                                                    : 'translate-x-0.5'
+                                                                    ? 'bg-[#2563eb]'
+                                                                    : 'bg-slate-300 dark:bg-slate-700'
                                                             }`}
-                                                        />
-                                                    </button>
-                                                    <span
-                                                        className={`text-xs font-semibold w-16 ${
-                                                            project.published
-                                                                ? 'text-slate-700 dark:text-slate-300'
-                                                                : 'text-slate-400'
-                                                        }`}
-                                                    >
-                                                        {project.published ? 'Published' : 'Hidden'}
-                                                    </span>
-                                                </div>
+                                                        >
+                                                            <span
+                                                                className={`block w-4 h-4 rounded-full bg-white transition-transform ${
+                                                                    project.published
+                                                                        ? 'translate-x-4.5'
+                                                                        : 'translate-x-0.5'
+                                                                }`}
+                                                            />
+                                                        </button>
+                                                        <span
+                                                            className={`text-xs font-semibold w-16 ${
+                                                                project.published
+                                                                    ? 'text-slate-700 dark:text-slate-300'
+                                                                    : 'text-slate-400'
+                                                            }`}
+                                                        >
+                                                            {project.published ? 'Published' : 'Hidden'}
+                                                        </span>
+                                                    </div>
 
-                                                <button
-                                                    onClick={() => setEditProjectItem(project)}
-                                                    className="px-3 py-1 text-xs font-semibold rounded-md border border-slate-200 dark:border-[#243e80] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-xs"
-                                                >
-                                                    Edit
-                                                </button>
+                                                    <button
+                                                        onClick={() => setEditProjectItem(project)}
+                                                        className="px-3 py-1 text-xs font-semibold rounded-md border border-slate-200 dark:border-[#243e80] text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-xs cursor-pointer"
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
                                 </div>
                             </div>
                         )}
@@ -1349,6 +1427,49 @@ export default function PortfolioPage() {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Mini Published Projects Preview */}
+                            <div className="pt-2 space-y-2">
+                                <div className="flex items-center justify-between text-xs">
+                                    <span className="font-bold text-slate-700 dark:text-slate-300">
+                                        Proyek Portofolio ({projects.filter((p) => p.published).length})
+                                    </span>
+                                    <Link
+                                        href="/"
+                                        target="_blank"
+                                        className="text-[11px] text-blue-600 dark:text-blue-400 font-semibold hover:underline inline-flex items-center gap-1"
+                                    >
+                                        <span>Lihat Web</span>
+                                        <ExternalLink className="w-3 h-3" />
+                                    </Link>
+                                </div>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {projects
+                                        .filter((p) => p.published)
+                                        .slice(0, 4)
+                                        .map((p) => (
+                                            <div
+                                                key={p.id}
+                                                className="rounded-md border border-slate-200 dark:border-slate-800 p-1.5 bg-slate-50/70 dark:bg-[#0c183b] space-y-1"
+                                            >
+                                                <div className="w-full h-14 rounded overflow-hidden bg-slate-200 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
+                                                    {p.cover_image_url ? (
+                                                        <img
+                                                            src={p.cover_image_url}
+                                                            alt={p.title}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        renderPreviewMockup(p.previewType)
+                                                    )}
+                                                </div>
+                                                <p className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate">
+                                                    {p.title}
+                                                </p>
+                                            </div>
+                                        ))}
+                                </div>
+                            </div>
                         </div>
 
                         {/* 2. Quick Actions Card (switches tabs immediately) */}
@@ -1442,151 +1563,177 @@ export default function PortfolioPage() {
             </div>
 
             {/* ================================================================ */}
-            {/* MODAL 1: ADD PROJECT */}
+            {/* MODAL 1: PILIH PROYEK DARI WORKTRACK */}
             {/* ================================================================ */}
             {isAddProjectOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                                Tambah Proyek ke Portfolio
-                            </h3>
+                    <div className="bg-white dark:bg-[#0e1d47] rounded-xl border border-slate-200/80 dark:border-[#1e346e] shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
+                        {/* Modal Header */}
+                        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
+                            <div>
+                                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <Sparkles className="w-5 h-5 text-blue-500" />
+                                    Pilih Proyek dari WorkTrack
+                                </h3>
+                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                    Centang proyek yang ingin ditampilkan di portofolio publik. Foto sampul otomatis mengambil screenshot pertama dari proyek.
+                                </p>
+                            </div>
                             <button
                                 onClick={() => setIsAddProjectOpen(false)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                             >
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
 
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                const form = e.target;
-                                const title = form.title.value;
-                                const description = form.description.value;
-                                const tags = form.tags.value.split(',').map((t) => t.trim());
-                                const githubUrl = form.githubUrl.value;
-                                const liveUrl = form.liveUrl.value;
-                                const previewType = form.previewType.value;
-
-                                if (!title) return;
-
-                                setProjects([
-                                    ...projects,
-                                    {
-                                        id: Date.now(),
-                                        title,
-                                        featured: false,
-                                        description,
-                                        tags: tags.length ? tags : ['Laravel'],
-                                        tagColors: [
-                                            'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-                                        ],
-                                        githubUrl,
-                                        liveUrl,
-                                        published: true,
-                                        previewType,
-                                    },
-                                ]);
-                                setIsAddProjectOpen(false);
-                            }}
-                            className="space-y-3.5"
-                        >
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Judul Proyek
-                                </label>
+                        {/* Search Bar */}
+                        <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-[#0a163a]/50 shrink-0">
+                            <div className="relative">
+                                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                                 <input
-                                    name="title"
                                     type="text"
-                                    placeholder="Contoh: E-Commerce Web Store"
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
-                                    required
+                                    placeholder="Cari proyek berdasarkan nama, kategori, atau tech stack..."
+                                    value={projectSearchQuery}
+                                    onChange={(e) => setProjectSearchQuery(e.target.value)}
+                                    className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-white dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 shadow-2xs"
                                 />
                             </div>
+                        </div>
 
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Deskripsi Singkat Publik
-                                </label>
-                                <textarea
-                                    name="description"
-                                    rows={2}
-                                    placeholder="Jelaskan fitur utama dan arsitektur proyek..."
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 resize-none"
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        GitHub Repo URL
-                                    </label>
-                                    <input
-                                        name="githubUrl"
-                                        type="url"
-                                        placeholder="https://github.com/..."
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Live Demo URL
-                                    </label>
-                                    <input
-                                        name="liveUrl"
-                                        type="url"
-                                        placeholder="https://demo.example.com"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Tech Stack (pisahkan koma)
-                                    </label>
-                                    <input
-                                        name="tags"
-                                        type="text"
-                                        placeholder="Laravel, React, MySQL"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Tipe Mockup Cover
-                                    </label>
-                                    <select
-                                        name="previewType"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
+                        {/* Projects List with Checkboxes & Toggles */}
+                        <div className="p-4 sm:p-5 overflow-y-auto space-y-3 flex-1 divide-y divide-slate-100 dark:divide-slate-800/80">
+                            {projects
+                                .filter((p) => {
+                                    if (!projectSearchQuery) return true;
+                                    const q = projectSearchQuery.toLowerCase();
+                                    return (
+                                        p.title.toLowerCase().includes(q) ||
+                                        (p.category && p.category.toLowerCase().includes(q)) ||
+                                        (p.tags && p.tags.some((t) => t.toLowerCase().includes(q)))
+                                    );
+                                })
+                                .map((p) => (
+                                    <div
+                                        key={p.id}
+                                        className={`pt-3 first:pt-0 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg p-2.5 transition-colors ${
+                                            p.published
+                                                ? 'bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100/80 dark:border-blue-900/30'
+                                                : 'hover:bg-slate-50 dark:hover:bg-[#10204d]'
+                                        }`}
                                     >
-                                        <option value="dashboard">Dashboard Web</option>
-                                        <option value="mobile">Mobile App</option>
-                                        <option value="website">Company Website</option>
-                                        <option value="api">API / Backend</option>
-                                    </select>
-                                </div>
-                            </div>
+                                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                                            {/* Thumbnail */}
+                                            <div className="w-16 h-12 rounded-md overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs relative bg-slate-100 dark:bg-slate-900">
+                                                {p.cover_image_url ? (
+                                                    <img
+                                                        src={p.cover_image_url}
+                                                        alt={p.title}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    renderPreviewMockup(p.previewType)
+                                                )}
+                                            </div>
 
-                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsAddProjectOpen(false)}
-                                    className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors"
-                                >
-                                    Batal
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-colors"
-                                >
-                                    Tambahkan Proyek
-                                </button>
-                            </div>
-                        </form>
+                                            <div className="min-w-0 flex-1 space-y-0.5">
+                                                <div className="flex items-center gap-2">
+                                                    <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate">
+                                                        {p.title}
+                                                    </h4>
+                                                    {p.featured && (
+                                                        <span className="text-[10px] font-semibold px-2 py-0.2 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/40">
+                                                            Featured
+                                                        </span>
+                                                    )}
+                                                    {p.category && (
+                                                        <span className="text-[10px] font-medium px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                                                            {p.category}
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                                                    {p.description || 'Tidak ada deskripsi.'}
+                                                </p>
+
+                                                <div className="flex flex-wrap items-center gap-1 pt-0.5">
+                                                    {p.tags.slice(0, 3).map((t, idx) => (
+                                                        <span
+                                                            key={idx}
+                                                            className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400"
+                                                        >
+                                                            {t}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Action buttons: Featured + Publish Toggle */}
+                                        <div className="flex items-center gap-2.5 self-end sm:self-auto shrink-0">
+                                            {/* Featured Star */}
+                                            <button
+                                                type="button"
+                                                onClick={() => toggleFeaturedProject(p.id)}
+                                                title={p.featured ? 'Hapus dari Featured' : 'Jadikan Featured'}
+                                                className={`p-1.5 rounded-md transition-colors cursor-pointer ${
+                                                    p.featured
+                                                        ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/40'
+                                                        : 'text-slate-300 dark:text-slate-600 hover:text-amber-500'
+                                                }`}
+                                            >
+                                                <Star className={`w-4 h-4 ${p.featured ? 'fill-amber-500' : ''}`} />
+                                            </button>
+
+                                            {/* Publish Toggle Button */}
+                                            <button
+                                                type="button"
+                                                onClick={() => togglePublishProject(p.id)}
+                                                className={`px-3 py-1.5 text-xs font-semibold rounded-md border transition-all cursor-pointer flex items-center gap-1.5 ${
+                                                    p.published
+                                                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                                        : 'bg-white dark:bg-[#122352] text-slate-700 dark:text-slate-200 border-slate-200 dark:border-[#243e80] hover:bg-slate-50 dark:hover:bg-[#192f6b]'
+                                                }`}
+                                            >
+                                                {p.published ? (
+                                                    <>
+                                                        <Check className="w-3.5 h-3.5" />
+                                                        <span>Ditampilkan</span>
+                                                    </>
+                                                ) : (
+                                                    <span>Tampilkan</span>
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
+                                ))}
+
+                            {projects.length === 0 && (
+                                <div className="text-center py-8 text-slate-400 text-xs">
+                                    Belum ada proyek yang tercatat di WorkTrack.
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Modal Footer */}
+                        <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-[#0a163a]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+                            <Link
+                                href="/projects/create"
+                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                            >
+                                <Plus className="w-3.5 h-3.5" />
+                                <span>Buat Proyek Baru di WorkTrack</span>
+                            </Link>
+
+                            <button
+                                type="button"
+                                onClick={() => setIsAddProjectOpen(false)}
+                                className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer"
+                            >
+                                Selesai
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -1596,14 +1743,14 @@ export default function PortfolioPage() {
             {/* ================================================================ */}
             {editProjectItem && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
                         <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                             <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                                Edit Proyek Portfolio
+                                Edit Proyek Portofolio
                             </h3>
                             <button
                                 onClick={() => setEditProjectItem(null)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -1613,26 +1760,30 @@ export default function PortfolioPage() {
                             onSubmit={(e) => {
                                 e.preventDefault();
                                 const form = e.target;
-                                setProjects(
-                                    projects.map((p) =>
-                                        p.id === editProjectItem.id
-                                            ? {
-                                                  ...p,
-                                                  title: form.title.value,
-                                                  description: form.description.value,
-                                                  githubUrl: form.githubUrl.value,
-                                                  liveUrl: form.liveUrl.value,
-                                              }
-                                            : p
-                                    )
-                                );
-                                setEditProjectItem(null);
+                                const formData = new FormData();
+                                formData.append('name', form.title.value);
+                                formData.append('description', form.description.value);
+                                formData.append('github_repo_url', form.githubUrl.value);
+                                formData.append('live_url', form.liveUrl.value);
+                                
+                                if (form.cover_image && form.cover_image.files && form.cover_image.files[0]) {
+                                    formData.append('cover_image', form.cover_image.files[0]);
+                                }
+
+                                router.post(`/portfolio/projects/${editProjectItem.id}/update`, formData, {
+                                    preserveScroll: true,
+                                    preserveState: true,
+                                    onSuccess: () => {
+                                        setEditProjectItem(null);
+                                        triggerSaveNotice('Proyek portofolio berhasil disimpan!');
+                                    },
+                                });
                             }}
                             className="space-y-3.5"
                         >
                             <div>
                                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Judul
+                                    Judul Proyek
                                 </label>
                                 <input
                                     name="title"
@@ -1652,6 +1803,35 @@ export default function PortfolioPage() {
                                     defaultValue={editProjectItem.description}
                                     className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 resize-none"
                                 />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                    Foto Sampul (Cover Thumbnail)
+                                </label>
+                                <div className="space-y-2">
+                                    {editProjectItem.cover_image_url && (
+                                        <div className="w-full h-24 rounded-md overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 relative">
+                                            <img
+                                                src={editProjectItem.cover_image_url}
+                                                alt="Preview Cover"
+                                                className="w-full h-full object-cover"
+                                            />
+                                            <span className="absolute bottom-1 right-1 text-[9px] bg-slate-900/80 text-white px-1.5 py-0.5 rounded">
+                                                Foto Sampul Aktif
+                                            </span>
+                                        </div>
+                                    )}
+                                    <input
+                                        type="file"
+                                        name="cover_image"
+                                        accept="image/*"
+                                        className="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-950 dark:file:text-blue-400 cursor-pointer"
+                                    />
+                                    <p className="text-[10px] text-slate-400">
+                                        Kosongkan jika ingin otomatis menggunakan foto pertama dari proyek.
+                                    </p>
+                                </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
@@ -1683,13 +1863,13 @@ export default function PortfolioPage() {
                                 <button
                                     type="button"
                                     onClick={() => setEditProjectItem(null)}
-                                    className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors"
+                                    className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors cursor-pointer"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-colors"
+                                    className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-colors cursor-pointer"
                                 >
                                     Simpan Perubahan
                                 </button>

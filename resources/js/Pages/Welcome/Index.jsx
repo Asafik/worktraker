@@ -102,13 +102,74 @@ const FigmaSvg = ({ className }) => (
     </svg>
 );
 
-export default function Welcome({ initialSection = 'home' }) {
+export default function Welcome({ initialSection = 'home', portfolioProjects = [], userProfile = null }) {
     const [contactModal, setContactModal] = useState(false);
     const [sentToast, setSentToast] = useState(false);
     const [activeSection, setActiveSection] = useState(initialSection);
 
     const isManualNav = useRef(false);
     const manualNavTimeout = useRef(null);
+
+    const defaultPortfolioProjects = [
+        {
+            id: 1,
+            type: 'Internal Project',
+            title: 'Monitoring Dapur MBG',
+            desc: 'Monitoring and verification system for MBG kitchens, supporting field officers with offline sync mode.',
+            tags: ['Laravel', 'MySQL', 'Offline Mode'],
+            img: '/images/proj1.png',
+            link: '/projects/monitoring-dapur-mbg',
+        },
+        {
+            id: 2,
+            type: 'Internal Project',
+            title: 'Verval Data System',
+            desc: 'Data verification portal with role-based access management, approval workflows, and audit reporting.',
+            tags: ['Laravel', 'Tailwind CSS', 'DOF'],
+            img: '/images/proj2.png',
+            link: '/projects/verval-data-system',
+        },
+        {
+            id: 3,
+            type: 'Personal Project',
+            title: 'Personal Tracker',
+            desc: 'Personal productivity tracker with daily work logging, progress analytics, and portfolio integration.',
+            tags: ['Laravel', 'Filament', 'Chart.js'],
+            img: '/images/proj3.png',
+            link: '/projects/personal-tracker',
+        },
+        {
+            id: 4,
+            type: 'UI/UX Redesign',
+            title: 'Application Redesign',
+            desc: 'Modern application interface redesign focused on clean component hierarchy, usability, and responsive layout.',
+            tags: ['UI/UX', 'Tailwind CSS', 'Responsive'],
+            img: '/images/proj4.png',
+            link: '/projects/application-redesign',
+        },
+        {
+            id: 5,
+            type: 'Client Project',
+            title: 'Company Profile & CMS',
+            desc: 'Corporate web application with dynamic content management, lead tracking, and responsive portal.',
+            tags: ['Laravel', 'Vue.js', 'PostgreSQL'],
+            img: '/images/proj2.png',
+            link: '/projects/company-profile-cms',
+        },
+    ];
+
+    const displayProjects = portfolioProjects && portfolioProjects.length > 0
+        ? portfolioProjects.map((proj, idx) => ({
+            id: proj.id,
+            type: proj.category || (proj.is_featured ? 'Featured' : (proj.ownership_type ? `${proj.ownership_type}` : 'Project')),
+            title: proj.name,
+            desc: proj.description || 'Modern web application built with clean architecture, robust features, and responsive design.',
+            tags: Array.isArray(proj.tech_stack) && proj.tech_stack.length > 0 ? proj.tech_stack.slice(0, 3) : ['Laravel', 'MySQL', 'Tailwind CSS'],
+            img: proj.cover_image_url || `/images/proj${(idx % 4) + 1}.png`,
+            link: proj.slug ? `/projects/${proj.slug}` : (proj.live_url || proj.github_repo_url || '/projects'),
+            isFeatured: !!proj.is_featured,
+        }))
+        : defaultPortfolioProjects;
 
     // Ensure landing page is strictly light mode (isolated from dashboard dark mode)
     useEffect(() => {
@@ -390,55 +451,9 @@ export default function Welcome({ initialSection = 'home' }) {
                         </Link>
                     </div>
 
-                    {/* 5 Cards Grid - ENTIRE CARD IS CLICKABLE WITH UNIFIED HEIGHTS */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4.5">
-                        {[
-                            {
-                                id: 1,
-                                type: 'Internal Project',
-                                title: 'Monitoring Dapur MBG',
-                                desc: 'Monitoring and verification system for MBG kitchens, supporting field officers with offline sync mode.',
-                                tags: ['Laravel', 'MySQL', 'Offline Mode'],
-                                img: '/images/proj1.png',
-                                link: '/projects/monitoring-dapur-mbg',
-                            },
-                            {
-                                id: 2,
-                                type: 'Internal Project',
-                                title: 'Verval Data System',
-                                desc: 'Data verification portal with role-based access management, approval workflows, and audit reporting.',
-                                tags: ['Laravel', 'Tailwind CSS', 'DOF'],
-                                img: '/images/proj2.png',
-                                link: '/projects/verval-data-system',
-                            },
-                            {
-                                id: 3,
-                                type: 'Personal Project',
-                                title: 'Personal Tracker',
-                                desc: 'Personal productivity tracker with daily work logging, progress analytics, and portfolio integration.',
-                                tags: ['Laravel', 'Filament', 'Chart.js'],
-                                img: '/images/proj3.png',
-                                link: '/projects/personal-tracker',
-                            },
-                            {
-                                id: 4,
-                                type: 'UI/UX Redesign',
-                                title: 'Application Redesign',
-                                desc: 'Modern application interface redesign focused on clean component hierarchy, usability, and responsive layout.',
-                                tags: ['UI/UX', 'Tailwind CSS', 'Responsive'],
-                                img: '/images/proj4.png',
-                                link: '/projects/application-redesign',
-                            },
-                            {
-                                id: 5,
-                                type: 'Client Project',
-                                title: 'Company Profile & CMS',
-                                desc: 'Corporate web application with dynamic content management, lead tracking, and responsive portal.',
-                                tags: ['Laravel', 'Vue.js', 'PostgreSQL'],
-                                img: '/images/proj2.png',
-                                link: '/projects/company-profile-cms',
-                            },
-                        ].map((proj) => (
+                    {/* Cards Grid - ENTIRE CARD IS CLICKABLE WITH UNIFIED HEIGHTS */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4.5">
+                        {displayProjects.map((proj) => (
                             <Link
                                 key={proj.id}
                                 href={proj.link}
@@ -453,9 +468,15 @@ export default function Welcome({ initialSection = 'home' }) {
                                             className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-500 ease-out"
                                         />
                                         {/* Tag badge */}
-                                        <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md text-[10px] font-semibold border bg-white/90 backdrop-blur-xs text-slate-700 border-slate-200/80 shadow-xs">
-                                            {proj.type}
-                                        </span>
+                                        {proj.isFeatured ? (
+                                            <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md text-[10px] font-bold border bg-amber-500 text-white border-amber-400 shadow-xs flex items-center gap-1">
+                                                ★ Featured
+                                            </span>
+                                        ) : (
+                                            <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-md text-[10px] font-semibold border bg-white/90 backdrop-blur-xs text-slate-700 border-slate-200/80 shadow-xs">
+                                                {proj.type}
+                                            </span>
+                                        )}
                                         {/* Diagonal arrow button */}
                                         <div className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full flex items-center justify-center border transition-all duration-300 bg-white text-slate-700 border-slate-200 shadow-xs group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 group-hover:rotate-12">
                                             <ExternalLink className="w-3.5 h-3.5" />

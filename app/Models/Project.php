@@ -33,6 +33,10 @@ class Project extends Model
         'live_url',
         'start_date',
         'due_date',
+        'is_portfolio',
+        'is_featured',
+        'portfolio_order',
+        'portfolio_cover',
     ];
 
     protected $casts = [
@@ -43,7 +47,30 @@ class Project extends Model
         'hide_github_link'  => 'boolean',
         'start_date'        => 'date:Y-m-d',
         'due_date'          => 'date:Y-m-d',
+        'is_portfolio'      => 'boolean',
+        'is_featured'       => 'boolean',
+        'portfolio_order'   => 'integer',
     ];
+
+    protected $appends = [
+        'cover_image_url',
+    ];
+
+    /**
+     * Automatically get the primary thumbnail cover: custom cover or first image from project images.
+     */
+    public function getCoverImageUrlAttribute(): ?string
+    {
+        if (!empty($this->portfolio_cover)) {
+            return $this->portfolio_cover;
+        }
+
+        if (!empty($this->images) && is_array($this->images) && count($this->images) > 0) {
+            return $this->images[0];
+        }
+
+        return null;
+    }
 
     /**
      * Get the user who owns this project.

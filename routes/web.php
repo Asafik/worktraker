@@ -3,20 +3,51 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome/Index', ['initialSection' => 'home']);
+use App\Models\Project;
+use App\Models\User;
+
+$getWelcomeProps = function (string $section) {
+    $portfolioProjects = Project::where('is_portfolio', true)
+        ->orderBy('portfolio_order')
+        ->orderByDesc('created_at')
+        ->get();
+
+    $user = User::first();
+    $userProfile = [
+        'fullName' => $user?->name ?? 'Asafik Daroini',
+        'headline' => $user?->role ?? 'Full Stack Web Developer',
+        'bio' => $user?->bio ?? 'I build modern web applications and turn ideas into reality. Focused on clean architecture, responsive UX, and scalable backend solutions.',
+        'location' => $user?->location ?? 'Jawa Timur, Indonesia',
+        'email' => $user?->email ?? 'asafik.dev@gmail.com',
+        'avatar' => $user?->avatar ?? '/images/avatar1.png',
+        'socials' => $user?->socials ?? [
+            'github' => 'https://github.com/asafik',
+            'linkedin' => 'https://linkedin.com/in/asafik',
+            'twitter' => 'https://x.com/asafik',
+        ],
+    ];
+
+    return [
+        'initialSection'    => $section,
+        'portfolioProjects' => $portfolioProjects,
+        'userProfile'       => $userProfile,
+    ];
+};
+
+Route::get('/', function () use ($getWelcomeProps) {
+    return Inertia::render('Welcome/Index', $getWelcomeProps('home'));
 })->name('home');
 
-Route::get('/about', function () {
-    return Inertia::render('Welcome/Index', ['initialSection' => 'about']);
+Route::get('/about', function () use ($getWelcomeProps) {
+    return Inertia::render('Welcome/Index', $getWelcomeProps('about'));
 })->name('about');
 
-Route::get('/experience', function () {
-    return Inertia::render('Welcome/Index', ['initialSection' => 'experience']);
+Route::get('/experience', function () use ($getWelcomeProps) {
+    return Inertia::render('Welcome/Index', $getWelcomeProps('experience'));
 })->name('experience');
 
-Route::get('/contact', function () {
-    return Inertia::render('Welcome/Index', ['initialSection' => 'contact']);
+Route::get('/contact', function () use ($getWelcomeProps) {
+    return Inertia::render('Welcome/Index', $getWelcomeProps('contact'));
 })->name('contact');
 
 use App\Http\Controllers\AuthController;
@@ -71,9 +102,14 @@ Route::post('/archive', [ArchiveController::class, 'store'])->name('archive.stor
 Route::post('/archive/{id}/notes', [ArchiveController::class, 'updateNotes'])->name('archive.update-notes');
 Route::delete('/archive/{id}', [ArchiveController::class, 'destroy'])->name('archive.destroy');
 
-Route::get('/portfolio', function () {
-    return Inertia::render('Portfolio/Index');
-})->name('portfolio');
+use App\Http\Controllers\PortfolioController;
+
+Route::get('/portfolio', [PortfolioController::class, 'index'])->name('portfolio');
+Route::post('/portfolio/projects/{project}/toggle-publish', [PortfolioController::class, 'togglePublish'])->name('portfolio.projects.toggle-publish');
+Route::post('/portfolio/projects/{project}/toggle-featured', [PortfolioController::class, 'toggleFeatured'])->name('portfolio.projects.toggle-featured');
+Route::post('/portfolio/projects/update-order', [PortfolioController::class, 'updateOrder'])->name('portfolio.projects.update-order');
+Route::post('/portfolio/projects/{project}/cover', [PortfolioController::class, 'updateCover'])->name('portfolio.projects.cover');
+Route::post('/portfolio/projects/{project}/update', [PortfolioController::class, 'updateProject'])->name('portfolio.projects.update');
 
 use App\Http\Controllers\SettingsController;
 
