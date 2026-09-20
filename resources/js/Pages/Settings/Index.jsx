@@ -46,6 +46,8 @@ import {
     EyeOff,
     Database,
     AlertCircle,
+    Clock,
+    AlertTriangle,
 } from 'lucide-react';
 
 // Brand SVGs matching screenshot
@@ -336,6 +338,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
         client_secret: integrationsStatus?.googleDrive?.credentials?.client_secret || '',
         refresh_token: integrationsStatus?.googleDrive?.credentials?.refresh_token || '',
         folder_id: integrationsStatus?.googleDrive?.credentials?.folder_id || '',
+        expires_mode: integrationsStatus?.googleDrive?.credentials?.expires_mode || 'testing',
     });
 
     const [calendarForm, setCalendarForm] = useState({
@@ -352,6 +355,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                 client_secret: integrationsStatus?.googleDrive?.credentials?.client_secret || '',
                 refresh_token: integrationsStatus?.googleDrive?.credentials?.refresh_token || '',
                 folder_id: integrationsStatus?.googleDrive?.credentials?.folder_id || '',
+                expires_mode: integrationsStatus?.googleDrive?.credentials?.expires_mode || 'testing',
             });
             setCalendarForm({
                 ical_url: integrationsStatus?.googleCalendar?.credentials?.ical_url || '',
@@ -1845,7 +1849,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     </div>
 
                                     {/* Badges & Actions */}
-                                    <div className="flex items-center gap-2 self-start">
+                                    <div className="flex items-center gap-2 self-start flex-wrap">
                                         {integrations.googleDrive.connected ? (
                                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
                                                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -1857,9 +1861,37 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                                 <span>Not Connected</span>
                                             </span>
                                         )}
+
+                                        {/* Token Expiry Status Badge */}
+                                        {integrations.googleDrive.connected && integrationsStatus?.googleDrive?.tokenExpiry?.mode === 'testing' && (
+                                            integrationsStatus?.googleDrive?.tokenExpiry?.isExpired ? (
+                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200/60 dark:border-rose-900/60 animate-pulse">
+                                                    <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
+                                                    <span>Token Kedaluwarsa</span>
+                                                </span>
+                                            ) : integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining <= 2 ? (
+                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60">
+                                                    <Clock className="w-3.5 h-3.5 text-amber-500" />
+                                                    <span>Sisa {integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining === 0 ? '< 24 Jam' : `${integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} Hari`}</span>
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/60">
+                                                    <Clock className="w-3.5 h-3.5 text-blue-500" />
+                                                    <span>Sisa {integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} Hari (Testing)</span>
+                                                </span>
+                                            )
+                                        )}
+
+                                        {integrations.googleDrive.connected && integrationsStatus?.googleDrive?.tokenExpiry?.mode === 'permanent' && (
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 dark:bg-[#152758] text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-[#243e80]">
+                                                <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                                <span>Permanen</span>
+                                            </span>
+                                        )}
+
                                         <button
                                             onClick={() => setModalManage('googleDrive')}
-                                            className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-2xs flex items-center gap-1.5"
+                                            className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer"
                                         >
                                             <SettingsIcon className="w-3.5 h-3.5 text-slate-500" />
                                             <span>Manage</span>
@@ -1910,15 +1942,33 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     </div>
                                 </div>
 
-                                {/* Card Footer: Last Synced & Sync Now Button */}
-                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
-                                    <span className="text-xs text-slate-400">
-                                        Last synced: {integrations.googleDrive.lastSynced}
-                                    </span>
+                                {/* Card Footer: Last Synced, Expiry info & Sync Now Button */}
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                                    <div className="space-y-0.5">
+                                        <div className="text-xs text-slate-400">
+                                            Last synced: {integrations.googleDrive.lastSynced}
+                                        </div>
+                                        {integrations.googleDrive.connected && integrationsStatus?.googleDrive?.tokenExpiry?.mode === 'testing' && (
+                                            <div className={`text-[11px] font-medium flex items-center gap-1.5 ${
+                                                integrationsStatus?.googleDrive?.tokenExpiry?.isExpired
+                                                    ? 'text-rose-600 dark:text-rose-400 font-semibold'
+                                                    : integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining <= 2
+                                                    ? 'text-amber-600 dark:text-amber-400 font-semibold'
+                                                    : 'text-slate-500 dark:text-slate-400'
+                                            }`}>
+                                                <Clock className="w-3.5 h-3.5 shrink-0" />
+                                                {integrationsStatus?.googleDrive?.tokenExpiry?.isExpired ? (
+                                                    <span>Masa aktif token testing telah habis. Harap perbarui refresh token.</span>
+                                                ) : (
+                                                    <span>Masa aktif token testing: <strong>Sisa {integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} hari</strong> (hingga {integrationsStatus?.googleDrive?.tokenExpiry?.expiryDate})</span>
+                                                )}
+                                            </div>
+                                        )}
+                                    </div>
                                     <button
                                         onClick={() => handleSync('googleDrive', 'Google Drive')}
                                         disabled={integrations.googleDrive.syncing}
-                                        className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60"
+                                        className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60 cursor-pointer self-start sm:self-auto shrink-0"
                                     >
                                         <RefreshCw
                                             className={`w-3.5 h-3.5 text-blue-500 ${
@@ -2593,7 +2643,77 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-slate-200 dark:border-[#243e80] bg-white dark:bg-[#0c183b] text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
                                     required
                                 />
+                                <p className="text-[10px] text-slate-400">
+                                    Menempelkan token baru akan otomatis mereset hitung mundur 7 hari dari tanggal hari ini.
+                                </p>
                             </div>
+
+                            {/* Pilihan Mode Masa Aktif Token */}
+                            <div className="space-y-1.5 pt-1">
+                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-200">
+                                    Masa Aktif Token Refresh
+                                </label>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setDriveForm({ ...driveForm, expires_mode: 'testing' })}
+                                        className={`p-2.5 rounded-lg border text-left text-xs transition-colors cursor-pointer ${
+                                            driveForm.expires_mode === 'testing'
+                                                ? 'border-blue-500 bg-blue-50/70 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 ring-1 ring-blue-500 font-semibold'
+                                                : 'border-slate-200 dark:border-[#243e80] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-1.5 font-semibold text-xs">
+                                            <Clock className="w-3.5 h-3.5 text-blue-500" />
+                                            <span>Mode Testing (7 Hari)</span>
+                                        </div>
+                                        <p className="text-[10px] text-slate-400 mt-1 font-normal leading-relaxed">
+                                            Hitung mundur 7 hari otomatis dari waktu token disimpan.
+                                        </p>
+                                    </button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => setDriveForm({ ...driveForm, expires_mode: 'permanent' })}
+                                        className={`p-2.5 rounded-lg border text-left text-xs transition-colors cursor-pointer ${
+                                            driveForm.expires_mode === 'permanent'
+                                                ? 'border-blue-500 bg-blue-50/70 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 ring-1 ring-blue-500 font-semibold'
+                                                : 'border-slate-200 dark:border-[#243e80] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850'
+                                        }`}
+                                    >
+                                        <div className="flex items-center gap-1.5 font-semibold text-xs">
+                                            <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                            <span>Publish (Permanen)</span>
+                                        </div>
+                                        <p className="text-[10px] text-slate-400 mt-1 font-normal leading-relaxed">
+                                            Untuk aplikasi Google Cloud yang statusnya sudah In Production.
+                                        </p>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Status Masa Aktif Saat Ini */}
+                            {integrationsStatus?.googleDrive?.tokenExpiry?.mode === 'testing' && integrationsStatus?.googleDrive?.tokenExpiry?.expiryDate && (
+                                <div className={`p-2.5 rounded-lg border text-xs flex items-start gap-2 ${
+                                    integrationsStatus?.googleDrive?.tokenExpiry?.isExpired
+                                        ? 'bg-rose-50/70 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300'
+                                        : integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining <= 2
+                                        ? 'bg-amber-50/70 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900/60 text-amber-800 dark:text-amber-300'
+                                        : 'bg-slate-50 dark:bg-[#122352]/70 border-slate-200 dark:border-[#243e80] text-slate-600 dark:text-slate-300'
+                                }`}>
+                                    <Clock className="w-4 h-4 shrink-0 mt-0.5" />
+                                    <div className="space-y-0.5">
+                                        <div className="font-semibold">
+                                            {integrationsStatus?.googleDrive?.tokenExpiry?.isExpired
+                                                ? 'Status: Token Kedaluwarsa'
+                                                : `Status: Sisa ${integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} Hari Lagi`}
+                                        </div>
+                                        <p className="text-[11px] leading-relaxed opacity-90">
+                                            Kedaluwarsa pada: <strong>{integrationsStatus?.googleDrive?.tokenExpiry?.expiryDate}</strong> (Terakhir disimpan: {integrationsStatus?.googleDrive?.tokenExpiry?.savedAt || '-'}).
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="space-y-1">
                                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-200">

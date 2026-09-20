@@ -53,6 +53,30 @@ class SettingsController extends Controller
             && !empty($driveClientSecret)
             && !empty($driveRefreshToken);
 
+        // Calculate Google Drive refresh token expiration (for testing mode: 7 days)
+        $driveExpiresMode = $driveCreds['expires_mode'] ?? 'testing'; // 'testing' or 'permanent'
+        $driveTokenSavedAt = $driveCreds['token_saved_at'] ?? null;
+        $driveDaysRemaining = null;
+        $driveHoursRemaining = null;
+        $driveIsExpired = false;
+        $driveExpiryDateFormatted = null;
+
+        if ($isGoogleDriveConnected && $driveExpiresMode === 'testing') {
+            $savedDate = $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt) : now();
+            $expiresAt = $savedDate->copy()->addDays(7);
+            $now = now();
+
+            if ($now->greaterThanOrEqualTo($expiresAt)) {
+                $driveDaysRemaining = 0;
+                $driveHoursRemaining = 0;
+                $driveIsExpired = true;
+            } else {
+                $driveDaysRemaining = (int) ceil($now->floatDiffInDays($expiresAt));
+                $driveHoursRemaining = (int) ceil($now->floatDiffInHours($expiresAt));
+            }
+            $driveExpiryDateFormatted = $expiresAt->format('d M Y, H:i');
+        }
+
         // 2. Google Calendar Credentials (DB first, fallback to config/env)
         $calCreds = IntegrationSetting::getCredentials('google_calendar');
         $calIcalUrl = $calCreds['ical_url'] ?? config('services.google_calendar.ical_url');
@@ -101,11 +125,20 @@ class SettingsController extends Controller
                     'folderId' => $driveFolderId ?? '',
                     'url' => 'https://drive.google.com',
                     'lastSynced' => now()->format('d M Y, H:i'),
+                    'tokenExpiry' => [
+                        'mode' => $driveExpiresMode,
+                        'daysRemaining' => $driveDaysRemaining,
+                        'hoursRemaining' => $driveHoursRemaining,
+                        'isExpired' => $driveIsExpired,
+                        'expiryDate' => $driveExpiryDateFormatted,
+                        'savedAt' => $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt)->format('d M Y, H:i') : null,
+                    ],
                     'credentials' => [
                         'client_id' => $driveClientId ?? '',
                         'client_secret' => $driveClientSecret ?? '',
                         'refresh_token' => $driveRefreshToken ?? '',
                         'folder_id' => $driveFolderId ?? '',
+                        'expires_mode' => $driveExpiresMode,
                     ],
                 ],
                 'googleCalendar' => [
@@ -247,13 +280,21 @@ class SettingsController extends Controller
                 'client_secret' => 'required|string|max:500',
                 'refresh_token' => 'required|string|max:1000',
                 'folder_id'     => 'nullable|string|max:255',
+                'expires_mode'  => 'nullable|string|in:testing,permanent',
             ]);
+
+            $existing = IntegrationSetting::getCredentials('google_drive');
+            $newRefreshToken = trim($validated['refresh_token']);
+            $isNewToken = !isset($existing['refresh_token']) || $existing['refresh_token'] !== $newRefreshToken;
+            $tokenSavedAt = $isNewToken ? now()->toIso8601String() : ($existing['token_saved_at'] ?? now()->toIso8601String());
 
             IntegrationSetting::setCredentials('google_drive', [
                 'client_id'     => trim($validated['client_id']),
                 'client_secret' => trim($validated['client_secret']),
-                'refresh_token' => trim($validated['refresh_token']),
+                'refresh_token' => $newRefreshToken,
                 'folder_id'     => !empty($validated['folder_id']) ? trim($validated['folder_id']) : null,
+                'expires_mode'  => $validated['expires_mode'] ?? ($existing['expires_mode'] ?? 'testing'),
+                'token_saved_at'=> $tokenSavedAt,
             ], true);
 
             return back()->with('message', 'Kredensial Google Drive berhasil disimpan ke database!');
