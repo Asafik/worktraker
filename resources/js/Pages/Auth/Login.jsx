@@ -104,7 +104,7 @@ export default function Login({ errors = {} }) {
                             Selamat Datang
                         </span>
                         <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 text-indigo-600 border border-indigo-100/80 shadow-2xs">
-                            <GoogleGeminiIcon className="w-3.5 h-3.5" />
+                            <img src="/images/svg/google-gemini.svg" alt="Gemini AI" className="w-3.5 h-3.5 object-contain" />
                             <span>Gemini AI Ready</span>
                         </span>
                     </div>
