@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import DashboardLayout from '@/Layouts/DashboardLayout';
+import Modal from '@/Components/Modal';
 import {
     ExternalLink,
     Settings,
@@ -1568,755 +1569,695 @@ export default function PortfolioPage({ projects: initialProjects = [], userProf
             {/* ================================================================ */}
             {/* MODAL 1: PILIH PROYEK DARI WORKTRACK */}
             {/* ================================================================ */}
-            {isAddProjectOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-xl border border-slate-200/80 dark:border-[#1e346e] shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col animate-in fade-in zoom-in-95 duration-150">
-                        {/* Modal Header */}
-                        <div className="p-5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between shrink-0">
-                            <div>
-                                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                                    <Sparkles className="w-5 h-5 text-blue-500" />
-                                    Pilih Proyek dari WorkTrack
-                                </h3>
-                                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                                    Centang proyek yang ingin ditampilkan di portofolio publik. Foto sampul otomatis mengambil screenshot pertama dari proyek.
-                                </p>
-                            </div>
-                            <button
-                                onClick={() => setIsAddProjectOpen(false)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
+            <Modal
+                isOpen={isAddProjectOpen}
+                onClose={() => setIsAddProjectOpen(false)}
+                title="Pilih Proyek dari WorkTrack"
+                description="Centang proyek yang ingin ditampilkan di portofolio publik. Foto sampul otomatis mengambil screenshot pertama dari proyek."
+                icon={Sparkles}
+                maxWidth="2xl"
+                footer={
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 w-full">
+                        <Link
+                            href="/projects/create"
+                            className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 transition-colors"
+                        >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Buat Proyek Baru di WorkTrack</span>
+                        </Link>
 
-                        {/* Search Bar */}
-                        <div className="p-4 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-[#0a163a]/50 shrink-0">
-                            <div className="relative">
-                                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                                <input
-                                    type="text"
-                                    placeholder="Cari proyek berdasarkan nama, kategori, atau tech stack..."
-                                    value={projectSearchQuery}
-                                    onChange={(e) => setProjectSearchQuery(e.target.value)}
-                                    className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-white dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 shadow-2xs"
-                                />
-                            </div>
-                        </div>
-
-                        {/* Projects List with Checkboxes & Toggles */}
-                        <div className="p-4 sm:p-5 overflow-y-auto space-y-3 flex-1 divide-y divide-slate-100 dark:divide-slate-800/80">
-                            {projects
-                                .filter((p) => {
-                                    if (!projectSearchQuery) return true;
-                                    const q = projectSearchQuery.toLowerCase();
-                                    return (
-                                        p.title.toLowerCase().includes(q) ||
-                                        (p.category && p.category.toLowerCase().includes(q)) ||
-                                        (p.tags && p.tags.some((t) => t.toLowerCase().includes(q)))
-                                    );
-                                })
-                                .map((p) => (
-                                    <div
-                                        key={p.id}
-                                        className={`pt-3 first:pt-0 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg p-2.5 transition-colors ${
-                                            p.published
-                                                ? 'bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100/80 dark:border-blue-900/30'
-                                                : 'hover:bg-slate-50 dark:hover:bg-[#10204d]'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3 min-w-0 flex-1">
-                                            {/* Thumbnail */}
-                                            <div className="w-16 h-12 rounded-md overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs relative bg-slate-100 dark:bg-slate-900">
-                                                <img
-                                                    src={p.cover_image_url || DEFAULT_PROJECT_IMAGES[Math.abs(p.id) % DEFAULT_PROJECT_IMAGES.length]}
-                                                    alt={p.title}
-                                                    className="w-full h-full object-cover"
-                                                    onError={(e) => {
-                                                        e.currentTarget.src = DEFAULT_PROJECT_IMAGES[Math.abs(p.id) % DEFAULT_PROJECT_IMAGES.length];
-                                                    }}
-                                                />
-                                            </div>
-
-                                            <div className="min-w-0 flex-1 space-y-0.5">
-                                                <div className="flex items-center gap-2">
-                                                    <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate">
-                                                        {p.title}
-                                                    </h4>
-                                                    {p.featured && (
-                                                        <span className="text-[10px] font-semibold px-2 py-0.2 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/40">
-                                                            Featured
-                                                        </span>
-                                                    )}
-                                                    {p.category && (
-                                                        <span className="text-[10px] font-medium px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
-                                                            {p.category}
-                                                        </span>
-                                                    )}
-                                                </div>
-
-                                                <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
-                                                    {p.description || 'Tidak ada deskripsi.'}
-                                                </p>
-
-                                                <div className="flex flex-wrap items-center gap-1 pt-0.5">
-                                                    {p.tags.slice(0, 3).map((t, idx) => (
-                                                        <span
-                                                            key={idx}
-                                                            className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400"
-                                                        >
-                                                            {t}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/* Action buttons: Featured + Publish Toggle */}
-                                        <div className="flex items-center gap-2.5 self-end sm:self-auto shrink-0">
-                                            {/* Featured Star */}
-                                            <button
-                                                type="button"
-                                                onClick={() => toggleFeaturedProject(p.id)}
-                                                title={p.featured ? 'Hapus dari Featured' : 'Jadikan Featured'}
-                                                className={`p-1.5 rounded-md transition-colors cursor-pointer ${
-                                                    p.featured
-                                                        ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/40'
-                                                        : 'text-slate-300 dark:text-slate-600 hover:text-amber-500'
-                                                }`}
-                                            >
-                                                <Star className={`w-4 h-4 ${p.featured ? 'fill-amber-500' : ''}`} />
-                                            </button>
-
-                                            {/* Publish Toggle Button */}
-                                            <button
-                                                type="button"
-                                                onClick={() => togglePublishProject(p.id)}
-                                                className={`px-3 py-1.5 text-xs font-semibold rounded-md border transition-all cursor-pointer flex items-center gap-1.5 ${
-                                                    p.published
-                                                        ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
-                                                        : 'bg-white dark:bg-[#122352] text-slate-700 dark:text-slate-200 border-slate-200 dark:border-[#243e80] hover:bg-slate-50 dark:hover:bg-[#192f6b]'
-                                                }`}
-                                            >
-                                                {p.published ? (
-                                                    <>
-                                                        <Check className="w-3.5 h-3.5" />
-                                                        <span>Ditampilkan</span>
-                                                    </>
-                                                ) : (
-                                                    <span>Tampilkan</span>
-                                                )}
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
-
-                            {projects.length === 0 && (
-                                <div className="text-center py-8 text-slate-400 text-xs">
-                                    Belum ada proyek yang tercatat di WorkTrack.
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Modal Footer */}
-                        <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-[#0a163a]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-                            <Link
-                                href="/projects/create"
-                                className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
-                            >
-                                <Plus className="w-3.5 h-3.5" />
-                                <span>Buat Proyek Baru di WorkTrack</span>
-                            </Link>
-
-                            <button
-                                type="button"
-                                onClick={() => setIsAddProjectOpen(false)}
-                                className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer"
-                            >
-                                Selesai
-                            </button>
-                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setIsAddProjectOpen(false)}
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer"
+                        >
+                            Selesai
+                        </button>
+                    </div>
+                }
+            >
+                {/* Search Bar */}
+                <div className="mb-4">
+                    <div className="relative">
+                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <input
+                            type="text"
+                            placeholder="Cari proyek berdasarkan nama, kategori, atau tech stack..."
+                            value={projectSearchQuery}
+                            onChange={(e) => setProjectSearchQuery(e.target.value)}
+                            className="w-full pl-9 pr-4 py-2 text-xs sm:text-sm bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 shadow-2xs"
+                        />
                     </div>
                 </div>
-            )}
+
+                {/* Projects List with Checkboxes & Toggles */}
+                <div className="space-y-3 divide-y divide-slate-100 dark:divide-slate-800/80">
+                    {projects
+                        .filter((p) => {
+                            if (!projectSearchQuery) return true;
+                            const q = projectSearchQuery.toLowerCase();
+                            return (
+                                p.title.toLowerCase().includes(q) ||
+                                (p.category && p.category.toLowerCase().includes(q)) ||
+                                (p.tags && p.tags.some((t) => t.toLowerCase().includes(q)))
+                            );
+                        })
+                        .map((p) => (
+                            <div
+                                key={p.id}
+                                className={`pt-3 first:pt-0 pb-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg p-2.5 transition-colors ${
+                                    p.published
+                                        ? 'bg-blue-50/50 dark:bg-blue-950/20 border border-blue-100/80 dark:border-blue-900/30'
+                                        : 'hover:bg-slate-50 dark:hover:bg-[#10204d]'
+                                }`}
+                            >
+                                <div className="flex items-center gap-3 min-w-0 flex-1">
+                                    {/* Thumbnail */}
+                                    <div className="w-16 h-12 rounded-md overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs relative bg-slate-100 dark:bg-slate-900">
+                                        <img
+                                            src={p.cover_image_url || DEFAULT_PROJECT_IMAGES[Math.abs(p.id) % DEFAULT_PROJECT_IMAGES.length]}
+                                            alt={p.title}
+                                            className="w-full h-full object-cover"
+                                            onError={(e) => {
+                                                e.currentTarget.src = DEFAULT_PROJECT_IMAGES[Math.abs(p.id) % DEFAULT_PROJECT_IMAGES.length];
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div className="min-w-0 flex-1 space-y-0.5">
+                                        <div className="flex items-center gap-2">
+                                            <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate">
+                                                {p.title}
+                                            </h4>
+                                            {p.featured && (
+                                                <span className="text-[10px] font-semibold px-2 py-0.2 rounded-md bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-100 dark:border-amber-900/40">
+                                                    Featured
+                                                </span>
+                                            )}
+                                            {p.category && (
+                                                <span className="text-[10px] font-medium px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                                                    {p.category}
+                                                </span>
+                                            )}
+                                        </div>
+
+                                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                                            {p.description || 'Tidak ada deskripsi.'}
+                                        </p>
+
+                                        <div className="flex flex-wrap items-center gap-1 pt-0.5">
+                                            {p.tags.slice(0, 3).map((t, idx) => (
+                                                <span
+                                                    key={idx}
+                                                    className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-400"
+                                                >
+                                                    {t}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Action buttons: Featured + Publish Toggle */}
+                                <div className="flex items-center gap-2.5 self-end sm:self-auto shrink-0">
+                                    {/* Featured Star */}
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleFeaturedProject(p.id)}
+                                        title={p.featured ? 'Hapus dari Featured' : 'Jadikan Featured'}
+                                        className={`p-1.5 rounded-md transition-colors cursor-pointer ${
+                                            p.featured
+                                                ? 'text-amber-500 bg-amber-50 dark:bg-amber-950/40'
+                                                : 'text-slate-300 dark:text-slate-600 hover:text-amber-500'
+                                        }`}
+                                    >
+                                        <Star className={`w-4 h-4 ${p.featured ? 'fill-amber-500' : ''}`} />
+                                    </button>
+
+                                    {/* Publish Toggle Button */}
+                                    <button
+                                        type="button"
+                                        onClick={() => togglePublishProject(p.id)}
+                                        className={`px-3 py-1.5 text-xs font-semibold rounded-md border transition-all cursor-pointer flex items-center gap-1.5 ${
+                                            p.published
+                                                ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                                                : 'bg-white dark:bg-[#122352] text-slate-700 dark:text-slate-200 border-slate-200 dark:border-[#243e80] hover:bg-slate-50 dark:hover:bg-[#192f6b]'
+                                        }`}
+                                    >
+                                        {p.published ? (
+                                            <>
+                                                <Check className="w-3.5 h-3.5" />
+                                                <span>Ditampilkan</span>
+                                            </>
+                                        ) : (
+                                            <span>Tampilkan</span>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+
+                    {projects.length === 0 && (
+                        <div className="text-center py-8 text-slate-400 text-xs">
+                            Belum ada proyek yang tercatat di WorkTrack.
+                        </div>
+                    )}
+                </div>
+            </Modal>
 
             {/* ================================================================ */}
             {/* MODAL 2: EDIT PROJECT */}
             {/* ================================================================ */}
-            {editProjectItem && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150 max-h-[90vh] overflow-y-auto">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                                Edit Proyek Portofolio
-                            </h3>
-                            <button
-                                onClick={() => setEditProjectItem(null)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
+            <Modal
+                isOpen={!!editProjectItem}
+                onClose={() => setEditProjectItem(null)}
+                title="Edit Proyek Portofolio"
+                description="Sesuaikan judul publik, deskripsi, tautan demo, atau unggah foto sampul khusus."
+                icon={Edit2}
+                maxWidth="lg"
+            >
+                {editProjectItem && (
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            const form = e.target;
+                            const formData = new FormData();
+                            formData.append('name', form.title.value);
+                            formData.append('description', form.description.value);
+                            formData.append('github_repo_url', form.githubUrl.value);
+                            formData.append('live_url', form.liveUrl.value);
+                            
+                            if (form.cover_image && form.cover_image.files && form.cover_image.files[0]) {
+                                formData.append('cover_image', form.cover_image.files[0]);
+                            }
+
+                            router.post(`/portfolio/projects/${editProjectItem.id}/update`, formData, {
+                                preserveScroll: true,
+                                preserveState: true,
+                                onSuccess: () => {
+                                    setEditProjectItem(null);
+                                    triggerSaveNotice('Proyek portofolio berhasil disimpan!');
+                                },
+                            });
+                        }}
+                        className="space-y-4"
+                    >
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Judul Proyek
+                            </label>
+                            <input
+                                name="title"
+                                defaultValue={editProjectItem.title}
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                required
+                            />
                         </div>
 
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                const form = e.target;
-                                const formData = new FormData();
-                                formData.append('name', form.title.value);
-                                formData.append('description', form.description.value);
-                                formData.append('github_repo_url', form.githubUrl.value);
-                                formData.append('live_url', form.liveUrl.value);
-                                
-                                if (form.cover_image && form.cover_image.files && form.cover_image.files[0]) {
-                                    formData.append('cover_image', form.cover_image.files[0]);
-                                }
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Deskripsi Publik
+                            </label>
+                            <textarea
+                                name="description"
+                                rows={3}
+                                defaultValue={editProjectItem.description}
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 resize-none"
+                            />
+                        </div>
 
-                                router.post(`/portfolio/projects/${editProjectItem.id}/update`, formData, {
-                                    preserveScroll: true,
-                                    preserveState: true,
-                                    onSuccess: () => {
-                                        setEditProjectItem(null);
-                                        triggerSaveNotice('Proyek portofolio berhasil disimpan!');
-                                    },
-                                });
-                            }}
-                            className="space-y-3.5"
-                        >
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Foto Sampul (Cover Thumbnail)
+                            </label>
+                            <div className="space-y-2">
+                                {editProjectItem.cover_image_url && (
+                                    <div className="w-full h-28 rounded-lg overflow-hidden border border-slate-200 dark:border-[#243e80] bg-slate-100 dark:bg-slate-900 relative">
+                                        <img
+                                            src={editProjectItem.cover_image_url}
+                                            alt="Preview Cover"
+                                            className="w-full h-full object-cover"
+                                        />
+                                        <span className="absolute bottom-1.5 right-1.5 text-[9px] bg-slate-900/80 text-white px-2 py-0.5 rounded-md font-medium">
+                                            Foto Sampul Aktif
+                                        </span>
+                                    </div>
+                                )}
+                                <input
+                                    type="file"
+                                    name="cover_image"
+                                    accept="image/*"
+                                    className="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-950 dark:file:text-blue-400 cursor-pointer"
+                                />
+                                <p className="text-[10px] text-slate-400">
+                                    Kosongkan jika ingin otomatis menggunakan foto pertama dari proyek.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
                                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Judul Proyek
+                                    GitHub URL
                                 </label>
                                 <input
-                                    name="title"
-                                    defaultValue={editProjectItem.title}
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
-                                    required
+                                    name="githubUrl"
+                                    defaultValue={editProjectItem.githubUrl || ''}
+                                    placeholder="https://github.com/..."
+                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
                                 />
                             </div>
-
                             <div>
                                 <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Deskripsi Publik
+                                    Live Demo URL
                                 </label>
-                                <textarea
-                                    name="description"
-                                    rows={3}
-                                    defaultValue={editProjectItem.description}
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 resize-none"
+                                <input
+                                    name="liveUrl"
+                                    defaultValue={editProjectItem.liveUrl || ''}
+                                    placeholder="https://..."
+                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
                                 />
                             </div>
+                        </div>
 
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Foto Sampul (Cover Thumbnail)
-                                </label>
-                                <div className="space-y-2">
-                                    {editProjectItem.cover_image_url && (
-                                        <div className="w-full h-24 rounded-md overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-900 relative">
-                                            <img
-                                                src={editProjectItem.cover_image_url}
-                                                alt="Preview Cover"
-                                                className="w-full h-full object-cover"
-                                            />
-                                            <span className="absolute bottom-1 right-1 text-[9px] bg-slate-900/80 text-white px-1.5 py-0.5 rounded">
-                                                Foto Sampul Aktif
-                                            </span>
-                                        </div>
-                                    )}
-                                    <input
-                                        type="file"
-                                        name="cover_image"
-                                        accept="image/*"
-                                        className="w-full text-xs text-slate-500 file:mr-2 file:py-1 file:px-2.5 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 dark:file:bg-blue-950 dark:file:text-blue-400 cursor-pointer"
-                                    />
-                                    <p className="text-[10px] text-slate-400">
-                                        Kosongkan jika ingin otomatis menggunakan foto pertama dari proyek.
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        GitHub URL
-                                    </label>
-                                    <input
-                                        name="githubUrl"
-                                        defaultValue={editProjectItem.githubUrl || ''}
-                                        placeholder="https://github.com/..."
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Live Demo URL
-                                    </label>
-                                    <input
-                                        name="liveUrl"
-                                        defaultValue={editProjectItem.liveUrl || ''}
-                                        placeholder="https://..."
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                                <button
-                                    type="button"
-                                    onClick={() => setEditProjectItem(null)}
-                                    className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors cursor-pointer"
-                                >
-                                    Batal
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-colors cursor-pointer"
-                                >
-                                    Simpan Perubahan
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
+                        <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100 dark:border-[#1b2b5a]">
+                            <button
+                                type="button"
+                                onClick={() => setEditProjectItem(null)}
+                                className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-lg text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors cursor-pointer"
+                            >
+                                Batal
+                            </button>
+                            <button
+                                type="submit"
+                                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer"
+                            >
+                                Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
+                )}
+            </Modal>
 
             {/* ================================================================ */}
             {/* MODAL 3: ADD EXPERIENCE */}
             {/* ================================================================ */}
-            {isAddExpOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                                Tambah Pengalaman Kerja
-                            </h3>
-                            <button
-                                onClick={() => setIsAddExpOpen(false)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                const form = e.target;
-                                setExperiences([
-                                    ...experiences,
-                                    {
-                                        id: Date.now(),
-                                        role: form.role.value,
-                                        company: form.company.value,
-                                        period: form.period.value,
-                                        type: form.type.value,
-                                        location: form.location.value,
-                                        description: form.description.value,
-                                        published: true,
-                                    },
-                                ]);
-                                setIsAddExpOpen(false);
-                            }}
-                            className="space-y-3"
-                        >
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Posisi / Role
-                                </label>
-                                <input
-                                    name="role"
-                                    type="text"
-                                    placeholder="Contoh: Senior Backend Engineer"
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    required
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Perusahaan / Instansi
-                                    </label>
-                                    <input
-                                        name="company"
-                                        type="text"
-                                        placeholder="Contoh: PT Digital Karya"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Tipe Pekerjaan
-                                    </label>
-                                    <select
-                                        name="type"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    >
-                                        <option value="Full-time">Full-time</option>
-                                        <option value="Freelance">Freelance</option>
-                                        <option value="Contract">Contract</option>
-                                        <option value="Internship">Internship</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Periode
-                                    </label>
-                                    <input
-                                        name="period"
-                                        type="text"
-                                        placeholder="2023 - Sekarang"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Lokasi
-                                    </label>
-                                    <input
-                                        name="location"
-                                        type="text"
-                                        placeholder="Surabaya (Hybrid)"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Deskripsi Tanggung Jawab
-                                </label>
-                                <textarea
-                                    name="description"
-                                    rows={2}
-                                    placeholder="Jelaskan peran teknis dan pencapaian Anda..."
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 resize-none"
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsAddExpOpen(false)}
-                                    className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300"
-                                >
-                                    Batal
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-[#2563eb] text-white rounded-md text-xs font-semibold shadow-sm"
-                                >
-                                    Tambahkan
-                                </button>
-                            </div>
-                        </form>
+            <Modal
+                isOpen={isAddExpOpen}
+                onClose={() => setIsAddExpOpen(false)}
+                title="Tambah Pengalaman Kerja"
+                description="Tambahkan riwayat karir dan tanggung jawab profesional Anda."
+                icon={Briefcase}
+                maxWidth="lg"
+            >
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        const form = e.target;
+                        setExperiences([
+                            ...experiences,
+                            {
+                                id: Date.now(),
+                                role: form.role.value,
+                                company: form.company.value,
+                                period: form.period.value,
+                                type: form.type.value,
+                                location: form.location.value,
+                                description: form.description.value,
+                                published: true,
+                            },
+                        ]);
+                        setIsAddExpOpen(false);
+                    }}
+                    className="space-y-3.5"
+                >
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Posisi / Role
+                        </label>
+                        <input
+                            name="role"
+                            type="text"
+                            placeholder="Contoh: Senior Backend Engineer"
+                            className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                            required
+                        />
                     </div>
-                </div>
-            )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Perusahaan / Instansi
+                            </label>
+                            <input
+                                name="company"
+                                type="text"
+                                placeholder="Contoh: PT Digital Karya"
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Tipe Pekerjaan
+                            </label>
+                            <select
+                                name="type"
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                            >
+                                <option value="Full-time">Full-time</option>
+                                <option value="Freelance">Freelance</option>
+                                <option value="Contract">Contract</option>
+                                <option value="Internship">Internship</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Periode
+                            </label>
+                            <input
+                                name="period"
+                                type="text"
+                                placeholder="2023 - Sekarang"
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Lokasi
+                            </label>
+                            <input
+                                name="location"
+                                type="text"
+                                placeholder="Surabaya (Hybrid)"
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Deskripsi Tanggung Jawab
+                        </label>
+                        <textarea
+                            name="description"
+                            rows={2}
+                            placeholder="Jelaskan peran teknis dan pencapaian Anda..."
+                            className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 resize-none"
+                        />
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100 dark:border-[#1b2b5a]">
+                        <button
+                            type="button"
+                            onClick={() => setIsAddExpOpen(false)}
+                            className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-lg text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors cursor-pointer"
+                        >
+                            Batal
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer"
+                        >
+                            Tambahkan
+                        </button>
+                    </div>
+                </form>
+            </Modal>
 
             {/* ================================================================ */}
             {/* MODAL 4: ADD SKILL */}
             {/* ================================================================ */}
-            {isAddSkillOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-sm p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                Tambah Keahlian (Skill)
-                            </h3>
-                            <button
-                                onClick={() => setIsAddSkillOpen(false)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                const form = e.target;
-                                setSkills([
-                                    ...skills,
-                                    {
-                                        id: Date.now(),
-                                        name: form.name.value,
-                                        category: form.category.value,
-                                        level: form.level.value,
-                                        published: true,
-                                    },
-                                ]);
-                                setIsAddSkillOpen(false);
-                            }}
-                            className="space-y-3"
-                        >
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Nama Teknologi / Skill
-                                </label>
-                                <input
-                                    name="name"
-                                    type="text"
-                                    placeholder="Contoh: Redis, Next.js, PostgreSQL"
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    required
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Kategori
-                                    </label>
-                                    <select
-                                        name="category"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    >
-                                        <option value="Backend">Backend</option>
-                                        <option value="Frontend">Frontend</option>
-                                        <option value="Database">Database</option>
-                                        <option value="Tools">Tools</option>
-                                        <option value="DevOps">DevOps</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Level Kemahiran
-                                    </label>
-                                    <select
-                                        name="level"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    >
-                                        <option value="Advanced">Advanced</option>
-                                        <option value="Intermediate">Intermediate</option>
-                                        <option value="Basic">Basic</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsAddSkillOpen(false)}
-                                    className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300"
-                                >
-                                    Batal
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-[#2563eb] text-white rounded-md text-xs font-semibold shadow-sm"
-                                >
-                                    Tambahkan
-                                </button>
-                            </div>
-                        </form>
+            <Modal
+                isOpen={isAddSkillOpen}
+                onClose={() => setIsAddSkillOpen(false)}
+                title="Tambah Keahlian (Skill)"
+                description="Tambahkan keahlian teknis atau tools ke dalam portofolio Anda."
+                icon={Code2}
+                maxWidth="md"
+            >
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        const form = e.target;
+                        setSkills([
+                            ...skills,
+                            {
+                                id: Date.now(),
+                                name: form.name.value,
+                                category: form.category.value,
+                                level: form.level.value,
+                                published: true,
+                            },
+                        ]);
+                        setIsAddSkillOpen(false);
+                    }}
+                    className="space-y-3.5"
+                >
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Nama Teknologi / Skill
+                        </label>
+                        <input
+                            name="name"
+                            type="text"
+                            placeholder="Contoh: Redis, Next.js, PostgreSQL"
+                            className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                            required
+                        />
                     </div>
-                </div>
-            )}
+
+                    <div className="grid grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Kategori
+                            </label>
+                            <select
+                                name="category"
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                            >
+                                <option value="Backend">Backend</option>
+                                <option value="Frontend">Frontend</option>
+                                <option value="Database">Database</option>
+                                <option value="Tools">Tools</option>
+                                <option value="DevOps">DevOps</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Level Kemahiran
+                            </label>
+                            <select
+                                name="level"
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                            >
+                                <option value="Advanced">Advanced</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Basic">Basic</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100 dark:border-[#1b2b5a]">
+                        <button
+                            type="button"
+                            onClick={() => setIsAddSkillOpen(false)}
+                            className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-lg text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors cursor-pointer"
+                        >
+                            Batal
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer"
+                        >
+                            Tambahkan
+                        </button>
+                    </div>
+                </form>
+            </Modal>
 
             {/* ================================================================ */}
             {/* MODAL 5: ADD TESTIMONIAL */}
             {/* ================================================================ */}
-            {isAddTestimonialOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                            <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                                Tambah Testimoni Klien
-                            </h3>
-                            <button
-                                onClick={() => setIsAddTestimonialOpen(false)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                const form = e.target;
-                                setTestimonials([
-                                    ...testimonials,
-                                    {
-                                        id: Date.now(),
-                                        author: form.author.value,
-                                        role: form.role.value,
-                                        company: form.company.value,
-                                        comment: form.comment.value,
-                                        rating: parseInt(form.rating.value) || 5,
-                                        published: true,
-                                    },
-                                ]);
-                                setIsAddTestimonialOpen(false);
-                            }}
-                            className="space-y-3"
-                        >
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Nama Klien / Rekan
-                                </label>
-                                <input
-                                    name="author"
-                                    type="text"
-                                    placeholder="Contoh: Ahmad Fauzi"
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    required
-                                />
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Jabatan / Role
-                                    </label>
-                                    <input
-                                        name="role"
-                                        type="text"
-                                        placeholder="CTO / Tech Lead"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                        Perusahaan
-                                    </label>
-                                    <input
-                                        name="company"
-                                        type="text"
-                                        placeholder="Nama Perusahaan"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Rating Bintang
-                                </label>
-                                <select
-                                    name="rating"
-                                    defaultValue="5"
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100"
-                                >
-                                    <option value="5">5 Bintang (Sempurna)</option>
-                                    <option value="4">4 Bintang (Sangat Bagus)</option>
-                                    <option value="3">3 Bintang (Cukup)</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Isi Testimoni / Ulasan
-                                </label>
-                                <textarea
-                                    name="comment"
-                                    rows={3}
-                                    placeholder="Tulis ulasan positif atau feedback dari klien..."
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-1.5 text-xs text-slate-800 dark:text-slate-100 resize-none"
-                                    required
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsAddTestimonialOpen(false)}
-                                    className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-md text-xs font-semibold text-slate-600 dark:text-slate-300"
-                                >
-                                    Batal
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-4 py-2 bg-[#2563eb] text-white rounded-md text-xs font-semibold shadow-sm"
-                                >
-                                    Simpan Testimoni
-                                </button>
-                            </div>
-                        </form>
+            <Modal
+                isOpen={isAddTestimonialOpen}
+                onClose={() => setIsAddTestimonialOpen(false)}
+                title="Tambah Testimoni Klien"
+                description="Bagikan ulasan positif dan testimoni dari rekan kerja atau klien Anda."
+                icon={Quote}
+                maxWidth="md"
+            >
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        const form = e.target;
+                        setTestimonials([
+                            ...testimonials,
+                            {
+                                id: Date.now(),
+                                author: form.author.value,
+                                role: form.role.value,
+                                company: form.company.value,
+                                comment: form.comment.value,
+                                rating: parseInt(form.rating.value) || 5,
+                                published: true,
+                            },
+                        ]);
+                        setIsAddTestimonialOpen(false);
+                    }}
+                    className="space-y-3.5"
+                >
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Nama Klien / Rekan
+                        </label>
+                        <input
+                            name="author"
+                            type="text"
+                            placeholder="Contoh: Ahmad Fauzi"
+                            className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                            required
+                        />
                     </div>
-                </div>
-            )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Jabatan / Role
+                            </label>
+                            <input
+                                name="role"
+                                type="text"
+                                placeholder="CTO / Tech Lead"
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                Perusahaan
+                            </label>
+                            <input
+                                name="company"
+                                type="text"
+                                placeholder="Nama Perusahaan"
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Rating Bintang
+                        </label>
+                        <select
+                            name="rating"
+                            defaultValue="5"
+                            className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                        >
+                            <option value="5">5 Bintang (Sempurna)</option>
+                            <option value="4">4 Bintang (Sangat Bagus)</option>
+                            <option value="3">3 Bintang (Cukup)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Isi Testimoni / Ulasan
+                        </label>
+                        <textarea
+                            name="comment"
+                            rows={3}
+                            placeholder="Tulis ulasan positif atau feedback dari klien..."
+                            className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 resize-none"
+                            required
+                        />
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-4 border-t border-slate-100 dark:border-[#1b2b5a]">
+                        <button
+                            type="button"
+                            onClick={() => setIsAddTestimonialOpen(false)}
+                            className="px-4 py-2 border border-slate-200 dark:border-[#243e80] rounded-lg text-xs sm:text-sm font-semibold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors cursor-pointer"
+                        >
+                            Batal
+                        </button>
+                        <button
+                            type="submit"
+                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer"
+                        >
+                            Simpan Testimoni
+                        </button>
+                    </div>
+                </form>
+            </Modal>
 
             {/* ================================================================ */}
             {/* MODAL 6: PORTFOLIO SETTINGS */}
             {/* ================================================================ */}
-            {isSettingsOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-                    <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] shadow-xl w-full max-w-md p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white">
-                                Pengaturan Portfolio Publik
-                            </h3>
-                            <button
-                                onClick={() => setIsSettingsOpen(false)}
-                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
-                            >
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        <div className="space-y-3 text-xs sm:text-sm">
-                            <div>
-                                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Domain / Slug Publik
-                                </label>
-                                <div className="flex items-center">
-                                    <span className="px-3 py-2 bg-slate-100 dark:bg-slate-800 border border-r-0 border-slate-200 dark:border-slate-700 rounded-l-md text-slate-500">
-                                        worktrack.me/
-                                    </span>
-                                    <input
-                                        type="text"
-                                        defaultValue="asafik"
-                                        className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-r-md px-3 py-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
-                                    />
-                                </div>
-                            </div>
-
-                            <div>
-                                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Visibilitas
-                                </label>
-                                <select className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-slate-800 dark:text-slate-100 focus:outline-none">
-                                    <option value="public">Publik (Bisa dilihat siapa saja)</option>
-                                    <option value="private">Privat (Hanya dengan tautan khusus)</option>
-                                    <option value="draft">Draft (Offline Sementara)</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                                    Custom Domain (Opsional)
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="asafik.dev"
-                                    className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md px-3 py-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                            <button
-                                onClick={() => {
-                                    setIsSettingsOpen(false);
-                                    triggerSaveNotice();
-                                }}
-                                className="px-4 py-2 bg-[#2563eb] text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm"
-                            >
-                                Selesai
-                            </button>
+            <Modal
+                isOpen={isSettingsOpen}
+                onClose={() => setIsSettingsOpen(false)}
+                title="Pengaturan Portofolio Publik"
+                description="Kelola URL kustom, domain, dan visibilitas tautan portofolio publik Anda."
+                icon={Settings}
+                maxWidth="md"
+                footer={
+                    <button
+                        onClick={() => {
+                            setIsSettingsOpen(false);
+                            triggerSaveNotice();
+                        }}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs sm:text-sm font-semibold shadow-xs transition-colors cursor-pointer"
+                    >
+                        Selesai
+                    </button>
+                }
+            >
+                <div className="space-y-4 text-xs sm:text-sm">
+                    <div>
+                        <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Domain / Slug Publik
+                        </label>
+                        <div className="flex items-center">
+                            <span className="px-3 py-2 bg-slate-100 dark:bg-slate-800 border border-r-0 border-slate-200 dark:border-slate-700 rounded-l-lg text-slate-500">
+                                worktrack.me/
+                            </span>
+                            <input
+                                type="text"
+                                defaultValue="asafik"
+                                className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-r-lg px-3 py-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                            />
                         </div>
                     </div>
+
+                    <div>
+                        <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Visibilitas
+                        </label>
+                        <select className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
+                            <option value="public">Publik (Bisa dilihat siapa saja)</option>
+                            <option value="private">Privat (Hanya dengan tautan khusus)</option>
+                            <option value="draft">Draft (Offline Sementara)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                            Custom Domain (Opsional)
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="asafik.dev"
+                            className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-lg px-3 py-2 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500"
+                        />
+                    </div>
                 </div>
-            )}
+            </Modal>
         </>
     );
 }
