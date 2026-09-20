@@ -8,11 +8,6 @@ import {
     EyeOff,
     ArrowRight,
     AlertCircle,
-    Folder,
-    Check,
-    FileText,
-    BarChart3,
-    Archive as ArchiveIcon,
 } from 'lucide-react';
 import Checkbox from '@/Components/Checkbox';
 
@@ -741,8 +736,8 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     activeNode === 'projects' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                 }`}
             >
-                <div className="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <Folder className="w-5 h-5 fill-white/20" />
+                <div className="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md p-1 group-hover:scale-105 transition-transform">
+                    <img src="/images/svg/project.svg" alt="Projects" className="w-7.5 h-7.5 object-contain" />
                 </div>
                 <div className="min-w-0">
                     <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-blue-300 transition-colors leading-tight">
@@ -763,8 +758,8 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     activeNode === 'tasks' ? 'scale-103 border-emerald-400 shadow-emerald-500/20' : ''
                 }`}
             >
-                <div className="w-9 h-9 rounded-lg bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <Check className="w-5 h-5 stroke-[3]" />
+                <div className="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md p-1 group-hover:scale-105 transition-transform">
+                    <img src="/images/svg/task.svg" alt="Tasks" className="w-7.5 h-7.5 object-contain" />
                 </div>
                 <div className="min-w-0">
                     <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-emerald-300 transition-colors leading-tight">
@@ -785,8 +780,8 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     activeNode === 'notes' ? 'scale-103 border-purple-400 shadow-purple-500/20' : ''
                 }`}
             >
-                <div className="w-9 h-9 rounded-lg bg-purple-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <FileText className="w-5 h-5 fill-white/20" />
+                <div className="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md p-1 group-hover:scale-105 transition-transform">
+                    <img src="/images/svg/note.svg" alt="Notes" className="w-7.5 h-7.5 object-contain" />
                 </div>
                 <div className="min-w-0">
                     <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-purple-300 transition-colors leading-tight">
@@ -807,8 +802,8 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     activeNode === 'portfolio' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                 }`}
             >
-                <div className="w-9 h-9 rounded-lg bg-blue-500 text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <BarChart3 className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md p-1 group-hover:scale-105 transition-transform">
+                    <img src="/images/svg/portfolio.svg" alt="Portfolio" className="w-7.5 h-7.5 object-contain" />
                 </div>
                 <div className="min-w-0">
                     <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-blue-300 transition-colors leading-tight">
@@ -829,8 +824,8 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     activeNode === 'archive' ? 'scale-103 border-cyan-400 shadow-cyan-500/20' : ''
                 }`}
             >
-                <div className="w-9 h-9 rounded-lg bg-cyan-600 text-white flex items-center justify-center shrink-0 shadow-xs">
-                    <ArchiveIcon className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md p-1 group-hover:scale-105 transition-transform">
+                    <img src="/images/svg/arsip.svg" alt="Archive" className="w-7.5 h-7.5 object-contain" />
                 </div>
                 <div className="min-w-0">
                     <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-300 transition-colors leading-tight">
