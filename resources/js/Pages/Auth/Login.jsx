@@ -394,13 +394,15 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                 .wt-fade-f2 { opacity: 0; animation: wtFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.25s forwards; }
                 .wt-fade-f3 { opacity: 0; animation: wtFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.20s forwards; }
                 .wt-fade-f4 { opacity: 0; animation: wtFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.30s forwards; }
+                .wt-fade-f5 { opacity: 0; animation: wtFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.22s forwards; }
 
                 @media (prefers-reduced-motion: reduce) {
                     .wt-fade-hub,
                     .wt-fade-f1,
                     .wt-fade-f2,
                     .wt-fade-f3,
-                    .wt-fade-f4 {
+                    .wt-fade-f4,
+                    .wt-fade-f5 {
                         opacity: 1 !important;
                         animation: none !important;
                     }
@@ -491,6 +493,19 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             <animate attributeName="stroke-dashoffset" from="750" to="0" dur="0.75s" begin="0.70s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
+                    <mask id="mask-f5" maskUnits="userSpaceOnUse">
+                        <path
+                            d="M 560 238 L 560 96"
+                            stroke="#ffffff"
+                            strokeWidth="22"
+                            strokeLinecap="round"
+                            strokeDasharray="300"
+                            strokeDashoffset="300"
+                            className="wt-mask-path"
+                        >
+                            <animate attributeName="stroke-dashoffset" from="300" to="0" dur="0.65s" begin="0.58s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
 
                     {/* Vibrant Multi-stop Neon Gradients matching each SVG icon */}
                     <linearGradient id="neon-f1" x1="508" y1="265" x2="255" y2="100" gradientUnits="userSpaceOnUse">
@@ -512,6 +527,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         <stop stopColor="#6366f1" />
                         <stop offset="0.5" stopColor="#818cf8" />
                         <stop offset="1" stopColor="#a78bfa" />
+                    </linearGradient>
+                    <linearGradient id="neon-f5" x1="560" y1="238" x2="560" y2="96" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#06b6d4" />
+                        <stop offset="0.5" stopColor="#22d3ee" />
+                        <stop offset="1" stopColor="#67e8f9" />
                     </linearGradient>
                 </defs>
 
@@ -658,6 +678,42 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         </circle>
                     </g>
                 </g>
+
+                {/* 5. Archive Conduit (Hub -> Top-Center) */}
+                <g>
+                    <g mask="url(#mask-f5)">
+                        <path
+                            d="M 560 238 L 560 96"
+                            stroke="url(#neon-f5)"
+                            strokeWidth={activeNode === 'archive' ? '11.5' : '9.5'}
+                            strokeOpacity={activeNode === 'archive' ? '1' : '0.85'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
+                        />
+                        <path
+                            d="M 560 238 L 560 96"
+                            stroke="#ffffff"
+                            strokeWidth="2.2"
+                            strokeDasharray="5 6"
+                            strokeOpacity="0.9"
+                            strokeLinecap="round"
+                        />
+                    </g>
+                    <g className="wt-particle">
+                        <circle r="9" fill="#06b6d4" opacity="0" filter="url(#photon-glow-f)">
+                            <animateMotion path="M 560 238 L 560 96" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="5.5" fill="#22d3ee" opacity="0" filter="url(#photon-glow-f)">
+                            <animateMotion path="M 560 238 L 560 96" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2.5" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 560 238 L 560 96" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                        </circle>
+                    </g>
+                </g>
             </svg>
 
             {/* Center WorkTrack Hub */}
@@ -672,7 +728,8 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     <span className="text-[11px] sm:text-xs font-extrabold text-slate-200 tracking-tight mt-1.5 select-none relative z-10">
                         WorkTrack
                     </span>
-                    {/* 4 Matching Corner Pin Sockets */}
+                    {/* 5 Matching Pin Sockets */}
+                    <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-cyan-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
                     <span className="absolute top-[28%] -left-1.5 -translate-y-1/2 w-3 h-3 rounded-full bg-sky-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(56,189,248,0.8)]" />
                     <span className="absolute top-[72%] -left-1.5 -translate-y-1/2 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(16,185,129,0.8)]" />
                     <span className="absolute top-[28%] -right-1.5 -translate-y-1/2 w-3 h-3 rounded-full bg-amber-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(245,158,11,0.8)]" />
@@ -680,7 +737,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                 </div>
             </div>
 
-            {/* 4 Connected Feature Cards (Identical Symmetrical Geometry to Slide 2) */}
+            {/* 5 Connected Feature Cards */}
             {/* 1. Projects (Top-Left) */}
             <div
                 onMouseEnter={() => setActiveNode('projects')}
@@ -767,6 +824,28 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </p>
                 </div>
                 <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-indigo-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(99,102,241,0.8)] z-30" />
+            </div>
+
+            {/* 5. Archive (Top-Center) */}
+            <div
+                onMouseEnter={() => setActiveNode('archive')}
+                onMouseLeave={() => setActiveNode(null)}
+                className={`absolute top-[32px] left-1/2 -translate-x-1/2 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-2xl p-3 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-xl shadow-black/50 transition-all duration-200 flex items-center gap-3 w-[230px] cursor-pointer group wt-fade-f5 ${
+                    activeNode === 'archive' ? 'scale-103 border-cyan-400 shadow-cyan-500/20' : ''
+                }`}
+            >
+                <div className="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md p-1 group-hover:scale-105 transition-transform">
+                    <img src="/images/svg/arsip.svg" alt="Archive" className="w-7.5 h-7.5 object-contain" />
+                </div>
+                <div className="min-w-0">
+                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-300 transition-colors leading-tight">
+                        Archive
+                    </h3>
+                    <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
+                        Keep everything safe
+                    </p>
+                </div>
+                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-cyan-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(6,182,212,0.8)] z-30" />
             </div>
         </div>
     );
