@@ -14,6 +14,7 @@ import {
     UploadCloud,
     Info,
     CheckCircle2,
+    User,
     Lock,
     Shield,
     Palette,
@@ -564,36 +565,45 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                     </div>
                 </div>
 
-                {/* Tab Navigation */}
-                <div className="flex items-center gap-6 border-b border-slate-200/90 dark:border-[#1e346e] text-xs sm:text-sm font-semibold overflow-x-auto">
-                    {[
-                        'Profile',
-                        'Account & Security',
-                        'Appearance',
-                        'Integrations',
-                        'Preferences',
-                    ].map((tab) => (
-                        <button
-                            key={tab}
-                            onClick={() => setActiveTab(tab)}
-                            className={`pb-3 border-b-2 transition-all whitespace-nowrap ${
-                                activeTab === tab
-                                    ? 'border-blue-600 text-blue-600 dark:text-blue-400'
-                                    : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                            }`}
-                        >
-                            {tab}
-                        </button>
-                    ))}
+                {/* Tab Navigation - Fully Responsive with Icons and Smooth Touch Scrolling */}
+                <div className="border-b border-slate-200/90 dark:border-[#1e346e] -mx-4 px-4 sm:mx-0 sm:px-0">
+                    <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden py-0.5">
+                        {[
+                            { id: 'Profile', label: 'Profile', icon: User },
+                            { id: 'Account & Security', label: 'Account & Security', icon: Shield },
+                            { id: 'Appearance', label: 'Appearance', icon: Palette },
+                            { id: 'Integrations', label: 'Integrations', icon: Puzzle },
+                            { id: 'Preferences', label: 'Preferences', icon: Sliders },
+                        ].map((tab) => {
+                            const TabIcon = tab.icon;
+                            const isActive = activeTab === tab.id;
+                            return (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => setActiveTab(tab.id)}
+                                    className={`flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 border-b-2 font-semibold text-xs sm:text-sm transition-all whitespace-nowrap cursor-pointer rounded-t-lg ${
+                                        isActive
+                                            ? 'border-blue-600 text-blue-600 dark:text-blue-400 bg-blue-50/50 dark:bg-blue-950/25'
+                                            : 'border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/50 dark:hover:bg-slate-800/30'
+                                    }`}
+                                >
+                                    <TabIcon className={`w-4 h-4 shrink-0 transition-colors ${
+                                        isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-400 dark:text-slate-500'
+                                    }`} />
+                                    <span>{tab.label}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
                 </div>
 
                 {/* ================================================================ */}
                 {/* TAB 1: PROFILE */}
                 {/* ================================================================ */}
                 {activeTab === 'Profile' && (
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 items-start">
                         {/* COLUMN 1: Profile Information */}
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-5">
+                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-5">
                             <div>
                                 <h2 className="text-base font-bold text-slate-900 dark:text-white">
                                     Profile Information
@@ -613,8 +623,8 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             />
 
                             {/* Avatar & Display Role */}
-                            <div className="flex items-center gap-4 pt-1">
-                                <div className="relative group">
+                            <div className="flex items-center gap-3.5 sm:gap-4 pt-1">
+                                <div className="relative group shrink-0">
                                     <div
                                         onClick={() => setIsAvatarModalOpen(true)}
                                         className="cursor-pointer overflow-hidden rounded-full ring-2 ring-slate-100 dark:ring-slate-700 group-hover:ring-blue-500 transition-all shadow-md relative"
@@ -623,33 +633,33 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                         <img
                                             src={profile.avatar}
                                             alt={profile.fullName}
-                                            className="w-20 h-20 sm:w-22 sm:h-22 object-cover transition-transform duration-300 group-hover:scale-110"
+                                            className="w-16 h-16 sm:w-20 sm:h-20 md:w-22 md:h-22 object-cover transition-transform duration-300 group-hover:scale-110"
                                         />
                                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white gap-0.5 pointer-events-none">
-                                            <Maximize2 className="w-5 h-5 drop-shadow-md" />
+                                            <Maximize2 className="w-4 h-4 sm:w-5 sm:h-5 drop-shadow-md" />
                                             <span className="text-[9px] font-semibold tracking-tight drop-shadow-md">Perbesar</span>
                                         </div>
                                     </div>
                                     <button
                                         type="button"
                                         onClick={(e) => {
-                                            e.stopPropagation();
-                                            avatarInputRef.current?.click();
+                                             e.stopPropagation();
+                                             avatarInputRef.current?.click();
                                         }}
                                         disabled={uploadingAvatar}
                                         title="Ganti Foto"
-                                        className="absolute bottom-0 right-0 w-7 h-7 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-full border-2 border-white dark:border-[#0e1d47] flex items-center justify-center shadow-xs transition-colors cursor-pointer z-10"
+                                        className="absolute bottom-0 right-0 w-6 h-6 sm:w-7 sm:h-7 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-full border-2 border-white dark:border-[#0e1d47] flex items-center justify-center shadow-xs transition-colors cursor-pointer z-10"
                                     >
                                         {uploadingAvatar ? (
-                                            <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                            <RefreshCw className="w-3 h-3 sm:w-3.5 sm:h-3.5 animate-spin" />
                                         ) : (
-                                            <Camera className="w-3.5 h-3.5" />
+                                            <Camera className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                                         )}
                                     </button>
                                 </div>
 
-                                <div className="space-y-0.5">
-                                    <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
+                                <div className="space-y-0.5 min-w-0 flex-1">
+                                    <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-white truncate">
                                         {profile.fullName}
                                     </h3>
                                     <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium">
@@ -756,7 +766,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     <button
                                         type="submit"
                                         disabled={saving}
-                                        className="px-5 py-2 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center gap-2 cursor-pointer"
+                                        className="w-full sm:w-auto px-5 py-2.5 sm:py-2 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
                                     >
                                         {saving ? (
                                             <>
@@ -774,7 +784,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                         {/* COLUMN 2: Social Links & Profile Preview */}
                         <div className="space-y-6">
                             {/* Card: Social Links */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-4">
                                 <div>
                                     <h2 className="text-base font-bold text-slate-900 dark:text-white">
                                         Social Links
@@ -952,7 +962,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                             type="button"
                                             onClick={handleSaveProfile}
                                             disabled={saving}
-                                            className="px-4 py-1.5 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-md text-xs font-semibold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                                            className="w-full sm:w-auto px-4 py-2 sm:py-1.5 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-md text-xs font-semibold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                                         >
                                             {saving ? (
                                                 <>
@@ -968,7 +978,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             </div>
 
                             {/* Card: Profile Preview */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-4">
                                 <div>
                                     <h2 className="text-base font-bold text-slate-900 dark:text-white">
                                         Profile Preview
@@ -1050,7 +1060,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                         {/* COLUMN 3: Profile Picture, About Short, Signature, Tips */}
                         <div className="space-y-6">
                             {/* Card: Profile Picture */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-4">
                                 <div>
                                     <h2 className="text-base font-bold text-slate-900 dark:text-white">
                                         Profile Picture
@@ -1062,7 +1072,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
 
                                 <div
                                     onClick={() => avatarInputRef.current?.click()}
-                                    className="border-2 border-dashed border-slate-200 dark:border-[#243e80] rounded-lg p-6 text-center hover:border-blue-500 dark:hover:border-blue-500 transition-colors cursor-pointer bg-slate-50/50 dark:bg-[#0c183b]/50 group"
+                                    className="border-2 border-dashed border-slate-200 dark:border-[#243e80] rounded-lg p-4 sm:p-6 text-center hover:border-blue-500 dark:hover:border-blue-500 transition-colors cursor-pointer bg-slate-50/50 dark:bg-[#0c183b]/50 group"
                                 >
                                     <UploadCloud className="w-8 h-8 text-blue-500 group-hover:scale-110 transition-transform mx-auto stroke-[1.8]" />
                                     <p className="text-xs font-semibold text-slate-700 dark:text-slate-200 mt-2">
@@ -1078,7 +1088,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             </div>
 
                             {/* Card: About Me (Short) */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-3">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-3">
                                 <div>
                                     <h2 className="text-base font-bold text-slate-900 dark:text-white">
                                         About Me (Short)
@@ -1094,7 +1104,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                         maxLength={200}
                                         value={profile.aboutShort}
                                         onChange={(e) =>
-                                            setProfile({ ...profile, aboutShort: e.target.value })
+                                             setProfile({ ...profile, aboutShort: e.target.value })
                                         }
                                         className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 resize-none leading-relaxed"
                                     />
@@ -1105,7 +1115,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             </div>
 
                             {/* Card: Signature */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-3">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-3">
                                 <div>
                                     <h2 className="text-base font-bold text-slate-900 dark:text-white">
                                         Signature
@@ -1121,7 +1131,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                         maxLength={100}
                                         value={profile.signature}
                                         onChange={(e) =>
-                                            setProfile({ ...profile, signature: e.target.value })
+                                             setProfile({ ...profile, signature: e.target.value })
                                         }
                                         className="w-full bg-[#f8fafc] dark:bg-[#122352] border border-slate-200 dark:border-[#243e80] rounded-md p-3 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500 resize-none"
                                     />
@@ -1135,7 +1145,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                         type="button"
                                         onClick={handleSaveProfile}
                                         disabled={saving}
-                                        className="px-4 py-1.5 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-md text-xs font-semibold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                                        className="w-full sm:w-auto px-4 py-2 sm:py-1.5 bg-[#2563eb] hover:bg-blue-600 disabled:opacity-60 text-white rounded-md text-xs font-semibold shadow-xs transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                                     >
                                         {saving ? (
                                             <>
@@ -1150,7 +1160,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             </div>
 
                             {/* Card: Tips Alert */}
-                            <div className="bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/70 dark:border-blue-900/60 rounded-lg p-4 flex items-start gap-3 shadow-2xs">
+                            <div className="bg-blue-50/80 dark:bg-blue-950/40 border border-blue-200/70 dark:border-blue-900/60 rounded-lg p-3.5 sm:p-4 flex items-start gap-3 shadow-2xs">
                                 <div className="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center shrink-0 mt-0.5">
                                     <Info className="w-3 h-3 stroke-[2.5]" />
                                 </div>
@@ -1171,11 +1181,11 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                 {/* TAB 2: ACCOUNT & SECURITY */}
                 {/* ================================================================ */}
                 {activeTab === 'Account & Security' && (
-                    <div className="max-w-3xl space-y-6">
+                    <div className="max-w-3xl space-y-5 sm:space-y-6">
                         {/* Change Password Card */}
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-6 shadow-xs space-y-4">
+                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-4">
                             <div className="flex items-center gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
-                                <div className="w-9 h-9 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center">
+                                <div className="w-9 h-9 rounded-md bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
                                     <Key className="w-4 h-4" />
                                 </div>
                                 <div>
@@ -1226,7 +1236,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                 <div className="flex justify-end pt-2">
                                     <button
                                         type="submit"
-                                        className="px-4 py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-all"
+                                        className="w-full sm:w-auto px-5 py-2.5 sm:py-2 bg-[#2563eb] hover:bg-blue-600 text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm transition-all text-center justify-center cursor-pointer"
                                     >
                                         Perbarui Kata Sandi
                                     </button>
@@ -1235,9 +1245,9 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                         </div>
 
                         {/* Two-Factor Authentication Card */}
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-6 shadow-xs flex items-center justify-between gap-4">
+                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3.5 sm:gap-4">
                             <div className="flex items-center gap-3">
-                                <div className="w-9 h-9 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                                <div className="w-9 h-9 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
                                     <Shield className="w-4 h-4" />
                                 </div>
                                 <div>
@@ -1255,7 +1265,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     setTwoFactorEnabled(!twoFactorEnabled);
                                     triggerSave();
                                 }}
-                                className={`w-10 h-6 rounded-full transition-colors relative focus:outline-none ${
+                                className={`w-10 h-6 rounded-full transition-colors relative focus:outline-none shrink-0 self-end sm:self-auto cursor-pointer ${
                                     twoFactorEnabled ? 'bg-[#2563eb]' : 'bg-slate-300 dark:bg-slate-700'
                                 }`}
                             >
@@ -1268,21 +1278,21 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                         </div>
 
                         {/* Active Sessions */}
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-6 shadow-xs space-y-4">
+                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-4">
                             <h3 className="text-base font-bold text-slate-900 dark:text-white pb-2 border-b border-slate-100 dark:border-slate-800">
                                 Sesi Aktif
                             </h3>
 
                             <div className="space-y-3">
-                                <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#0c183b]/60 border border-slate-200/70 dark:border-slate-800">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#0c183b]/60 border border-slate-200/70 dark:border-slate-800 gap-2.5 sm:gap-3">
                                     <div className="flex items-center gap-3">
-                                        <Laptop className="w-5 h-5 text-blue-500" />
+                                        <Laptop className="w-5 h-5 text-blue-500 shrink-0" />
                                         <div>
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-2 flex-wrap">
                                                 <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
                                                     Windows PC • Chrome Browser
                                                 </h4>
-                                                <span className="text-[10px] font-semibold px-2 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+                                                <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
                                                     Perangkat Ini
                                                 </span>
                                             </div>
@@ -1293,9 +1303,9 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     </div>
                                 </div>
 
-                                <div className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#0c183b]/60 border border-slate-200/70 dark:border-slate-800">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#0c183b]/60 border border-slate-200/70 dark:border-slate-800 gap-2.5 sm:gap-3">
                                     <div className="flex items-center gap-3">
-                                        <Smartphone className="w-5 h-5 text-slate-400" />
+                                        <Smartphone className="w-5 h-5 text-slate-400 shrink-0" />
                                         <div>
                                             <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white">
                                                 iPhone 14 Pro • Safari
@@ -1305,7 +1315,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                             </p>
                                         </div>
                                     </div>
-                                    <button className="text-xs text-rose-500 hover:underline">
+                                    <button className="text-xs text-rose-500 hover:underline self-end sm:self-auto cursor-pointer">
                                         Keluar
                                     </button>
                                 </div>
@@ -1318,11 +1328,11 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                 {/* TAB 3: APPEARANCE (Rich 2-Column with Interactive Live Preview) */}
                 {/* ================================================================ */}
                 {activeTab === 'Appearance' && (
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-start">
                         {/* Left Column: Settings Controls (7 cols) */}
                         <div className="lg:col-span-7 space-y-5">
                             {/* Card 1: Theme Mode */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-4">
                                 <div>
                                     <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                         <Sun className="w-4 h-4 text-amber-500 dark:text-amber-400" />
@@ -1333,7 +1343,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     </p>
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3">
                                     {[
                                         {
                                             key: 'light',
@@ -1380,7 +1390,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                                     }
                                                     triggerSave('Tema tampilan berhasil diperbarui!');
                                                 }}
-                                                className={`p-3.5 rounded-lg border text-left cursor-pointer transition-all ${
+                                                className={`p-3 sm:p-3.5 rounded-lg border text-left cursor-pointer transition-all ${
                                                     isSelected
                                                         ? 'border-blue-600 bg-blue-50/50 dark:bg-blue-950/40 ring-1 ring-blue-600/30 shadow-xs'
                                                         : 'border-slate-200 dark:border-[#243e80] hover:border-slate-300 dark:hover:border-[#385cb0] bg-[#f8fafc] dark:bg-[#122352]/40'
@@ -1407,7 +1417,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             </div>
 
                             {/* Card 2: Accent Colors */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-4">
                                 <div>
                                     <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
                                         <Palette className="w-4 h-4 text-blue-500" />
@@ -1418,7 +1428,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     </p>
                                 </div>
 
-                                <div className="flex flex-wrap items-center gap-2.5">
+                                <div className="flex flex-wrap items-center gap-2 sm:gap-2.5">
                                     {[
                                         { key: 'blue', name: 'WorkTrack Blue', color: 'bg-[#2563eb]', border: 'border-[#2563eb]' },
                                         { key: 'emerald', name: 'Emerald', color: 'bg-emerald-600', border: 'border-emerald-600' },
@@ -1436,7 +1446,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                                     localStorage.setItem('worktrack_accent', c.key);
                                                     triggerSave(`Warna aksen diubah ke ${c.name}!`);
                                                 }}
-                                                className={`flex items-center gap-2 px-3.5 py-2 rounded-md border text-xs font-semibold transition-all cursor-pointer ${
+                                                className={`flex items-center gap-2 px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-md border text-xs font-semibold transition-all cursor-pointer ${
                                                     isSelected
                                                         ? 'border-blue-600 dark:border-blue-500 bg-blue-50/60 dark:bg-blue-950/50 text-blue-600 dark:text-blue-300 ring-2 ring-blue-500/20 shadow-xs'
                                                         : 'border-slate-200 dark:border-[#243e80] text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-[#122352]'
@@ -1449,13 +1459,11 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     })}
                                 </div>
                             </div>
-
-
                         </div>
 
                         {/* Right Column: Live Interactive Preview (5 cols) */}
                         <div className="lg:col-span-5 sticky top-5 space-y-3">
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-5 shadow-xs">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-3.5 sm:p-5 shadow-xs">
                                 {/* Preview Header */}
                                 <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-slate-800/80">
                                     <div className="flex items-center gap-1.5">
@@ -1471,7 +1479,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                 </div>
 
                                 {/* Mini UI Mockup Container */}
-                                <div className="pt-4">
+                                <div className="pt-4 overflow-x-auto [scrollbar-width:none]">
                                     <div
                                         className={`rounded-lg border border-slate-200 dark:border-slate-700/60 overflow-hidden shadow-sm flex h-[340px] text-[10px] ${
                                             themeMode === 'light'
@@ -1701,10 +1709,10 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             </div>
 
                             {/* 1. GitHub Card */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 sm:p-6 shadow-xs space-y-4">
-                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-4">
+                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
                                     {/* Icon & Title */}
-                                    <div className="flex items-start gap-4">
+                                    <div className="flex items-start gap-3.5 sm:gap-4">
                                         <div className="w-12 h-12 rounded-xl bg-slate-900 text-white flex items-center justify-center p-2.5 shadow-xs shrink-0">
                                             <GithubIcon className="w-7 h-7" />
                                         </div>
@@ -1719,7 +1727,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     </div>
 
                                     {/* Badges & Actions */}
-                                    <div className="flex items-center gap-2 self-start">
+                                    <div className="flex items-center gap-2 self-start flex-wrap">
                                         {integrations.github.connected ? (
                                             <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
                                                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -1737,7 +1745,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                                 <input type="hidden" name="_token" value={document.querySelector('meta[name="csrf-token"]')?.content} />
                                                 <button
                                                     type="submit"
-                                                    className="px-3 py-1 rounded-md border border-red-200 dark:border-red-900/60 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors shadow-2xs flex items-center gap-1.5"
+                                                    className="px-3 py-1 rounded-md border border-red-200 dark:border-red-900/60 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer"
                                                 >
                                                     <X className="w-3.5 h-3.5" />
                                                     <span>Disconnect</span>
@@ -1806,7 +1814,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                 </div>
 
                                 {/* Card Footer */}
-                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                                     <span className="text-xs text-slate-400">
                                         {integrations.github.connected
                                             ? `Connected: @${integrations.github.account}`
@@ -1816,7 +1824,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                         <button
                                             onClick={() => handleSync('github', 'GitHub')}
                                             disabled={integrations.github.syncing}
-                                            className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60"
+                                            className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60 cursor-pointer self-start sm:self-auto shrink-0"
                                         >
                                             <RefreshCw
                                                 className={`w-3.5 h-3.5 text-blue-500 ${
@@ -1981,31 +1989,31 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             </div>
 
                             {/* Integration Item 3: Google Calendar */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 shadow-xs space-y-4">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex items-center gap-3.5">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-4">
+                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
+                                    <div className="flex items-start gap-3.5 sm:gap-4">
                                         <div className="w-11 h-11 rounded-lg bg-blue-50/80 dark:bg-blue-950/40 border border-blue-100/80 dark:border-blue-900/50 flex items-center justify-center shrink-0 shadow-2xs">
                                             <GoogleCalendarIcon className="w-6 h-6" />
                                         </div>
                                         <div>
-                                            <div className="flex items-center gap-2">
-                                                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                                                     Google Calendar
                                                 </h3>
                                                 <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-blue-100/70 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300">
                                                     Mobile Sync
                                                 </span>
                                             </div>
-                                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
                                                 Sinkronisasi deadline proyek, sprint, dan notifikasi jadwal langsung ke Google Calendar di HP.
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-2 shrink-0">
+                                    <div className="flex items-center gap-2 self-start flex-wrap">
                                         {integrations.googleCalendar?.connected ? (
-                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
+                                                <CheckCircle2 className="w-3.5 h-3.5" />
                                                 <span>Connected</span>
                                             </span>
                                         ) : (
@@ -2016,7 +2024,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                         )}
                                         <button
                                             onClick={() => setModalManage('googleCalendar')}
-                                            className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-2xs flex items-center gap-1.5"
+                                            className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer"
                                         >
                                             <SettingsIcon className="w-3.5 h-3.5 text-slate-500" />
                                             <span>Manage</span>
@@ -2067,14 +2075,14 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                 </div>
 
                                 {/* Card Footer: Last Synced & Sync Now Button */}
-                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                                     <span className="text-xs text-slate-400">
                                         Last synced: {integrations.googleCalendar?.lastSynced}
                                     </span>
                                     <button
                                         onClick={() => handleSync('googleCalendar', 'Google Calendar')}
                                         disabled={integrations.googleCalendar?.syncing}
-                                        className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60 cursor-pointer"
+                                        className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60 cursor-pointer self-start sm:self-auto shrink-0"
                                     >
                                         <RefreshCw
                                             className={`w-3.5 h-3.5 text-blue-500 ${
@@ -2087,31 +2095,31 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             </div>
 
                             {/* Integration Item 4: Google Gemini AI */}
-                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-5 shadow-xs space-y-4">
-                                <div className="flex items-start justify-between">
-                                    <div className="flex items-center gap-3.5">
+                            <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-4">
+                                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 sm:gap-4">
+                                    <div className="flex items-start gap-3.5 sm:gap-4">
                                         <div className="w-11 h-11 rounded-lg bg-gradient-to-tr from-blue-50 to-indigo-50 dark:from-blue-950/50 dark:to-indigo-950/50 border border-blue-100/80 dark:border-blue-900/50 flex items-center justify-center shrink-0 shadow-2xs">
                                             <GoogleGeminiIcon className="w-6 h-6" />
                                         </div>
                                         <div>
-                                            <div className="flex items-center gap-2">
-                                                <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                                            <div className="flex items-center gap-2 flex-wrap">
+                                                <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-white">
                                                     Google Gemini AI
                                                 </h3>
                                                 <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-indigo-100/70 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">
                                                     Free Tier (AI Studio)
                                                 </span>
                                             </div>
-                                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">
                                                 Analisis dan perapian otomatis catatan revisi programmer, deteksi singkatan, dan perbaikan typo.
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="flex items-center gap-2 shrink-0">
+                                    <div className="flex items-center gap-2 self-start flex-wrap">
                                         {integrations.googleGemini?.connected ? (
-                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
-                                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-900/60">
+                                                <CheckCircle2 className="w-3.5 h-3.5" />
                                                 <span>Connected</span>
                                             </span>
                                         ) : (
@@ -2131,15 +2139,15 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                 </div>
 
                                 {/* Quota & Credit Monitor Panel */}
-                                <div className="bg-slate-50/80 dark:bg-[#122352]/50 border border-slate-200/70 dark:border-[#243e80]/70 rounded-lg p-4 space-y-3">
-                                    <div className="flex items-center justify-between">
+                                <div className="bg-slate-50/80 dark:bg-[#122352]/50 border border-slate-200/70 dark:border-[#243e80]/70 rounded-lg p-3.5 sm:p-4 space-y-3">
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                                         <div className="flex items-center gap-2">
-                                            <Sparkles className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                                            <Sparkles className="w-4 h-4 text-indigo-500 dark:text-indigo-400 shrink-0" />
                                             <span className="text-xs font-bold text-slate-800 dark:text-slate-100">
                                                 Status Kuota & Kredit Gratis Hari Ini
                                             </span>
                                         </div>
-                                        <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-100/60 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-900/50">
+                                        <span className="text-[11px] font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-100/60 dark:bg-emerald-950/60 px-2 py-0.5 rounded-md border border-emerald-200/60 dark:border-emerald-900/50 self-start sm:self-auto">
                                             {integrations.googleGemini?.remainingToday?.toLocaleString('id-ID')} / {integrations.googleGemini?.dailyLimit?.toLocaleString('id-ID')} Request Tersisa ({integrations.googleGemini?.percentRemaining}%)
                                         </span>
                                     </div>
@@ -2152,14 +2160,14 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                                 style={{ width: `${Math.min(100, Math.max(0, integrations.googleGemini?.percentRemaining ?? 100))}%` }}
                                             />
                                         </div>
-                                        <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-0.5">
+                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-0.5 gap-1">
                                             <span>Terpakai hari ini: <strong className="text-slate-700 dark:text-slate-200">{integrations.googleGemini?.usedToday} request</strong></span>
                                             <span>Reset otomatis: <strong>Setiap 00:00 UTC (07:00 WIB)</strong></span>
                                         </div>
                                     </div>
 
                                     {/* Parameter Grid */}
-                                    <div className="grid grid-cols-3 gap-2.5 pt-1 border-t border-slate-200/60 dark:border-[#243e80]/60">
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-2.5 pt-1 border-t border-slate-200/60 dark:border-[#243e80]/60">
                                         <div className="bg-white dark:bg-[#0e1d47] p-2.5 rounded-md border border-slate-200/60 dark:border-[#1e346e]">
                                             <span className="text-[10px] text-slate-400 block font-medium">Batas Per Menit</span>
                                             <strong className="text-xs font-bold text-slate-800 dark:text-slate-100">
@@ -2227,14 +2235,14 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                 </div>
 
                                 {/* Card Footer: Last Used & Refresh Button */}
-                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between">
+                                <div className="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                                     <span className="text-xs text-slate-400">
                                         Terakhir digunakan: {integrations.googleGemini?.lastSynced}
                                     </span>
                                     <button
                                         onClick={() => handleSync('googleGemini', 'Google Gemini AI')}
                                         disabled={integrations.googleGemini?.syncing}
-                                        className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60 cursor-pointer"
+                                        className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors flex items-center gap-1.5 shadow-2xs disabled:opacity-60 cursor-pointer self-start sm:self-auto shrink-0"
                                     >
                                         <RefreshCw
                                             className={`w-3.5 h-3.5 text-blue-500 ${
@@ -2379,7 +2387,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                 {/* ================================================================ */}
                 {activeTab === 'Preferences' && (
                     <div className="max-w-3xl space-y-6">
-                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-6 shadow-xs space-y-5">
+                        <div className="bg-white dark:bg-[#0e1d47] rounded-lg border border-slate-200/80 dark:border-[#1e346e] p-4 sm:p-6 shadow-xs space-y-5">
                             <h3 className="text-base font-bold text-slate-900 dark:text-white pb-2 border-b border-slate-100 dark:border-slate-800">
                                 Preferensi Sistem & Notifikasi
                             </h3>
@@ -2438,25 +2446,27 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                 ].map((n) => (
                                     <div
                                         key={n.key}
-                                        className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-800/40 last:border-b-0"
+                                        className="flex items-start sm:items-center justify-between gap-3 py-2.5 sm:py-3 border-b border-slate-50 dark:border-slate-800/40 last:border-b-0"
                                     >
-                                        <div className="pr-4">
+                                        <div className="pr-2 min-w-0">
                                             <h5 className="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">
                                                 {n.title}
                                             </h5>
-                                            <p className="text-xs text-slate-400 mt-0.5">{n.desc}</p>
+                                            <p className="text-xs text-slate-400 mt-0.5 leading-relaxed">{n.desc}</p>
                                         </div>
-                                        <Toggle
-                                            checked={!!preferences[n.key]}
-                                            onChange={(checked) => {
-                                                setPreferences({
-                                                    ...preferences,
-                                                    [n.key]: checked,
-                                                });
-                                                triggerSave();
-                                            }}
-                                            ariaLabel={n.title}
-                                        />
+                                        <div className="shrink-0 mt-0.5 sm:mt-0">
+                                            <Toggle
+                                                checked={!!preferences[n.key]}
+                                                onChange={(checked) => {
+                                                    setPreferences({
+                                                        ...preferences,
+                                                        [n.key]: checked,
+                                                    });
+                                                    triggerSave();
+                                                }}
+                                                ariaLabel={n.title}
+                                            />
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -2464,7 +2474,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             <div className="flex justify-end pt-3">
                                 <button
                                     onClick={() => triggerSave('Preferensi berhasil disimpan!')}
-                                    className="px-4 py-2 bg-[#2563eb] text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm hover:bg-blue-600 transition-colors"
+                                    className="w-full sm:w-auto flex items-center justify-center px-4 py-2 bg-[#2563eb] text-white rounded-md text-xs sm:text-sm font-semibold shadow-sm hover:bg-blue-600 transition-colors cursor-pointer"
                                 >
                                     Simpan Preferensi
                                 </button>
@@ -2551,26 +2561,26 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             </p>
                         </div>
 
-                        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                             <button
                                 type="button"
                                 onClick={() => handleDisconnectIntegration('google_gemini')}
-                                className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline cursor-pointer"
+                                className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline cursor-pointer w-full sm:w-auto text-center sm:text-left"
                             >
                                 Putuskan / Hapus Key
                             </button>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-end gap-2 w-full sm:w-auto">
                                 <button
                                     type="button"
                                     onClick={() => setModalManage(null)}
-                                    className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                                    className="flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer text-center"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={savingIntegration}
-                                    className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
+                                    className="flex-1 sm:flex-initial px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs disabled:opacity-50 flex items-center justify-center gap-1.5 cursor-pointer"
                                 >
                                     {savingIntegration && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                                     <span>Simpan API Key</span>
@@ -2653,7 +2663,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                 <label className="text-xs font-semibold text-slate-700 dark:text-slate-200">
                                     Masa Aktif Token Refresh
                                 </label>
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     <button
                                         type="button"
                                         onClick={() => setDriveForm({ ...driveForm, expires_mode: 'testing' })}
@@ -2732,26 +2742,26 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                             <button
                                 type="button"
                                 onClick={() => handleDisconnectIntegration('google_drive')}
-                                className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline cursor-pointer"
+                                className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline cursor-pointer w-full sm:w-auto text-center sm:text-left"
                             >
                                 Putuskan Koneksi
                             </button>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-end gap-2 w-full sm:w-auto">
                                 <button
                                     type="button"
                                     onClick={() => setModalManage(null)}
-                                    className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                                    className="flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer text-center"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={savingIntegration}
-                                    className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
+                                    className="flex-1 sm:flex-initial px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs disabled:opacity-50 flex items-center justify-center gap-1.5 cursor-pointer"
                                 >
                                     {savingIntegration && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                                     <span>Simpan Kredensial</span>
@@ -2795,26 +2805,26 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                             </p>
                         </div>
 
-                        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                             <button
                                 type="button"
                                 onClick={() => handleDisconnectIntegration('google_calendar')}
-                                className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline cursor-pointer"
+                                className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline cursor-pointer w-full sm:w-auto text-center sm:text-left"
                             >
                                 Putuskan Koneksi
                             </button>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center justify-end gap-2 w-full sm:w-auto">
                                 <button
                                     type="button"
                                     onClick={() => setModalManage(null)}
-                                    className="px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer"
+                                    className="flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer text-center"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={savingIntegration}
-                                    className="px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
+                                    className="flex-1 sm:flex-initial px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs disabled:opacity-50 flex items-center justify-center gap-1.5 cursor-pointer"
                                 >
                                     {savingIntegration && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                                     <span>Simpan iCal URL</span>
@@ -2846,7 +2856,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                         <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
                             Autentikasi GitHub menggunakan OAuth Personal Access Token yang tidak kedaluwarsa secara otomatis. Sinkronisasi repositori dan aktivitas commit berjalan otomatis di latar belakang.
                         </p>
-                        <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+                        <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-2.5 pt-4 border-t border-slate-100 dark:border-slate-800">
                             <button
                                 type="button"
                                 onClick={() => {
@@ -2857,14 +2867,14 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                     setModalManage(null);
                                     triggerSave('Koneksi GitHub diputus.');
                                 }}
-                                className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline cursor-pointer"
+                                className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline cursor-pointer w-full sm:w-auto text-center sm:text-left"
                             >
                                 Putuskan Koneksi
                             </button>
                             <button
                                 type="button"
                                 onClick={() => setModalManage(null)}
-                                className="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold cursor-pointer"
+                                className="w-full sm:w-auto px-4 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold cursor-pointer"
                             >
                                 Tutup
                             </button>
