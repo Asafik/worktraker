@@ -49,11 +49,11 @@ export default function Login({ errors = {} }) {
                 setActiveSlide((prev) => (prev === 0 ? 1 : 0));
                 setSlideKey((k) => k + 1);
                 setIsFading(false);
-            }, 350);
-        }, 8500);
+            }, 300);
+        }, 5000);
 
         return () => clearInterval(interval);
-    }, []);
+    }, [slideKey]);
 
     const switchSlide = (targetIndex) => {
         if (targetIndex === activeSlide || isFading) return;
