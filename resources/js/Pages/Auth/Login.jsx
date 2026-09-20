@@ -70,7 +70,7 @@ export default function Login({ errors = {} }) {
 
     return (
         <div className="min-h-screen w-full flex flex-col lg:flex-row font-sans text-slate-800 bg-white selection:bg-blue-600 selection:text-white overflow-x-hidden">
-            <Head title="Masuk - WorkTrack" />
+            <Head title="Masuk - Rekamasa" />
 
             {/* ========================================================== */}
             {/* LEFT SIDE: CLEAN LIGHT SIGN IN PANEL (Seamless Full White) */}
@@ -81,11 +81,11 @@ export default function Login({ errors = {} }) {
                     <Link href="/" className="flex items-center gap-3 group cursor-pointer">
                         <img
                             src="/images/logo.png"
-                            alt="WorkTrack Logo"
+                            alt="Rekamasa Logo"
                             className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg object-contain shadow-md shadow-blue-500/20 group-hover:scale-105 transition-transform"
                         />
                         <span className="font-extrabold text-xl text-slate-900 tracking-tight">
-                            WorkTrack
+                            Rekamasa
                         </span>
                     </Link>
                 </div>
@@ -107,7 +107,7 @@ export default function Login({ errors = {} }) {
                     <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
                         Masuk ke{' '}
                         <span className="block mt-0.5">
-                            Work<span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">Track</span>
+                            Reka<span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">masa</span>
                         </span>
                     </h1>
 
@@ -250,7 +250,7 @@ export default function Login({ errors = {} }) {
 
                 {/* Left Bottom Footer */}
                 <div className="text-left text-[11px] text-slate-400">
-                    © 2026 WorkTrack. All rights reserved.
+                    © 2026 Rekamasa. All rights reserved.
                 </div>
             </div>
 
@@ -275,7 +275,7 @@ export default function Login({ errors = {} }) {
                 {/* Top Nav Status on Dark Right */}
                 <div className="flex items-center justify-end gap-3 text-xs text-slate-400 select-none z-10">
                     <span className={`transition-colors ${activeSlide === 0 ? 'text-blue-400 font-semibold' : 'hover:text-slate-200'}`}>
-                        {activeSlide === 0 ? 'Fitur WorkTrack' : 'Integrasi Ekosistem'}
+                        {activeSlide === 0 ? 'Fitur Rekamasa' : 'Integrasi Ekosistem'}
                     </span>
                     <span>·</span>
                     <span className="text-slate-500">
@@ -285,7 +285,7 @@ export default function Login({ errors = {} }) {
                 </div>
 
                 {/* Center Ecosystem Canvas (Interactive Dual Slide Showcase) */}
-                <div className="relative w-full flex items-center justify-center my-auto overflow-hidden py-1">
+                <div className="relative w-full flex items-center justify-center my-auto py-1">
                     <div
                         className={`relative w-[1120px] h-[580px] select-none origin-center scale-[0.72] sm:scale-[0.80] xl:scale-[0.92] 2xl:scale-100 transition-all duration-400 ease-in-out ${
                             isFading ? 'opacity-0 scale-[0.94]' : 'opacity-100'
@@ -344,8 +344,8 @@ export default function Login({ errors = {} }) {
                                     ? 'w-6 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)] cursor-default'
                                     : 'w-2 bg-slate-700 hover:bg-slate-500 cursor-pointer'
                             }`}
-                            title="Slide 1: Fitur WorkTrack"
-                            aria-label="Slide 1: Fitur WorkTrack"
+                            title="Slide 1: Fitur Rekamasa"
+                            aria-label="Slide 1: Fitur Rekamasa"
                         />
                         <button
                             type="button"
@@ -355,8 +355,8 @@ export default function Login({ errors = {} }) {
                                     ? 'w-6 bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.8)] cursor-default'
                                     : 'w-2 bg-slate-700 hover:bg-slate-500 cursor-pointer'
                             }`}
-                            title="Slide 2: Integrasi WorkTrack"
-                            aria-label="Slide 2: Integrasi WorkTrack"
+                            title="Slide 2: Integrasi Rekamasa"
+                            aria-label="Slide 2: Integrasi Rekamasa"
                         />
                     </div>
                 </div>
@@ -396,6 +396,46 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                 .wt-fade-f4 { opacity: 0; animation: wtFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.30s forwards; }
                 .wt-fade-f5 { opacity: 0; animation: wtFadeIn 0.45s cubic-bezier(0.16, 1, 0.3, 1) 0.22s forwards; }
 
+                /* Expanding Radar Waves (From Hub Center Outward) */
+                @keyframes wtRadarPulse {
+                    0% {
+                        transform: scale(0.18);
+                        opacity: 0;
+                    }
+                    10% {
+                        opacity: 0.70;
+                    }
+                    40% {
+                        opacity: 0.45;
+                    }
+                    75% {
+                        opacity: 0.20;
+                    }
+                    95% {
+                        opacity: 0.03;
+                    }
+                    100% {
+                        transform: scale(1.0);
+                        opacity: 0;
+                    }
+                }
+                .wt-radar-wave {
+                    opacity: 0;
+                    transform: scale(0.18);
+                    animation: wtRadarPulse 4.2s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+                    animation-fill-mode: both;
+                    will-change: transform, opacity;
+                }
+                .wt-radar-wave-1 {
+                    animation-delay: 0s;
+                }
+                .wt-radar-wave-2 {
+                    animation-delay: 1.4s;
+                }
+                .wt-radar-wave-3 {
+                    animation-delay: 2.8s;
+                }
+
                 @media (prefers-reduced-motion: reduce) {
                     .wt-fade-hub,
                     .wt-fade-f1,
@@ -405,6 +445,13 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     .wt-fade-f5 {
                         opacity: 1 !important;
                         animation: none !important;
+                    }
+                    .wt-radar-wave,
+                    .wt-radar-wave-1,
+                    .wt-radar-wave-2,
+                    .wt-radar-wave-3 {
+                        animation: none !important;
+                        display: none !important;
                     }
                     .wt-mask-path {
                         stroke-dasharray: none !important;
@@ -419,10 +466,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                 }
             `}</style>
 
-            {/* Concentric Radar Rings */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] rounded-full border border-blue-500/10 pointer-events-none" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] h-[460px] rounded-full border border-blue-400/15 pointer-events-none" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] rounded-full border border-cyan-400/25 pointer-events-none animate-pulse" />
+            {/* Expanding Animated Radar Waves (Hanya Garis Bundar Murni Tanpa Warna Fill) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] pointer-events-none z-0">
+                <span className="absolute inset-0 rounded-full border border-cyan-400/50 shadow-[0_0_12px_rgba(34,211,238,0.4)] opacity-0 wt-radar-wave wt-radar-wave-1" />
+                <span className="absolute inset-0 rounded-full border border-blue-400/55 shadow-[0_0_12px_rgba(59,130,246,0.4)] opacity-0 wt-radar-wave wt-radar-wave-2" />
+                <span className="absolute inset-0 rounded-full border border-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.4)] opacity-0 wt-radar-wave wt-radar-wave-3" />
+            </div>
 
             {/* SVG Cables (Highway Conduit Style: Outer Pipe + Dashed Center Line + Flowing Bead) */}
             <svg
@@ -440,10 +489,10 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         </feMerge>
                     </filter>
 
-                    {/* Mask elements to progressively reveal conduits & dashed lines from Hub outward to Cards */}
+                    {/* Mask elements to progressively reveal conduits & dashed lines from Cards inward to Hub */}
                     <mask id="mask-f1" maskUnits="userSpaceOnUse">
                         <path
-                            d="M 508 265 C 435 265, 375 100, 255 100"
+                            d="M 255 100 C 375 100, 435 265, 508 265"
                             stroke="#ffffff"
                             strokeWidth="22"
                             strokeLinecap="round"
@@ -451,12 +500,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             strokeDashoffset="750"
                             className="wt-mask-path"
                         >
-                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="0.75s" begin="0.50s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="2.8s" begin="0.40s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
                     <mask id="mask-f2" maskUnits="userSpaceOnUse">
                         <path
-                            d="M 508 315 C 435 315, 375 480, 255 480"
+                            d="M 255 480 C 375 480, 435 315, 508 315"
                             stroke="#ffffff"
                             strokeWidth="22"
                             strokeLinecap="round"
@@ -464,12 +513,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             strokeDashoffset="750"
                             className="wt-mask-path"
                         >
-                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="0.75s" begin="0.65s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="2.8s" begin="0.55s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
                     <mask id="mask-f3" maskUnits="userSpaceOnUse">
                         <path
-                            d="M 612 265 C 685 265, 745 100, 865 100"
+                            d="M 865 100 C 745 100, 685 265, 612 265"
                             stroke="#ffffff"
                             strokeWidth="22"
                             strokeLinecap="round"
@@ -477,12 +526,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             strokeDashoffset="750"
                             className="wt-mask-path"
                         >
-                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="0.75s" begin="0.55s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="2.8s" begin="0.45s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
                     <mask id="mask-f4" maskUnits="userSpaceOnUse">
                         <path
-                            d="M 612 315 C 685 315, 745 480, 865 480"
+                            d="M 865 480 C 745 480, 685 315, 612 315"
                             stroke="#ffffff"
                             strokeWidth="22"
                             strokeLinecap="round"
@@ -490,12 +539,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             strokeDashoffset="750"
                             className="wt-mask-path"
                         >
-                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="0.75s" begin="0.70s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="2.8s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
                     <mask id="mask-f5" maskUnits="userSpaceOnUse">
                         <path
-                            d="M 560 238 L 560 96"
+                            d="M 560 96 L 560 238"
                             stroke="#ffffff"
                             strokeWidth="22"
                             strokeLinecap="round"
@@ -503,7 +552,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             strokeDashoffset="300"
                             className="wt-mask-path"
                         >
-                            <animate attributeName="stroke-dashoffset" from="300" to="0" dur="0.65s" begin="0.58s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                            <animate attributeName="stroke-dashoffset" from="300" to="0" dur="2.5s" begin="0.48s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
 
@@ -535,11 +584,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </linearGradient>
                 </defs>
 
-                {/* 1. Projects Conduit (Hub -> Top-Left) */}
+                {/* 1. Projects Conduit (Top-Left -> Hub) */}
                 <g>
                     <g mask="url(#mask-f1)">
                         <path
-                            d="M 508 265 C 435 265, 375 100, 255 100"
+                            d="M 255 100 C 375 100, 435 265, 508 265"
                             stroke="url(#neon-f1)"
                             strokeWidth={activeNode === 'projects' ? '11.5' : '9.5'}
                             strokeOpacity={activeNode === 'projects' ? '1' : '0.85'}
@@ -547,7 +596,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
                         <path
-                            d="M 508 265 C 435 265, 375 100, 255 100"
+                            d="M 255 100 C 375 100, 435 265, 508 265"
                             stroke="#ffffff"
                             strokeWidth="2.2"
                             strokeDasharray="5 6"
@@ -557,25 +606,25 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </g>
                     <g className="wt-particle">
                         <circle r="9" fill="#38bdf8" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 508 265 C 435 265, 375 100, 255 100" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 100 C 375 100, 435 265, 508 265" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#67e8f9" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 508 265 C 435 265, 375 100, 255 100" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 100 C 375 100, 435 265, 508 265" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 508 265 C 435 265, 375 100, 255 100" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 100 C 375 100, 435 265, 508 265" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* 2. Tasks Conduit (Hub -> Bottom-Left) */}
+                {/* 2. Tasks Conduit (Bottom-Left -> Hub) */}
                 <g>
                     <g mask="url(#mask-f2)">
                         <path
-                            d="M 508 315 C 435 315, 375 480, 255 480"
+                            d="M 255 480 C 375 480, 435 315, 508 315"
                             stroke="url(#neon-f2)"
                             strokeWidth={activeNode === 'tasks' ? '11.5' : '9.5'}
                             strokeOpacity={activeNode === 'tasks' ? '1' : '0.85'}
@@ -583,7 +632,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
                         <path
-                            d="M 508 315 C 435 315, 375 480, 255 480"
+                            d="M 255 480 C 375 480, 435 315, 508 315"
                             stroke="#ffffff"
                             strokeWidth="2.2"
                             strokeDasharray="5 6"
@@ -593,25 +642,25 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </g>
                     <g className="wt-particle">
                         <circle r="9" fill="#10b981" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 508 315 C 435 315, 375 480, 255 480" dur="3.2s" begin="1.45s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 480 C 375 480, 435 315, 508 315" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#34d399" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 508 315 C 435 315, 375 480, 255 480" dur="3.2s" begin="1.45s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 480 C 375 480, 435 315, 508 315" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 508 315 C 435 315, 375 480, 255 480" dur="3.2s" begin="1.45s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 480 C 375 480, 435 315, 508 315" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* 3. Notes Conduit (Hub -> Top-Right) */}
+                {/* 3. Notes Conduit (Top-Right -> Hub) */}
                 <g>
                     <g mask="url(#mask-f3)">
                         <path
-                            d="M 612 265 C 685 265, 745 100, 865 100"
+                            d="M 865 100 C 745 100, 685 265, 612 265"
                             stroke="url(#neon-f3)"
                             strokeWidth={activeNode === 'notes' ? '11.5' : '9.5'}
                             strokeOpacity={activeNode === 'notes' ? '1' : '0.85'}
@@ -619,7 +668,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
                         <path
-                            d="M 612 265 C 685 265, 745 100, 865 100"
+                            d="M 865 100 C 745 100, 685 265, 612 265"
                             stroke="#ffffff"
                             strokeWidth="2.2"
                             strokeDasharray="5 6"
@@ -629,25 +678,25 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </g>
                     <g className="wt-particle">
                         <circle r="9" fill="#f59e0b" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 612 265 C 685 265, 745 100, 865 100" dur="3.2s" begin="1.30s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.30s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 100 C 745 100, 685 265, 612 265" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#fde047" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 612 265 C 685 265, 745 100, 865 100" dur="3.2s" begin="1.30s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.30s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 100 C 745 100, 685 265, 612 265" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 612 265 C 685 265, 745 100, 865 100" dur="3.2s" begin="1.30s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.30s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 100 C 745 100, 685 265, 612 265" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* 4. Portfolio Conduit (Hub -> Bottom-Right) */}
+                {/* 4. Portfolio Conduit (Bottom-Right -> Hub) */}
                 <g>
                     <g mask="url(#mask-f4)">
                         <path
-                            d="M 612 315 C 685 315, 745 480, 865 480"
+                            d="M 865 480 C 745 480, 685 315, 612 315"
                             stroke="url(#neon-f4)"
                             strokeWidth={activeNode === 'portfolio' ? '11.5' : '9.5'}
                             strokeOpacity={activeNode === 'portfolio' ? '1' : '0.85'}
@@ -655,7 +704,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
                         <path
-                            d="M 612 315 C 685 315, 745 480, 865 480"
+                            d="M 865 480 C 745 480, 685 315, 612 315"
                             stroke="#ffffff"
                             strokeWidth="2.2"
                             strokeDasharray="5 6"
@@ -665,25 +714,25 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </g>
                     <g className="wt-particle">
                         <circle r="9" fill="#818cf8" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 612 315 C 685 315, 745 480, 865 480" dur="3.2s" begin="1.50s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.50s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 480 C 745 480, 685 315, 612 315" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#c4b5fd" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 612 315 C 685 315, 745 480, 865 480" dur="3.2s" begin="1.50s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.50s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 480 C 745 480, 685 315, 612 315" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 612 315 C 685 315, 745 480, 865 480" dur="3.2s" begin="1.50s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.50s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 480 C 745 480, 685 315, 612 315" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* 5. Archive Conduit (Hub -> Top-Center) */}
+                {/* 5. Archive Conduit (Top-Center -> Hub) */}
                 <g>
                     <g mask="url(#mask-f5)">
                         <path
-                            d="M 560 238 L 560 96"
+                            d="M 560 96 L 560 238"
                             stroke="url(#neon-f5)"
                             strokeWidth={activeNode === 'archive' ? '11.5' : '9.5'}
                             strokeOpacity={activeNode === 'archive' ? '1' : '0.85'}
@@ -691,7 +740,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
                         <path
-                            d="M 560 238 L 560 96"
+                            d="M 560 96 L 560 238"
                             stroke="#ffffff"
                             strokeWidth="2.2"
                             strokeDasharray="5 6"
@@ -701,32 +750,32 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </g>
                     <g className="wt-particle">
                         <circle r="9" fill="#06b6d4" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 560 238 L 560 96" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animateMotion path="M 560 96 L 560 238" dur="3.2s" begin="3.00s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.00s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#22d3ee" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 560 238 L 560 96" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animateMotion path="M 560 96 L 560 238" dur="3.2s" begin="3.00s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.00s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 560 238 L 560 96" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animateMotion path="M 560 96 L 560 238" dur="3.2s" begin="3.00s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.00s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
             </svg>
 
-            {/* Center WorkTrack Hub */}
+            {/* Center Rekamasa Hub */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center wt-fade-hub">
                 <div className="w-24 h-24 sm:w-26 sm:h-26 rounded-2xl bg-gradient-to-b from-[#0e1f4d] via-[#091433] to-[#060c20] border-2 border-blue-400/60 shadow-[0_0_45px_rgba(59,130,246,0.6)] flex flex-col items-center justify-center relative group hover:scale-105 transition-all duration-300 cursor-pointer p-3">
                     <div className="absolute inset-0 rounded-2xl bg-blue-500/10 pointer-events-none" />
                     <img
                         src="/images/logo.png"
-                        alt="WorkTrack Logo"
+                        alt="Rekamasa Logo"
                         className="w-11 h-11 sm:w-13 sm:h-13 object-contain drop-shadow-[0_0_12px_rgba(59,130,246,0.8)] relative z-10"
                     />
                     <span className="text-[11px] sm:text-xs font-extrabold text-slate-200 tracking-tight mt-1.5 select-none relative z-10">
-                        WorkTrack
+                        Rekamasa
                     </span>
                     {/* 5 Matching Pin Sockets */}
                     <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-cyan-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
@@ -873,12 +922,59 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     animation: wtFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.40s forwards;
                 }
 
+                /* Expanding Radar Waves (From Hub Center Outward) */
+                @keyframes wtRadarPulse {
+                    0% {
+                        transform: scale(0.18);
+                        opacity: 0;
+                    }
+                    10% {
+                        opacity: 0.70;
+                    }
+                    40% {
+                        opacity: 0.45;
+                    }
+                    75% {
+                        opacity: 0.20;
+                    }
+                    95% {
+                        opacity: 0.03;
+                    }
+                    100% {
+                        transform: scale(1.0);
+                        opacity: 0;
+                    }
+                }
+                .wt-radar-wave {
+                    opacity: 0;
+                    transform: scale(0.18);
+                    animation: wtRadarPulse 4.2s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
+                    animation-fill-mode: both;
+                    will-change: transform, opacity;
+                }
+                .wt-radar-wave-1 {
+                    animation-delay: 0s;
+                }
+                .wt-radar-wave-2 {
+                    animation-delay: 1.4s;
+                }
+                .wt-radar-wave-3 {
+                    animation-delay: 2.8s;
+                }
+
                 @media (prefers-reduced-motion: reduce) {
                     .wt-fade-hub-int,
                     .wt-fade-card-int,
                     .wt-fade-badge-int {
                         opacity: 1 !important;
                         animation: none !important;
+                    }
+                    .wt-radar-wave,
+                    .wt-radar-wave-1,
+                    .wt-radar-wave-2,
+                    .wt-radar-wave-3 {
+                        animation: none !important;
+                        display: none !important;
                     }
                     .wt-mask-path-int {
                         stroke-dasharray: none !important;
@@ -891,10 +987,14 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         display: none !important;
                     }
                 }
-            `}</style>            {/* Concentric Radar Rings */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[680px] h-[680px] rounded-full border border-blue-500/10 pointer-events-none" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[460px] h-[460px] rounded-full border border-indigo-400/15 pointer-events-none" />
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[240px] h-[240px] rounded-full border border-cyan-400/25 pointer-events-none animate-pulse" />
+            `}</style>
+
+            {/* Expanding Animated Radar Waves (Hanya Garis Bundar Murni Tanpa Warna Fill) */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] pointer-events-none z-0">
+                <span className="absolute inset-0 rounded-full border border-cyan-400/50 shadow-[0_0_12px_rgba(34,211,238,0.4)] opacity-0 wt-radar-wave wt-radar-wave-1" />
+                <span className="absolute inset-0 rounded-full border border-blue-400/55 shadow-[0_0_12px_rgba(59,130,246,0.4)] opacity-0 wt-radar-wave wt-radar-wave-2" />
+                <span className="absolute inset-0 rounded-full border border-sky-400/50 shadow-[0_0_12px_rgba(56,189,248,0.4)] opacity-0 wt-radar-wave wt-radar-wave-3" />
+            </div>
 
             {/* Decorative Top & Bottom Data Stream Badges */}
             <div className="absolute top-[16px] left-1/2 -translate-x-1/2 z-20 wt-fade-badge-int pointer-events-none select-none">
@@ -930,22 +1030,22 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     {/* Progressive Reveal Masks */}
                     <mask id="mask-int-github" maskUnits="userSpaceOnUse">
                         <path d="M 255 100 C 375 100, 435 265, 508 265" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="750" strokeDashoffset="750" className="wt-mask-path-int">
-                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="0.75s" begin="0.65s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="2.8s" begin="0.40s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
                     <mask id="mask-int-gemini" maskUnits="userSpaceOnUse">
                         <path d="M 255 480 C 375 480, 435 315, 508 315" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="750" strokeDashoffset="750" className="wt-mask-path-int">
-                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="0.75s" begin="0.85s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="2.8s" begin="0.55s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
                     <mask id="mask-int-calendar" maskUnits="userSpaceOnUse">
                         <path d="M 865 100 C 745 100, 685 265, 612 265" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="750" strokeDashoffset="750" className="wt-mask-path-int">
-                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="0.75s" begin="0.65s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="2.8s" begin="0.45s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
                     <mask id="mask-int-drive" maskUnits="userSpaceOnUse">
                         <path d="M 865 480 C 745 480, 685 315, 612 315" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="750" strokeDashoffset="750" className="wt-mask-path-int">
-                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="0.75s" begin="0.85s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                            <animate attributeName="stroke-dashoffset" from="750" to="0" dur="2.8s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
 
@@ -992,16 +1092,16 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </g>
                     <g className="wt-particle-int">
                         <circle r="9" fill="#818cf8" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 255 100 C 375 100, 435 265, 508 265" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 100 C 375 100, 435 265, 508 265" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#a5b4fc" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 255 100 C 375 100, 435 265, 508 265" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 100 C 375 100, 435 265, 508 265" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 255 100 C 375 100, 435 265, 508 265" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 100 C 375 100, 435 265, 508 265" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.20s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
@@ -1028,16 +1128,16 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </g>
                     <g className="wt-particle-int">
                         <circle r="9" fill="#8AB4F8" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 255 480 C 375 480, 435 315, 508 315" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 480 C 375 480, 435 315, 508 315" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#C58AF9" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 255 480 C 375 480, 435 315, 508 315" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 480 C 375 480, 435 315, 508 315" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 255 480 C 375 480, 435 315, 508 315" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animateMotion path="M 255 480 C 375 480, 435 315, 508 315" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.35s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
@@ -1064,16 +1164,16 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </g>
                     <g className="wt-particle-int">
                         <circle r="9" fill="#4285F4" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 865 100 C 745 100, 685 265, 612 265" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 100 C 745 100, 685 265, 612 265" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#60a5fa" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 865 100 C 745 100, 685 265, 612 265" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 100 C 745 100, 685 265, 612 265" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 865 100 C 745 100, 685 265, 612 265" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 100 C 745 100, 685 265, 612 265" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.25s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
@@ -1100,32 +1200,32 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </g>
                     <g className="wt-particle-int">
                         <circle r="9" fill="#10b981" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 865 480 C 745 480, 685 315, 612 315" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 480 C 745 480, 685 315, 612 315" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#34d399" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 865 480 C 745 480, 685 315, 612 315" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 480 C 745 480, 685 315, 612 315" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 865 480 C 745 480, 685 315, 612 315" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animateMotion path="M 865 480 C 745 480, 685 315, 612 315" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="3.40s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
             </svg>
 
-            {/* Center WorkTrack Hub */}
+            {/* Center Rekamasa Hub */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center wt-fade-hub-int">
                 <div className="w-24 h-24 sm:w-26 sm:h-26 rounded-2xl bg-gradient-to-b from-[#0e1f4d] via-[#091433] to-[#060c20] border-2 border-blue-400/60 shadow-[0_0_45px_rgba(59,130,246,0.6)] flex flex-col items-center justify-center relative group hover:scale-105 transition-all duration-300 cursor-pointer p-3">
                     <div className="absolute inset-0 rounded-2xl bg-blue-500/10 pointer-events-none" />
                     <img
                         src="/images/logo.png"
-                        alt="WorkTrack Logo"
+                        alt="Rekamasa Logo"
                         className="w-11 h-11 sm:w-13 sm:h-13 object-contain drop-shadow-[0_0_12px_rgba(59,130,246,0.8)] relative z-10"
                     />
                     <span className="text-[11px] sm:text-xs font-extrabold text-slate-200 tracking-tight mt-1.5 select-none relative z-10">
-                        WorkTrack
+                        Rekamasa
                     </span>
                 </div>
             </div>
