@@ -14,9 +14,21 @@ import {
     Calendar as CalendarIcon,
     BarChart3,
     Archive as ArchiveIcon,
-    Plus,
 } from 'lucide-react';
 import Checkbox from '@/Components/Checkbox';
+
+const GoogleGeminiIcon = ({ className = 'w-5 h-5' }) => (
+    <svg className={className} viewBox="0 0 24 24" fill="none">
+        <defs>
+            <linearGradient id="geminiGradLogin" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#1B72E8" />
+                <stop offset="50%" stopColor="#8AB4F8" />
+                <stop offset="100%" stopColor="#D96570" />
+            </linearGradient>
+        </defs>
+        <path d="M12 2C12 7.52 7.52 12 2 12C7.52 12 12 16.48 12 22C12 16.48 16.48 12 22 12C16.48 12 12 7.52 12 2Z" fill="url(#geminiGradLogin)" />
+    </svg>
+);
 
 export default function Login({ errors = {} }) {
     const [loginInput, setLoginInput] = useState('');
@@ -73,10 +85,14 @@ export default function Login({ errors = {} }) {
 
                 {/* Form Container (Directly on Canvas, No Card Wrapper) */}
                 <div className="max-w-[400px] w-full mx-auto my-auto py-6">
-                    {/* Welcome Badge */}
-                    <div className="inline-block mb-3">
+                    {/* Welcome & Gemini AI Badges */}
+                    <div className="flex items-center gap-2 mb-3">
                         <span className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-100">
                             Selamat Datang
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 text-indigo-600 border border-indigo-100/80 shadow-2xs">
+                            <GoogleGeminiIcon className="w-3.5 h-3.5" />
+                            <span>Gemini AI Ready</span>
                         </span>
                     </div>
 
@@ -89,7 +105,7 @@ export default function Login({ errors = {} }) {
                     </h1>
 
                     <p className="text-xs sm:text-sm text-slate-500 leading-relaxed mt-2.5">
-                        Kelola proyek, tugas, dan produktivitas Anda dalam satu tempat.
+                        Kelola proyek, tugas, dan produktivitas Anda didukung asisten cerdas Gemini AI.
                     </p>
 
                     {/* Error Banner */}
@@ -323,8 +339,9 @@ export default function Login({ errors = {} }) {
                                 <stop offset="1" stopColor="#8b5cf6" />
                             </linearGradient>
                             <linearGradient id="neon-node10" x1="830" y1="538" x2="510" y2="320" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#2dd4bf" />
-                                <stop offset="1" stopColor="#06b6d4" />
+                                <stop stopColor="#8ab4f8" />
+                                <stop offset="0.5" stopColor="#c084fc" />
+                                <stop offset="1" stopColor="#38bdf8" />
                             </linearGradient>
                         </defs>
 
@@ -595,14 +612,14 @@ export default function Login({ errors = {} }) {
                             </circle>
                         </g>
 
-                        {/* 10. And More */}
+                        {/* 10. Gemini AI */}
                         <g>
                             {/* Base Bold Cable */}
                             <path
                                 d="M 830 538 C 740 538, 620 350, 510 320"
                                 stroke="url(#neon-node10)"
-                                strokeWidth={activeNode === 'more' ? '5' : '3.5'}
-                                strokeOpacity={activeNode === 'more' ? '1' : '0.65'}
+                                strokeWidth={activeNode === 'gemini' ? '5' : '3.5'}
+                                strokeOpacity={activeNode === 'gemini' ? '1' : '0.65'}
                                 strokeLinecap="round"
                             />
                             {/* Animated Pulse Stream */}
@@ -616,10 +633,10 @@ export default function Login({ errors = {} }) {
                                 <animate attributeName="stroke-dashoffset" from="360" to="0" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
                             </path>
                             {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#2dd4bf" opacity="0.5" filter="url(#photon-glow)">
+                            <circle r="7.5" fill="#8ab4f8" opacity="0.6" filter="url(#photon-glow)">
                                 <animateMotion path="M 830 538 C 740 538, 620 350, 510 320" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
                             </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#2dd4bf" strokeWidth="2" filter="url(#photon-glow)">
+                            <circle r="3.5" fill="#ffffff" stroke="#8ab4f8" strokeWidth="2" filter="url(#photon-glow)">
                                 <animateMotion path="M 830 538 C 740 538, 620 350, 510 320" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
                             </circle>
                         </g>
@@ -868,27 +885,32 @@ export default function Login({ errors = {} }) {
                         <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-rose-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(244,63,94,0.8)] z-30" />
                     </div>
 
-                    {/* 10. And More */}
+                    {/* 10. Gemini AI */}
                     <div
-                        onMouseEnter={() => setActiveNode('more')}
+                        onMouseEnter={() => setActiveNode('gemini')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[511px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
-                            activeNode === 'more' ? 'scale-103 border-cyan-400 shadow-cyan-500/20' : ''
+                        className={`absolute top-[511px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-indigo-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                            activeNode === 'gemini' ? 'scale-103 border-indigo-400 shadow-indigo-500/20' : ''
                         }`}
                     >
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-slate-800 border border-slate-700 text-slate-200 flex items-center justify-center shrink-0 shadow-xs">
-                            <Plus className="w-5 h-5" />
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-gradient-to-br from-blue-950 via-[#131f4a] to-indigo-950 border border-blue-500/40 flex items-center justify-center shrink-0 shadow-xs group-hover:border-blue-400">
+                            <GoogleGeminiIcon className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
-                            <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-300 transition-colors leading-tight">
-                                And More
-                            </h3>
+                            <div className="flex items-center gap-1.5">
+                                <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-indigo-300 transition-colors leading-tight">
+                                    Gemini AI
+                                </h3>
+                                <span className="px-1.5 py-0.2 text-[9px] font-extrabold rounded bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+                                    AI
+                                </span>
+                            </div>
                             <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
-                                Connect your tools
+                                Smart assistant & insights
                             </p>
                         </div>
                         {/* Hardware Cable Port Socket */}
-                        <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-teal-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(45,212,191,0.8)] z-30" />
+                        <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-indigo-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(129,140,248,0.8)] z-30" />
                     </div>
                 </div>
 
