@@ -165,7 +165,7 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
             title: proj.name,
             desc: proj.description || 'Modern web application built with clean architecture, robust features, and responsive design.',
             tags: Array.isArray(proj.tech_stack) && proj.tech_stack.length > 0 ? proj.tech_stack.slice(0, 3) : ['Laravel', 'MySQL', 'Tailwind CSS'],
-            img: proj.cover_image_url || `/images/proj${(idx % 4) + 1}.png`,
+            img: proj.cover_image_url || '/images/default_project_cover.jpg',
             link: proj.slug ? `/projects/${proj.slug}` : (proj.live_url || proj.github_repo_url || '/projects'),
             isFeatured: !!proj.is_featured,
         }))
@@ -466,6 +466,9 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                                             src={proj.img}
                                             alt={proj.title}
                                             className="w-full h-full object-cover group-hover:scale-106 transition-transform duration-500 ease-out"
+                                            onError={(e) => {
+                                                e.currentTarget.src = '/images/default_project_cover.jpg';
+                                            }}
                                         />
                                         {/* Tag badge */}
                                         {proj.isFeatured ? (

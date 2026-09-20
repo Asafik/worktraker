@@ -1452,15 +1452,14 @@ export default function PortfolioPage({ projects: initialProjects = [], userProf
                                                 className="rounded-md border border-slate-200 dark:border-slate-800 p-1.5 bg-slate-50/70 dark:bg-[#0c183b] space-y-1"
                                             >
                                                 <div className="w-full h-14 rounded overflow-hidden bg-slate-200 dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800">
-                                                    {p.cover_image_url ? (
-                                                        <img
-                                                            src={p.cover_image_url}
-                                                            alt={p.title}
-                                                            className="w-full h-full object-cover"
-                                                        />
-                                                    ) : (
-                                                        renderPreviewMockup(p.previewType)
-                                                    )}
+                                                    <img
+                                                        src={p.cover_image_url || DEFAULT_PROJECT_IMAGE}
+                                                        alt={p.title}
+                                                        className="w-full h-full object-cover"
+                                                        onError={(e) => {
+                                                            e.currentTarget.src = DEFAULT_PROJECT_IMAGE;
+                                                        }}
+                                                    />
                                                 </div>
                                                 <p className="text-[11px] font-bold text-slate-800 dark:text-slate-200 truncate">
                                                     {p.title}
