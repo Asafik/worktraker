@@ -427,11 +427,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         opacity: 1 !important;
                         animation: none !important;
                     }
-                    .wt-cable-path {
+                    .wt-mask-path {
                         stroke-dasharray: none !important;
                         stroke-dashoffset: 0 !important;
                     }
-                    .wt-cable-path animate {
+                    .wt-mask-path animate {
                         display: none !important;
                     }
                     .wt-particle {
@@ -445,7 +445,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] h-[360px] rounded-full border border-blue-400/15 pointer-events-none" />
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[210px] h-[210px] rounded-full border border-cyan-400/25 pointer-events-none animate-pulse" />
 
-            {/* SVG Cables (Thick, drawn outward from Center Hub to Cards) */}
+            {/* SVG Cables (Highway Conduit Style: Outer Pipe + Dashed Center Line + Flowing Bead) */}
             <svg
                 className="absolute inset-0 w-full h-full pointer-events-none z-10"
                 viewBox="0 0 1000 540"
@@ -454,252 +454,333 @@ function SlideFeatures({ activeNode, setActiveNode }) {
             >
                 <defs>
                     <filter id="photon-glow-f" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                        <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
                         <feMerge>
                             <feMergeNode in="coloredBlur" />
                             <feMergeNode in="SourceGraphic" />
                         </feMerge>
                     </filter>
 
+                    {/* Mask elements to progressively reveal conduits & dashed lines from Cards to Hub */}
+                    <mask id="mask-f1">
+                        <path
+                            d="M 240 88 C 310 88, 370 240, 460 240"
+                            stroke="#ffffff"
+                            strokeWidth="16"
+                            strokeLinecap="round"
+                            strokeDasharray="600"
+                            strokeDashoffset="600"
+                            className="wt-mask-path"
+                        >
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.75s" begin="0.75s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
+                    <mask id="mask-f2">
+                        <path
+                            d="M 240 270 C 310 270, 380 270, 450 270"
+                            stroke="#ffffff"
+                            strokeWidth="16"
+                            strokeLinecap="round"
+                            strokeDasharray="600"
+                            strokeDashoffset="600"
+                            className="wt-mask-path"
+                        >
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.65s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
+                    <mask id="mask-f3">
+                        <path
+                            d="M 240 452 C 310 452, 370 300, 460 300"
+                            stroke="#ffffff"
+                            strokeWidth="16"
+                            strokeLinecap="round"
+                            strokeDasharray="600"
+                            strokeDashoffset="600"
+                            className="wt-mask-path"
+                        >
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.75s" begin="0.90s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
+                    <mask id="mask-f4">
+                        <path
+                            d="M 760 88 C 690 88, 630 240, 540 240"
+                            stroke="#ffffff"
+                            strokeWidth="16"
+                            strokeLinecap="round"
+                            strokeDasharray="600"
+                            strokeDashoffset="600"
+                            className="wt-mask-path"
+                        >
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.75s" begin="0.75s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
+                    <mask id="mask-f5">
+                        <path
+                            d="M 760 270 C 690 270, 620 270, 550 270"
+                            stroke="#ffffff"
+                            strokeWidth="16"
+                            strokeLinecap="round"
+                            strokeDasharray="600"
+                            strokeDashoffset="600"
+                            className="wt-mask-path"
+                        >
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.65s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
+                    <mask id="mask-f6">
+                        <path
+                            d="M 760 452 C 690 452, 630 300, 540 300"
+                            stroke="#ffffff"
+                            strokeWidth="16"
+                            strokeLinecap="round"
+                            strokeDasharray="600"
+                            strokeDashoffset="600"
+                            className="wt-mask-path"
+                        >
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.75s" begin="0.90s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
+
+                    {/* Vibrant Neon Conduit Gradients */}
                     <linearGradient id="neon-f1" x1="240" y1="88" x2="460" y2="240" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#38bdf8" />
-                        <stop offset="1" stopColor="#3b82f6" />
+                        <stop stopColor="#0ea5e9" />
+                        <stop offset="1" stopColor="#38bdf8" />
                     </linearGradient>
                     <linearGradient id="neon-f2" x1="240" y1="270" x2="450" y2="270" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#10b981" />
-                        <stop offset="1" stopColor="#06b6d4" />
+                        <stop stopColor="#059669" />
+                        <stop offset="1" stopColor="#10b981" />
                     </linearGradient>
                     <linearGradient id="neon-f3" x1="240" y1="452" x2="460" y2="300" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#a855f7" />
-                        <stop offset="1" stopColor="#6366f1" />
+                        <stop stopColor="#7c3aed" />
+                        <stop offset="1" stopColor="#a855f7" />
                     </linearGradient>
 
                     <linearGradient id="neon-f4" x1="760" y1="88" x2="540" y2="240" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#4285f4" />
+                        <stop stopColor="#2563eb" />
                         <stop offset="1" stopColor="#38bdf8" />
                     </linearGradient>
                     <linearGradient id="neon-f5" x1="760" y1="270" x2="550" y2="270" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#3b82f6" />
+                        <stop stopColor="#4f46e5" />
                         <stop offset="1" stopColor="#818cf8" />
                     </linearGradient>
                     <linearGradient id="neon-f6" x1="760" y1="452" x2="540" y2="300" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#06b6d4" />
+                        <stop stopColor="#0d9488" />
                         <stop offset="1" stopColor="#14b8a6" />
                     </linearGradient>
                 </defs>
 
                 {/* 1. Projects (Left Top -> Hub) */}
                 <g>
-                    <path
-                        d="M 240 88 C 310 88, 370 240, 460 240"
-                        stroke="url(#neon-f1)"
-                        strokeWidth={activeNode === 'projects' ? '5.5' : '4'}
-                        strokeOpacity={activeNode === 'projects' ? '1' : '0.75'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.75s"
-                            begin="0.75s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-f1)">
+                        <path
+                            d="M 240 88 C 310 88, 370 240, 460 240"
+                            stroke="url(#neon-f1)"
+                            strokeWidth={activeNode === 'projects' ? '8.5' : '7'}
+                            strokeOpacity={activeNode === 'projects' ? '0.95' : '0.8'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 240 88 C 310 88, 370 240, 460 240"
+                            stroke="#ffffff"
+                            strokeWidth="1.5"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle">
-                        <circle r="4" fill="#38bdf8" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="7" fill="#38bdf8" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 240 88 C 310 88, 370 240, 460 240" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="4.5" fill="#38bdf8" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 240 88 C 310 88, 370 240, 460 240" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 240 88 C 310 88, 370 240, 460 240" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
                 {/* 2. Tasks (Left Middle -> Hub) */}
                 <g>
-                    <path
-                        d="M 240 270 C 310 270, 380 270, 450 270"
-                        stroke="url(#neon-f2)"
-                        strokeWidth={activeNode === 'tasks' ? '5.5' : '4'}
-                        strokeOpacity={activeNode === 'tasks' ? '1' : '0.75'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.65s"
-                            begin="0.60s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-f2)">
+                        <path
+                            d="M 240 270 C 310 270, 380 270, 450 270"
+                            stroke="url(#neon-f2)"
+                            strokeWidth={activeNode === 'tasks' ? '8.5' : '7'}
+                            strokeOpacity={activeNode === 'tasks' ? '0.95' : '0.8'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 240 270 C 310 270, 380 270, 450 270"
+                            stroke="#ffffff"
+                            strokeWidth="1.5"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle">
-                        <circle r="4" fill="#10b981" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="7" fill="#10b981" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 240 270 C 310 270, 380 270, 450 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="4.5" fill="#34d399" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 240 270 C 310 270, 380 270, 450 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 240 270 C 310 270, 380 270, 450 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
                 {/* 3. Notes (Left Bottom -> Hub) */}
                 <g>
-                    <path
-                        d="M 240 452 C 310 452, 370 300, 460 300"
-                        stroke="url(#neon-f3)"
-                        strokeWidth={activeNode === 'notes' ? '5.5' : '4'}
-                        strokeOpacity={activeNode === 'notes' ? '1' : '0.75'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.75s"
-                            begin="0.90s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-f3)">
+                        <path
+                            d="M 240 452 C 310 452, 370 300, 460 300"
+                            stroke="url(#neon-f3)"
+                            strokeWidth={activeNode === 'notes' ? '8.5' : '7'}
+                            strokeOpacity={activeNode === 'notes' ? '0.95' : '0.8'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 240 452 C 310 452, 370 300, 460 300"
+                            stroke="#ffffff"
+                            strokeWidth="1.5"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle">
-                        <circle r="4" fill="#a855f7" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="7" fill="#a855f7" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 240 452 C 310 452, 370 300, 460 300" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="4.5" fill="#c084fc" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 240 452 C 310 452, 370 300, 460 300" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 240 452 C 310 452, 370 300, 460 300" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
                 {/* 4. Calendar (Right Top -> Hub) */}
                 <g>
-                    <path
-                        d="M 760 88 C 690 88, 630 240, 540 240"
-                        stroke="url(#neon-f4)"
-                        strokeWidth={activeNode === 'calendar' ? '5.5' : '4'}
-                        strokeOpacity={activeNode === 'calendar' ? '1' : '0.75'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.75s"
-                            begin="0.75s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-f4)">
+                        <path
+                            d="M 760 88 C 690 88, 630 240, 540 240"
+                            stroke="url(#neon-f4)"
+                            strokeWidth={activeNode === 'calendar' ? '8.5' : '7'}
+                            strokeOpacity={activeNode === 'calendar' ? '0.95' : '0.8'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 760 88 C 690 88, 630 240, 540 240"
+                            stroke="#ffffff"
+                            strokeWidth="1.5"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle">
-                        <circle r="4" fill="#4285f4" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="7" fill="#38bdf8" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 760 88 C 690 88, 630 240, 540 240" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="4.5" fill="#60a5fa" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 760 88 C 690 88, 630 240, 540 240" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 760 88 C 690 88, 630 240, 540 240" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
                 {/* 5. Portfolio (Right Middle -> Hub) */}
                 <g>
-                    <path
-                        d="M 760 270 C 690 270, 620 270, 550 270"
-                        stroke="url(#neon-f5)"
-                        strokeWidth={activeNode === 'portfolio' ? '5.5' : '4'}
-                        strokeOpacity={activeNode === 'portfolio' ? '1' : '0.75'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.65s"
-                            begin="0.60s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-f5)">
+                        <path
+                            d="M 760 270 C 690 270, 620 270, 550 270"
+                            stroke="url(#neon-f5)"
+                            strokeWidth={activeNode === 'portfolio' ? '8.5' : '7'}
+                            strokeOpacity={activeNode === 'portfolio' ? '0.95' : '0.8'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 760 270 C 690 270, 620 270, 550 270"
+                            stroke="#ffffff"
+                            strokeWidth="1.5"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle">
-                        <circle r="4" fill="#818cf8" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="7" fill="#818cf8" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 760 270 C 690 270, 620 270, 550 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="4.5" fill="#a5b4fc" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 760 270 C 690 270, 620 270, 550 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 760 270 C 690 270, 620 270, 550 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
                 {/* 6. Archive (Right Bottom -> Hub) */}
                 <g>
-                    <path
-                        d="M 760 452 C 690 452, 630 300, 540 300"
-                        stroke="url(#neon-f6)"
-                        strokeWidth={activeNode === 'archive' ? '5.5' : '4'}
-                        strokeOpacity={activeNode === 'archive' ? '1' : '0.75'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.75s"
-                            begin="0.90s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-f6)">
+                        <path
+                            d="M 760 452 C 690 452, 630 300, 540 300"
+                            stroke="url(#neon-f6)"
+                            strokeWidth={activeNode === 'archive' ? '8.5' : '7'}
+                            strokeOpacity={activeNode === 'archive' ? '0.95' : '0.8'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 760 452 C 690 452, 630 300, 540 300"
+                            stroke="#ffffff"
+                            strokeWidth="1.5"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle">
-                        <circle r="4" fill="#06b6d4" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="7" fill="#06b6d4" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 760 452 C 690 452, 630 300, 540 300" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="4.5" fill="#2dd4bf" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 760 452 C 690 452, 630 300, 540 300" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 760 452 C 690 452, 630 300, 540 300" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
@@ -891,11 +972,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         opacity: 1 !important;
                         animation: none !important;
                     }
-                    .wt-cable-path-int {
+                    .wt-mask-path-int {
                         stroke-dasharray: none !important;
                         stroke-dashoffset: 0 !important;
                     }
-                    .wt-cable-path-int animate {
+                    .wt-mask-path-int animate {
                         display: none !important;
                     }
                     .wt-particle-int {
@@ -924,7 +1005,7 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                 </div>
             </div>
 
-            {/* SVG Data Pipelines (Hub -> GitHub & Google Drive) */}
+            {/* SVG Data Pipelines (Highway Conduit Style: Outer Pipe + Dashed Center Line + Flowing Bead) */}
             <svg
                 className="absolute inset-0 w-full h-full pointer-events-none z-10"
                 viewBox="0 0 1000 540"
@@ -933,12 +1014,44 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
             >
                 <defs>
                     <filter id="photon-glow-int" x="-50%" y="-50%" width="200%" height="200%">
-                        <feGaussianBlur stdDeviation="3" result="coloredBlur" />
+                        <feGaussianBlur stdDeviation="3.5" result="coloredBlur" />
                         <feMerge>
                             <feMergeNode in="coloredBlur" />
                             <feMergeNode in="SourceGraphic" />
                         </feMerge>
                     </filter>
+
+                    {/* Progressive Reveal Masks */}
+                    <mask id="mask-int-1">
+                        <path d="M 285 270 L 450 270" stroke="#ffffff" strokeWidth="16" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.65s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
+                    <mask id="mask-int-2">
+                        <path d="M 285 246 C 330 170, 390 140, 465 235" stroke="#ffffff" strokeWidth="16" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.75s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
+                    <mask id="mask-int-3">
+                        <path d="M 285 294 C 330 370, 390 400, 465 305" stroke="#ffffff" strokeWidth="16" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.90s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
+                    <mask id="mask-int-4">
+                        <path d="M 715 270 L 550 270" stroke="#ffffff" strokeWidth="16" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.65s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
+                    <mask id="mask-int-5">
+                        <path d="M 715 246 C 670 170, 610 140, 535 235" stroke="#ffffff" strokeWidth="16" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.75s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
+                    <mask id="mask-int-6">
+                        <path d="M 715 294 C 670 370, 610 400, 535 305" stroke="#ffffff" strokeWidth="16" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.90s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                        </path>
+                    </mask>
 
                     <linearGradient id="neon-int-c-l" x1="285" y1="270" x2="450" y2="270" gradientUnits="userSpaceOnUse">
                         <stop stopColor="#818cf8" />
@@ -970,108 +1083,108 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                 {/* Left 3 Pipelines: GitHub -> Hub */}
                 {/* 1. Main Center Cable */}
                 <g>
-                    <path
-                        d="M 285 270 L 450 270"
-                        stroke="url(#neon-int-c-l)"
-                        strokeWidth={activeNode === 'github' ? '5.5' : '4.5'}
-                        strokeOpacity={activeNode === 'github' ? '1' : '0.8'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.65s"
-                            begin="0.60s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-int-1)">
+                        <path
+                            d="M 285 270 L 450 270"
+                            stroke="url(#neon-int-c-l)"
+                            strokeWidth={activeNode === 'github' ? '9' : '7.5'}
+                            strokeOpacity={activeNode === 'github' ? '0.95' : '0.8'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 285 270 L 450 270"
+                            stroke="#ffffff"
+                            strokeWidth="1.5"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#818cf8" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="7" fill="#818cf8" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 285 270 L 450 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="4.5" fill="#818cf8" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 285 270 L 450 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 285 270 L 450 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
                 {/* 2. Upper Arc Cable */}
                 <g>
-                    <path
-                        d="M 285 246 C 330 170, 390 140, 465 235"
-                        stroke="url(#neon-int-t-l)"
-                        strokeWidth={activeNode === 'github' ? '5' : '3.5'}
-                        strokeOpacity={activeNode === 'github' ? '1' : '0.7'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.70s"
-                            begin="0.75s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-int-2)">
+                        <path
+                            d="M 285 246 C 330 170, 390 140, 465 235"
+                            stroke="url(#neon-int-t-l)"
+                            strokeWidth={activeNode === 'github' ? '8' : '6.5'}
+                            strokeOpacity={activeNode === 'github' ? '0.95' : '0.75'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 285 246 C 330 170, 390 140, 465 235"
+                            stroke="#ffffff"
+                            strokeWidth="1.3"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#38bdf8" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="7" fill="#38bdf8" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 285 246 C 330 170, 390 140, 465 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="4.5" fill="#38bdf8" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 285 246 C 330 170, 390 140, 465 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 285 246 C 330 170, 390 140, 465 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
                 {/* 3. Lower Arc Cable */}
                 <g>
-                    <path
-                        d="M 285 294 C 330 370, 390 400, 465 305"
-                        stroke="url(#neon-int-b-l)"
-                        strokeWidth={activeNode === 'github' ? '5' : '3.5'}
-                        strokeOpacity={activeNode === 'github' ? '1' : '0.7'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.70s"
-                            begin="0.90s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-int-3)">
+                        <path
+                            d="M 285 294 C 330 370, 390 400, 465 305"
+                            stroke="url(#neon-int-b-l)"
+                            strokeWidth={activeNode === 'github' ? '8' : '6.5'}
+                            strokeOpacity={activeNode === 'github' ? '0.95' : '0.75'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 285 294 C 330 370, 390 400, 465 305"
+                            stroke="#ffffff"
+                            strokeWidth="1.3"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#a855f7" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="7" fill="#a855f7" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 285 294 C 330 370, 390 400, 465 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="4.5" fill="#c084fc" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 285 294 C 330 370, 390 400, 465 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 285 294 C 330 370, 390 400, 465 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
@@ -1079,108 +1192,108 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                 {/* Right 3 Pipelines: Google Drive -> Hub */}
                 {/* 4. Main Center Cable */}
                 <g>
-                    <path
-                        d="M 715 270 L 550 270"
-                        stroke="url(#neon-int-c-r)"
-                        strokeWidth={activeNode === 'drive' ? '5.5' : '4.5'}
-                        strokeOpacity={activeNode === 'drive' ? '1' : '0.8'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.65s"
-                            begin="0.60s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-int-4)">
+                        <path
+                            d="M 715 270 L 550 270"
+                            stroke="url(#neon-int-c-r)"
+                            strokeWidth={activeNode === 'drive' ? '9' : '7.5'}
+                            strokeOpacity={activeNode === 'drive' ? '0.95' : '0.8'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 715 270 L 550 270"
+                            stroke="#ffffff"
+                            strokeWidth="1.5"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#10b981" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="7" fill="#10b981" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 715 270 L 550 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="4.5" fill="#34d399" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 715 270 L 550 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 715 270 L 550 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
                 {/* 5. Upper Arc Cable */}
                 <g>
-                    <path
-                        d="M 715 246 C 670 170, 610 140, 535 235"
-                        stroke="url(#neon-int-t-r)"
-                        strokeWidth={activeNode === 'drive' ? '5' : '3.5'}
-                        strokeOpacity={activeNode === 'drive' ? '1' : '0.7'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.70s"
-                            begin="0.75s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-int-5)">
+                        <path
+                            d="M 715 246 C 670 170, 610 140, 535 235"
+                            stroke="url(#neon-int-t-r)"
+                            strokeWidth={activeNode === 'drive' ? '8' : '6.5'}
+                            strokeOpacity={activeNode === 'drive' ? '0.95' : '0.75'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 715 246 C 670 170, 610 140, 535 235"
+                            stroke="#ffffff"
+                            strokeWidth="1.3"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#facc15" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="7" fill="#facc15" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 715 246 C 670 170, 610 140, 535 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="4.5" fill="#fde047" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 715 246 C 670 170, 610 140, 535 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 715 246 C 670 170, 610 140, 535 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
                 {/* 6. Lower Arc Cable */}
                 <g>
-                    <path
-                        d="M 715 294 C 670 370, 610 400, 535 305"
-                        stroke="url(#neon-int-b-r)"
-                        strokeWidth={activeNode === 'drive' ? '5' : '3.5'}
-                        strokeOpacity={activeNode === 'drive' ? '1' : '0.7'}
-                        strokeLinecap="round"
-                        strokeDasharray="600"
-                        strokeDashoffset="600"
-                        className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
-                    >
-                        <animate
-                            attributeName="stroke-dashoffset"
-                            from="600"
-                            to="0"
-                            dur="0.70s"
-                            begin="0.90s"
-                            fill="freeze"
-                            calcMode="spline"
-                            keySplines="0.25 0.1 0.25 1"
-                            keyTimes="0;1"
+                    <g mask="url(#mask-int-6)">
+                        <path
+                            d="M 715 294 C 670 370, 610 400, 535 305"
+                            stroke="url(#neon-int-b-r)"
+                            strokeWidth={activeNode === 'drive' ? '8' : '6.5'}
+                            strokeOpacity={activeNode === 'drive' ? '0.95' : '0.75'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
-                    </path>
+                        <path
+                            d="M 715 294 C 670 370, 610 400, 535 305"
+                            stroke="#ffffff"
+                            strokeWidth="1.3"
+                            strokeDasharray="4 5"
+                            strokeOpacity="0.85"
+                            strokeLinecap="round"
+                        />
+                    </g>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#2dd4bf" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="7" fill="#2dd4bf" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 715 294 C 670 370, 610 400, 535 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
+                        <circle r="4.5" fill="#5eead4" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 715 294 C 670 370, 610 400, 535 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 715 294 C 670 370, 610 400, 535 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
