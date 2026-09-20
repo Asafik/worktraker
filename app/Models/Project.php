@@ -69,15 +69,8 @@ class Project extends Model
             return $this->images[0];
         }
 
-        // Gambar default bebas (proj1 - proj4) jika belum ada foto di proyek
-        $defaultImages = [
-            '/images/proj1.png',
-            '/images/proj2.png',
-            '/images/proj3.png',
-            '/images/proj4.png',
-        ];
-
-        return $defaultImages[abs($this->id ?? 1) % count($defaultImages)];
+        // Gambar default mockup proyek jika belum ada foto di proyek
+        return '/images/proj1.png';
     }
 
     /**

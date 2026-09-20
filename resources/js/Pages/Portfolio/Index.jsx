@@ -80,15 +80,10 @@ export default function PortfolioPage({ projects: initialProjects = [], userProf
         },
     });
 
-    const DEFAULT_PROJECT_IMAGES = [
-        '/images/proj1.png',
-        '/images/proj2.png',
-        '/images/proj3.png',
-        '/images/proj4.png',
-    ];
+    const DEFAULT_PROJECT_IMAGE = '/images/proj1.png';
 
     const formatProject = (p, idx) => {
-        const defaultCover = DEFAULT_PROJECT_IMAGES[Math.abs(p.id ?? idx ?? 0) % DEFAULT_PROJECT_IMAGES.length];
+        const defaultCover = DEFAULT_PROJECT_IMAGE;
         return {
             id: p.id,
             name: p.name || p.title || 'Untitled Project',
@@ -587,11 +582,11 @@ export default function PortfolioPage({ projects: initialProjects = [], userProf
                                                     {/* Thumbnail: First project screenshot or default project photo */}
                                                     <div className="w-20 sm:w-24 h-14 sm:h-16 rounded-md overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs relative bg-slate-100 dark:bg-slate-900">
                                                         <img
-                                                            src={project.cover_image_url || DEFAULT_PROJECT_IMAGES[idx % DEFAULT_PROJECT_IMAGES.length]}
+                                                            src={project.cover_image_url || DEFAULT_PROJECT_IMAGE}
                                                             alt={project.title}
                                                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                                             onError={(e) => {
-                                                                e.currentTarget.src = DEFAULT_PROJECT_IMAGES[idx % DEFAULT_PROJECT_IMAGES.length];
+                                                                e.currentTarget.src = DEFAULT_PROJECT_IMAGE;
                                                             }}
                                                         />
                                                     </div>
@@ -1635,11 +1630,11 @@ export default function PortfolioPage({ projects: initialProjects = [], userProf
                                     {/* Thumbnail */}
                                     <div className="w-16 h-12 rounded-md overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs relative bg-slate-100 dark:bg-slate-900">
                                         <img
-                                            src={p.cover_image_url || DEFAULT_PROJECT_IMAGES[Math.abs(p.id) % DEFAULT_PROJECT_IMAGES.length]}
+                                            src={p.cover_image_url || DEFAULT_PROJECT_IMAGE}
                                             alt={p.title}
                                             className="w-full h-full object-cover"
                                             onError={(e) => {
-                                                e.currentTarget.src = DEFAULT_PROJECT_IMAGES[Math.abs(p.id) % DEFAULT_PROJECT_IMAGES.length];
+                                                e.currentTarget.src = DEFAULT_PROJECT_IMAGE;
                                             }}
                                         />
                                     </div>
