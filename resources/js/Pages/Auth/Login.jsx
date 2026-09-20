@@ -507,27 +507,31 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         </path>
                     </mask>
 
-                    {/* Vibrant Neon Conduit Gradients (Hub -> Card) */}
+                    {/* Vibrant Multi-stop Neon Gradients matching each SVG icon */}
                     <linearGradient id="neon-f1" x1="560" y1="238" x2="560" y2="66" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#38bdf8" />
-                        <stop offset="1" stopColor="#0ea5e9" />
+                        <stop stopColor="#0284c7" />
+                        <stop offset="0.6" stopColor="#38bdf8" />
+                        <stop offset="1" stopColor="#34d399" />
                     </linearGradient>
                     <linearGradient id="neon-f2" x1="508" y1="270" x2="225" y2="68" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#10b981" />
-                        <stop offset="1" stopColor="#059669" />
+                        <stop stopColor="#3b82f6" />
+                        <stop offset="0.5" stopColor="#10b981" />
+                        <stop offset="1" stopColor="#34d399" />
                     </linearGradient>
                     <linearGradient id="neon-f3" x1="508" y1="310" x2="225" y2="512" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#a855f7" />
-                        <stop offset="1" stopColor="#7c3aed" />
+                        <stop stopColor="#f59e0b" />
+                        <stop offset="0.5" stopColor="#facc15" />
+                        <stop offset="1" stopColor="#fb923c" />
                     </linearGradient>
-
                     <linearGradient id="neon-f5" x1="612" y1="270" x2="895" y2="68" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#818cf8" />
-                        <stop offset="1" stopColor="#4f46e5" />
+                        <stop stopColor="#6366f1" />
+                        <stop offset="0.5" stopColor="#818cf8" />
+                        <stop offset="1" stopColor="#a78bfa" />
                     </linearGradient>
                     <linearGradient id="neon-f6" x1="612" y1="310" x2="895" y2="512" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#14b8a6" />
-                        <stop offset="1" stopColor="#0d9488" />
+                        <stop stopColor="#ea580c" />
+                        <stop offset="0.55" stopColor="#f97316" />
+                        <stop offset="1" stopColor="#fb923c" />
                     </linearGradient>
                 </defs>
 
@@ -556,7 +560,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             <animateMotion path="M 560 238 L 560 66" dur="2.5s" begin="1.30s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="2.5s" begin="1.30s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="5.5" fill="#38bdf8" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="5.5" fill="#67e8f9" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 560 238 L 560 66" dur="2.5s" begin="1.30s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="2.5s" begin="1.30s" repeatCount="indefinite" />
                         </circle>
@@ -624,11 +628,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         />
                     </g>
                     <g className="wt-particle">
-                        <circle r="9" fill="#a855f7" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="9" fill="#f59e0b" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 508 310 C 390 310, 290 512, 225 512" dur="3.6s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="5.5" fill="#c084fc" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="5.5" fill="#fde047" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 508 310 C 390 310, 290 512, 225 512" dur="3.6s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
@@ -664,7 +668,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             <animateMotion path="M 612 270 C 730 270, 830 68, 895 68" dur="3.4s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="5.5" fill="#a5b4fc" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="5.5" fill="#c4b5fd" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 612 270 C 730 270, 830 68, 895 68" dur="3.4s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
@@ -696,11 +700,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         />
                     </g>
                     <g className="wt-particle">
-                        <circle r="9" fill="#06b6d4" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="9" fill="#ea580c" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 612 310 C 730 310, 830 512, 895 512" dur="3.6s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="5.5" fill="#2dd4bf" opacity="0" filter="url(#photon-glow-f)">
+                        <circle r="5.5" fill="#fdba74" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 612 310 C 730 310, 830 512, 895 512" dur="3.6s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
@@ -724,12 +728,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     <span className="text-[11px] sm:text-xs font-extrabold text-slate-200 tracking-tight mt-1.5 select-none relative z-10">
                         WorkTrack
                     </span>
-                    {/* Hub Sockets */}
-                    <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-blue-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(59,130,246,0.8)]" />
+                    {/* Hub Sockets with individual matching node colors */}
+                    <span className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full bg-sky-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(56,189,248,0.8)]" />
                     <span className="absolute top-[31%] -left-1.5 -translate-y-1/2 w-3 h-3 rounded-full bg-emerald-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(16,185,129,0.8)]" />
-                    <span className="absolute top-[69%] -left-1.5 -translate-y-1/2 w-3 h-3 rounded-full bg-purple-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(168,85,247,0.8)]" />
+                    <span className="absolute top-[69%] -left-1.5 -translate-y-1/2 w-3 h-3 rounded-full bg-amber-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(245,158,11,0.8)]" />
                     <span className="absolute top-[31%] -right-1.5 -translate-y-1/2 w-3 h-3 rounded-full bg-indigo-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(99,102,241,0.8)]" />
-                    <span className="absolute top-[69%] -right-1.5 -translate-y-1/2 w-3 h-3 rounded-full bg-cyan-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(6,182,212,0.8)]" />
+                    <span className="absolute top-[69%] -right-1.5 -translate-y-1/2 w-3 h-3 rounded-full bg-orange-400 border-2 border-[#060b19] shadow-[0_0_6px_rgba(249,115,22,0.8)]" />
                 </div>
             </div>
 
@@ -738,22 +742,22 @@ function SlideFeatures({ activeNode, setActiveNode }) {
             <div
                 onMouseEnter={() => setActiveNode('projects')}
                 onMouseLeave={() => setActiveNode(null)}
-                className={`absolute top-[10px] left-1/2 -translate-x-1/2 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[210px] cursor-pointer group wt-fade-f1 ${
-                    activeNode === 'projects' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
+                className={`absolute top-[10px] left-1/2 -translate-x-1/2 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-sky-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[210px] cursor-pointer group wt-fade-f1 ${
+                    activeNode === 'projects' ? 'scale-103 border-sky-400 shadow-sky-500/20' : ''
                 }`}
             >
                 <div className="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md p-1 group-hover:scale-105 transition-transform">
                     <img src="/images/svg/project.svg" alt="Projects" className="w-7.5 h-7.5 object-contain" />
                 </div>
                 <div className="min-w-0">
-                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-blue-300 transition-colors leading-tight">
+                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-sky-300 transition-colors leading-tight">
                         Projects
                     </h3>
                     <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
                         Plan and organize
                     </p>
                 </div>
-                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-blue-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(59,130,246,0.8)] z-30" />
+                <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-sky-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(56,189,248,0.8)] z-30" />
             </div>
 
             {/* 2. Tasks (Left Upper - Wide Spread) */}
@@ -775,73 +779,73 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         Get things done
                     </p>
                 </div>
-                <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(16,185,129,0.8)] z-30" />
+                <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(16,185,129,0.8)] z-30" />
             </div>
 
             {/* 3. Notes (Left Lower - Wide Spread) */}
             <div
                 onMouseEnter={() => setActiveNode('notes')}
                 onMouseLeave={() => setActiveNode(null)}
-                className={`absolute top-[484px] left-[15px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-purple-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[210px] cursor-pointer group wt-fade-f3 ${
-                    activeNode === 'notes' ? 'scale-103 border-purple-400 shadow-purple-500/20' : ''
+                className={`absolute top-[484px] left-[15px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-amber-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[210px] cursor-pointer group wt-fade-f3 ${
+                    activeNode === 'notes' ? 'scale-103 border-amber-400 shadow-amber-500/20' : ''
                 }`}
             >
                 <div className="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md p-1 group-hover:scale-105 transition-transform">
                     <img src="/images/svg/note.svg" alt="Notes" className="w-7.5 h-7.5 object-contain" />
                 </div>
                 <div className="min-w-0">
-                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-purple-300 transition-colors leading-tight">
+                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-amber-300 transition-colors leading-tight">
                         Notes
                     </h3>
                     <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
                         All your notes & ideas
                     </p>
                 </div>
-                <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-purple-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(168,85,247,0.8)] z-30" />
+                <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-amber-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(245,158,11,0.8)] z-30" />
             </div>
 
             {/* 4. Portfolio (Right Upper - Wide Spread) */}
             <div
                 onMouseEnter={() => setActiveNode('portfolio')}
                 onMouseLeave={() => setActiveNode(null)}
-                className={`absolute top-[40px] right-[15px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[210px] cursor-pointer group wt-fade-f5 ${
-                    activeNode === 'portfolio' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
+                className={`absolute top-[40px] right-[15px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-indigo-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[210px] cursor-pointer group wt-fade-f5 ${
+                    activeNode === 'portfolio' ? 'scale-103 border-indigo-400 shadow-indigo-500/20' : ''
                 }`}
             >
                 <div className="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md p-1 group-hover:scale-105 transition-transform">
                     <img src="/images/svg/portfolio.svg" alt="Portfolio" className="w-7.5 h-7.5 object-contain" />
                 </div>
                 <div className="min-w-0">
-                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-blue-300 transition-colors leading-tight">
+                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-indigo-300 transition-colors leading-tight">
                         Portfolio
                     </h3>
                     <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
                         Track your progress
                     </p>
                 </div>
-                <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-blue-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(59,130,246,0.8)] z-30" />
+                <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-indigo-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(99,102,241,0.8)] z-30" />
             </div>
 
             {/* 5. Archive (Right Lower - Wide Spread) */}
             <div
                 onMouseEnter={() => setActiveNode('archive')}
                 onMouseLeave={() => setActiveNode(null)}
-                className={`absolute top-[484px] right-[15px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[210px] cursor-pointer group wt-fade-f6 ${
-                    activeNode === 'archive' ? 'scale-103 border-cyan-400 shadow-cyan-500/20' : ''
+                className={`absolute top-[484px] right-[15px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-orange-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[210px] cursor-pointer group wt-fade-f6 ${
+                    activeNode === 'archive' ? 'scale-103 border-orange-400 shadow-orange-500/20' : ''
                 }`}
             >
                 <div className="w-10 h-10 rounded-xl bg-slate-900/90 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md p-1 group-hover:scale-105 transition-transform">
                     <img src="/images/svg/arsip.svg" alt="Archive" className="w-7.5 h-7.5 object-contain" />
                 </div>
                 <div className="min-w-0">
-                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-cyan-300 transition-colors leading-tight">
+                    <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-orange-300 transition-colors leading-tight">
                         Archive
                     </h3>
                     <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
                         Keep everything safe
                     </p>
                 </div>
-                <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-cyan-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(6,182,212,0.8)] z-30" />
+                <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-orange-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(249,115,22,0.8)] z-30" />
             </div>
         </div>
     );
