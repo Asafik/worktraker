@@ -17,19 +17,6 @@ import {
 } from 'lucide-react';
 import Checkbox from '@/Components/Checkbox';
 
-const GoogleGeminiIcon = ({ className = 'w-5 h-5' }) => (
-    <svg className={className} viewBox="0 0 24 24" fill="none">
-        <defs>
-            <linearGradient id="geminiGradLogin" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#1B72E8" />
-                <stop offset="50%" stopColor="#8AB4F8" />
-                <stop offset="100%" stopColor="#D96570" />
-            </linearGradient>
-        </defs>
-        <path d="M12 2C12 7.52 7.52 12 2 12C7.52 12 12 16.48 12 22C12 16.48 16.48 12 22 12C16.48 12 12 7.52 12 2Z" fill="url(#geminiGradLogin)" />
-    </svg>
-);
-
 export default function Login({ errors = {} }) {
     const [loginInput, setLoginInput] = useState('');
     const [password, setPassword] = useState('');
