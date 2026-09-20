@@ -1869,15 +1869,15 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                                     <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
                                                     <span>Token Kedaluwarsa</span>
                                                 </span>
-                                            ) : integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining <= 2 ? (
+                                            ) : (integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining ?? 7) <= 2 ? (
                                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-semibold bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-200/60 dark:border-amber-900/60">
                                                     <Clock className="w-3.5 h-3.5 text-amber-500" />
-                                                    <span>Sisa {integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining === 0 ? '< 24 Jam' : `${integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} Hari`}</span>
+                                                    <span>{integrationsStatus?.googleDrive?.tokenExpiry?.humanRemaining || 'Sisa < 48 Jam'}</span>
                                                 </span>
                                             ) : (
                                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-200/60 dark:border-blue-900/60">
                                                     <Clock className="w-3.5 h-3.5 text-blue-500" />
-                                                    <span>Sisa {integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} Hari (Testing)</span>
+                                                    <span>{integrationsStatus?.googleDrive?.tokenExpiry?.humanRemaining || `Sisa ${integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} Hari`} (Testing)</span>
                                                 </span>
                                             )
                                         )}
@@ -1960,7 +1960,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                                 {integrationsStatus?.googleDrive?.tokenExpiry?.isExpired ? (
                                                     <span>Masa aktif token testing telah habis. Harap perbarui refresh token.</span>
                                                 ) : (
-                                                    <span>Masa aktif token testing: <strong>Sisa {integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} hari</strong> (hingga {integrationsStatus?.googleDrive?.tokenExpiry?.expiryDate})</span>
+                                                    <span>Masa aktif token testing: <strong>{integrationsStatus?.googleDrive?.tokenExpiry?.humanRemaining || `Sisa ${integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} hari`}</strong> (kedaluwarsa {integrationsStatus?.googleDrive?.tokenExpiry?.expiryDate})</span>
                                                 )}
                                             </div>
                                         )}
@@ -2697,7 +2697,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                 <div className={`p-2.5 rounded-lg border text-xs flex items-start gap-2 ${
                                     integrationsStatus?.googleDrive?.tokenExpiry?.isExpired
                                         ? 'bg-rose-50/70 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300'
-                                        : integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining <= 2
+                                        : (integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining ?? 7) <= 2
                                         ? 'bg-amber-50/70 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900/60 text-amber-800 dark:text-amber-300'
                                         : 'bg-slate-50 dark:bg-[#122352]/70 border-slate-200 dark:border-[#243e80] text-slate-600 dark:text-slate-300'
                                 }`}>
@@ -2706,10 +2706,10 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                         <div className="font-semibold">
                                             {integrationsStatus?.googleDrive?.tokenExpiry?.isExpired
                                                 ? 'Status: Token Kedaluwarsa'
-                                                : `Status: Sisa ${integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} Hari Lagi`}
+                                                : `Status: ${integrationsStatus?.googleDrive?.tokenExpiry?.humanRemaining || `Sisa ${integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} Hari Lagi`}`}
                                         </div>
                                         <p className="text-[11px] leading-relaxed opacity-90">
-                                            Kedaluwarsa pada: <strong>{integrationsStatus?.googleDrive?.tokenExpiry?.expiryDate}</strong> (Terakhir disimpan: {integrationsStatus?.googleDrive?.tokenExpiry?.savedAt || '-'}).
+                                            Kedaluwarsa pada: <strong>{integrationsStatus?.googleDrive?.tokenExpiry?.expiryDate}</strong> (Tersambung sejak: {integrationsStatus?.googleDrive?.tokenExpiry?.savedAt || '-'}).
                                         </p>
                                     </div>
                                 </div>

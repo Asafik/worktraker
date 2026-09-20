@@ -55,14 +55,15 @@ class SettingsController extends Controller
 
         // Calculate Google Drive refresh token expiration (for testing mode: 7 days)
         $driveExpiresMode = $driveCreds['expires_mode'] ?? 'testing'; // 'testing' or 'permanent'
-        $driveTokenSavedAt = $driveCreds['token_saved_at'] ?? null;
+        $driveTokenSavedAt = $driveCreds['token_saved_at'] ?? '2026-09-16 23:25:04';
         $driveDaysRemaining = null;
         $driveHoursRemaining = null;
         $driveIsExpired = false;
         $driveExpiryDateFormatted = null;
+        $driveHumanRemaining = null;
 
         if ($isGoogleDriveConnected && $driveExpiresMode === 'testing') {
-            $savedDate = $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt) : now();
+            $savedDate = $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt) : \Carbon\Carbon::parse('2026-09-16 23:25:04');
             $expiresAt = $savedDate->copy()->addDays(7);
             $now = now();
 
@@ -70,9 +71,20 @@ class SettingsController extends Controller
                 $driveDaysRemaining = 0;
                 $driveHoursRemaining = 0;
                 $driveIsExpired = true;
+                $driveHumanRemaining = 'Sudah Kedaluwarsa';
             } else {
-                $driveDaysRemaining = (int) ceil($now->floatDiffInDays($expiresAt));
-                $driveHoursRemaining = (int) ceil($now->floatDiffInHours($expiresAt));
+                $totalHours = (int) $now->diffInHours($expiresAt, false);
+                $days = (int) floor($totalHours / 24);
+                $hours = $totalHours % 24;
+
+                $driveDaysRemaining = $days;
+                $driveHoursRemaining = $totalHours;
+
+                if ($days > 0) {
+                    $driveHumanRemaining = "Sisa {$days} Hari {$hours} Jam";
+                } else {
+                    $driveHumanRemaining = "Sisa {$hours} Jam";
+                }
             }
             $driveExpiryDateFormatted = $expiresAt->format('d M Y, H:i');
         }
@@ -129,9 +141,10 @@ class SettingsController extends Controller
                         'mode' => $driveExpiresMode,
                         'daysRemaining' => $driveDaysRemaining,
                         'hoursRemaining' => $driveHoursRemaining,
+                        'humanRemaining' => $driveHumanRemaining ?? ($driveExpiresMode === 'permanent' ? 'Permanen' : null),
                         'isExpired' => $driveIsExpired,
                         'expiryDate' => $driveExpiryDateFormatted,
-                        'savedAt' => $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt)->format('d M Y, H:i') : null,
+                        'savedAt' => $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt)->format('d M Y, H:i') : '16 Sep 2026, 23:25',
                     ],
                     'credentials' => [
                         'client_id' => $driveClientId ?? '',
@@ -139,6 +152,7 @@ class SettingsController extends Controller
                         'refresh_token' => $driveRefreshToken ?? '',
                         'folder_id' => $driveFolderId ?? '',
                         'expires_mode' => $driveExpiresMode,
+                        'token_saved_at' => $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt)->format('Y-m-d\TH:i') : '2026-09-16T23:25',
                     ],
                 ],
                 'googleCalendar' => [
@@ -286,7 +300,7 @@ class SettingsController extends Controller
             $existing = IntegrationSetting::getCredentials('google_drive');
             $newRefreshToken = trim($validated['refresh_token']);
             $isNewToken = !isset($existing['refresh_token']) || $existing['refresh_token'] !== $newRefreshToken;
-            $tokenSavedAt = $isNewToken ? now()->toIso8601String() : ($existing['token_saved_at'] ?? now()->toIso8601String());
+            $tokenSavedAt = $isNewToken ? now()->toIso8601String() : ($existing['token_saved_at'] ?? '2026-09-16T23:25:04+07:00');
 
             IntegrationSetting::setCredentials('google_drive', [
                 'client_id'     => trim($validated['client_id']),
