@@ -50,7 +50,7 @@ export default function Login({ errors = {} }) {
                 setSlideKey((k) => k + 1);
                 setIsFading(false);
             }, 300);
-        }, 5000);
+        }, 10000);
 
         return () => clearInterval(interval);
     }, [slideKey]);
