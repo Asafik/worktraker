@@ -497,12 +497,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'projects' ? '1' : '0.75'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.75s"
                             begin="0.75s"
@@ -513,11 +513,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle">
-                        <circle r="4" fill="#38bdf8" opacity="0.4" filter="url(#photon-glow-f)">
+                        <circle r="4" fill="#38bdf8" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 460 240 C 370 240, 310 88, 240 88" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-f)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 460 240 C 370 240, 310 88, 240 88" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
@@ -533,12 +533,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'tasks' ? '1' : '0.75'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.65s"
                             begin="0.60s"
@@ -549,11 +549,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle">
-                        <circle r="4" fill="#10b981" opacity="0.4" filter="url(#photon-glow-f)">
+                        <circle r="4" fill="#10b981" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 450 270 C 380 270, 310 270, 240 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-f)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 450 270 C 380 270, 310 270, 240 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
@@ -569,12 +569,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'notes' ? '1' : '0.75'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.75s"
                             begin="0.90s"
@@ -585,11 +585,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle">
-                        <circle r="4" fill="#a855f7" opacity="0.4" filter="url(#photon-glow-f)">
+                        <circle r="4" fill="#a855f7" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 460 300 C 370 300, 310 452, 240 452" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-f)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 460 300 C 370 300, 310 452, 240 452" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
@@ -605,12 +605,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'calendar' ? '1' : '0.75'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.75s"
                             begin="0.75s"
@@ -621,11 +621,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle">
-                        <circle r="4" fill="#4285f4" opacity="0.4" filter="url(#photon-glow-f)">
+                        <circle r="4" fill="#4285f4" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 540 240 C 630 240, 690 88, 760 88" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-f)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 540 240 C 630 240, 690 88, 760 88" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
@@ -641,12 +641,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'portfolio' ? '1' : '0.75'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.65s"
                             begin="0.60s"
@@ -657,11 +657,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle">
-                        <circle r="4" fill="#818cf8" opacity="0.4" filter="url(#photon-glow-f)">
+                        <circle r="4" fill="#818cf8" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 550 270 C 620 270, 690 270, 760 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-f)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 550 270 C 620 270, 690 270, 760 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
@@ -677,12 +677,12 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'archive' ? '1' : '0.75'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.75s"
                             begin="0.90s"
@@ -693,11 +693,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle">
-                        <circle r="4" fill="#06b6d4" opacity="0.4" filter="url(#photon-glow-f)">
+                        <circle r="4" fill="#06b6d4" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 540 300 C 630 300, 690 452, 760 452" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-f)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
                             <animateMotion path="M 540 300 C 630 300, 690 452, 760 452" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
@@ -977,12 +977,12 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'github' ? '1' : '0.8'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.65s"
                             begin="0.60s"
@@ -993,11 +993,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#818cf8" opacity="0.4" filter="url(#photon-glow-int)">
+                        <circle r="4" fill="#818cf8" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 450 270 L 285 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-int)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 450 270 L 285 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
@@ -1013,12 +1013,12 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'github' ? '1' : '0.7'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.70s"
                             begin="0.75s"
@@ -1029,11 +1029,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#38bdf8" opacity="0.4" filter="url(#photon-glow-int)">
+                        <circle r="4" fill="#38bdf8" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 465 235 C 390 140, 330 170, 285 246" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-int)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 465 235 C 390 140, 330 170, 285 246" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
@@ -1049,12 +1049,12 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'github' ? '1' : '0.7'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.70s"
                             begin="0.90s"
@@ -1065,11 +1065,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#a855f7" opacity="0.4" filter="url(#photon-glow-int)">
+                        <circle r="4" fill="#a855f7" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 465 305 C 390 400, 330 370, 285 294" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-int)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 465 305 C 390 400, 330 370, 285 294" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
@@ -1086,12 +1086,12 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'drive' ? '1' : '0.8'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.65s"
                             begin="0.60s"
@@ -1102,11 +1102,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#10b981" opacity="0.4" filter="url(#photon-glow-int)">
+                        <circle r="4" fill="#10b981" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 550 270 L 715 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-int)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 550 270 L 715 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
@@ -1122,12 +1122,12 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'drive' ? '1' : '0.7'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.70s"
                             begin="0.75s"
@@ -1138,11 +1138,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#facc15" opacity="0.4" filter="url(#photon-glow-int)">
+                        <circle r="4" fill="#facc15" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 535 235 C 610 140, 670 170, 715 246" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-int)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 535 235 C 610 140, 670 170, 715 246" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
@@ -1158,12 +1158,12 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         strokeOpacity={activeNode === 'drive' ? '1' : '0.7'}
                         strokeLinecap="round"
                         strokeDasharray="600"
-                        strokeDashoffset="-600"
+                        strokeDashoffset="600"
                         className="wt-cable-path-int transition-[stroke-width,stroke-opacity] duration-200"
                     >
                         <animate
                             attributeName="stroke-dashoffset"
-                            from="-600"
+                            from="600"
                             to="0"
                             dur="0.70s"
                             begin="0.90s"
@@ -1174,11 +1174,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         />
                     </path>
                     <g className="wt-particle-int">
-                        <circle r="4" fill="#2dd4bf" opacity="0.4" filter="url(#photon-glow-int)">
+                        <circle r="4" fill="#2dd4bf" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 535 305 C 610 400, 670 370, 715 294" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
-                        <circle r="2" fill="#ffffff" filter="url(#photon-glow-int)">
+                        <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
                             <animateMotion path="M 535 305 C 610 400, 670 370, 715 294" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
