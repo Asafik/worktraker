@@ -80,7 +80,7 @@ export default function PortfolioPage({ projects: initialProjects = [], userProf
         },
     });
 
-    const DEFAULT_PROJECT_IMAGE = '/images/proj1.png';
+    const DEFAULT_PROJECT_IMAGE = '/images/default_project_cover.jpg';
 
     const formatProject = (p, idx) => {
         const defaultCover = DEFAULT_PROJECT_IMAGE;

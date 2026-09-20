@@ -69,8 +69,8 @@ class Project extends Model
             return $this->images[0];
         }
 
-        // Gambar default mockup proyek jika belum ada foto di proyek
-        return '/images/proj1.png';
+        // Gambar default mockup proyek baru jika belum ada foto di proyek
+        return '/images/default_project_cover.jpg';
     }
 
     /**
