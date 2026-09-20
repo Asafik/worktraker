@@ -59,17 +59,25 @@ class Project extends Model
     /**
      * Automatically get the primary thumbnail cover: custom cover or first image from project images.
      */
-    public function getCoverImageUrlAttribute(): ?string
+    public function getCoverImageUrlAttribute(): string
     {
         if (!empty($this->portfolio_cover)) {
             return $this->portfolio_cover;
         }
 
-        if (!empty($this->images) && is_array($this->images) && count($this->images) > 0) {
+        if (!empty($this->images) && is_array($this->images) && count($this->images) > 0 && !empty($this->images[0])) {
             return $this->images[0];
         }
 
-        return null;
+        // Gambar default bebas (proj1 - proj4) jika belum ada foto di proyek
+        $defaultImages = [
+            '/images/proj1.png',
+            '/images/proj2.png',
+            '/images/proj3.png',
+            '/images/proj4.png',
+        ];
+
+        return $defaultImages[abs($this->id ?? 1) % count($defaultImages)];
     }
 
     /**

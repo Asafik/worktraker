@@ -79,35 +79,42 @@ export default function PortfolioPage({ projects: initialProjects = [], userProf
         },
     });
 
-    // ==========================================
-    // 2. PROJECTS STATE & MODALS
-    // ==========================================
-    const formatProject = (p, idx) => ({
-        id: p.id,
-        name: p.name || p.title || 'Untitled Project',
-        title: p.name || p.title || 'Untitled Project',
-        description: p.description || '',
-        category: p.category || 'Web Application',
-        tags: Array.isArray(p.tech_stack) && p.tech_stack.length > 0
-            ? p.tech_stack
-            : (Array.isArray(p.tags) && p.tags.length > 0 ? p.tags : ['Laravel', 'MySQL']),
-        tagColors: p.tagColors || [
-            'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
-            'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40',
-            'bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 border border-cyan-100 dark:border-cyan-900/40',
-        ],
-        githubUrl: p.github_repo_url || p.githubUrl || '',
-        liveUrl: p.live_url || p.liveUrl || '',
-        published: typeof p.is_portfolio !== 'undefined' ? !!p.is_portfolio : (typeof p.published !== 'undefined' ? !!p.published : true),
-        is_portfolio: typeof p.is_portfolio !== 'undefined' ? !!p.is_portfolio : !!p.published,
-        featured: typeof p.is_featured !== 'undefined' ? !!p.is_featured : (typeof p.featured !== 'undefined' ? !!p.featured : false),
-        is_featured: typeof p.is_featured !== 'undefined' ? !!p.is_featured : !!p.featured,
-        portfolio_order: p.portfolio_order ?? idx,
-        portfolio_cover: p.portfolio_cover || null,
-        cover_image_url: p.cover_image_url || (Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : null),
-        images: Array.isArray(p.images) ? p.images : [],
-        previewType: p.previewType || (p.category === 'Mobile' ? 'mobile' : (p.category === 'UI/UX' ? 'design' : 'dashboard')),
-    });
+    const DEFAULT_PROJECT_IMAGES = [
+        '/images/proj1.png',
+        '/images/proj2.png',
+        '/images/proj3.png',
+        '/images/proj4.png',
+    ];
+
+    const formatProject = (p, idx) => {
+        const defaultCover = DEFAULT_PROJECT_IMAGES[Math.abs(p.id ?? idx ?? 0) % DEFAULT_PROJECT_IMAGES.length];
+        return {
+            id: p.id,
+            name: p.name || p.title || 'Untitled Project',
+            title: p.name || p.title || 'Untitled Project',
+            description: p.description || '',
+            category: p.category || 'Web Application',
+            tags: Array.isArray(p.tech_stack) && p.tech_stack.length > 0
+                ? p.tech_stack
+                : (Array.isArray(p.tags) && p.tags.length > 0 ? p.tags : ['Laravel', 'MySQL']),
+            tagColors: p.tagColors || [
+                'bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/40',
+                'bg-purple-50 dark:bg-purple-950/60 text-purple-600 dark:text-purple-400 border border-purple-100 dark:border-purple-900/40',
+                'bg-cyan-50 dark:bg-cyan-950/60 text-cyan-600 dark:text-cyan-400 border border-cyan-100 dark:border-cyan-900/40',
+            ],
+            githubUrl: p.github_repo_url || p.githubUrl || '',
+            liveUrl: p.live_url || p.liveUrl || '',
+            published: typeof p.is_portfolio !== 'undefined' ? !!p.is_portfolio : false,
+            is_portfolio: typeof p.is_portfolio !== 'undefined' ? !!p.is_portfolio : false,
+            featured: typeof p.is_featured !== 'undefined' ? !!p.is_featured : false,
+            is_featured: typeof p.is_featured !== 'undefined' ? !!p.is_featured : false,
+            portfolio_order: p.portfolio_order ?? idx,
+            portfolio_cover: p.portfolio_cover || null,
+            cover_image_url: p.cover_image_url || (Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : defaultCover),
+            images: Array.isArray(p.images) ? p.images : [],
+            previewType: p.previewType || (p.category === 'Mobile' ? 'mobile' : (p.category === 'UI/UX' ? 'design' : 'dashboard')),
+        };
+    };
 
     const [projects, setProjects] = useState(() => {
         if (initialProjects && initialProjects.length > 0) {
@@ -576,20 +583,16 @@ export default function PortfolioPage({ projects: initialProjects = [], userProf
                                                         </button>
                                                     </div>
 
-                                                    {/* Thumbnail: First project screenshot or preview mockup */}
+                                                    {/* Thumbnail: First project screenshot or default project photo */}
                                                     <div className="w-20 sm:w-24 h-14 sm:h-16 rounded-md overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs relative bg-slate-100 dark:bg-slate-900">
-                                                        {project.cover_image_url ? (
-                                                            <img
-                                                                src={project.cover_image_url}
-                                                                alt={project.title}
-                                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                                onError={(e) => {
-                                                                    e.currentTarget.style.display = 'none';
-                                                                }}
-                                                            />
-                                                        ) : (
-                                                            renderPreviewMockup(project.previewType)
-                                                        )}
+                                                        <img
+                                                            src={project.cover_image_url || DEFAULT_PROJECT_IMAGES[idx % DEFAULT_PROJECT_IMAGES.length]}
+                                                            alt={project.title}
+                                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                            onError={(e) => {
+                                                                e.currentTarget.src = DEFAULT_PROJECT_IMAGES[idx % DEFAULT_PROJECT_IMAGES.length];
+                                                            }}
+                                                        />
                                                     </div>
 
                                                     {/* Project Info & Tags */}
@@ -1625,15 +1628,14 @@ export default function PortfolioPage({ projects: initialProjects = [], userProf
                                         <div className="flex items-center gap-3 min-w-0 flex-1">
                                             {/* Thumbnail */}
                                             <div className="w-16 h-12 rounded-md overflow-hidden shrink-0 border border-slate-200/80 dark:border-slate-800 shadow-2xs relative bg-slate-100 dark:bg-slate-900">
-                                                {p.cover_image_url ? (
-                                                    <img
-                                                        src={p.cover_image_url}
-                                                        alt={p.title}
-                                                        className="w-full h-full object-cover"
-                                                    />
-                                                ) : (
-                                                    renderPreviewMockup(p.previewType)
-                                                )}
+                                                <img
+                                                    src={p.cover_image_url || DEFAULT_PROJECT_IMAGES[Math.abs(p.id) % DEFAULT_PROJECT_IMAGES.length]}
+                                                    alt={p.title}
+                                                    className="w-full h-full object-cover"
+                                                    onError={(e) => {
+                                                        e.currentTarget.src = DEFAULT_PROJECT_IMAGES[Math.abs(p.id) % DEFAULT_PROJECT_IMAGES.length];
+                                                    }}
+                                                />
                                             </div>
 
                                             <div className="min-w-0 flex-1 space-y-0.5">
