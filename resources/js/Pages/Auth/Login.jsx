@@ -461,37 +461,37 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                         </feMerge>
                     </filter>
 
-                    <linearGradient id="neon-f1" x1="460" y1="240" x2="240" y2="88" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#3b82f6" />
-                        <stop offset="1" stopColor="#38bdf8" />
-                    </linearGradient>
-                    <linearGradient id="neon-f2" x1="450" y1="270" x2="240" y2="270" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#06b6d4" />
-                        <stop offset="1" stopColor="#10b981" />
-                    </linearGradient>
-                    <linearGradient id="neon-f3" x1="460" y1="300" x2="240" y2="452" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#6366f1" />
-                        <stop offset="1" stopColor="#a855f7" />
-                    </linearGradient>
-
-                    <linearGradient id="neon-f4" x1="540" y1="240" x2="760" y2="88" gradientUnits="userSpaceOnUse">
+                    <linearGradient id="neon-f1" x1="240" y1="88" x2="460" y2="240" gradientUnits="userSpaceOnUse">
                         <stop stopColor="#38bdf8" />
-                        <stop offset="1" stopColor="#4285f4" />
-                    </linearGradient>
-                    <linearGradient id="neon-f5" x1="550" y1="270" x2="760" y2="270" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#818cf8" />
                         <stop offset="1" stopColor="#3b82f6" />
                     </linearGradient>
-                    <linearGradient id="neon-f6" x1="540" y1="300" x2="760" y2="452" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#14b8a6" />
+                    <linearGradient id="neon-f2" x1="240" y1="270" x2="450" y2="270" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#10b981" />
                         <stop offset="1" stopColor="#06b6d4" />
+                    </linearGradient>
+                    <linearGradient id="neon-f3" x1="240" y1="452" x2="460" y2="300" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#a855f7" />
+                        <stop offset="1" stopColor="#6366f1" />
+                    </linearGradient>
+
+                    <linearGradient id="neon-f4" x1="760" y1="88" x2="540" y2="240" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#4285f4" />
+                        <stop offset="1" stopColor="#38bdf8" />
+                    </linearGradient>
+                    <linearGradient id="neon-f5" x1="760" y1="270" x2="550" y2="270" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#3b82f6" />
+                        <stop offset="1" stopColor="#818cf8" />
+                    </linearGradient>
+                    <linearGradient id="neon-f6" x1="760" y1="452" x2="540" y2="300" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#06b6d4" />
+                        <stop offset="1" stopColor="#14b8a6" />
                     </linearGradient>
                 </defs>
 
-                {/* 1. Projects (Hub -> Left Top) */}
+                {/* 1. Projects (Left Top -> Hub) */}
                 <g>
                     <path
-                        d="M 460 240 C 370 240, 310 88, 240 88"
+                        d="M 240 88 C 310 88, 370 240, 460 240"
                         stroke="url(#neon-f1)"
                         strokeWidth={activeNode === 'projects' ? '5.5' : '4'}
                         strokeOpacity={activeNode === 'projects' ? '1' : '0.75'}
@@ -514,20 +514,20 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle">
                         <circle r="4" fill="#38bdf8" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 460 240 C 370 240, 310 88, 240 88" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 240 88 C 310 88, 370 240, 460 240" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 460 240 C 370 240, 310 88, 240 88" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 240 88 C 310 88, 370 240, 460 240" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* 2. Tasks (Hub -> Left Middle) */}
+                {/* 2. Tasks (Left Middle -> Hub) */}
                 <g>
                     <path
-                        d="M 450 270 C 380 270, 310 270, 240 270"
+                        d="M 240 270 C 310 270, 380 270, 450 270"
                         stroke="url(#neon-f2)"
                         strokeWidth={activeNode === 'tasks' ? '5.5' : '4'}
                         strokeOpacity={activeNode === 'tasks' ? '1' : '0.75'}
@@ -550,20 +550,20 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle">
                         <circle r="4" fill="#10b981" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 450 270 C 380 270, 310 270, 240 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 240 270 C 310 270, 380 270, 450 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 450 270 C 380 270, 310 270, 240 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 240 270 C 310 270, 380 270, 450 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* 3. Notes (Hub -> Left Bottom) */}
+                {/* 3. Notes (Left Bottom -> Hub) */}
                 <g>
                     <path
-                        d="M 460 300 C 370 300, 310 452, 240 452"
+                        d="M 240 452 C 310 452, 370 300, 460 300"
                         stroke="url(#neon-f3)"
                         strokeWidth={activeNode === 'notes' ? '5.5' : '4'}
                         strokeOpacity={activeNode === 'notes' ? '1' : '0.75'}
@@ -586,20 +586,20 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle">
                         <circle r="4" fill="#a855f7" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 460 300 C 370 300, 310 452, 240 452" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
+                            <animateMotion path="M 240 452 C 310 452, 370 300, 460 300" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 460 300 C 370 300, 310 452, 240 452" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
+                            <animateMotion path="M 240 452 C 310 452, 370 300, 460 300" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* 4. Calendar (Hub -> Right Top) */}
+                {/* 4. Calendar (Right Top -> Hub) */}
                 <g>
                     <path
-                        d="M 540 240 C 630 240, 690 88, 760 88"
+                        d="M 760 88 C 690 88, 630 240, 540 240"
                         stroke="url(#neon-f4)"
                         strokeWidth={activeNode === 'calendar' ? '5.5' : '4'}
                         strokeOpacity={activeNode === 'calendar' ? '1' : '0.75'}
@@ -622,20 +622,20 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle">
                         <circle r="4" fill="#4285f4" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 540 240 C 630 240, 690 88, 760 88" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 760 88 C 690 88, 630 240, 540 240" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 540 240 C 630 240, 690 88, 760 88" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 760 88 C 690 88, 630 240, 540 240" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* 5. Portfolio (Hub -> Right Middle) */}
+                {/* 5. Portfolio (Right Middle -> Hub) */}
                 <g>
                     <path
-                        d="M 550 270 C 620 270, 690 270, 760 270"
+                        d="M 760 270 C 690 270, 620 270, 550 270"
                         stroke="url(#neon-f5)"
                         strokeWidth={activeNode === 'portfolio' ? '5.5' : '4'}
                         strokeOpacity={activeNode === 'portfolio' ? '1' : '0.75'}
@@ -658,20 +658,20 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle">
                         <circle r="4" fill="#818cf8" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 550 270 C 620 270, 690 270, 760 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 760 270 C 690 270, 620 270, 550 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 550 270 C 620 270, 690 270, 760 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 760 270 C 690 270, 620 270, 550 270" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* 6. Archive (Hub -> Right Bottom) */}
+                {/* 6. Archive (Right Bottom -> Hub) */}
                 <g>
                     <path
-                        d="M 540 300 C 630 300, 690 452, 760 452"
+                        d="M 760 452 C 690 452, 630 300, 540 300"
                         stroke="url(#neon-f6)"
                         strokeWidth={activeNode === 'archive' ? '5.5' : '4'}
                         strokeOpacity={activeNode === 'archive' ? '1' : '0.75'}
@@ -694,11 +694,11 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle">
                         <circle r="4" fill="#06b6d4" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 540 300 C 630 300, 690 452, 760 452" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
+                            <animateMotion path="M 760 452 C 690 452, 630 300, 540 300" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-f)">
-                            <animateMotion path="M 540 300 C 630 300, 690 452, 760 452" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
+                            <animateMotion path="M 760 452 C 690 452, 630 300, 540 300" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.6s" begin="1.65s" repeatCount="indefinite" />
                         </circle>
                     </g>
@@ -940,38 +940,38 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                         </feMerge>
                     </filter>
 
-                    <linearGradient id="neon-int-c-l" x1="450" y1="270" x2="285" y2="270" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#3b82f6" />
-                        <stop offset="1" stopColor="#818cf8" />
-                    </linearGradient>
-                    <linearGradient id="neon-int-t-l" x1="465" y1="235" x2="285" y2="246" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#06b6d4" />
+                    <linearGradient id="neon-int-c-l" x1="285" y1="270" x2="450" y2="270" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#818cf8" />
                         <stop offset="1" stopColor="#3b82f6" />
                     </linearGradient>
-                    <linearGradient id="neon-int-b-l" x1="465" y1="305" x2="285" y2="294" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#8b5cf6" />
-                        <stop offset="1" stopColor="#6366f1" />
+                    <linearGradient id="neon-int-t-l" x1="285" y1="246" x2="465" y2="235" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#38bdf8" />
+                        <stop offset="1" stopColor="#06b6d4" />
+                    </linearGradient>
+                    <linearGradient id="neon-int-b-l" x1="285" y1="294" x2="465" y2="305" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#6366f1" />
+                        <stop offset="1" stopColor="#8b5cf6" />
                     </linearGradient>
 
-                    <linearGradient id="neon-int-c-r" x1="550" y1="270" x2="715" y2="270" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#3b82f6" />
-                        <stop offset="1" stopColor="#10b981" />
+                    <linearGradient id="neon-int-c-r" x1="715" y1="270" x2="550" y2="270" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#10b981" />
+                        <stop offset="1" stopColor="#3b82f6" />
                     </linearGradient>
-                    <linearGradient id="neon-int-t-r" x1="535" y1="235" x2="715" y2="246" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#3b82f6" />
-                        <stop offset="1" stopColor="#facc15" />
+                    <linearGradient id="neon-int-t-r" x1="715" y1="246" x2="535" y2="235" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#facc15" />
+                        <stop offset="1" stopColor="#3b82f6" />
                     </linearGradient>
-                    <linearGradient id="neon-int-b-r" x1="535" y1="305" x2="715" y2="294" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#06b6d4" />
-                        <stop offset="1" stopColor="#2dd4bf" />
+                    <linearGradient id="neon-int-b-r" x1="715" y1="294" x2="535" y2="305" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#2dd4bf" />
+                        <stop offset="1" stopColor="#06b6d4" />
                     </linearGradient>
                 </defs>
 
-                {/* Left 3 Pipelines: Hub -> GitHub */}
+                {/* Left 3 Pipelines: GitHub -> Hub */}
                 {/* 1. Main Center Cable */}
                 <g>
                     <path
-                        d="M 450 270 L 285 270"
+                        d="M 285 270 L 450 270"
                         stroke="url(#neon-int-c-l)"
                         strokeWidth={activeNode === 'github' ? '5.5' : '4.5'}
                         strokeOpacity={activeNode === 'github' ? '1' : '0.8'}
@@ -994,11 +994,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle-int">
                         <circle r="4" fill="#818cf8" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 450 270 L 285 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 285 270 L 450 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 450 270 L 285 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 285 270 L 450 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                     </g>
@@ -1007,7 +1007,7 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                 {/* 2. Upper Arc Cable */}
                 <g>
                     <path
-                        d="M 465 235 C 390 140, 330 170, 285 246"
+                        d="M 285 246 C 330 170, 390 140, 465 235"
                         stroke="url(#neon-int-t-l)"
                         strokeWidth={activeNode === 'github' ? '5' : '3.5'}
                         strokeOpacity={activeNode === 'github' ? '1' : '0.7'}
@@ -1030,11 +1030,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle-int">
                         <circle r="4" fill="#38bdf8" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 465 235 C 390 140, 330 170, 285 246" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 285 246 C 330 170, 390 140, 465 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 465 235 C 390 140, 330 170, 285 246" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 285 246 C 330 170, 390 140, 465 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                     </g>
@@ -1043,7 +1043,7 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                 {/* 3. Lower Arc Cable */}
                 <g>
                     <path
-                        d="M 465 305 C 390 400, 330 370, 285 294"
+                        d="M 285 294 C 330 370, 390 400, 465 305"
                         stroke="url(#neon-int-b-l)"
                         strokeWidth={activeNode === 'github' ? '5' : '3.5'}
                         strokeOpacity={activeNode === 'github' ? '1' : '0.7'}
@@ -1066,21 +1066,21 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle-int">
                         <circle r="4" fill="#a855f7" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 465 305 C 390 400, 330 370, 285 294" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
+                            <animateMotion path="M 285 294 C 330 370, 390 400, 465 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 465 305 C 390 400, 330 370, 285 294" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
+                            <animateMotion path="M 285 294 C 330 370, 390 400, 465 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* Right 3 Pipelines: Hub -> Google Drive */}
+                {/* Right 3 Pipelines: Google Drive -> Hub */}
                 {/* 4. Main Center Cable */}
                 <g>
                     <path
-                        d="M 550 270 L 715 270"
+                        d="M 715 270 L 550 270"
                         stroke="url(#neon-int-c-r)"
                         strokeWidth={activeNode === 'drive' ? '5.5' : '4.5'}
                         strokeOpacity={activeNode === 'drive' ? '1' : '0.8'}
@@ -1103,11 +1103,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle-int">
                         <circle r="4" fill="#10b981" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 550 270 L 715 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 715 270 L 550 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 550 270 L 715 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 715 270 L 550 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
                         </circle>
                     </g>
@@ -1116,7 +1116,7 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                 {/* 5. Upper Arc Cable */}
                 <g>
                     <path
-                        d="M 535 235 C 610 140, 670 170, 715 246"
+                        d="M 715 246 C 670 170, 610 140, 535 235"
                         stroke="url(#neon-int-t-r)"
                         strokeWidth={activeNode === 'drive' ? '5' : '3.5'}
                         strokeOpacity={activeNode === 'drive' ? '1' : '0.7'}
@@ -1139,11 +1139,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle-int">
                         <circle r="4" fill="#facc15" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 535 235 C 610 140, 670 170, 715 246" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 715 246 C 670 170, 610 140, 535 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 535 235 C 610 140, 670 170, 715 246" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 715 246 C 670 170, 610 140, 535 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
                         </circle>
                     </g>
@@ -1152,7 +1152,7 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                 {/* 6. Lower Arc Cable */}
                 <g>
                     <path
-                        d="M 535 305 C 610 400, 670 370, 715 294"
+                        d="M 715 294 C 670 370, 610 400, 535 305"
                         stroke="url(#neon-int-b-r)"
                         strokeWidth={activeNode === 'drive' ? '5' : '3.5'}
                         strokeOpacity={activeNode === 'drive' ? '1' : '0.7'}
@@ -1175,11 +1175,11 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </path>
                     <g className="wt-particle-int">
                         <circle r="4" fill="#2dd4bf" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 535 305 C 610 400, 670 370, 715 294" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
+                            <animateMotion path="M 715 294 C 670 370, 610 400, 535 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2" fill="#ffffff" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 535 305 C 610 400, 670 370, 715 294" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
+                            <animateMotion path="M 715 294 C 670 370, 610 400, 535 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                             <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
                         </circle>
                     </g>
