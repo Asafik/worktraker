@@ -277,12 +277,61 @@ export default function Login({ errors = {} }) {
 
                 {/* Center Ecosystem Canvas (Interactive 10 Connected Nodes) */}
                 <div className="relative w-full max-w-[1000px] xl:max-w-[1080px] 2xl:max-w-[1140px] mx-auto h-[580px] my-auto select-none">
+                    {/* Keyframe Animations & Reduced Motion Rules */}
+                    <style>{`
+                        @keyframes wtFadeIn {
+                            from { opacity: 0; }
+                            to { opacity: 1; }
+                        }
+                        .wt-fade-hub {
+                            opacity: 0;
+                            animation: wtFadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
+                        }
+                        .wt-fade-node-1 { opacity: 0; animation: wtFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.50s forwards; }
+                        .wt-fade-node-2 { opacity: 0; animation: wtFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.30s forwards; }
+                        .wt-fade-node-3 { opacity: 0; animation: wtFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.20s forwards; }
+                        .wt-fade-node-4 { opacity: 0; animation: wtFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.40s forwards; }
+                        .wt-fade-node-5 { opacity: 0; animation: wtFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.60s forwards; }
+                        .wt-fade-node-6 { opacity: 0; animation: wtFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.50s forwards; }
+                        .wt-fade-node-7 { opacity: 0; animation: wtFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.30s forwards; }
+                        .wt-fade-node-8 { opacity: 0; animation: wtFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.20s forwards; }
+                        .wt-fade-node-9 { opacity: 0; animation: wtFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.40s forwards; }
+                        .wt-fade-node-10 { opacity: 0; animation: wtFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) 0.60s forwards; }
+
+                        @media (prefers-reduced-motion: reduce) {
+                            .wt-fade-hub,
+                            .wt-fade-node-1,
+                            .wt-fade-node-2,
+                            .wt-fade-node-3,
+                            .wt-fade-node-4,
+                            .wt-fade-node-5,
+                            .wt-fade-node-6,
+                            .wt-fade-node-7,
+                            .wt-fade-node-8,
+                            .wt-fade-node-9,
+                            .wt-fade-node-10 {
+                                opacity: 1 !important;
+                                animation: none !important;
+                            }
+                            .wt-cable-path {
+                                stroke-dasharray: none !important;
+                                stroke-dashoffset: 0 !important;
+                            }
+                            .wt-cable-path animate {
+                                display: none !important;
+                            }
+                            .wt-particle {
+                                display: none !important;
+                            }
+                        }
+                    `}</style>
+
                     {/* Concentric Radar Rings */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[520px] h-[520px] rounded-full border border-blue-500/10 pointer-events-none" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[360px] h-[360px] rounded-full border border-blue-400/15 pointer-events-none" />
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[210px] h-[210px] rounded-full border border-cyan-400/25 pointer-events-none animate-pulse" />
 
-                    {/* SVG Glowing Neon Connection Lines (Thick, Seamlessly Attached to Cards) */}
+                    {/* SVG Glowing Neon Connection Lines (Drawn outward from Center Hub to Cards) */}
                     <svg
                         className="absolute inset-0 w-full h-full pointer-events-none z-10"
                         viewBox="0 0 1000 580"
@@ -290,362 +339,672 @@ export default function Login({ errors = {} }) {
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <defs>
-                            {/* Ambient Glow Filter for Flowing Photons */}
+                            {/* Delicate Subtle Glow Filter for Flowing Photons */}
                             <filter id="photon-glow" x="-50%" y="-50%" width="200%" height="200%">
-                                <feGaussianBlur stdDeviation="4" result="coloredBlur" />
+                                <feGaussianBlur stdDeviation="3" result="coloredBlur" />
                                 <feMerge>
                                     <feMergeNode in="coloredBlur" />
                                     <feMergeNode in="SourceGraphic" />
                                 </feMerge>
                             </filter>
 
-                            {/* Left Gradients */}
-                            <linearGradient id="neon-node1" x1="170" y1="43" x2="490" y2="260" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#38bdf8" />
-                                <stop offset="1" stopColor="#3b82f6" />
-                            </linearGradient>
-                            <linearGradient id="neon-node2" x1="170" y1="163" x2="490" y2="275" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#2dd4bf" />
-                                <stop offset="1" stopColor="#06b6d4" />
-                            </linearGradient>
-                            <linearGradient id="neon-node3" x1="170" y1="290" x2="490" y2="290" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#facc15" />
-                                <stop offset="1" stopColor="#3b82f6" />
-                            </linearGradient>
-                            <linearGradient id="neon-node4" x1="170" y1="418" x2="490" y2="305" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#818cf8" />
-                                <stop offset="1" stopColor="#6366f1" />
-                            </linearGradient>
-                            <linearGradient id="neon-node5" x1="170" y1="538" x2="490" y2="320" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#c084fc" />
-                                <stop offset="1" stopColor="#8b5cf6" />
-                            </linearGradient>
-
-                            {/* Right Gradients */}
-                            <linearGradient id="neon-node6" x1="830" y1="43" x2="510" y2="260" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#4285f4" />
+                            {/* Left Gradients (Hub x=490 -> Card x=170) */}
+                            <linearGradient id="neon-node1" x1="490" y1="260" x2="170" y2="43" gradientUnits="userSpaceOnUse">
+                                <stop stopColor="#3b82f6" />
                                 <stop offset="1" stopColor="#38bdf8" />
                             </linearGradient>
-                            <linearGradient id="neon-node7" x1="830" y1="163" x2="510" y2="275" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#60a5fa" />
+                            <linearGradient id="neon-node2" x1="490" y1="275" x2="170" y2="163" gradientUnits="userSpaceOnUse">
+                                <stop stopColor="#06b6d4" />
+                                <stop offset="1" stopColor="#2dd4bf" />
+                            </linearGradient>
+                            <linearGradient id="neon-node3" x1="490" y1="290" x2="170" y2="290" gradientUnits="userSpaceOnUse">
+                                <stop stopColor="#3b82f6" />
+                                <stop offset="1" stopColor="#facc15" />
+                            </linearGradient>
+                            <linearGradient id="neon-node4" x1="490" y1="305" x2="170" y2="418" gradientUnits="userSpaceOnUse">
+                                <stop stopColor="#6366f1" />
                                 <stop offset="1" stopColor="#818cf8" />
                             </linearGradient>
-                            <linearGradient id="neon-node8" x1="830" y1="290" x2="510" y2="290" gradientUnits="userSpaceOnUse">
+                            <linearGradient id="neon-node5" x1="490" y1="320" x2="170" y2="538" gradientUnits="userSpaceOnUse">
+                                <stop stopColor="#8b5cf6" />
+                                <stop offset="1" stopColor="#c084fc" />
+                            </linearGradient>
+
+                            {/* Right Gradients (Hub x=510 -> Card x=830) */}
+                            <linearGradient id="neon-node6" x1="510" y1="260" x2="830" y2="43" gradientUnits="userSpaceOnUse">
                                 <stop stopColor="#38bdf8" />
-                                <stop offset="1" stopColor="#3b82f6" />
+                                <stop offset="1" stopColor="#4285f4" />
                             </linearGradient>
-                            <linearGradient id="neon-node9" x1="830" y1="418" x2="510" y2="305" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#f472b6" />
-                                <stop offset="1" stopColor="#8b5cf6" />
+                            <linearGradient id="neon-node7" x1="510" y1="275" x2="830" y2="163" gradientUnits="userSpaceOnUse">
+                                <stop stopColor="#818cf8" />
+                                <stop offset="1" stopColor="#60a5fa" />
                             </linearGradient>
-                            <linearGradient id="neon-node10" x1="830" y1="538" x2="510" y2="320" gradientUnits="userSpaceOnUse">
-                                <stop stopColor="#8ab4f8" />
-                                <stop offset="0.5" stopColor="#c084fc" />
+                            <linearGradient id="neon-node8" x1="510" y1="290" x2="830" y2="290" gradientUnits="userSpaceOnUse">
+                                <stop stopColor="#3b82f6" />
                                 <stop offset="1" stopColor="#38bdf8" />
+                            </linearGradient>
+                            <linearGradient id="neon-node9" x1="510" y1="305" x2="830" y2="418" gradientUnits="userSpaceOnUse">
+                                <stop stopColor="#8b5cf6" />
+                                <stop offset="1" stopColor="#f472b6" />
+                            </linearGradient>
+                            <linearGradient id="neon-node10" x1="510" y1="320" x2="830" y2="538" gradientUnits="userSpaceOnUse">
+                                <stop stopColor="#38bdf8" />
+                                <stop offset="0.5" stopColor="#c084fc" />
+                                <stop offset="1" stopColor="#8ab4f8" />
                             </linearGradient>
                         </defs>
 
                         {/* ==================================================== */}
-                        {/* LEFT 5 CONNECTIONS (Flowing into WorkTrack Hub)      */}
+                        {/* LEFT 5 CONNECTIONS (Center Hub -> Left Nodes)        */}
                         {/* ==================================================== */}
                         {/* 1. Projects */}
                         <g>
-                            {/* Base Bold Cable */}
                             <path
-                                d="M 170 43 C 260 43, 380 230, 490 260"
+                                d="M 490 260 C 380 230, 260 43, 170 43"
                                 stroke="url(#neon-node1)"
                                 strokeWidth={activeNode === 'projects' ? '5' : '3.5'}
                                 strokeOpacity={activeNode === 'projects' ? '1' : '0.65'}
                                 strokeLinecap="round"
-                            />
-                            {/* Animated Pulse Stream */}
-                            <path
-                                d="M 170 43 C 260 43, 380 230, 490 260"
-                                stroke="url(#neon-node1)"
-                                strokeWidth="4"
-                                strokeDasharray="60 300"
-                                strokeLinecap="round"
+                                strokeDasharray="600"
+                                strokeDashoffset="600"
+                                className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                             >
-                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.6s" repeatCount="indefinite" />
+                                <animate
+                                    attributeName="stroke-dashoffset"
+                                    from="600"
+                                    to="0"
+                                    dur="0.75s"
+                                    begin="1.02s"
+                                    fill="freeze"
+                                    calcMode="spline"
+                                    keySplines="0.25 0.1 0.25 1"
+                                    keyTimes="0;1"
+                                />
                             </path>
-                            {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#38bdf8" opacity="0.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 170 43 C 260 43, 380 230, 490 260" dur="2.6s" repeatCount="indefinite" />
-                            </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#38bdf8" strokeWidth="2" filter="url(#photon-glow)">
-                                <animateMotion path="M 170 43 C 260 43, 380 230, 490 260" dur="2.6s" repeatCount="indefinite" />
-                            </circle>
+                            <g className="wt-particle">
+                                <circle r="4" fill="#38bdf8" opacity="0.4" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 490 260 C 380 230, 260 43, 170 43"
+                                        dur="3.7s"
+                                        begin="1.77s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.45;0.45;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.7s"
+                                        begin="1.77s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                                <circle r="2" fill="#ffffff" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 490 260 C 380 230, 260 43, 170 43"
+                                        dur="3.7s"
+                                        begin="1.77s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.95;0.95;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.7s"
+                                        begin="1.77s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                            </g>
                         </g>
 
                         {/* 2. Tasks */}
                         <g>
-                            {/* Base Bold Cable */}
                             <path
-                                d="M 170 163 C 250 163, 370 255, 490 275"
+                                d="M 490 275 C 370 255, 250 163, 170 163"
                                 stroke="url(#neon-node2)"
                                 strokeWidth={activeNode === 'tasks' ? '5' : '3.5'}
                                 strokeOpacity={activeNode === 'tasks' ? '1' : '0.65'}
                                 strokeLinecap="round"
-                            />
-                            {/* Animated Pulse Stream */}
-                            <path
-                                d="M 170 163 C 250 163, 370 255, 490 275"
-                                stroke="url(#neon-node2)"
-                                strokeWidth="4"
-                                strokeDasharray="60 300"
-                                strokeLinecap="round"
+                                strokeDasharray="600"
+                                strokeDashoffset="600"
+                                className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                             >
-                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
+                                <animate
+                                    attributeName="stroke-dashoffset"
+                                    from="600"
+                                    to="0"
+                                    dur="0.70s"
+                                    begin="0.78s"
+                                    fill="freeze"
+                                    calcMode="spline"
+                                    keySplines="0.25 0.1 0.25 1"
+                                    keyTimes="0;1"
+                                />
                             </path>
-                            {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#2dd4bf" opacity="0.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 170 163 C 250 163, 370 255, 490 275" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
-                            </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#2dd4bf" strokeWidth="2" filter="url(#photon-glow)">
-                                <animateMotion path="M 170 163 C 250 163, 370 255, 490 275" dur="2.9s" begin="0.5s" repeatCount="indefinite" />
-                            </circle>
+                            <g className="wt-particle">
+                                <circle r="4" fill="#2dd4bf" opacity="0.4" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 490 275 C 370 255, 250 163, 170 163"
+                                        dur="3.4s"
+                                        begin="1.48s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.45;0.45;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.4s"
+                                        begin="1.48s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                                <circle r="2" fill="#ffffff" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 490 275 C 370 255, 250 163, 170 163"
+                                        dur="3.4s"
+                                        begin="1.48s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.95;0.95;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.4s"
+                                        begin="1.48s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                            </g>
                         </g>
 
                         {/* 3. Google Drive */}
                         <g>
-                            {/* Base Bold Cable */}
                             <path
-                                d="M 170 290 C 260 290, 380 290, 490 290"
+                                d="M 490 290 C 380 290, 260 290, 170 290"
                                 stroke="url(#neon-node3)"
                                 strokeWidth={activeNode === 'drive' ? '5' : '3.5'}
                                 strokeOpacity={activeNode === 'drive' ? '1' : '0.65'}
                                 strokeLinecap="round"
-                            />
-                            {/* Animated Pulse Stream */}
-                            <path
-                                d="M 170 290 C 260 290, 380 290, 490 290"
-                                stroke="url(#neon-node3)"
-                                strokeWidth="4"
-                                strokeDasharray="60 300"
-                                strokeLinecap="round"
+                                strokeDasharray="600"
+                                strokeDashoffset="600"
+                                className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                             >
-                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
+                                <animate
+                                    attributeName="stroke-dashoffset"
+                                    from="600"
+                                    to="0"
+                                    dur="0.65s"
+                                    begin="0.65s"
+                                    fill="freeze"
+                                    calcMode="spline"
+                                    keySplines="0.25 0.1 0.25 1"
+                                    keyTimes="0;1"
+                                />
                             </path>
-                            {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#facc15" opacity="0.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 170 290 C 260 290, 380 290, 490 290" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
-                            </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#facc15" strokeWidth="2" filter="url(#photon-glow)">
-                                <animateMotion path="M 170 290 C 260 290, 380 290, 490 290" dur="2.4s" begin="0.2s" repeatCount="indefinite" />
-                            </circle>
+                            <g className="wt-particle">
+                                <circle r="4" fill="#facc15" opacity="0.45" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 490 290 C 380 290, 260 290, 170 290"
+                                        dur="3.2s"
+                                        begin="1.30s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.5;0.5;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.2s"
+                                        begin="1.30s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                                <circle r="2" fill="#ffffff" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 490 290 C 380 290, 260 290, 170 290"
+                                        dur="3.2s"
+                                        begin="1.30s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.95;0.95;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.2s"
+                                        begin="1.30s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                            </g>
                         </g>
 
                         {/* 4. GitHub */}
                         <g>
-                            {/* Base Bold Cable */}
                             <path
-                                d="M 170 418 C 250 418, 370 325, 490 305"
+                                d="M 490 305 C 370 325, 250 418, 170 418"
                                 stroke="url(#neon-node4)"
                                 strokeWidth={activeNode === 'github' ? '5' : '3.5'}
                                 strokeOpacity={activeNode === 'github' ? '1' : '0.65'}
                                 strokeLinecap="round"
-                            />
-                            {/* Animated Pulse Stream */}
-                            <path
-                                d="M 170 418 C 250 418, 370 325, 490 305"
-                                stroke="url(#neon-node4)"
-                                strokeWidth="4"
-                                strokeDasharray="60 300"
-                                strokeLinecap="round"
+                                strokeDasharray="600"
+                                strokeDashoffset="600"
+                                className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                             >
-                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
+                                <animate
+                                    attributeName="stroke-dashoffset"
+                                    from="600"
+                                    to="0"
+                                    dur="0.70s"
+                                    begin="0.90s"
+                                    fill="freeze"
+                                    calcMode="spline"
+                                    keySplines="0.25 0.1 0.25 1"
+                                    keyTimes="0;1"
+                                />
                             </path>
-                            {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#818cf8" opacity="0.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 170 418 C 250 418, 370 325, 490 305" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
-                            </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#818cf8" strokeWidth="2" filter="url(#photon-glow)">
-                                <animateMotion path="M 170 418 C 250 418, 370 325, 490 305" dur="3.0s" begin="0.7s" repeatCount="indefinite" />
-                            </circle>
+                            <g className="wt-particle">
+                                <circle r="4" fill="#818cf8" opacity="0.4" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 490 305 C 370 325, 250 418, 170 418"
+                                        dur="3.5s"
+                                        begin="1.60s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.45;0.45;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.5s"
+                                        begin="1.60s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                                <circle r="2" fill="#ffffff" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 490 305 C 370 325, 250 418, 170 418"
+                                        dur="3.5s"
+                                        begin="1.60s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.95;0.95;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.5s"
+                                        begin="1.60s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                            </g>
                         </g>
 
                         {/* 5. Notes */}
                         <g>
-                            {/* Base Bold Cable */}
                             <path
-                                d="M 170 538 C 260 538, 380 350, 490 320"
+                                d="M 490 320 C 380 350, 260 538, 170 538"
                                 stroke="url(#neon-node5)"
                                 strokeWidth={activeNode === 'notes' ? '5' : '3.5'}
                                 strokeOpacity={activeNode === 'notes' ? '1' : '0.65'}
                                 strokeLinecap="round"
-                            />
-                            {/* Animated Pulse Stream */}
-                            <path
-                                d="M 170 538 C 260 538, 380 350, 490 320"
-                                stroke="url(#neon-node5)"
-                                strokeWidth="4"
-                                strokeDasharray="60 300"
-                                strokeLinecap="round"
+                                strokeDasharray="600"
+                                strokeDashoffset="600"
+                                className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                             >
-                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
+                                <animate
+                                    attributeName="stroke-dashoffset"
+                                    from="600"
+                                    to="0"
+                                    dur="0.75s"
+                                    begin="1.15s"
+                                    fill="freeze"
+                                    calcMode="spline"
+                                    keySplines="0.25 0.1 0.25 1"
+                                    keyTimes="0;1"
+                                />
                             </path>
-                            {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#c084fc" opacity="0.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 170 538 C 260 538, 380 350, 490 320" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
-                            </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#c084fc" strokeWidth="2" filter="url(#photon-glow)">
-                                <animateMotion path="M 170 538 C 260 538, 380 350, 490 320" dur="2.7s" begin="0.3s" repeatCount="indefinite" />
-                            </circle>
+                            <g className="wt-particle">
+                                <circle r="4" fill="#c084fc" opacity="0.4" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 490 320 C 380 350, 260 538, 170 538"
+                                        dur="3.8s"
+                                        begin="1.90s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.45;0.45;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.8s"
+                                        begin="1.90s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                                <circle r="2" fill="#ffffff" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 490 320 C 380 350, 260 538, 170 538"
+                                        dur="3.8s"
+                                        begin="1.90s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.95;0.95;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.8s"
+                                        begin="1.90s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                            </g>
                         </g>
 
                         {/* ==================================================== */}
-                        {/* RIGHT 5 CONNECTIONS (Flowing into WorkTrack Hub)     */}
+                        {/* RIGHT 5 CONNECTIONS (Center Hub -> Right Nodes)      */}
                         {/* ==================================================== */}
                         {/* 6. Calendar */}
                         <g>
-                            {/* Base Bold Cable */}
                             <path
-                                d="M 830 43 C 740 43, 620 230, 510 260"
+                                d="M 510 260 C 620 230, 740 43, 830 43"
                                 stroke="url(#neon-node6)"
                                 strokeWidth={activeNode === 'calendar' ? '5' : '3.5'}
                                 strokeOpacity={activeNode === 'calendar' ? '1' : '0.65'}
                                 strokeLinecap="round"
-                            />
-                            {/* Animated Pulse Stream */}
-                            <path
-                                d="M 830 43 C 740 43, 620 230, 510 260"
-                                stroke="url(#neon-node6)"
-                                strokeWidth="4"
-                                strokeDasharray="60 300"
-                                strokeLinecap="round"
+                                strokeDasharray="600"
+                                strokeDashoffset="600"
+                                className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                             >
-                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
+                                <animate
+                                    attributeName="stroke-dashoffset"
+                                    from="600"
+                                    to="0"
+                                    dur="0.75s"
+                                    begin="1.02s"
+                                    fill="freeze"
+                                    calcMode="spline"
+                                    keySplines="0.25 0.1 0.25 1"
+                                    keyTimes="0;1"
+                                />
                             </path>
-                            {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#4285f4" opacity="0.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 830 43 C 740 43, 620 230, 510 260" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
-                            </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#4285f4" strokeWidth="2" filter="url(#photon-glow)">
-                                <animateMotion path="M 830 43 C 740 43, 620 230, 510 260" dur="2.7s" begin="0.4s" repeatCount="indefinite" />
-                            </circle>
+                            <g className="wt-particle">
+                                <circle r="4" fill="#4285f4" opacity="0.4" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 510 260 C 620 230, 740 43, 830 43"
+                                        dur="3.7s"
+                                        begin="1.77s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.45;0.45;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.7s"
+                                        begin="1.77s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                                <circle r="2" fill="#ffffff" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 510 260 C 620 230, 740 43, 830 43"
+                                        dur="3.7s"
+                                        begin="1.77s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.95;0.95;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.7s"
+                                        begin="1.77s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                            </g>
                         </g>
 
                         {/* 7. Portfolio */}
                         <g>
-                            {/* Base Bold Cable */}
                             <path
-                                d="M 830 163 C 750 163, 630 255, 510 275"
+                                d="M 510 275 C 630 255, 750 163, 830 163"
                                 stroke="url(#neon-node7)"
                                 strokeWidth={activeNode === 'portfolio' ? '5' : '3.5'}
                                 strokeOpacity={activeNode === 'portfolio' ? '1' : '0.65'}
                                 strokeLinecap="round"
-                            />
-                            {/* Animated Pulse Stream */}
-                            <path
-                                d="M 830 163 C 750 163, 630 255, 510 275"
-                                stroke="url(#neon-node7)"
-                                strokeWidth="4"
-                                strokeDasharray="60 300"
-                                strokeLinecap="round"
+                                strokeDasharray="600"
+                                strokeDashoffset="600"
+                                className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                             >
-                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
+                                <animate
+                                    attributeName="stroke-dashoffset"
+                                    from="600"
+                                    to="0"
+                                    dur="0.70s"
+                                    begin="0.78s"
+                                    fill="freeze"
+                                    calcMode="spline"
+                                    keySplines="0.25 0.1 0.25 1"
+                                    keyTimes="0;1"
+                                />
                             </path>
-                            {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#60a5fa" opacity="0.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 830 163 C 750 163, 630 255, 510 275" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
-                            </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#60a5fa" strokeWidth="2" filter="url(#photon-glow)">
-                                <animateMotion path="M 830 163 C 750 163, 630 255, 510 275" dur="3.0s" begin="0.8s" repeatCount="indefinite" />
-                            </circle>
+                            <g className="wt-particle">
+                                <circle r="4" fill="#60a5fa" opacity="0.4" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 510 275 C 630 255, 750 163, 830 163"
+                                        dur="3.4s"
+                                        begin="1.48s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.45;0.45;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.4s"
+                                        begin="1.48s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                                <circle r="2" fill="#ffffff" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 510 275 C 630 255, 750 163, 830 163"
+                                        dur="3.4s"
+                                        begin="1.48s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.95;0.95;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.4s"
+                                        begin="1.48s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                            </g>
                         </g>
 
                         {/* 8. Archive */}
                         <g>
-                            {/* Base Bold Cable */}
                             <path
-                                d="M 830 290 C 740 290, 620 290, 510 290"
+                                d="M 510 290 C 620 290, 740 290, 830 290"
                                 stroke="url(#neon-node8)"
                                 strokeWidth={activeNode === 'archive' ? '5' : '3.5'}
                                 strokeOpacity={activeNode === 'archive' ? '1' : '0.65'}
                                 strokeLinecap="round"
-                            />
-                            {/* Animated Pulse Stream */}
-                            <path
-                                d="M 830 290 C 740 290, 620 290, 510 290"
-                                stroke="url(#neon-node8)"
-                                strokeWidth="4"
-                                strokeDasharray="60 300"
-                                strokeLinecap="round"
+                                strokeDasharray="600"
+                                strokeDashoffset="600"
+                                className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                             >
-                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
+                                <animate
+                                    attributeName="stroke-dashoffset"
+                                    from="600"
+                                    to="0"
+                                    dur="0.65s"
+                                    begin="0.65s"
+                                    fill="freeze"
+                                    calcMode="spline"
+                                    keySplines="0.25 0.1 0.25 1"
+                                    keyTimes="0;1"
+                                />
                             </path>
-                            {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#38bdf8" opacity="0.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 830 290 C 740 290, 620 290, 510 290" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
-                            </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#38bdf8" strokeWidth="2" filter="url(#photon-glow)">
-                                <animateMotion path="M 830 290 C 740 290, 620 290, 510 290" dur="2.5s" begin="0.1s" repeatCount="indefinite" />
-                            </circle>
+                            <g className="wt-particle">
+                                <circle r="4" fill="#38bdf8" opacity="0.4" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 510 290 C 620 290, 740 290, 830 290"
+                                        dur="3.2s"
+                                        begin="1.30s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.45;0.45;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.2s"
+                                        begin="1.30s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                                <circle r="2" fill="#ffffff" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 510 290 C 620 290, 740 290, 830 290"
+                                        dur="3.2s"
+                                        begin="1.30s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.95;0.95;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.2s"
+                                        begin="1.30s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                            </g>
                         </g>
 
                         {/* 9. Mail/Updates */}
                         <g>
-                            {/* Base Bold Cable */}
                             <path
-                                d="M 830 418 C 750 418, 630 325, 510 305"
+                                d="M 510 305 C 630 325, 750 418, 830 418"
                                 stroke="url(#neon-node9)"
                                 strokeWidth={activeNode === 'mail' ? '5' : '3.5'}
                                 strokeOpacity={activeNode === 'mail' ? '1' : '0.65'}
                                 strokeLinecap="round"
-                            />
-                            {/* Animated Pulse Stream */}
-                            <path
-                                d="M 830 418 C 750 418, 630 325, 510 305"
-                                stroke="url(#neon-node9)"
-                                strokeWidth="4"
-                                strokeDasharray="60 300"
-                                strokeLinecap="round"
+                                strokeDasharray="600"
+                                strokeDashoffset="600"
+                                className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                             >
-                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
+                                <animate
+                                    attributeName="stroke-dashoffset"
+                                    from="600"
+                                    to="0"
+                                    dur="0.70s"
+                                    begin="0.90s"
+                                    fill="freeze"
+                                    calcMode="spline"
+                                    keySplines="0.25 0.1 0.25 1"
+                                    keyTimes="0;1"
+                                />
                             </path>
-                            {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#f472b6" opacity="0.5" filter="url(#photon-glow)">
-                                <animateMotion path="M 830 418 C 750 418, 630 325, 510 305" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
-                            </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#f472b6" strokeWidth="2" filter="url(#photon-glow)">
-                                <animateMotion path="M 830 418 C 750 418, 630 325, 510 305" dur="2.8s" begin="0.6s" repeatCount="indefinite" />
-                            </circle>
+                            <g className="wt-particle">
+                                <circle r="4" fill="#f472b6" opacity="0.4" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 510 305 C 630 325, 750 418, 830 418"
+                                        dur="3.5s"
+                                        begin="1.60s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.45;0.45;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.5s"
+                                        begin="1.60s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                                <circle r="2" fill="#ffffff" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 510 305 C 630 325, 750 418, 830 418"
+                                        dur="3.5s"
+                                        begin="1.60s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.95;0.95;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.5s"
+                                        begin="1.60s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                            </g>
                         </g>
 
                         {/* 10. Gemini AI */}
                         <g>
-                            {/* Base Bold Cable */}
                             <path
-                                d="M 830 538 C 740 538, 620 350, 510 320"
+                                d="M 510 320 C 620 350, 740 538, 830 538"
                                 stroke="url(#neon-node10)"
                                 strokeWidth={activeNode === 'gemini' ? '5' : '3.5'}
                                 strokeOpacity={activeNode === 'gemini' ? '1' : '0.65'}
                                 strokeLinecap="round"
-                            />
-                            {/* Animated Pulse Stream */}
-                            <path
-                                d="M 830 538 C 740 538, 620 350, 510 320"
-                                stroke="url(#neon-node10)"
-                                strokeWidth="4"
-                                strokeDasharray="60 300"
-                                strokeLinecap="round"
+                                strokeDasharray="600"
+                                strokeDashoffset="600"
+                                className="wt-cable-path transition-[stroke-width,stroke-opacity] duration-200"
                             >
-                                <animate attributeName="stroke-dashoffset" from="360" to="0" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
+                                <animate
+                                    attributeName="stroke-dashoffset"
+                                    from="600"
+                                    to="0"
+                                    dur="0.75s"
+                                    begin="1.15s"
+                                    fill="freeze"
+                                    calcMode="spline"
+                                    keySplines="0.25 0.1 0.25 1"
+                                    keyTimes="0;1"
+                                />
                             </path>
-                            {/* Traveling Light Photon */}
-                            <circle r="7.5" fill="#8ab4f8" opacity="0.6" filter="url(#photon-glow)">
-                                <animateMotion path="M 830 538 C 740 538, 620 350, 510 320" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
-                            </circle>
-                            <circle r="3.5" fill="#ffffff" stroke="#8ab4f8" strokeWidth="2" filter="url(#photon-glow)">
-                                <animateMotion path="M 830 538 C 740 538, 620 350, 510 320" dur="3.1s" begin="0.9s" repeatCount="indefinite" />
-                            </circle>
+                            <g className="wt-particle">
+                                <circle r="4" fill="#8ab4f8" opacity="0.5" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 510 320 C 620 350, 740 538, 830 538"
+                                        dur="3.8s"
+                                        begin="1.90s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.5;0.5;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.8s"
+                                        begin="1.90s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                                <circle r="2" fill="#ffffff" filter="url(#photon-glow)">
+                                    <animateMotion
+                                        path="M 510 320 C 620 350, 740 538, 830 538"
+                                        dur="3.8s"
+                                        begin="1.90s"
+                                        repeatCount="indefinite"
+                                    />
+                                    <animate
+                                        attributeName="opacity"
+                                        values="0;0.95;0.95;0"
+                                        keyTimes="0;0.08;0.92;1"
+                                        dur="3.8s"
+                                        begin="1.90s"
+                                        repeatCount="indefinite"
+                                    />
+                                </circle>
+                            </g>
                         </g>
                     </svg>
 
                     {/* ==================================================== */}
                     {/* CENTER GLOWING LOGO HUB                              */}
                     {/* ==================================================== */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center">
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col items-center wt-fade-hub">
                         <div className="w-24 h-24 sm:w-26 sm:h-26 rounded-2xl bg-gradient-to-b from-[#0e1f4d] via-[#091433] to-[#060c20] border-2 border-blue-400/60 shadow-[0_0_45px_rgba(59,130,246,0.6)] flex flex-col items-center justify-center relative group hover:scale-105 transition-all duration-300 cursor-pointer p-3">
                             {/* Inner Ambient Glow */}
                             <div className="absolute inset-0 rounded-2xl bg-blue-500/10 pointer-events-none" />
@@ -669,7 +1028,7 @@ export default function Login({ errors = {} }) {
                     <div
                         onMouseEnter={() => setActiveNode('projects')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[15px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                        className={`absolute top-[15px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group wt-fade-node-1 ${
                             activeNode === 'projects' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                         }`}
                     >
@@ -692,7 +1051,7 @@ export default function Login({ errors = {} }) {
                     <div
                         onMouseEnter={() => setActiveNode('tasks')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[135px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                        className={`absolute top-[135px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-emerald-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group wt-fade-node-2 ${
                             activeNode === 'tasks' ? 'scale-103 border-emerald-400 shadow-emerald-500/20' : ''
                         }`}
                     >
@@ -715,7 +1074,7 @@ export default function Login({ errors = {} }) {
                     <div
                         onMouseEnter={() => setActiveNode('drive')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[263px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-yellow-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                        className={`absolute top-[263px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-yellow-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group wt-fade-node-3 ${
                             activeNode === 'drive' ? 'scale-103 border-yellow-400 shadow-yellow-500/20' : ''
                         }`}
                     >
@@ -742,7 +1101,7 @@ export default function Login({ errors = {} }) {
                     <div
                         onMouseEnter={() => setActiveNode('github')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[391px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-slate-300/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                        className={`absolute top-[391px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-slate-300/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group wt-fade-node-4 ${
                             activeNode === 'github' ? 'scale-103 border-slate-300 shadow-slate-500/20' : ''
                         }`}
                     >
@@ -767,7 +1126,7 @@ export default function Login({ errors = {} }) {
                     <div
                         onMouseEnter={() => setActiveNode('notes')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[511px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-purple-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                        className={`absolute top-[511px] left-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-purple-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group wt-fade-node-5 ${
                             activeNode === 'notes' ? 'scale-103 border-purple-400 shadow-purple-500/20' : ''
                         }`}
                     >
@@ -791,7 +1150,7 @@ export default function Login({ errors = {} }) {
                     <div
                         onMouseEnter={() => setActiveNode('calendar')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[15px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                        className={`absolute top-[15px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group wt-fade-node-6 ${
                             activeNode === 'calendar' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                         }`}
                     >
@@ -820,7 +1179,7 @@ export default function Login({ errors = {} }) {
                     <div
                         onMouseEnter={() => setActiveNode('portfolio')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[135px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                        className={`absolute top-[135px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group wt-fade-node-7 ${
                             activeNode === 'portfolio' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                         }`}
                     >
@@ -843,7 +1202,7 @@ export default function Login({ errors = {} }) {
                     <div
                         onMouseEnter={() => setActiveNode('archive')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[263px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                        className={`absolute top-[263px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-cyan-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group wt-fade-node-8 ${
                             activeNode === 'archive' ? 'scale-103 border-cyan-400 shadow-cyan-500/20' : ''
                         }`}
                     >
@@ -866,7 +1225,7 @@ export default function Login({ errors = {} }) {
                     <div
                         onMouseEnter={() => setActiveNode('mail')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[391px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-rose-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                        className={`absolute top-[391px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-rose-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group wt-fade-node-9 ${
                             activeNode === 'mail' ? 'scale-103 border-rose-400 shadow-rose-500/20' : ''
                         }`}
                     >
@@ -889,7 +1248,7 @@ export default function Login({ errors = {} }) {
                     <div
                         onMouseEnter={() => setActiveNode('gemini')}
                         onMouseLeave={() => setActiveNode(null)}
-                        className={`absolute top-[511px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-indigo-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group ${
+                        className={`absolute top-[511px] right-0 z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-xl p-2.5 px-3.5 border border-blue-900/50 hover:border-indigo-400/60 shadow-lg shadow-black/40 transition-all duration-200 flex items-center gap-3 w-[205px] sm:w-[215px] xl:w-[225px] cursor-pointer group wt-fade-node-10 ${
                             activeNode === 'gemini' ? 'scale-103 border-indigo-400 shadow-indigo-500/20' : ''
                         }`}
                     >
