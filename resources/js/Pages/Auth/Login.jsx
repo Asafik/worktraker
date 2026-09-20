@@ -298,7 +298,7 @@ export default function Login({ errors = {} }) {
                     </span>
                     <span>·</span>
                     <span className="text-slate-500">
-                        {activeSlide === 0 ? '6 Layanan Terpadu' : 'GitHub & Google Drive'}
+                        {activeSlide === 0 ? '6 Layanan Terpadu' : 'GitHub, Drive, Calendar & Gemini'}
                     </span>
                     <span className="w-6 h-1 bg-blue-500 rounded-full ml-1" />
                 </div>
@@ -349,7 +349,7 @@ export default function Login({ errors = {} }) {
                         <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto leading-relaxed mt-1 transition-all duration-300">
                             {activeSlide === 0
                                 ? 'Kelola proyek, tugas, catatan, kalender, portofolio, dan arsip tanpa perlu berpindah aplikasi.'
-                                : 'Sinkronisasi repositori kode GitHub dan akses penyimpanan berkas Google Drive secara terpusat.'}
+                                : 'Sinkronisasi repositori GitHub, Google Drive, Google Calendar, serta kecerdasan Google Gemini secara terpusat.'}
                         </p>
                     </div>
 
@@ -868,7 +868,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                 <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-purple-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(168,85,247,0.8)] z-30" />
             </div>
 
-            {/* 4. Google Calendar */}
+            {/* 4. Calendar (Native WorkTrack) */}
             <div
                 onMouseEnter={() => setActiveNode('calendar')}
                 onMouseLeave={() => setActiveNode(null)}
@@ -876,24 +876,18 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     activeNode === 'calendar' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
                 }`}
             >
-                <div className="w-9 h-9 rounded-lg bg-white border border-slate-700/60 flex items-center justify-center shrink-0 shadow-xs">
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
-                        <rect x="3" y="4" width="18" height="17" rx="3" fill="#4285F4" />
-                        <rect x="3" y="4" width="18" height="5.5" fill="#1A73E8" rx="2" />
-                        <circle cx="7" cy="6.8" r="1" fill="white" />
-                        <circle cx="17" cy="6.8" r="1" fill="white" />
-                        <text x="12" y="17" fill="white" fontSize="8.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">31</text>
-                    </svg>
+                <div className="w-9 h-9 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-xs">
+                    <CalendarIcon className="w-5 h-5 stroke-[2.2]" />
                 </div>
                 <div className="min-w-0">
                     <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-blue-300 transition-colors leading-tight truncate">
-                        Google Calendar
+                        Calendar
                     </h3>
                     <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
-                        Sync your schedule
+                        Schedule & deadlines
                     </p>
                 </div>
-                <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-blue-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(66,133,244,0.8)] z-30" />
+                <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-blue-500 border-2 border-[#060b19] shadow-[0_0_8px_rgba(59,130,246,0.8)] z-30" />
             </div>
 
             {/* 5. Portfolio */}
@@ -991,17 +985,17 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[210px] h-[210px] rounded-full border border-cyan-400/25 pointer-events-none animate-pulse" />
 
             {/* Decorative Top & Bottom Data Stream Badges */}
-            <div className="absolute top-[65px] left-1/2 -translate-x-1/2 z-20 wt-fade-badge-int pointer-events-none select-none">
+            <div className="absolute top-[22px] left-1/2 -translate-x-1/2 z-20 wt-fade-badge-int pointer-events-none select-none">
                 <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0d1838]/85 border border-blue-500/30 backdrop-blur-md shadow-lg text-[11px] text-blue-200">
                     <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_6px_rgba(52,211,153,0.8)]" />
-                    <span className="font-semibold tracking-wide">Git Sync Pipeline · Automated Commits & Pull Requests</span>
+                    <span className="font-semibold tracking-wide">Git Sync & Gemini AI · Automated Commits & Smart Analysis</span>
                 </div>
             </div>
 
-            <div className="absolute bottom-[65px] left-1/2 -translate-x-1/2 z-20 wt-fade-badge-int pointer-events-none select-none">
+            <div className="absolute bottom-[22px] left-1/2 -translate-x-1/2 z-20 wt-fade-badge-int pointer-events-none select-none">
                 <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#0d1838]/85 border border-indigo-500/30 backdrop-blur-md shadow-lg text-[11px] text-indigo-200">
                     <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_6px_rgba(34,211,238,0.8)]" />
-                    <span className="font-semibold tracking-wide">Cloud Storage Bridge · 256-bit Encrypted File Sync</span>
+                    <span className="font-semibold tracking-wide">Cloud Storage & Calendar · 256-bit Encrypted Schedule Sync</span>
                 </div>
             </div>
 
@@ -1022,80 +1016,63 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </filter>
 
                     {/* Progressive Reveal Masks */}
-                    <mask id="mask-int-1" maskUnits="userSpaceOnUse">
-                        <path d="M 285 270 L 450 270" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
-                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.65s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                    <mask id="mask-int-github" maskUnits="userSpaceOnUse">
+                        <path d="M 265 116 C 345 116, 385 245, 460 245" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.75s" begin="0.65s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-int-2" maskUnits="userSpaceOnUse">
-                        <path d="M 285 246 C 330 170, 390 140, 465 235" stroke="#ffffff" strokeWidth="22" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
-                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.75s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                    <mask id="mask-int-gemini" maskUnits="userSpaceOnUse">
+                        <path d="M 265 424 C 345 424, 385 295, 460 295" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.75s" begin="0.85s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-int-3" maskUnits="userSpaceOnUse">
-                        <path d="M 285 294 C 330 370, 390 400, 465 305" stroke="#ffffff" strokeWidth="22" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
-                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.90s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                    <mask id="mask-int-calendar" maskUnits="userSpaceOnUse">
+                        <path d="M 735 116 C 655 116, 615 245, 540 245" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.75s" begin="0.65s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-int-4" maskUnits="userSpaceOnUse">
-                        <path d="M 715 270 L 550 270" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
-                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.65s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
-                        </path>
-                    </mask>
-                    <mask id="mask-int-5" maskUnits="userSpaceOnUse">
-                        <path d="M 715 246 C 670 170, 610 140, 535 235" stroke="#ffffff" strokeWidth="22" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
-                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.75s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
-                        </path>
-                    </mask>
-                    <mask id="mask-int-6" maskUnits="userSpaceOnUse">
-                        <path d="M 715 294 C 670 370, 610 400, 535 305" stroke="#ffffff" strokeWidth="22" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
-                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.90s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
+                    <mask id="mask-int-drive" maskUnits="userSpaceOnUse">
+                        <path d="M 735 424 C 655 424, 615 295, 540 295" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
+                            <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.75s" begin="0.85s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
 
-                    <linearGradient id="neon-int-c-l" x1="285" y1="270" x2="450" y2="270" gradientUnits="userSpaceOnUse">
+                    {/* Conduit Gradients */}
+                    <linearGradient id="neon-int-github" x1="265" y1="116" x2="460" y2="245" gradientUnits="userSpaceOnUse">
                         <stop stopColor="#818cf8" />
                         <stop offset="1" stopColor="#3b82f6" />
                     </linearGradient>
-                    <linearGradient id="neon-int-t-l" x1="285" y1="246" x2="465" y2="235" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#38bdf8" />
-                        <stop offset="1" stopColor="#06b6d4" />
+                    <linearGradient id="neon-int-gemini" x1="265" y1="424" x2="460" y2="295" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#1B72E8" />
+                        <stop offset="0.5" stopColor="#8AB4F8" />
+                        <stop offset="1" stopColor="#D96570" />
                     </linearGradient>
-                    <linearGradient id="neon-int-b-l" x1="285" y1="294" x2="465" y2="305" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#6366f1" />
-                        <stop offset="1" stopColor="#8b5cf6" />
+                    <linearGradient id="neon-int-calendar" x1="735" y1="116" x2="540" y2="245" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#4285F4" />
+                        <stop offset="1" stopColor="#38bdf8" />
                     </linearGradient>
-
-                    <linearGradient id="neon-int-c-r" x1="715" y1="270" x2="550" y2="270" gradientUnits="userSpaceOnUse">
+                    <linearGradient id="neon-int-drive" x1="735" y1="424" x2="540" y2="295" gradientUnits="userSpaceOnUse">
                         <stop stopColor="#10b981" />
+                        <stop offset="0.6" stopColor="#facc15" />
                         <stop offset="1" stopColor="#3b82f6" />
-                    </linearGradient>
-                    <linearGradient id="neon-int-t-r" x1="715" y1="246" x2="535" y2="235" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#facc15" />
-                        <stop offset="1" stopColor="#3b82f6" />
-                    </linearGradient>
-                    <linearGradient id="neon-int-b-r" x1="715" y1="294" x2="535" y2="305" gradientUnits="userSpaceOnUse">
-                        <stop stopColor="#2dd4bf" />
-                        <stop offset="1" stopColor="#06b6d4" />
                     </linearGradient>
                 </defs>
 
-                {/* Left 3 Pipelines: GitHub -> Hub */}
-                {/* 1. Main Center Cable */}
+                {/* 1. GitHub Pipeline (Top-Left -> Hub) */}
                 <g>
-                    <g mask="url(#mask-int-1)">
+                    <g mask="url(#mask-int-github)">
                         <path
-                            d="M 285 270 L 450 270"
-                            stroke="url(#neon-int-c-l)"
-                            strokeWidth={activeNode === 'github' ? '12.5' : '10.5'}
+                            d="M 265 116 C 345 116, 385 245, 460 245"
+                            stroke="url(#neon-int-github)"
+                            strokeWidth={activeNode === 'github' ? '11.5' : '9.5'}
                             strokeOpacity={activeNode === 'github' ? '1' : '0.85'}
                             strokeLinecap="round"
                             className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
                         <path
-                            d="M 285 270 L 450 270"
+                            d="M 265 116 C 345 116, 385 245, 460 245"
                             stroke="#ffffff"
-                            strokeWidth="2.4"
+                            strokeWidth="2.2"
                             strokeDasharray="5 6"
                             strokeOpacity="0.9"
                             strokeLinecap="round"
@@ -1103,108 +1080,107 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </g>
                     <g className="wt-particle-int">
                         <circle r="9" fill="#818cf8" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 285 270 L 450 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 265 116 C 345 116, 385 245, 460 245" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#818cf8" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 285 270 L 450 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 265 116 C 345 116, 385 245, 460 245" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 285 270 L 450 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 265 116 C 345 116, 385 245, 460 245" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* 2. Upper Arc Cable */}
+                {/* 2. Google Gemini Pipeline (Bottom-Left -> Hub) */}
                 <g>
-                    <g mask="url(#mask-int-2)">
+                    <g mask="url(#mask-int-gemini)">
                         <path
-                            d="M 285 246 C 330 170, 390 140, 465 235"
-                            stroke="url(#neon-int-t-l)"
-                            strokeWidth={activeNode === 'github' ? '10.5' : '8.5'}
-                            strokeOpacity={activeNode === 'github' ? '1' : '0.8'}
+                            d="M 265 424 C 345 424, 385 295, 460 295"
+                            stroke="url(#neon-int-gemini)"
+                            strokeWidth={activeNode === 'gemini' ? '11.5' : '9.5'}
+                            strokeOpacity={activeNode === 'gemini' ? '1' : '0.85'}
                             strokeLinecap="round"
                             className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
                         <path
-                            d="M 285 246 C 330 170, 390 140, 465 235"
+                            d="M 265 424 C 345 424, 385 295, 460 295"
                             stroke="#ffffff"
-                            strokeWidth="2"
-                            strokeDasharray="4 6"
-                            strokeOpacity="0.85"
+                            strokeWidth="2.2"
+                            strokeDasharray="5 6"
+                            strokeOpacity="0.9"
                             strokeLinecap="round"
                         />
                     </g>
                     <g className="wt-particle-int">
-                        <circle r="9" fill="#38bdf8" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 285 246 C 330 170, 390 140, 465 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
+                        <circle r="9" fill="#D96570" opacity="0" filter="url(#photon-glow-int)">
+                            <animateMotion path="M 265 424 C 345 424, 385 295, 460 295" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="5.5" fill="#f472b6" opacity="0" filter="url(#photon-glow-int)">
+                            <animateMotion path="M 265 424 C 345 424, 385 295, 460 295" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                        </circle>
+                        <circle r="2.5" fill="#ffffff" opacity="0">
+                            <animateMotion path="M 265 424 C 345 424, 385 295, 460 295" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                        </circle>
+                    </g>
+                </g>
+
+                {/* 3. Google Calendar Pipeline (Top-Right -> Hub) */}
+                <g>
+                    <g mask="url(#mask-int-calendar)">
+                        <path
+                            d="M 735 116 C 655 116, 615 245, 540 245"
+                            stroke="url(#neon-int-calendar)"
+                            strokeWidth={activeNode === 'calendar' ? '11.5' : '9.5'}
+                            strokeOpacity={activeNode === 'calendar' ? '1' : '0.85'}
+                            strokeLinecap="round"
+                            className="transition-[stroke-width,stroke-opacity] duration-200"
+                        />
+                        <path
+                            d="M 735 116 C 655 116, 615 245, 540 245"
+                            stroke="#ffffff"
+                            strokeWidth="2.2"
+                            strokeDasharray="5 6"
+                            strokeOpacity="0.9"
+                            strokeLinecap="round"
+                        />
+                    </g>
+                    <g className="wt-particle-int">
+                        <circle r="9" fill="#4285F4" opacity="0" filter="url(#photon-glow-int)">
+                            <animateMotion path="M 735 116 C 655 116, 615 245, 540 245" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#38bdf8" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 285 246 C 330 170, 390 140, 465 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 735 116 C 655 116, 615 245, 540 245" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 285 246 C 330 170, 390 140, 465 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
+                            <animateMotion path="M 735 116 C 655 116, 615 245, 540 245" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.35s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
 
-                {/* 3. Lower Arc Cable */}
+                {/* 4. Google Drive Pipeline (Bottom-Right -> Hub) */}
                 <g>
-                    <g mask="url(#mask-int-3)">
+                    <g mask="url(#mask-int-drive)">
                         <path
-                            d="M 285 294 C 330 370, 390 400, 465 305"
-                            stroke="url(#neon-int-b-l)"
-                            strokeWidth={activeNode === 'github' ? '10.5' : '8.5'}
-                            strokeOpacity={activeNode === 'github' ? '1' : '0.8'}
-                            strokeLinecap="round"
-                            className="transition-[stroke-width,stroke-opacity] duration-200"
-                        />
-                        <path
-                            d="M 285 294 C 330 370, 390 400, 465 305"
-                            stroke="#ffffff"
-                            strokeWidth="2"
-                            strokeDasharray="4 6"
-                            strokeOpacity="0.85"
-                            strokeLinecap="round"
-                        />
-                    </g>
-                    <g className="wt-particle-int">
-                        <circle r="9" fill="#a855f7" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 285 294 C 330 370, 390 400, 465 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
-                        </circle>
-                        <circle r="5.5" fill="#c084fc" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 285 294 C 330 370, 390 400, 465 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
-                        </circle>
-                        <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 285 294 C 330 370, 390 400, 465 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
-                        </circle>
-                    </g>
-                </g>
-
-                {/* Right 3 Pipelines: Google Drive -> Hub */}
-                {/* 4. Main Center Cable */}
-                <g>
-                    <g mask="url(#mask-int-4)">
-                        <path
-                            d="M 715 270 L 550 270"
-                            stroke="url(#neon-int-c-r)"
-                            strokeWidth={activeNode === 'drive' ? '12.5' : '10.5'}
+                            d="M 735 424 C 655 424, 615 295, 540 295"
+                            stroke="url(#neon-int-drive)"
+                            strokeWidth={activeNode === 'drive' ? '11.5' : '9.5'}
                             strokeOpacity={activeNode === 'drive' ? '1' : '0.85'}
                             strokeLinecap="round"
                             className="transition-[stroke-width,stroke-opacity] duration-200"
                         />
                         <path
-                            d="M 715 270 L 550 270"
+                            d="M 735 424 C 655 424, 615 295, 540 295"
                             stroke="#ffffff"
-                            strokeWidth="2.4"
+                            strokeWidth="2.2"
                             strokeDasharray="5 6"
                             strokeOpacity="0.9"
                             strokeLinecap="round"
@@ -1212,88 +1188,16 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </g>
                     <g className="wt-particle-int">
                         <circle r="9" fill="#10b981" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 715 270 L 550 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 735 424 C 655 424, 615 295, 540 295" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
                         </circle>
                         <circle r="5.5" fill="#34d399" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 715 270 L 550 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
+                            <animateMotion path="M 735 424 C 655 424, 615 295, 540 295" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
                         </circle>
                         <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 715 270 L 550 270" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="2.8s" begin="1.25s" repeatCount="indefinite" />
-                        </circle>
-                    </g>
-                </g>
-
-                {/* 5. Upper Arc Cable */}
-                <g>
-                    <g mask="url(#mask-int-5)">
-                        <path
-                            d="M 715 246 C 670 170, 610 140, 535 235"
-                            stroke="url(#neon-int-t-r)"
-                            strokeWidth={activeNode === 'drive' ? '10.5' : '8.5'}
-                            strokeOpacity={activeNode === 'drive' ? '1' : '0.8'}
-                            strokeLinecap="round"
-                            className="transition-[stroke-width,stroke-opacity] duration-200"
-                        />
-                        <path
-                            d="M 715 246 C 670 170, 610 140, 535 235"
-                            stroke="#ffffff"
-                            strokeWidth="2"
-                            strokeDasharray="4 6"
-                            strokeOpacity="0.85"
-                            strokeLinecap="round"
-                        />
-                    </g>
-                    <g className="wt-particle-int">
-                        <circle r="9" fill="#facc15" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 715 246 C 670 170, 610 140, 535 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
-                        </circle>
-                        <circle r="5.5" fill="#fde047" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 715 246 C 670 170, 610 140, 535 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
-                        </circle>
-                        <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 715 246 C 670 170, 610 140, 535 235" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.4s" begin="1.45s" repeatCount="indefinite" />
-                        </circle>
-                    </g>
-                </g>
-
-                {/* 6. Lower Arc Cable */}
-                <g>
-                    <g mask="url(#mask-int-6)">
-                        <path
-                            d="M 715 294 C 670 370, 610 400, 535 305"
-                            stroke="url(#neon-int-b-r)"
-                            strokeWidth={activeNode === 'drive' ? '10.5' : '8.5'}
-                            strokeOpacity={activeNode === 'drive' ? '1' : '0.8'}
-                            strokeLinecap="round"
-                            className="transition-[stroke-width,stroke-opacity] duration-200"
-                        />
-                        <path
-                            d="M 715 294 C 670 370, 610 400, 535 305"
-                            stroke="#ffffff"
-                            strokeWidth="2"
-                            strokeDasharray="4 6"
-                            strokeOpacity="0.85"
-                            strokeLinecap="round"
-                        />
-                    </g>
-                    <g className="wt-particle-int">
-                        <circle r="9" fill="#2dd4bf" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 715 294 C 670 370, 610 400, 535 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.5;0.5;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
-                        </circle>
-                        <circle r="5.5" fill="#5eead4" opacity="0" filter="url(#photon-glow-int)">
-                            <animateMotion path="M 715 294 C 670 370, 610 400, 535 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;0.95;0.95;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
-                        </circle>
-                        <circle r="2.5" fill="#ffffff" opacity="0">
-                            <animateMotion path="M 715 294 C 670 370, 610 400, 535 305" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
-                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.5s" begin="1.60s" repeatCount="indefinite" />
+                            <animateMotion path="M 735 424 C 655 424, 615 295, 540 295" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
+                            <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.2s" begin="1.55s" repeatCount="indefinite" />
                         </circle>
                     </g>
                 </g>
@@ -1314,53 +1218,117 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                 </div>
             </div>
 
-            {/* GitHub Card (Left) */}
+            {/* 1. GitHub Card (Top-Left) */}
             <div
                 onMouseEnter={() => setActiveNode('github')}
                 onMouseLeave={() => setActiveNode(null)}
-                className={`absolute top-[225px] left-[45px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-2xl p-3.5 px-4 border border-blue-900/50 hover:border-slate-300/60 shadow-xl shadow-black/50 transition-all duration-200 flex items-center gap-3.5 w-[240px] cursor-pointer group wt-fade-card-int ${
+                className={`absolute top-[82px] left-[35px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-2xl p-3 px-3.5 border border-blue-900/50 hover:border-slate-300/60 shadow-xl shadow-black/50 transition-all duration-200 flex items-center gap-3 w-[230px] cursor-pointer group wt-fade-card-int ${
                     activeNode === 'github' ? 'scale-103 border-slate-300 shadow-slate-500/20' : ''
                 }`}
             >
-                <div className="w-11 h-11 rounded-xl bg-white text-slate-950 flex items-center justify-center shrink-0 shadow-md">
-                    <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                <div className="w-10 h-10 rounded-xl bg-white text-slate-950 flex items-center justify-center shrink-0 shadow-md">
+                    <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                         <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                     </svg>
                 </div>
                 <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
-                        <h3 className="text-sm font-bold text-white group-hover:text-slate-200 transition-colors leading-tight">
+                        <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-slate-200 transition-colors leading-tight truncate">
                             GitHub
                         </h3>
-                        <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-sm bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                        <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-sm bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 shrink-0">
                             Sync
                         </span>
                     </div>
-                    <p className="text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
+                    <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
                         Code repository & PRs
                     </p>
-                    <div className="flex items-center gap-1 mt-1 text-[10px] text-indigo-300">
+                    <div className="flex items-center gap-1 mt-0.5 text-[9px] text-indigo-300">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         <span>2-way pipeline active</span>
                     </div>
                 </div>
-
-                {/* 3 Port Sockets for 3 Cables */}
-                <span className="absolute -right-1.5 top-[21px] w-3 h-3 rounded-full bg-sky-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(56,189,248,0.8)] z-30" />
                 <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-indigo-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(129,140,248,0.8)] z-30" />
-                <span className="absolute -right-1.5 bottom-[21px] w-3 h-3 rounded-full bg-purple-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(168,85,247,0.8)] z-30" />
             </div>
 
-            {/* Google Drive Card (Right) */}
+            {/* 2. Google Gemini Card (Bottom-Left) */}
+            <div
+                onMouseEnter={() => setActiveNode('gemini')}
+                onMouseLeave={() => setActiveNode(null)}
+                className={`absolute bottom-[82px] left-[35px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-2xl p-3 px-3.5 border border-blue-900/50 hover:border-pink-400/60 shadow-xl shadow-black/50 transition-all duration-200 flex items-center gap-3 w-[230px] cursor-pointer group wt-fade-card-int ${
+                    activeNode === 'gemini' ? 'scale-103 border-pink-400 shadow-pink-500/20' : ''
+                }`}
+            >
+                <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md">
+                    <GoogleGeminiIcon className="w-5 h-5" />
+                </div>
+                <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                        <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-pink-300 transition-colors leading-tight truncate">
+                            Google Gemini
+                        </h3>
+                        <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-sm bg-pink-500/20 text-pink-300 border border-pink-400/30 shrink-0">
+                            AI
+                        </span>
+                    </div>
+                    <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
+                        Smart AI insights & assistant
+                    </p>
+                    <div className="flex items-center gap-1 mt-0.5 text-[9px] text-pink-300">
+                        <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
+                        <span>Gemini 2.5 active</span>
+                    </div>
+                </div>
+                <span className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-pink-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(244,114,182,0.8)] z-30" />
+            </div>
+
+            {/* 3. Google Calendar Card (Top-Right) */}
+            <div
+                onMouseEnter={() => setActiveNode('calendar')}
+                onMouseLeave={() => setActiveNode(null)}
+                className={`absolute top-[82px] right-[35px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-2xl p-3 px-3.5 border border-blue-900/50 hover:border-blue-400/60 shadow-xl shadow-black/50 transition-all duration-200 flex items-center gap-3 w-[230px] cursor-pointer group wt-fade-card-int ${
+                    activeNode === 'calendar' ? 'scale-103 border-blue-400 shadow-blue-500/20' : ''
+                }`}
+            >
+                <div className="w-10 h-10 rounded-xl bg-white border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none">
+                        <rect x="3" y="4" width="18" height="17" rx="3" fill="#4285F4" />
+                        <rect x="3" y="4" width="18" height="5.5" fill="#1A73E8" rx="2" />
+                        <circle cx="7" cy="6.8" r="1" fill="white" />
+                        <circle cx="17" cy="6.8" r="1" fill="white" />
+                        <text x="12" y="17" fill="white" fontSize="8.5" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">31</text>
+                    </svg>
+                </div>
+                <div className="min-w-0">
+                    <div className="flex items-center gap-1.5">
+                        <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-blue-300 transition-colors leading-tight truncate">
+                            Google Calendar
+                        </h3>
+                        <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-sm bg-blue-500/20 text-blue-300 border border-blue-400/30 shrink-0">
+                            Sync
+                        </span>
+                    </div>
+                    <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
+                        Events & deadline sync
+                    </p>
+                    <div className="flex items-center gap-1 mt-0.5 text-[9px] text-cyan-300">
+                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                        <span>Real-time schedule sync</span>
+                    </div>
+                </div>
+                <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-blue-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(56,189,248,0.8)] z-30" />
+            </div>
+
+            {/* 4. Google Drive Card (Bottom-Right) */}
             <div
                 onMouseEnter={() => setActiveNode('drive')}
                 onMouseLeave={() => setActiveNode(null)}
-                className={`absolute top-[225px] right-[45px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-2xl p-3.5 px-4 border border-blue-900/50 hover:border-yellow-400/60 shadow-xl shadow-black/50 transition-all duration-200 flex items-center gap-3.5 w-[240px] cursor-pointer group wt-fade-card-int ${
+                className={`absolute bottom-[82px] right-[35px] z-20 bg-[#0d1838]/95 hover:bg-[#122250] backdrop-blur-md rounded-2xl p-3 px-3.5 border border-blue-900/50 hover:border-yellow-400/60 shadow-xl shadow-black/50 transition-all duration-200 flex items-center gap-3 w-[230px] cursor-pointer group wt-fade-card-int ${
                     activeNode === 'drive' ? 'scale-103 border-yellow-400 shadow-yellow-500/20' : ''
                 }`}
             >
-                <div className="w-11 h-11 rounded-xl bg-slate-900 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md">
-                    <svg className="w-6 h-6" viewBox="0 0 24 24">
+                <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-700/60 flex items-center justify-center shrink-0 shadow-md">
+                    <svg className="w-5 h-5" viewBox="0 0 24 24">
                         <path d="M7.74 3.5h8.52l4.98 8.64H12.72L7.74 3.5z" fill="#FFC107" />
                         <path d="M12.72 12.14l-4.98 8.64H2.76l4.98-8.64h4.98z" fill="#0066DA" />
                         <path d="M21.24 12.14l-4.98 8.64H7.74l4.98-8.64h8.52z" fill="#00AC47" />
@@ -1368,26 +1336,22 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                 </div>
                 <div className="min-w-0">
                     <div className="flex items-center gap-1.5">
-                        <h3 className="text-sm font-bold text-white group-hover:text-yellow-300 transition-colors leading-tight">
+                        <h3 className="text-xs sm:text-sm font-bold text-white group-hover:text-yellow-300 transition-colors leading-tight truncate">
                             Google Drive
                         </h3>
-                        <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-sm bg-blue-500/20 text-blue-300 border border-blue-400/30">
+                        <span className="px-1.5 py-0.2 text-[9px] font-bold rounded-sm bg-yellow-500/20 text-yellow-300 border border-yellow-400/30 shrink-0">
                             Cloud
                         </span>
                     </div>
-                    <p className="text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
+                    <p className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5 truncate">
                         Files, docs & assets
                     </p>
-                    <div className="flex items-center gap-1 mt-1 text-[10px] text-cyan-300">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                    <div className="flex items-center gap-1 mt-0.5 text-[9px] text-emerald-300">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                         <span>Cloud backup active</span>
                     </div>
                 </div>
-
-                {/* 3 Port Sockets for 3 Cables */}
-                <span className="absolute -left-1.5 top-[21px] w-3 h-3 rounded-full bg-amber-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(251,191,36,0.8)] z-30" />
                 <span className="absolute -left-1.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full bg-emerald-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(16,185,129,0.8)] z-30" />
-                <span className="absolute -left-1.5 bottom-[21px] w-3 h-3 rounded-full bg-teal-400 border-2 border-[#060b19] shadow-[0_0_8px_rgba(20,184,166,0.8)] z-30" />
             </div>
         </div>
     );
