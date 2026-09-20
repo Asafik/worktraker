@@ -80,6 +80,8 @@ use App\Http\Controllers\SettingsController;
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
 Route::post('/settings/profile/avatar', [SettingsController::class, 'uploadAvatar'])->name('settings.profile.avatar');
+Route::post('/settings/integrations/{service}', [SettingsController::class, 'updateIntegration'])->name('settings.integrations.update');
+Route::post('/settings/integrations/{service}/disconnect', [SettingsController::class, 'disconnectIntegration'])->name('settings.integrations.disconnect');
 
 use App\Http\Controllers\GitHubController;
 

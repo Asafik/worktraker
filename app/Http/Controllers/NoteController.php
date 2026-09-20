@@ -182,13 +182,14 @@ class NoteController extends Controller
             'title'   => ['nullable', 'string', 'max:255'],
         ]);
 
-        $apiKey = config('services.gemini.key');
+        $apiKey = \App\Models\IntegrationSetting::getValue('google_gemini', 'api_key')
+            ?: config('services.gemini.key');
         $model = config('services.gemini.model', 'gemini-2.5-flash');
 
         if (empty($apiKey)) {
             return response()->json([
                 'success' => false,
-                'message' => 'GEMINI_API_KEY belum dikonfigurasi di file .env',
+                'message' => 'GEMINI_API_KEY belum dikonfigurasi. Silakan atur di menu Settings > Integrations atau file .env',
             ], 422);
         }
 
@@ -319,7 +320,8 @@ Format response WAJIB berupa JSON dengan struktur persis seperti ini:
         $useAi = (bool) ($validated['use_ai'] ?? false);
         $items = $validated['items'];
 
-        $apiKey = config('services.gemini.key');
+        $apiKey = \App\Models\IntegrationSetting::getValue('google_gemini', 'api_key')
+            ?: config('services.gemini.key');
         $model = config('services.gemini.model', 'gemini-2.5-flash');
 
         // Optional AI standard description cleanup in INDONESIAN if user checked the option

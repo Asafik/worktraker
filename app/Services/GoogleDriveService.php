@@ -14,10 +14,12 @@ class GoogleDriveService
 
     public function __construct()
     {
-        $this->clientId = config('services.google_drive.client_id');
-        $this->clientSecret = config('services.google_drive.client_secret');
-        $this->refreshToken = config('services.google_drive.refresh_token');
-        $this->folderId = config('services.google_drive.folder_id') ?: '1LZwvt7UvPM1OOcIr366mnpmY5ITT--69';
+        $dbCreds = \App\Models\IntegrationSetting::getCredentials('google_drive');
+
+        $this->clientId = $dbCreds['client_id'] ?? config('services.google_drive.client_id');
+        $this->clientSecret = $dbCreds['client_secret'] ?? config('services.google_drive.client_secret');
+        $this->refreshToken = $dbCreds['refresh_token'] ?? config('services.google_drive.refresh_token');
+        $this->folderId = $dbCreds['folder_id'] ?? (config('services.google_drive.folder_id') ?: '1LZwvt7UvPM1OOcIr366mnpmY5ITT--69');
     }
 
     /**

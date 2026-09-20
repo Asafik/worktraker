@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\IntegrationSetting;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -42,15 +43,26 @@ class SettingsController extends Controller
             ]);
         }
 
-        $isGoogleDriveConnected = !empty(config('services.google_drive.client_id'))
-            && !empty(config('services.google_drive.client_secret'))
-            && !empty(config('services.google_drive.refresh_token'));
+        // 1. Google Drive Credentials (DB first, fallback to config/env)
+        $driveCreds = IntegrationSetting::getCredentials('google_drive');
+        $driveClientId = $driveCreds['client_id'] ?? config('services.google_drive.client_id');
+        $driveClientSecret = $driveCreds['client_secret'] ?? config('services.google_drive.client_secret');
+        $driveRefreshToken = $driveCreds['refresh_token'] ?? config('services.google_drive.refresh_token');
+        $driveFolderId = $driveCreds['folder_id'] ?? config('services.google_drive.folder_id');
+        $isGoogleDriveConnected = !empty($driveClientId)
+            && !empty($driveClientSecret)
+            && !empty($driveRefreshToken);
 
-        $isGoogleCalendarConnected = !empty(config('services.google_calendar.client_id'))
-            && !empty(config('services.google_calendar.client_secret'))
-            && !empty(config('services.google_calendar.refresh_token'));
+        // 2. Google Calendar Credentials (DB first, fallback to config/env)
+        $calCreds = IntegrationSetting::getCredentials('google_calendar');
+        $calIcalUrl = $calCreds['ical_url'] ?? config('services.google_calendar.ical_url');
+        $isGoogleCalendarConnected = !empty($calIcalUrl);
 
-        $isGeminiConnected = !empty(config('services.gemini.key'));
+        // 3. Google Gemini Credentials (DB first, fallback to config/env)
+        $geminiCreds = IntegrationSetting::getCredentials('google_gemini');
+        $geminiApiKey = $geminiCreds['api_key'] ?? config('services.gemini.key');
+        $isGeminiConnected = !empty($geminiApiKey);
+
         $todayKey = 'gemini_requests_' . date('Y-m-d');
         $tokensKey = 'gemini_tokens_' . date('Y-m-d');
         $geminiUsedToday = (int) Cache::get($todayKey, 0);
@@ -85,10 +97,16 @@ class SettingsController extends Controller
                     'connected' => $isGoogleDriveConnected,
                     'account' => 'ronismk7@gmail.com',
                     'accountType' => 'Personal Account (Google Drive)',
-                    'folderConfigured' => !empty(config('services.google_drive.folder_id')),
-                    'folderId' => config('services.google_drive.folder_id') ?? '',
+                    'folderConfigured' => !empty($driveFolderId),
+                    'folderId' => $driveFolderId ?? '',
                     'url' => 'https://drive.google.com',
                     'lastSynced' => now()->format('d M Y, H:i'),
+                    'credentials' => [
+                        'client_id' => $driveClientId ?? '',
+                        'client_secret' => $driveClientSecret ?? '',
+                        'refresh_token' => $driveRefreshToken ?? '',
+                        'folder_id' => $driveFolderId ?? '',
+                    ],
                 ],
                 'googleCalendar' => [
                     'connected'   => $isGoogleCalendarConnected,
@@ -97,6 +115,9 @@ class SettingsController extends Controller
                     'calendarId'  => config('services.google_calendar.calendar_id', 'primary'),
                     'url'         => 'https://calendar.google.com',
                     'lastSynced'  => now()->format('d M Y, H:i'),
+                    'credentials' => [
+                        'ical_url' => $calIcalUrl ?? '',
+                    ],
                 ],
                 'github' => [
                     'connected'   => !empty($user->github_id),
@@ -120,6 +141,9 @@ class SettingsController extends Controller
                     'tpmLimit'         => '1.000.000',
                     'lastSynced'       => $geminiLastRequestAt ? \Carbon\Carbon::parse($geminiLastRequestAt)->format('d M Y, H:i') : 'Belum ada request',
                     'url'              => 'https://aistudio.google.com',
+                    'credentials'      => [
+                        'api_key' => $geminiApiKey ?? '',
+                    ],
                 ],
             ],
             'flash' => [
@@ -199,4 +223,75 @@ class SettingsController extends Controller
 
         return back()->with('message', 'Foto profil berhasil diperbarui!');
     }
+
+    /**
+     * Save integration credentials directly into SQLite integration_settings table.
+     */
+    public function updateIntegration(Request $request, string $service): RedirectResponse
+    {
+        if ($service === 'google_gemini') {
+            $validated = $request->validate([
+                'api_key' => 'required|string|max:255',
+            ]);
+
+            IntegrationSetting::setCredentials('google_gemini', [
+                'api_key' => trim($validated['api_key']),
+            ], true);
+
+            return back()->with('message', 'Google Gemini API Key berhasil disimpan ke database!');
+        }
+
+        if ($service === 'google_drive') {
+            $validated = $request->validate([
+                'client_id'     => 'required|string|max:500',
+                'client_secret' => 'required|string|max:500',
+                'refresh_token' => 'required|string|max:1000',
+                'folder_id'     => 'nullable|string|max:255',
+            ]);
+
+            IntegrationSetting::setCredentials('google_drive', [
+                'client_id'     => trim($validated['client_id']),
+                'client_secret' => trim($validated['client_secret']),
+                'refresh_token' => trim($validated['refresh_token']),
+                'folder_id'     => !empty($validated['folder_id']) ? trim($validated['folder_id']) : null,
+            ], true);
+
+            return back()->with('message', 'Kredensial Google Drive berhasil disimpan ke database!');
+        }
+
+        if ($service === 'google_calendar') {
+            $validated = $request->validate([
+                'ical_url' => 'required|string|url|max:1000',
+            ]);
+
+            IntegrationSetting::setCredentials('google_calendar', [
+                'ical_url' => trim($validated['ical_url']),
+            ], true);
+
+            // Clear events cache so new URL is fetched immediately
+            Cache::forget('google_calendar_ical_events');
+
+            return back()->with('message', 'Google Calendar iCal URL berhasil disimpan ke database!');
+        }
+
+        return back()->withErrors(['service' => 'Layanan integrasi tidak valid.']);
+    }
+
+    /**
+     * Disconnect an integration and remove its stored credentials from SQLite.
+     */
+    public function disconnectIntegration(Request $request, string $service): RedirectResponse
+    {
+        $setting = IntegrationSetting::where('service', $service)->first();
+        if ($setting) {
+            $setting->delete();
+        }
+
+        if ($service === 'google_calendar') {
+            Cache::forget('google_calendar_ical_events');
+        }
+
+        return back()->with('message', "Integrasi berhasil diputus.");
+    }
 }
+

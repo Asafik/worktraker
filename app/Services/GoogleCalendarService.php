@@ -13,7 +13,8 @@ class GoogleCalendarService
 
     public function __construct()
     {
-        $this->icalUrl = config('services.google_calendar.ical_url');
+        $this->icalUrl = \App\Models\IntegrationSetting::getValue('google_calendar', 'ical_url')
+            ?: config('services.google_calendar.ical_url');
     }
 
     /**
