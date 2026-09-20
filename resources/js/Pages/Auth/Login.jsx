@@ -462,7 +462,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                     </filter>
 
                     {/* Mask elements to progressively reveal conduits & dashed lines from Cards to Hub */}
-                    <mask id="mask-f1">
+                    <mask id="mask-f1" maskUnits="userSpaceOnUse">
                         <path
                             d="M 240 88 C 310 88, 370 240, 460 240"
                             stroke="#ffffff"
@@ -475,7 +475,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.75s" begin="0.75s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-f2">
+                    <mask id="mask-f2" maskUnits="userSpaceOnUse">
                         <path
                             d="M 240 270 C 310 270, 380 270, 450 270"
                             stroke="#ffffff"
@@ -488,7 +488,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.65s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-f3">
+                    <mask id="mask-f3" maskUnits="userSpaceOnUse">
                         <path
                             d="M 240 452 C 310 452, 370 300, 460 300"
                             stroke="#ffffff"
@@ -501,7 +501,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.75s" begin="0.90s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-f4">
+                    <mask id="mask-f4" maskUnits="userSpaceOnUse">
                         <path
                             d="M 760 88 C 690 88, 630 240, 540 240"
                             stroke="#ffffff"
@@ -514,7 +514,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.75s" begin="0.75s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-f5">
+                    <mask id="mask-f5" maskUnits="userSpaceOnUse">
                         <path
                             d="M 760 270 C 690 270, 620 270, 550 270"
                             stroke="#ffffff"
@@ -527,7 +527,7 @@ function SlideFeatures({ activeNode, setActiveNode }) {
                             <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.65s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-f6">
+                    <mask id="mask-f6" maskUnits="userSpaceOnUse">
                         <path
                             d="M 760 452 C 690 452, 630 300, 540 300"
                             stroke="#ffffff"
@@ -1022,32 +1022,32 @@ function SlideIntegrations({ activeNode, setActiveNode }) {
                     </filter>
 
                     {/* Progressive Reveal Masks */}
-                    <mask id="mask-int-1">
+                    <mask id="mask-int-1" maskUnits="userSpaceOnUse">
                         <path d="M 285 270 L 450 270" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
                             <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.65s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-int-2">
+                    <mask id="mask-int-2" maskUnits="userSpaceOnUse">
                         <path d="M 285 246 C 330 170, 390 140, 465 235" stroke="#ffffff" strokeWidth="22" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
                             <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.75s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-int-3">
+                    <mask id="mask-int-3" maskUnits="userSpaceOnUse">
                         <path d="M 285 294 C 330 370, 390 400, 465 305" stroke="#ffffff" strokeWidth="22" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
                             <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.90s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-int-4">
+                    <mask id="mask-int-4" maskUnits="userSpaceOnUse">
                         <path d="M 715 270 L 550 270" stroke="#ffffff" strokeWidth="24" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
                             <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.65s" begin="0.60s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-int-5">
+                    <mask id="mask-int-5" maskUnits="userSpaceOnUse">
                         <path d="M 715 246 C 670 170, 610 140, 535 235" stroke="#ffffff" strokeWidth="22" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
                             <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.75s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
                     </mask>
-                    <mask id="mask-int-6">
+                    <mask id="mask-int-6" maskUnits="userSpaceOnUse">
                         <path d="M 715 294 C 670 370, 610 400, 535 305" stroke="#ffffff" strokeWidth="22" strokeLinecap="round" strokeDasharray="600" strokeDashoffset="600" className="wt-mask-path-int">
                             <animate attributeName="stroke-dashoffset" from="600" to="0" dur="0.70s" begin="0.90s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1" keyTimes="0;1" />
                         </path>
