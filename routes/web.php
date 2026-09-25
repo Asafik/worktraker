@@ -7,9 +7,12 @@ use App\Models\Project;
 use App\Models\User;
 
 $getWelcomeProps = function (string $section) {
-    $portfolioProjects = Project::where('is_portfolio', true)
-        ->orderBy('portfolio_order')
-        ->orderByDesc('created_at')
+    $hasPortfolio = Project::where('is_portfolio', true)->exists();
+    $query = $hasPortfolio ? Project::where('is_portfolio', true) : Project::query();
+
+    $portfolioProjects = $query
+        ->orderByRaw('COALESCE(start_date, created_at) DESC')
+        ->limit(5)
         ->get();
 
     $user = User::first();
@@ -114,10 +117,12 @@ Route::post('/portfolio/projects/{project}/update', [PortfolioController::class,
 use App\Http\Controllers\SettingsController;
 
 Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+Route::get('/settings/google-drive', [SettingsController::class, 'googleDrive'])->name('settings.google-drive');
 Route::post('/settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile.update');
 Route::post('/settings/profile/avatar', [SettingsController::class, 'uploadAvatar'])->name('settings.profile.avatar');
 Route::post('/settings/integrations/{service}', [SettingsController::class, 'updateIntegration'])->name('settings.integrations.update');
 Route::post('/settings/integrations/{service}/disconnect', [SettingsController::class, 'disconnectIntegration'])->name('settings.integrations.disconnect');
+Route::post('/settings/integrations/google-drive/test-connection', [SettingsController::class, 'testDriveConnection'])->name('settings.integrations.drive.test');
 
 use App\Http\Controllers\GitHubController;
 

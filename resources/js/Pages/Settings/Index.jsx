@@ -49,6 +49,7 @@ import {
     AlertCircle,
     Clock,
     AlertTriangle,
+    Wifi,
 } from 'lucide-react';
 
 // Brand SVGs matching screenshot
@@ -328,6 +329,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
     const [modalManage, setModalManage] = useState(null); // 'github' | 'googleDrive' | 'googleCalendar' | 'googleGemini'
     const [savingIntegration, setSavingIntegration] = useState(false);
     const [showSecret, setShowSecret] = useState(false);
+    const [driveTestStatus, setDriveTestStatus] = useState(null); // null | { success: bool, message: string, loading: bool }
 
     // Form states for Integration Settings
     const [geminiForm, setGeminiForm] = useState({
@@ -389,6 +391,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
             onSuccess: () => {
                 setSavingIntegration(false);
                 setModalManage(null);
+                setDriveTestStatus(null);
                 triggerSave('Kredensial Google Drive berhasil disimpan ke database!');
             },
             onError: () => {
@@ -396,6 +399,30 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                 triggerSave('Gagal menyimpan kredensial Google Drive.');
             },
         });
+    };
+
+    const handleTestDrive = async () => {
+        if (!driveForm.client_id || !driveForm.client_secret || !driveForm.refresh_token) {
+            setDriveTestStatus({ success: false, message: 'Isi Client ID, Client Secret, dan Refresh Token terlebih dahulu.', loading: false });
+            return;
+        }
+        setDriveTestStatus({ loading: true, success: null, message: 'Menguji koneksi...' });
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+            const res = await fetch('/settings/integrations/google-drive/test-connection', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                body: JSON.stringify({
+                    client_id: driveForm.client_id,
+                    client_secret: driveForm.client_secret,
+                    refresh_token: driveForm.refresh_token,
+                }),
+            });
+            const data = await res.json();
+            setDriveTestStatus({ success: data.success, message: data.message, loading: false });
+        } catch {
+            setDriveTestStatus({ success: false, message: 'Gagal menghubungi server. Cek koneksi internet.', loading: false });
+        }
     };
 
     const handleSaveCalendar = (e) => {
@@ -1897,13 +1924,13 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                                             </span>
                                         )}
 
-                                        <button
-                                            onClick={() => setModalManage('googleDrive')}
-                                            className="px-3 py-1 rounded-md border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#122352] transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer"
+                                        <Link
+                                            href="/settings/google-drive"
+                                            className="px-3 py-1 rounded-md border border-blue-200 dark:border-[#243e80] bg-blue-50/40 dark:bg-blue-950/30 text-xs font-semibold text-blue-700 dark:text-blue-300 hover:bg-blue-100/60 dark:hover:bg-[#122352] transition-colors shadow-2xs flex items-center gap-1.5 cursor-pointer"
                                         >
-                                            <SettingsIcon className="w-3.5 h-3.5 text-slate-500" />
+                                            <SettingsIcon className="w-3.5 h-3.5 text-blue-500" />
                                             <span>Manage</span>
-                                        </button>
+                                        </Link>
                                     </div>
                                 </div>
 
@@ -2590,186 +2617,7 @@ export default function SettingsPage({ userProfile, integrationsStatus, flash })
                     </form>
                 )}
 
-                {/* Modal Body: Google Drive */}
-                {modalManage === 'googleDrive' && (
-                    <form onSubmit={handleSaveDrive} className="space-y-4">
-                        <div className="p-3 bg-blue-50/70 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900/50 rounded-lg text-xs text-blue-800 dark:text-blue-300 space-y-1">
-                            <div className="font-semibold flex items-center gap-1.5">
-                                <Database className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                                <span>Penyimpanan Fleksibel Tanpa Edit .env</span>
-                            </div>
-                            <p className="text-[11px] text-blue-600 dark:text-blue-300/80 leading-relaxed">
-                                Bila refresh token 7 hari (mode testing) habis, Anda cukup copy-paste token baru di sini dan klik Simpan. Sistem akan langsung menggunakannya.
-                            </p>
-                        </div>
 
-                        <div className="space-y-3">
-                            <div className="space-y-1">
-                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-200">
-                                    Client ID <span className="text-rose-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={driveForm.client_id}
-                                    onChange={(e) => setDriveForm({ ...driveForm, client_id: e.target.value })}
-                                    placeholder="xxx.apps.googleusercontent.com"
-                                    className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-slate-200 dark:border-[#243e80] bg-white dark:bg-[#0c183b] text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-                                    required
-                                />
-                            </div>
-
-                            <div className="space-y-1">
-                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-200">
-                                    Client Secret <span className="text-rose-500">*</span>
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type={showSecret ? 'text' : 'password'}
-                                        value={driveForm.client_secret}
-                                        onChange={(e) => setDriveForm({ ...driveForm, client_secret: e.target.value })}
-                                        placeholder="GOCSPX-..."
-                                        className="w-full px-3 py-2 pr-10 text-xs font-mono rounded-lg border border-slate-200 dark:border-[#243e80] bg-white dark:bg-[#0c183b] text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-                                        required
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowSecret(!showSecret)}
-                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 cursor-pointer"
-                                    >
-                                        {showSecret ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="space-y-1">
-                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-200">
-                                    Refresh Token <span className="text-rose-500">*</span>
-                                </label>
-                                <textarea
-                                    rows="2"
-                                    value={driveForm.refresh_token}
-                                    onChange={(e) => setDriveForm({ ...driveForm, refresh_token: e.target.value })}
-                                    placeholder="1//0g..."
-                                    className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-slate-200 dark:border-[#243e80] bg-white dark:bg-[#0c183b] text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-                                    required
-                                />
-                                <p className="text-[10px] text-slate-400">
-                                    Menempelkan token baru akan otomatis mereset hitung mundur 7 hari dari tanggal hari ini.
-                                </p>
-                            </div>
-
-                            {/* Pilihan Mode Masa Aktif Token */}
-                            <div className="space-y-1.5 pt-1">
-                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-200">
-                                    Masa Aktif Token Refresh
-                                </label>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                    <button
-                                        type="button"
-                                        onClick={() => setDriveForm({ ...driveForm, expires_mode: 'testing' })}
-                                        className={`p-2.5 rounded-lg border text-left text-xs transition-colors cursor-pointer ${
-                                            driveForm.expires_mode === 'testing'
-                                                ? 'border-blue-500 bg-blue-50/70 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 ring-1 ring-blue-500 font-semibold'
-                                                : 'border-slate-200 dark:border-[#243e80] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-1.5 font-semibold text-xs">
-                                            <Clock className="w-3.5 h-3.5 text-blue-500" />
-                                            <span>Mode Testing (7 Hari)</span>
-                                        </div>
-                                        <p className="text-[10px] text-slate-400 mt-1 font-normal leading-relaxed">
-                                            Hitung mundur 7 hari otomatis dari waktu token disimpan.
-                                        </p>
-                                    </button>
-
-                                    <button
-                                        type="button"
-                                        onClick={() => setDriveForm({ ...driveForm, expires_mode: 'permanent' })}
-                                        className={`p-2.5 rounded-lg border text-left text-xs transition-colors cursor-pointer ${
-                                            driveForm.expires_mode === 'permanent'
-                                                ? 'border-blue-500 bg-blue-50/70 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 ring-1 ring-blue-500 font-semibold'
-                                                : 'border-slate-200 dark:border-[#243e80] text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-850'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-1.5 font-semibold text-xs">
-                                            <Check className="w-3.5 h-3.5 text-emerald-500" />
-                                            <span>Publish (Permanen)</span>
-                                        </div>
-                                        <p className="text-[10px] text-slate-400 mt-1 font-normal leading-relaxed">
-                                            Untuk aplikasi Google Cloud yang statusnya sudah In Production.
-                                        </p>
-                                    </button>
-                                </div>
-                            </div>
-
-                            {/* Status Masa Aktif Saat Ini */}
-                            {integrationsStatus?.googleDrive?.tokenExpiry?.mode === 'testing' && integrationsStatus?.googleDrive?.tokenExpiry?.expiryDate && (
-                                <div className={`p-2.5 rounded-lg border text-xs flex items-start gap-2 ${
-                                    integrationsStatus?.googleDrive?.tokenExpiry?.isExpired
-                                        ? 'bg-rose-50/70 dark:bg-rose-950/40 border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300'
-                                        : (integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining ?? 7) <= 2
-                                        ? 'bg-amber-50/70 dark:bg-amber-950/40 border-amber-200 dark:border-amber-900/60 text-amber-800 dark:text-amber-300'
-                                        : 'bg-slate-50 dark:bg-[#122352]/70 border-slate-200 dark:border-[#243e80] text-slate-600 dark:text-slate-300'
-                                }`}>
-                                    <Clock className="w-4 h-4 shrink-0 mt-0.5" />
-                                    <div className="space-y-0.5">
-                                        <div className="font-semibold">
-                                            {integrationsStatus?.googleDrive?.tokenExpiry?.isExpired
-                                                ? 'Status: Token Kedaluwarsa'
-                                                : `Status: ${integrationsStatus?.googleDrive?.tokenExpiry?.humanRemaining || `Sisa ${integrationsStatus?.googleDrive?.tokenExpiry?.daysRemaining} Hari Lagi`}`}
-                                        </div>
-                                        <p className="text-[11px] leading-relaxed opacity-90">
-                                            Kedaluwarsa pada: <strong>{integrationsStatus?.googleDrive?.tokenExpiry?.expiryDate}</strong> (Tersambung sejak: {integrationsStatus?.googleDrive?.tokenExpiry?.savedAt || '-'}).
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
-
-                            <div className="space-y-1">
-                                <label className="text-xs font-semibold text-slate-700 dark:text-slate-200">
-                                    Folder ID Cadangan (Opsional)
-                                </label>
-                                <input
-                                    type="text"
-                                    value={driveForm.folder_id}
-                                    onChange={(e) => setDriveForm({ ...driveForm, folder_id: e.target.value })}
-                                    placeholder="1B2c3D4e5F6g..."
-                                    className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-slate-200 dark:border-[#243e80] bg-white dark:bg-[#0c183b] text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-                                />
-                                <p className="text-[10px] text-slate-400">
-                                    ID folder Google Drive tempat file cadangan disimpan (bagian akhir URL folder di browser).
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-                            <button
-                                type="button"
-                                onClick={() => handleDisconnectIntegration('google_drive')}
-                                className="px-3 py-1.5 text-xs font-semibold text-rose-600 hover:text-rose-700 dark:text-rose-400 hover:underline cursor-pointer w-full sm:w-auto text-center sm:text-left"
-                            >
-                                Putuskan Koneksi
-                            </button>
-                            <div className="flex items-center justify-end gap-2 w-full sm:w-auto">
-                                <button
-                                    type="button"
-                                    onClick={() => setModalManage(null)}
-                                    className="flex-1 sm:flex-initial px-3.5 py-1.5 rounded-lg border border-slate-200 dark:border-[#243e80] text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer text-center"
-                                >
-                                    Batal
-                                </button>
-                                <button
-                                    type="submit"
-                                    disabled={savingIntegration}
-                                    className="flex-1 sm:flex-initial px-4 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shadow-xs disabled:opacity-50 flex items-center justify-center gap-1.5 cursor-pointer"
-                                >
-                                    {savingIntegration && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
-                                    <span>Simpan Kredensial</span>
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                )}
 
                 {/* Modal Body: Google Calendar */}
                 {modalManage === 'googleCalendar' && (

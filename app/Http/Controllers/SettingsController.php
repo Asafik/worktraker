@@ -44,50 +44,7 @@ class SettingsController extends Controller
         }
 
         // 1. Google Drive Credentials (DB first, fallback to config/env)
-        $driveCreds = IntegrationSetting::getCredentials('google_drive');
-        $driveClientId = $driveCreds['client_id'] ?? config('services.google_drive.client_id');
-        $driveClientSecret = $driveCreds['client_secret'] ?? config('services.google_drive.client_secret');
-        $driveRefreshToken = $driveCreds['refresh_token'] ?? config('services.google_drive.refresh_token');
-        $driveFolderId = $driveCreds['folder_id'] ?? config('services.google_drive.folder_id');
-        $isGoogleDriveConnected = !empty($driveClientId)
-            && !empty($driveClientSecret)
-            && !empty($driveRefreshToken);
-
-        // Calculate Google Drive refresh token expiration (for testing mode: 7 days)
-        $driveExpiresMode = $driveCreds['expires_mode'] ?? 'testing'; // 'testing' or 'permanent'
-        $driveTokenSavedAt = $driveCreds['token_saved_at'] ?? '2026-09-16 23:25:04';
-        $driveDaysRemaining = null;
-        $driveHoursRemaining = null;
-        $driveIsExpired = false;
-        $driveExpiryDateFormatted = null;
-        $driveHumanRemaining = null;
-
-        if ($isGoogleDriveConnected && $driveExpiresMode === 'testing') {
-            $savedDate = $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt) : \Carbon\Carbon::parse('2026-09-16 23:25:04');
-            $expiresAt = $savedDate->copy()->addDays(7);
-            $now = now();
-
-            if ($now->greaterThanOrEqualTo($expiresAt)) {
-                $driveDaysRemaining = 0;
-                $driveHoursRemaining = 0;
-                $driveIsExpired = true;
-                $driveHumanRemaining = 'Sudah Kedaluwarsa';
-            } else {
-                $totalHours = (int) $now->diffInHours($expiresAt, false);
-                $days = (int) floor($totalHours / 24);
-                $hours = $totalHours % 24;
-
-                $driveDaysRemaining = $days;
-                $driveHoursRemaining = $totalHours;
-
-                if ($days > 0) {
-                    $driveHumanRemaining = "Sisa {$days} Hari {$hours} Jam";
-                } else {
-                    $driveHumanRemaining = "Sisa {$hours} Jam";
-                }
-            }
-            $driveExpiryDateFormatted = $expiresAt->format('d M Y, H:i');
-        }
+        $googleDriveStatus = $this->getGoogleDriveData();
 
         // 2. Google Calendar Credentials (DB first, fallback to config/env)
         $calCreds = IntegrationSetting::getCredentials('google_calendar');
@@ -129,32 +86,7 @@ class SettingsController extends Controller
                 ], (array) ($user->socials ?? [])),
             ],
             'integrationsStatus' => [
-                'googleDrive' => [
-                    'connected' => $isGoogleDriveConnected,
-                    'account' => 'ronismk7@gmail.com',
-                    'accountType' => 'Personal Account (Google Drive)',
-                    'folderConfigured' => !empty($driveFolderId),
-                    'folderId' => $driveFolderId ?? '',
-                    'url' => 'https://drive.google.com',
-                    'lastSynced' => now()->format('d M Y, H:i'),
-                    'tokenExpiry' => [
-                        'mode' => $driveExpiresMode,
-                        'daysRemaining' => $driveDaysRemaining,
-                        'hoursRemaining' => $driveHoursRemaining,
-                        'humanRemaining' => $driveHumanRemaining ?? ($driveExpiresMode === 'permanent' ? 'Permanen' : null),
-                        'isExpired' => $driveIsExpired,
-                        'expiryDate' => $driveExpiryDateFormatted,
-                        'savedAt' => $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt)->format('d M Y, H:i') : '16 Sep 2026, 23:25',
-                    ],
-                    'credentials' => [
-                        'client_id' => $driveClientId ?? '',
-                        'client_secret' => $driveClientSecret ?? '',
-                        'refresh_token' => $driveRefreshToken ?? '',
-                        'folder_id' => $driveFolderId ?? '',
-                        'expires_mode' => $driveExpiresMode,
-                        'token_saved_at' => $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt)->format('Y-m-d\TH:i') : '2026-09-16T23:25',
-                    ],
-                ],
+                'googleDrive' => $googleDriveStatus,
                 'googleCalendar' => [
                     'connected'   => $isGoogleCalendarConnected,
                     'account'     => 'ronismk7@gmail.com',
@@ -348,5 +280,137 @@ class SettingsController extends Controller
 
         return back()->with('message', "Integrasi berhasil diputus.");
     }
-}
 
+    /**
+     * Test Google Drive connection without saving credentials.
+     */
+    public function testDriveConnection(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $validated = $request->validate([
+            'client_id'     => 'required|string|max:500',
+            'client_secret' => 'required|string|max:500',
+            'refresh_token' => 'required|string|max:1000',
+        ]);
+
+        try {
+            $response = \Illuminate\Support\Facades\Http::timeout(10)->post('https://oauth2.googleapis.com/token', [
+                'client_id'     => trim($validated['client_id']),
+                'client_secret' => trim($validated['client_secret']),
+                'refresh_token' => trim($validated['refresh_token']),
+                'grant_type'    => 'refresh_token',
+            ]);
+
+            $data = $response->json();
+
+            if ($response->successful() && !empty($data['access_token'])) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Koneksi berhasil! Token valid dan aktif.',
+                ]);
+            }
+
+            $errorDesc = $data['error_description'] ?? $data['error'] ?? 'Token tidak valid atau sudah kedaluwarsa.';
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal: ' . $errorDesc,
+            ], 422);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal terhubung ke server Google. Cek koneksi internet.',
+            ], 500);
+        }
+    }
+
+    /**
+     * Dedicated Google Drive settings page.
+     */
+    public function googleDrive(): Response
+    {
+        return Inertia::render('Settings/GoogleDrive', [
+            'drive' => $this->getGoogleDriveData(),
+            'flash' => [
+                'message' => session('message'),
+            ],
+        ]);
+    }
+
+    /**
+     * Helper to retrieve Google Drive credentials and expiration status.
+     */
+    private function getGoogleDriveData(): array
+    {
+        $driveCreds = IntegrationSetting::getCredentials('google_drive');
+        $driveClientId = $driveCreds['client_id'] ?? config('services.google_drive.client_id');
+        $driveClientSecret = $driveCreds['client_secret'] ?? config('services.google_drive.client_secret');
+        $driveRefreshToken = $driveCreds['refresh_token'] ?? config('services.google_drive.refresh_token');
+        $driveFolderId = $driveCreds['folder_id'] ?? config('services.google_drive.folder_id');
+        $isGoogleDriveConnected = !empty($driveClientId)
+            && !empty($driveClientSecret)
+            && !empty($driveRefreshToken);
+
+        // Calculate Google Drive refresh token expiration (for testing mode: 7 days)
+        $driveExpiresMode = $driveCreds['expires_mode'] ?? 'testing'; // 'testing' or 'permanent'
+        $driveTokenSavedAt = $driveCreds['token_saved_at'] ?? '2026-09-16 23:25:04';
+        $driveDaysRemaining = null;
+        $driveHoursRemaining = null;
+        $driveIsExpired = false;
+        $driveExpiryDateFormatted = null;
+        $driveHumanRemaining = null;
+
+        if ($isGoogleDriveConnected && $driveExpiresMode === 'testing') {
+            $savedDate = $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt) : \Carbon\Carbon::parse('2026-09-16 23:25:04');
+            $expiresAt = $savedDate->copy()->addDays(7);
+            $now = now();
+
+            if ($now->greaterThanOrEqualTo($expiresAt)) {
+                $driveDaysRemaining = 0;
+                $driveHoursRemaining = 0;
+                $driveIsExpired = true;
+                $driveHumanRemaining = 'Sudah Kedaluwarsa';
+            } else {
+                $totalHours = (int) $now->diffInHours($expiresAt, false);
+                $days = (int) floor($totalHours / 24);
+                $hours = $totalHours % 24;
+
+                $driveDaysRemaining = $days;
+                $driveHoursRemaining = $totalHours;
+
+                if ($days > 0) {
+                    $driveHumanRemaining = "Sisa {$days} Hari {$hours} Jam";
+                } else {
+                    $driveHumanRemaining = "Sisa {$hours} Jam";
+                }
+            }
+            $driveExpiryDateFormatted = $expiresAt->format('d M Y, H:i');
+        }
+
+        return [
+            'connected' => $isGoogleDriveConnected,
+            'account' => 'ronismk7@gmail.com',
+            'accountType' => 'Personal Account (Google Drive)',
+            'folderConfigured' => !empty($driveFolderId),
+            'folderId' => $driveFolderId ?? '',
+            'url' => 'https://drive.google.com',
+            'lastSynced' => now()->format('d M Y, H:i'),
+            'tokenExpiry' => [
+                'mode' => $driveExpiresMode,
+                'daysRemaining' => $driveDaysRemaining,
+                'hoursRemaining' => $driveHoursRemaining,
+                'humanRemaining' => $driveHumanRemaining ?? ($driveExpiresMode === 'permanent' ? 'Permanen' : null),
+                'isExpired' => $driveIsExpired,
+                'expiryDate' => $driveExpiryDateFormatted,
+                'savedAt' => $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt)->format('d M Y, H:i') : '16 Sep 2026, 23:25',
+            ],
+            'credentials' => [
+                'client_id' => $driveClientId ?? '',
+                'client_secret' => $driveClientSecret ?? '',
+                'refresh_token' => $driveRefreshToken ?? '',
+                'folder_id' => $driveFolderId ?? '',
+                'expires_mode' => $driveExpiresMode,
+                'token_saved_at' => $driveTokenSavedAt ? \Carbon\Carbon::parse($driveTokenSavedAt)->format('Y-m-d\TH:i') : '2026-09-16T23:25',
+            ],
+        ];
+    }
+}

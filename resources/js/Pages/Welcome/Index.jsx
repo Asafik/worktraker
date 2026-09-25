@@ -158,17 +158,24 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
         },
     ];
 
+    const defaultMockupCovers = ['/images/proj1.png', '/images/proj2.png', '/images/proj3.png', '/images/proj4.png', '/images/proj2.png'];
+
     const displayProjects = portfolioProjects && portfolioProjects.length > 0
-        ? portfolioProjects.map((proj, idx) => ({
-            id: proj.id,
-            type: proj.category || (proj.is_featured ? 'Featured' : (proj.ownership_type ? `${proj.ownership_type}` : 'Project')),
-            title: proj.name,
-            desc: proj.description || 'Modern web application built with clean architecture, robust features, and responsive design.',
-            tags: Array.isArray(proj.tech_stack) && proj.tech_stack.length > 0 ? proj.tech_stack.slice(0, 3) : ['Laravel', 'MySQL', 'Tailwind CSS'],
-            img: proj.cover_image_url || '/images/default_project_cover.jpg',
-            link: proj.slug ? `/projects/${proj.slug}` : (proj.live_url || proj.github_repo_url || '/projects'),
-            isFeatured: !!proj.is_featured,
-        }))
+        ? portfolioProjects.slice(0, 5).map((proj, idx) => {
+            const hasCustomCover = proj.portfolio_cover || (Array.isArray(proj.images) && proj.images.length > 0 && proj.images[0]) || (proj.cover_image_url && proj.cover_image_url !== '/images/default_project_cover.jpg');
+            const resolvedImg = hasCustomCover ? (proj.portfolio_cover || (proj.images && proj.images[0]) || proj.cover_image_url) : defaultMockupCovers[idx % defaultMockupCovers.length];
+
+            return {
+                id: proj.id,
+                type: proj.category || (proj.is_featured ? 'Featured' : (proj.ownership_type ? `${proj.ownership_type} Project` : 'Web Application')),
+                title: proj.name,
+                desc: proj.description || '',
+                tags: Array.isArray(proj.tech_stack) && proj.tech_stack.length > 0 ? proj.tech_stack.slice(0, 3) : ['Laravel', 'MySQL', 'Tailwind CSS'],
+                img: resolvedImg,
+                link: proj.slug ? `/projects/${proj.slug}` : (proj.live_url || proj.github_repo_url || '/projects'),
+                isFeatured: !!proj.is_featured,
+            };
+        })
         : defaultPortfolioProjects;
 
     // Ensure landing page is strictly light mode (isolated from dashboard dark mode)
@@ -487,15 +494,15 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                                     </div>
 
                                     {/* Content with standardized heights for equal alignment across row */}
-                                    <div className="p-4 flex-1 flex flex-col justify-between space-y-2">
-                                        <div className="space-y-1.5">
-                                            <h3 className="font-bold text-sm sm:text-base transition-colors text-slate-900 group-hover:text-blue-600 min-h-[1.5rem] line-clamp-1">
-                                                {proj.title}
-                                            </h3>
-                                            <p className="text-xs leading-relaxed text-slate-500 min-h-[3.6rem] line-clamp-3">
+                                    <div className="p-4 flex-1 flex flex-col justify-start">
+                                        <h3 className="font-bold text-sm sm:text-base transition-colors text-slate-900 group-hover:text-blue-600 line-clamp-1">
+                                            {proj.title}
+                                        </h3>
+                                        {proj.desc ? (
+                                            <p className="text-xs leading-relaxed text-slate-500 line-clamp-2 mt-1.5">
                                                 {proj.desc}
                                             </p>
-                                        </div>
+                                        ) : null}
                                     </div>
                                 </div>
 
