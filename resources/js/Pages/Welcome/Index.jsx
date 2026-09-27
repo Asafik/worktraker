@@ -103,6 +103,22 @@ const FigmaSvg = ({ className }) => (
 );
 
 export default function Welcome({ initialSection = 'home', portfolioProjects = [], userProfile = null }) {
+    const profile = {
+        name: userProfile?.fullName || 'Asafik Daroini',
+        role: userProfile?.headline || userProfile?.role || 'Full Stack Developer',
+        bio: userProfile?.bio || 'I build modern web applications and turn ideas into reality. Focused on clean code, simple design, and meaningful impact.',
+        aboutShort: userProfile?.aboutShort || userProfile?.bio || 'Web developer who enjoys solving problems, learning new technologies, and building things that are useful. Focused on Laravel and modern web development.',
+        location: userProfile?.location || 'Indonesia',
+        email: userProfile?.email || 'asafik.dev@gmail.com',
+        avatar: userProfile?.avatar || '/images/avatars/avatar_1789566043.png',
+        socials: {
+            github: userProfile?.socials?.github || 'https://github.com/asafik',
+            linkedin: userProfile?.socials?.linkedin || 'https://linkedin.com/in/asafik',
+            instagram: userProfile?.socials?.instagram || '',
+            website: userProfile?.socials?.website || 'https://asafik.dev',
+        },
+    };
+
     const [contactModal, setContactModal] = useState(false);
     const [sentToast, setSentToast] = useState(false);
     const [activeSection, setActiveSection] = useState(initialSection);
@@ -158,12 +174,11 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
         },
     ];
 
-    const defaultMockupCovers = ['/images/proj1.png', '/images/proj2.png', '/images/proj3.png', '/images/proj4.png', '/images/proj2.png'];
+    const DEFAULT_PROJECT_COVER = '/images/default_project_cover.jpg';
 
     const displayProjects = portfolioProjects && portfolioProjects.length > 0
-        ? portfolioProjects.slice(0, 5).map((proj, idx) => {
-            const hasCustomCover = proj.portfolio_cover || (Array.isArray(proj.images) && proj.images.length > 0 && proj.images[0]) || (proj.cover_image_url && proj.cover_image_url !== '/images/default_project_cover.jpg');
-            const resolvedImg = hasCustomCover ? (proj.portfolio_cover || (proj.images && proj.images[0]) || proj.cover_image_url) : defaultMockupCovers[idx % defaultMockupCovers.length];
+        ? portfolioProjects.slice(0, 5).map((proj) => {
+            const resolvedImg = proj.portfolio_cover || (Array.isArray(proj.images) && proj.images.length > 0 && proj.images[0]) || proj.cover_image_url || DEFAULT_PROJECT_COVER;
 
             return {
                 id: proj.id,
@@ -297,7 +312,7 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
 
     return (
         <div className="min-h-screen bg-white text-slate-900 font-sans selection:bg-blue-600 selection:text-white scroll-smooth">
-            <Head title="Rabirts - Full Stack Web Developer" />
+            <Head title={`${profile.name} - ${profile.role}`} />
 
             {/* Success Toast */}
             {sentToast && (
@@ -363,16 +378,16 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                         {/* Headings */}
                         <div className="space-y-0.5">
                             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-none">
-                                Rabirts
+                                {profile.name}
                             </h1>
                             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-indigo-300 to-indigo-500 tracking-tight">
-                                Web Developer
+                                {profile.role}
                             </h2>
                         </div>
 
                         {/* Bio Paragraph */}
                         <p className="text-sm sm:text-base text-slate-300 max-w-lg leading-relaxed">
-                            I build web applications, improve existing systems, and enjoy turning ideas into useful and clean digital products. Always learning, always improving.
+                            {profile.bio}
                         </p>
 
                         {/* Call to Actions */}
@@ -692,21 +707,21 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                                 <div className="flex items-center gap-3.5 py-1">
                                     <div className="relative shrink-0">
                                         <img
-                                            src="/images/about_profile.jpg"
-                                            alt="Rabirts Profile"
+                                            src={profile.avatar}
+                                            alt={`${profile.name} Profile`}
                                             className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover ring-2 ring-blue-500/20 shadow-sm"
                                         />
                                         <span className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white rounded-full" title="Open to Opportunities" />
                                     </div>
                                     <div className="min-w-0">
                                         <div className="flex items-center gap-1.5 mb-0.5">
-                                            <h3 className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight truncate">Rabirts</h3>
+                                            <h3 className="font-extrabold text-slate-900 text-base sm:text-lg tracking-tight truncate">{profile.name}</h3>
                                             <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
                                         </div>
-                                        <p className="text-xs sm:text-sm text-blue-600 font-semibold truncate">Full Stack Web Developer</p>
+                                        <p className="text-xs sm:text-sm text-blue-600 font-semibold truncate">{profile.role}</p>
                                         <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-0.5">
                                             <MapPin className="w-3 h-3 text-slate-400 shrink-0" />
-                                            <span>Indonesia &bull; Remote / On-site</span>
+                                            <span>{profile.location} &bull; Remote / On-site</span>
                                         </p>
                                     </div>
                                 </div>
@@ -716,7 +731,7 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                                         More Than <span className="text-indigo-600">Just Code</span>
                                     </h2>
                                     <p className="text-xs sm:text-sm leading-relaxed text-slate-600">
-                                        I'm a web developer who enjoys solving problems, learning new technologies, and building things that are useful. I'm currently working while continuously improving my skills, with a focus on Laravel and modern web development.
+                                        {profile.aboutShort}
                                     </p>
                                 </div>
                             </div>
@@ -762,7 +777,7 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                                 { title: 'Problem Solver', icon: Puzzle },
                                 { title: 'Continuous Learner', icon: GraduationCap },
                                 { title: 'Open to Opportunities', icon: Briefcase },
-                                { title: 'Based in Indonesia', icon: MapPin },
+                                { title: `Based in ${profile.location}`, icon: MapPin },
                             ].map((attr, aIdx) => {
                                 const AttrIcon = attr.icon;
                                 return (
@@ -828,33 +843,39 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                             </button>
 
                             <div className="flex items-center gap-2">
-                                <a
-                                    href="https://github.com/asafik"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    title="GitHub @asafik"
-                                    className="p-2.5 rounded-xl border transition-all bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
-                                >
-                                    <GithubIcon className="w-4 h-4" />
-                                </a>
-                                <a
-                                    href="https://linkedin.com/in/asafik"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    title="LinkedIn"
-                                    className="p-2.5 rounded-xl border transition-all bg-white border-slate-200 text-slate-600 hover:text-blue-600 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
-                                >
-                                    <LinkedinIcon className="w-4 h-4" />
-                                </a>
-                                <a
-                                    href="https://instagram.com"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    title="Instagram"
-                                    className="p-2.5 rounded-xl border transition-all bg-white border-slate-200 text-slate-600 hover:text-pink-600 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
-                                >
-                                    <InstagramIcon className="w-4 h-4" />
-                                </a>
+                                {profile.socials.github && (
+                                    <a
+                                        href={profile.socials.github}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        title={`GitHub @${profile.name}`}
+                                        className="p-2.5 rounded-xl border transition-all bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
+                                    >
+                                        <GithubIcon className="w-4 h-4" />
+                                    </a>
+                                )}
+                                {profile.socials.linkedin && (
+                                    <a
+                                        href={profile.socials.linkedin}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        title="LinkedIn"
+                                        className="p-2.5 rounded-xl border transition-all bg-white border-slate-200 text-slate-600 hover:text-blue-600 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
+                                    >
+                                        <LinkedinIcon className="w-4 h-4" />
+                                    </a>
+                                )}
+                                {profile.socials.instagram && (
+                                    <a
+                                        href={profile.socials.instagram}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                        title="Instagram"
+                                        className="p-2.5 rounded-xl border transition-all bg-white border-slate-200 text-slate-600 hover:text-pink-600 hover:border-slate-300 hover:-translate-y-0.5 shadow-xs"
+                                    >
+                                        <InstagramIcon className="w-4 h-4" />
+                                    </a>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -898,38 +919,44 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
 
                         {/* Social Icons in Footer */}
                         <div className="flex items-center gap-3 text-slate-500">
-                            <a
-                                href="https://github.com/asafik"
-                                target="_blank"
-                                rel="noreferrer"
-                                title="GitHub @asafik"
-                                className="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition-colors"
-                            >
-                                <GithubIcon className="w-4 h-4" />
-                            </a>
-                            <a
-                                href="https://linkedin.com/in/asafik"
-                                target="_blank"
-                                rel="noreferrer"
-                                title="LinkedIn"
-                                className="p-1.5 rounded-lg hover:bg-slate-100 hover:text-blue-600 transition-colors"
-                            >
-                                <LinkedinIcon className="w-4 h-4" />
-                            </a>
-                            <a
-                                href="https://instagram.com"
-                                target="_blank"
-                                rel="noreferrer"
-                                title="Instagram"
-                                className="p-1.5 rounded-lg hover:bg-slate-100 hover:text-pink-600 transition-colors"
-                            >
-                                <InstagramIcon className="w-4 h-4" />
-                            </a>
+                            {profile.socials.github && (
+                                <a
+                                    href={profile.socials.github}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    title={`GitHub @${profile.name}`}
+                                    className="p-1.5 rounded-lg hover:bg-slate-100 hover:text-slate-900 transition-colors"
+                                >
+                                    <GithubIcon className="w-4 h-4" />
+                                </a>
+                            )}
+                            {profile.socials.linkedin && (
+                                <a
+                                    href={profile.socials.linkedin}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    title="LinkedIn"
+                                    className="p-1.5 rounded-lg hover:bg-slate-100 hover:text-blue-600 transition-colors"
+                                >
+                                    <LinkedinIcon className="w-4 h-4" />
+                                </a>
+                            )}
+                            {profile.socials.instagram && (
+                                <a
+                                    href={profile.socials.instagram}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    title="Instagram"
+                                    className="p-1.5 rounded-lg hover:bg-slate-100 hover:text-pink-600 transition-colors"
+                                >
+                                    <InstagramIcon className="w-4 h-4" />
+                                </a>
+                            )}
                         </div>
                     </div>
 
                     <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-400">
-                        <p>© 2026 Rabirts. All rights reserved.</p>
+                        <p>© 2026 {profile.name}. All rights reserved.</p>
                         <p>Designed for WorkTrack Portfolio Showcase</p>
                     </div>
                 </div>
@@ -944,7 +971,7 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                         <div className="flex items-center justify-between pb-3 border-b border-slate-200">
                             <h3 className="text-base font-bold flex items-center gap-2 text-slate-900">
                                 <Send className="w-4 h-4 text-blue-600" />
-                                <span>Kirim Pesan ke Rabirts</span>
+                                <span>Kirim Pesan ke {profile.name}</span>
                             </h3>
                             <button
                                 onClick={() => setContactModal(false)}

@@ -17,17 +17,20 @@ $getWelcomeProps = function (string $section) {
 
     $user = User::first();
     $userProfile = [
-        'fullName' => $user?->name ?? 'Asafik Daroini',
-        'headline' => $user?->role ?? 'Full Stack Web Developer',
-        'bio' => $user?->bio ?? 'I build modern web applications and turn ideas into reality. Focused on clean architecture, responsive UX, and scalable backend solutions.',
-        'location' => $user?->location ?? 'Jawa Timur, Indonesia',
-        'email' => $user?->email ?? 'asafik.dev@gmail.com',
-        'avatar' => $user?->avatar ?? '/images/avatar1.png',
-        'socials' => $user?->socials ?? [
-            'github' => 'https://github.com/asafik',
-            'linkedin' => 'https://linkedin.com/in/asafik',
-            'twitter' => 'https://x.com/asafik',
-        ],
+        'fullName'   => $user?->name ?? 'Asafik Daroini',
+        'headline'   => $user?->role ?? 'Full Stack Developer',
+        'role'       => $user?->role ?? 'Full Stack Developer',
+        'bio'        => $user?->bio ?? 'I build modern web applications and turn ideas into reality. Focused on clean code, simple design, and meaningful impact.',
+        'aboutShort' => $user?->about_short ?: ($user?->bio ?? 'Web developer who enjoys solving problems, learning new technologies, and building things that are useful.'),
+        'location'   => $user?->location ?? 'Indonesia',
+        'email'      => $user?->email ?? 'asafik.dev@gmail.com',
+        'avatar'     => $user?->avatar ?: '/images/avatars/avatar_1789566043.png',
+        'socials'    => array_merge([
+            'github'    => 'https://github.com/asafik',
+            'linkedin'  => 'https://linkedin.com/in/asafik',
+            'website'   => 'https://asafik.dev',
+            'instagram' => '',
+        ], (array) ($user?->socials ?? [])),
     ];
 
     return [
