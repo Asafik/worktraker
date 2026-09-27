@@ -186,13 +186,20 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                 formattedDate = d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
             }
 
+            const hasTask = !!proj.latest_task?.title;
+            const taskTitle = proj.latest_task?.title;
+            const taskDesc = proj.latest_task?.description;
+
             return {
                 id: proj.id,
                 type: proj.category || (proj.is_featured ? 'Featured' : (proj.ownership_type ? `${proj.ownership_type} Project` : 'Web Application')),
                 title: proj.name,
+                projectName: proj.name,
                 desc: proj.description || '',
                 date: formattedDate,
-                latestTask: proj.latest_task?.title || null,
+                hasTask: hasTask,
+                latestTaskTitle: taskTitle || null,
+                latestTaskDesc: taskDesc || null,
                 latestTaskDate: proj.latest_task?.completed_at || null,
                 tags: Array.isArray(proj.tech_stack) && proj.tech_stack.length > 0 ? proj.tech_stack.slice(0, 3) : ['Laravel', 'MySQL', 'Tailwind CSS'],
                 img: resolvedImg,
@@ -601,31 +608,35 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                                     {/* Experience Card: 12px radius, top-left connects seamlessly with the timeline stem */}
                                     <div className="p-5 sm:p-6 rounded-xl lg:rounded-tl-none bg-white border border-slate-200/80 shadow-xs group-hover:border-indigo-300 group-hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex-1 flex flex-col justify-between">
                                         <div className="space-y-2.5">
-                                            <div className="flex items-center justify-between">
-                                                <span className="text-xs font-semibold text-slate-500">
+                                            <div className="flex items-center justify-between gap-2">
+                                                <span className="text-xs font-semibold text-slate-500 shrink-0">
                                                     {item.date || '2026'}
                                                 </span>
+                                                <span
+                                                    className="text-[11px] font-medium text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md truncate max-w-[130px]"
+                                                    title={item.projectName || item.title}
+                                                >
+                                                    {item.projectName || item.title}
+                                                </span>
                                                 {/* Mobile-only dot indicator */}
-                                                <div className="lg:hidden w-2.5 h-2.5 rounded-full bg-[#4f46e5]" />
+                                                <div className="lg:hidden w-2.5 h-2.5 rounded-full bg-[#4f46e5] shrink-0" />
                                             </div>
-                                            <h3 className="font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-indigo-600 transition-colors truncate">
-                                                {item.title}
+
+                                            {/* Judul Task (fallback nama proyek) */}
+                                            <h3
+                                                className="font-extrabold text-sm sm:text-base text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-1"
+                                                title={item.latestTaskTitle || item.title}
+                                            >
+                                                {item.latestTaskTitle || item.title}
                                             </h3>
 
-                                            {/* Highlight Task Selesai Terakhir */}
-                                            {item.latestTask ? (
-                                                <div className="p-2.5 rounded-lg bg-emerald-50/80 border border-emerald-200/70 text-slate-800">
-                                                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-emerald-700 uppercase tracking-wider">
-                                                        <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
-                                                        <span>Task Terakhir</span>
-                                                    </div>
-                                                    <p className="text-xs font-semibold text-slate-800 mt-1 line-clamp-2 leading-snug">
-                                                        {item.latestTask}
-                                                    </p>
-                                                </div>
-                                            ) : item.desc ? (
-                                                <p className="text-xs text-slate-500 leading-relaxed line-clamp-3">
-                                                    {item.desc}
+                                            {/* Keterangan Task / Proyek (dibatasi line-clamp-2 agar tidak full) */}
+                                            {item.latestTaskDesc || item.desc ? (
+                                                <p
+                                                    className="text-xs text-slate-500 leading-relaxed line-clamp-2"
+                                                    title={item.latestTaskDesc || item.desc}
+                                                >
+                                                    {item.latestTaskDesc || item.desc}
                                                 </p>
                                             ) : (
                                                 <div className="flex flex-wrap gap-1.5 pt-1">

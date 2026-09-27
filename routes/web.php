@@ -25,6 +25,7 @@ $getWelcomeProps = function (string $section) {
             $data['latest_task'] = $latestCompleted ? [
                 'id'           => $latestCompleted->id,
                 'title'        => $latestCompleted->title,
+                'description'  => $latestCompleted->description ? trim(strip_tags($latestCompleted->description)) : null,
                 'status'       => $latestCompleted->status,
                 'completed_at' => $latestCompleted->completed_at ? $latestCompleted->completed_at->format('d M Y') : null,
             ] : null;
