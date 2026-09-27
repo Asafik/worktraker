@@ -11,9 +11,26 @@ $getWelcomeProps = function (string $section) {
     $query = $hasPortfolio ? Project::where('is_portfolio', true) : Project::query();
 
     $portfolioProjects = $query
+        ->with(['tasks' => function ($q) {
+            $q->orderByDesc('completed_at')->orderByDesc('id');
+        }])
         ->orderByRaw('COALESCE(start_date, created_at) DESC')
         ->limit(5)
-        ->get();
+        ->get()
+        ->map(function ($proj) {
+            $latestCompleted = $proj->tasks->where('status', 'completed')->first() 
+                ?? $proj->tasks->first();
+
+            $data = $proj->toArray();
+            $data['latest_task'] = $latestCompleted ? [
+                'id'           => $latestCompleted->id,
+                'title'        => $latestCompleted->title,
+                'status'       => $latestCompleted->status,
+                'completed_at' => $latestCompleted->completed_at ? $latestCompleted->completed_at->format('d M Y') : null,
+            ] : null;
+
+            return $data;
+        });
 
     $user = User::first();
     $userProfile = [
