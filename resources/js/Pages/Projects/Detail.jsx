@@ -23,9 +23,7 @@ import {
     Code2,
     Smartphone,
     MapPin,
-    Pencil,
     GitCommit,
-    Trash2,
     Lock,
     Building2,
 } from 'lucide-react';
@@ -414,13 +412,6 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
     const [activeImageIdx, setActiveImageIdx] = useState(0);
     const [isDarkMode, setIsDarkMode] = useState(false);
 
-    const handleDeleteProject = () => {
-        if (!dbProject) return;
-        if (confirm(`Apakah Anda yakin ingin menghapus proyek "${project.title}"? Data proyek dan tangkapan layar akan dihapus secara permanen.`)) {
-            router.delete(`/projects/${dbProject.id}`);
-        }
-    };
-
     const related = allRelatedProjects
         .filter((p) => p.slug !== slug)
         .slice(0, 3);
@@ -555,26 +546,6 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
                                             <span>View on GitHub</span>
                                         </a>
                                     )
-                                )}
-
-                                {dbProject && (
-                                    <>
-                                        <Link
-                                            href={`/projects/${dbProject.id}/edit`}
-                                            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition-all hover:-translate-y-0.5 cursor-pointer"
-                                        >
-                                            <Pencil className="w-3.5 h-3.5" />
-                                            <span>Edit Project</span>
-                                        </Link>
-                                        <button
-                                            type="button"
-                                            onClick={handleDeleteProject}
-                                            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-semibold bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/30 transition-all hover:-translate-y-0.5 cursor-pointer"
-                                        >
-                                            <Trash2 className="w-3.5 h-3.5" />
-                                            <span>Hapus Proyek</span>
-                                        </button>
-                                    </>
                                 )}
                             </div>
                         </div>
