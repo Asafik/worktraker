@@ -41,41 +41,6 @@ const GithubIcon = ({ className = 'w-4 h-4' }) => (
     </svg>
 );
 
-const formatCommitDate = (dateStr) => {
-    if (!dateStr) return '';
-    try {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-
-        const now = new Date();
-        const diffMs = now - d;
-        const diffSec = Math.floor(diffMs / 1000);
-        const diffMin = Math.floor(diffSec / 60);
-        const diffHour = Math.floor(diffMin / 60);
-        const diffDays = Math.floor(diffHour / 24);
-
-        if (diffDays === 0) {
-            if (diffHour === 0) {
-                if (diffMin <= 1) return 'Baru saja';
-                return `${diffMin} menit yang lalu`;
-            }
-            return `${diffHour} jam yang lalu`;
-        } else if (diffDays === 1) {
-            return 'Kemarin';
-        } else if (diffDays < 7) {
-            return `${diffDays} hari yang lalu`;
-        }
-
-        return d.toLocaleDateString('id-ID', {
-            day: 'numeric',
-            month: 'short',
-            year: 'numeric',
-        });
-    } catch (e) {
-        return dateStr;
-    }
-};
-
 const projectsDatabase = {
     'monitoring-dapur-mbg': {
         index: '01',
@@ -970,69 +935,57 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
                         </div>
 
                         {recentCommits && recentCommits.length > 0 ? (
-                            <div className="divide-y divide-slate-100 dark:divide-slate-800/80">
-                                {recentCommits.map((c, idx) => {
-                                    const author = c.author || c.author_name || c.author_login || 'Developer';
-                                    const commitUrl = c.html_url || c.url;
-                                    const formattedDate = formatCommitDate(c.date);
+                            <div className="space-y-0">
+                                {recentCommits.map((c, idx) => (
+                                    <div key={idx} className="flex gap-4 group">
+                                        {/* Timeline Node Column (Dot + Connecting Stem) */}
+                                        <div className="flex flex-col items-center shrink-0 w-4">
+                                            <div className="w-2.5 h-2.5 rounded-full bg-blue-600 ring-4 ring-blue-50 dark:ring-blue-950/60 shrink-0 mt-1.5 group-hover:scale-125 transition-transform" />
+                                            {idx < recentCommits.length - 1 && (
+                                                <div className="w-0.5 flex-1 bg-slate-200 dark:bg-slate-800 my-1" />
+                                            )}
+                                        </div>
 
-                                    return (
-                                        <div
-                                            key={idx}
-                                            className="py-3.5 first:pt-0 last:pb-0 flex items-start gap-3 sm:gap-4 group hover:bg-slate-50/70 dark:hover:bg-slate-800/40 -mx-3 px-3 rounded-lg transition-colors"
-                                        >
-                                            {/* Commit Icon badge */}
-                                            <div className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-100 dark:border-blue-900/50 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-2xs">
-                                                <GitCommit className="w-4 h-4" />
-                                            </div>
-
-                                            <div className="flex-1 min-w-0 space-y-1.5">
-                                                <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1.5 sm:gap-4">
-                                                    {project.hideGithubLink || !commitUrl ? (
-                                                        <p className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 leading-snug line-clamp-2">
-                                                            {c.message}
-                                                        </p>
-                                                    ) : (
-                                                        <a
-                                                            href={commitUrl}
-                                                            target="_blank"
-                                                            rel="noreferrer"
-                                                            className="text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors leading-snug line-clamp-2 inline-flex items-center gap-1 group/link"
-                                                        >
-                                                            <span>{c.message}</span>
-                                                            <ExternalLink className="w-3 h-3 opacity-0 group-hover/link:opacity-100 transition-opacity shrink-0 text-blue-500" />
-                                                        </a>
-                                                    )}
-
-                                                    <div className="flex items-center gap-2 shrink-0 text-[11px] text-slate-400 dark:text-slate-500 self-start sm:self-auto">
-                                                        <span className="font-mono bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 px-2 py-0.5 rounded text-slate-700 dark:text-slate-300 font-semibold text-[11px]">
-                                                            {c.sha}
-                                                        </span>
-                                                        <span className="text-slate-300 dark:text-slate-700">•</span>
-                                                        <span className="font-medium text-slate-500 dark:text-slate-400" title={c.date}>
-                                                            {formattedDate}
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                                                    {c.author_avatar ? (
-                                                        <img
-                                                            src={c.author_avatar}
-                                                            alt={author}
-                                                            className="w-4 h-4 rounded-full object-cover border border-slate-200 dark:border-slate-700 shrink-0"
-                                                        />
-                                                    ) : (
-                                                        <User className="w-3.5 h-3.5 text-slate-400 shrink-0" />
-                                                    )}
-                                                    <span>
-                                                        Oleh <strong className="text-slate-700 dark:text-slate-200 font-semibold">{author}</strong>
+                                        {/* Commit Content */}
+                                        <div className={`flex-1 min-w-0 ${idx < recentCommits.length - 1 ? 'pb-6' : 'pb-1'}`}>
+                                            <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1 sm:gap-4">
+                                                {project.hideGithubLink ? (
+                                                    <p className="text-xs sm:text-sm font-medium text-slate-900 dark:text-white line-clamp-2">
+                                                        {c.message}
+                                                    </p>
+                                                ) : (
+                                                    <a
+                                                        href={c.url || c.html_url || '#'}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="text-xs sm:text-sm font-medium text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors line-clamp-2"
+                                                    >
+                                                        {c.message}
+                                                    </a>
+                                                )}
+                                                <div className="flex items-center gap-2 shrink-0 text-[11px] text-slate-400">
+                                                    <span className="font-mono bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded text-slate-600 dark:text-slate-300 font-semibold">
+                                                        {c.sha}
                                                     </span>
+                                                    {c.date && (
+                                                        <>
+                                                            <span>•</span>
+                                                            <span>{c.date}</span>
+                                                        </>
+                                                    )}
                                                 </div>
+                                            </div>
+                                            <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
+                                                {c.author_avatar ? (
+                                                    <img src={c.author_avatar} alt="" className="w-3.5 h-3.5 rounded-full object-cover shrink-0" />
+                                                ) : null}
+                                                <span>
+                                                    Oleh <strong className="text-slate-700 dark:text-slate-300 font-medium">{c.author || c.author_name || 'Developer'}</strong>
+                                                </span>
                                             </div>
                                         </div>
-                                    );
-                                })}
+                                    </div>
+                                ))}
                             </div>
                         ) : (
                             <div className="py-6 text-center text-xs text-slate-400 dark:text-slate-500 italic">
@@ -1059,64 +1012,50 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
                         </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                         {related.map((relProj) => (
                             <Link
                                 key={relProj.slug}
                                 href={`/projects/${relProj.slug}`}
-                                className={`rounded-xl border overflow-hidden transition-all duration-300 group flex flex-col justify-between h-full shadow-xs hover:shadow-xl hover:-translate-y-1.5 cursor-pointer text-left ${
+                                className={`rounded-xl border overflow-hidden p-3.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg group flex items-start gap-4 h-full ${
                                     isDarkMode
-                                        ? 'bg-slate-900 border-slate-800 hover:border-blue-500/60'
-                                        : 'bg-white border-slate-200 hover:border-blue-400'
+                                        ? 'bg-slate-900 border-slate-800 hover:border-blue-500/50'
+                                        : 'bg-white border-slate-200/90 hover:border-blue-400'
                                 }`}
                             >
-                                <div className="flex-1 flex flex-col">
-                                    {/* Thumbnail Preview with badges */}
-                                    <div className="relative h-44 sm:h-48 bg-slate-100 dark:bg-slate-800 overflow-hidden border-b border-slate-100 dark:border-slate-800 shrink-0">
-                                        <img
-                                            src={relProj.img || DEFAULT_COVER}
-                                            alt={relProj.title}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                                            onError={(e) => {
-                                                e.currentTarget.src = DEFAULT_COVER;
-                                            }}
-                                        />
-                                        {/* Category pill */}
-                                        <span className="absolute top-3 left-3 px-2.5 py-0.5 rounded-md text-[10px] font-semibold border bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs text-slate-700 dark:text-slate-200 border-slate-200/80 dark:border-slate-700 shadow-xs">
-                                            {relProj.category || 'Web Application'}
-                                        </span>
-                                        {/* External Link hover button */}
-                                        <div className="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center border transition-all duration-300 bg-white/90 dark:bg-slate-900/90 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-slate-700 shadow-xs group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-600 group-hover:rotate-12">
-                                            <ExternalLink className="w-3.5 h-3.5" />
-                                        </div>
-                                    </div>
+                                <div className="w-24 h-24 rounded-lg overflow-hidden shrink-0 bg-slate-100 border border-slate-100 dark:border-slate-800">
+                                    <img
+                                        src={relProj.img || DEFAULT_COVER}
+                                        alt={relProj.title}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                        onError={(e) => {
+                                            e.currentTarget.src = DEFAULT_COVER;
+                                        }}
+                                    />
+                                </div>
 
-                                    {/* Content */}
-                                    <div className="p-5 flex-1 flex flex-col justify-start">
-                                        <h3 className="font-bold text-base text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-1">
-                                            {relProj.title}
-                                        </h3>
-                                        <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed line-clamp-2 mt-2">
+                                <div className="flex-1 min-w-0 flex flex-col justify-between h-full space-y-1.5">
+                                    <div>
+                                        <div className="flex items-start justify-between gap-1">
+                                            <h3 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors truncate">
+                                                {relProj.title}
+                                            </h3>
+                                            <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 shrink-0 mt-0.5" />
+                                        </div>
+                                        <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 leading-relaxed mt-0.5">
                                             {relProj.desc}
                                         </p>
                                     </div>
-                                </div>
-
-                                {/* Tags & Action Footer */}
-                                <div className="p-5 pt-0 pb-4 mt-auto border-t border-slate-100 dark:border-slate-800/80 pt-3 flex items-center justify-between gap-2">
-                                    <div className="flex flex-wrap gap-1.5">
-                                        {(relProj.tags || []).slice(0, 3).map((tag, tIdx) => (
+                                    <div className="flex flex-wrap gap-1 pt-1 mt-auto">
+                                        {relProj.tags.map((tag, tIdx) => (
                                             <span
                                                 key={tIdx}
-                                                className="px-2 py-0.5 rounded-md text-[10px] font-medium border bg-slate-50 dark:bg-slate-800 border-slate-200/80 dark:border-slate-700 text-slate-600 dark:text-slate-300"
+                                                className="px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 dark:bg-blue-950/60 text-blue-600 dark:text-blue-400"
                                             >
                                                 {tag}
                                             </span>
                                         ))}
                                     </div>
-                                    <span className="text-xs font-semibold text-blue-600 dark:text-blue-400 group-hover:translate-x-1 transition-transform inline-flex items-center gap-1 shrink-0">
-                                        Lihat <ArrowRight className="w-3.5 h-3.5" />
-                                    </span>
                                 </div>
                             </Link>
                         ))}
