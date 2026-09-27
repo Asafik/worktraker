@@ -402,6 +402,26 @@ class ProjectController extends Controller
             }
         }
 
+        // 3 related portfolio projects from DB
+        $relatedProjects = Project::where('id', '!=', $project?->id ?? 0)
+            ->where(function ($q) {
+                $q->where('is_portfolio', true)
+                  ->orWhereNotNull('slug');
+            })
+            ->orderBy('is_featured', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get()
+            ->map(function ($p) {
+                return [
+                    'slug'  => $p->slug ?: (string)$p->id,
+                    'title' => $p->name,
+                    'desc'  => $p->description ?: 'Proyek dalam portofolio WorkTrack.',
+                    'tags'  => !empty($p->tech_stack) ? array_slice($p->tech_stack, 0, 3) : ['Web Application'],
+                    'img'   => $p->cover_image_url ?: '/images/default_project_cover.jpg',
+                ];
+            });
+
         return Inertia::render('Projects/Detail', [
             'slug'          => $slug,
             'dbProject'     => $project ? [
@@ -419,6 +439,8 @@ class ProjectController extends Controller
                 'status'           => $project->status,
                 'tech_stack'       => $project->tech_stack ?? [],
                 'images'           => $project->images ?? [],
+                'portfolio_cover'  => $project->portfolio_cover,
+                'cover_image_url'  => $project->cover_image_url,
                 'github_repo_name' => $project->github_repo_name,
                 'github_repo_url'  => $project->github_repo_url,
                 'hide_github_link' => (bool)$project->hide_github_link,
@@ -427,6 +449,7 @@ class ProjectController extends Controller
                 'due_date'         => $project->due_date ? $project->due_date->format('d M Y') : null,
             ] : null,
             'recentCommits' => $recentCommits,
+            'relatedProjects' => $relatedProjects,
         ]);
     }
 

@@ -29,6 +29,8 @@ import {
 } from 'lucide-react';
 import LandingNavbar from '@/Components/LandingNavbar';
 
+const DEFAULT_COVER = '/images/default_project_cover.jpg';
+
 const GithubIcon = ({ className = 'w-4 h-4' }) => (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
         <path
@@ -351,7 +353,7 @@ const allRelatedProjects = [
     },
 ];
 
-export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject = null, recentCommits = [] }) {
+export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject = null, recentCommits = [], relatedProjects = [] }) {
     // If project exists in DB, map its fields, otherwise fallback to static projectsDatabase
     const staticProject = projectsDatabase[slug] || projectsDatabase['monitoring-dapur-mbg'];
 
@@ -400,11 +402,18 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
                   'Berhasil diimplementasikan dan tercatat dalam sistem',
                   'Status pengerjaan terpantau secara transparan',
               ],
-              gallery: dbProject.images && dbProject.images.length > 0
-                  ? dbProject.images.map((imgUrl, i) => ({ id: i + 1, title: `Tangkapan Layar ${i + 1}`, img: imgUrl }))
+              gallery: (Array.isArray(dbProject.images) && dbProject.images.length > 0)
+                  ? dbProject.images.map((imgUrl, i) => ({
+                        id: i + 1,
+                        title: `${dbProject.name || 'Tangkapan Layar'} ${i + 1}`,
+                        img: imgUrl,
+                    }))
                   : [
-                        { id: 1, title: 'Dashboard Overview', img: '/images/proj1.png' },
-                        { id: 2, title: 'Detail View', img: '/images/proj2.png' },
+                        {
+                            id: 1,
+                            title: dbProject.name || 'Project Overview',
+                            img: dbProject.cover_image_url || dbProject.portfolio_cover || DEFAULT_COVER,
+                        },
                     ],
           }
         : staticProject;
@@ -412,9 +421,9 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
     const [activeImageIdx, setActiveImageIdx] = useState(0);
     const [isDarkMode, setIsDarkMode] = useState(false);
 
-    const related = allRelatedProjects
-        .filter((p) => p.slug !== slug)
-        .slice(0, 3);
+    const related = (Array.isArray(relatedProjects) && relatedProjects.length > 0)
+        ? relatedProjects
+        : allRelatedProjects.filter((p) => p.slug !== slug).slice(0, 3);
 
     const handlePrev = () => {
         setActiveImageIdx((prev) => (prev === 0 ? project.gallery.length - 1 : prev - 1));
@@ -579,57 +588,65 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
                         <div className="rounded-lg border overflow-hidden bg-slate-900 border-slate-800/80 shadow-xl relative group">
                             <div className="aspect-[16/9] w-full bg-slate-950 flex items-center justify-center overflow-hidden">
                                 <img
-                                    src={project.gallery[activeImageIdx]?.img || '/images/proj1.png'}
+                                    src={project.gallery[activeImageIdx]?.img || DEFAULT_COVER}
                                     alt={project.gallery[activeImageIdx]?.title || project.title}
                                     className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-102"
+                                    onError={(e) => {
+                                        e.currentTarget.src = DEFAULT_COVER;
+                                    }}
                                 />
                             </div>
                         </div>
 
-                        {/* Thumbnail Carousel Strip */}
-                        <div className="flex items-center gap-3 pt-1">
-                            <button
-                                type="button"
-                                onClick={handlePrev}
-                                aria-label="Previous image"
-                                className="w-9 h-9 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center shrink-0 shadow-xs transition-all hover:scale-105 cursor-pointer"
-                            >
-                                <ChevronLeft className="w-4 h-4" />
-                            </button>
+                        {/* Thumbnail Carousel Strip (Only when multiple screenshots exist) */}
+                        {project.gallery && project.gallery.length > 1 && (
+                            <div className="flex items-center gap-3 pt-1">
+                                <button
+                                    type="button"
+                                    onClick={handlePrev}
+                                    aria-label="Previous image"
+                                    className="w-9 h-9 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center shrink-0 shadow-xs transition-all hover:scale-105 cursor-pointer"
+                                >
+                                    <ChevronLeft className="w-4 h-4" />
+                                </button>
 
-                            <div className="grid grid-cols-4 gap-3 flex-1">
-                                {project.gallery.map((item, idx) => {
-                                    const isActive = idx === activeImageIdx;
-                                    return (
-                                        <button
-                                            key={item.id}
-                                            type="button"
-                                            onClick={() => setActiveImageIdx(idx)}
-                                            className={`rounded-lg border overflow-hidden aspect-[16/10] relative transition-all cursor-pointer ${
-                                                isActive
-                                                    ? 'border-blue-600 ring-2 ring-blue-500/40 shadow-md scale-102'
-                                                    : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-400'
-                                            }`}
-                                        >
-                                            <img
-                                                src={item.img}
-                                                alt={item.title}
-                                                className="w-full h-full object-cover object-top"
-                                            />
-                                        </button>
-                                    );
-                                })}
+                                <div className="grid grid-cols-4 gap-3 flex-1">
+                                    {project.gallery.map((item, idx) => {
+                                        const isActive = idx === activeImageIdx;
+                                        return (
+                                            <button
+                                                key={item.id}
+                                                type="button"
+                                                onClick={() => setActiveImageIdx(idx)}
+                                                className={`rounded-lg border overflow-hidden aspect-[16/10] relative transition-all cursor-pointer ${
+                                                    isActive
+                                                        ? 'border-blue-600 ring-2 ring-blue-500/40 shadow-md scale-102'
+                                                        : 'border-slate-200 opacity-70 hover:opacity-100 hover:border-slate-400'
+                                                }`}
+                                            >
+                                                <img
+                                                    src={item.img}
+                                                    alt={item.title}
+                                                    className="w-full h-full object-cover object-top"
+                                                    onError={(e) => {
+                                                        e.currentTarget.src = DEFAULT_COVER;
+                                                    }}
+                                                />
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                <button
+                                    type="button"
+                                    onClick={handleNext}
+                                    aria-label="Next image"
+                                    className="w-9 h-9 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center shrink-0 shadow-xs transition-all hover:scale-105 cursor-pointer"
+                                >
+                                    <ChevronRight className="w-4 h-4" />
+                                </button>
                             </div>
-
-                            <button
-                                type="button"
-                                onClick={handleNext}
-                                aria-label="Next image"
-                                className="w-9 h-9 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 flex items-center justify-center shrink-0 shadow-xs transition-all hover:scale-105 cursor-pointer"
-                            >
-                                <ChevronRight className="w-4 h-4" />
-                            </button>
-                        </div>
+                        )}
                     </div>
 
                     {/* Right Sidebar (4 Cols): Project Info & Quote Card */}
@@ -988,9 +1005,12 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
                             >
                                 <div className="w-24 h-24 rounded-md overflow-hidden shrink-0 bg-slate-100 border border-slate-100 dark:border-slate-800">
                                     <img
-                                        src={relProj.img}
+                                        src={relProj.img || DEFAULT_COVER}
                                         alt={relProj.title}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                        onError={(e) => {
+                                            e.currentTarget.src = DEFAULT_COVER;
+                                        }}
                                     />
                                 </div>
 
