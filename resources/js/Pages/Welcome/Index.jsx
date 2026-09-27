@@ -180,11 +180,18 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
         ? portfolioProjects.slice(0, 5).map((proj) => {
             const resolvedImg = proj.portfolio_cover || (Array.isArray(proj.images) && proj.images.length > 0 && proj.images[0]) || proj.cover_image_url || DEFAULT_PROJECT_COVER;
 
+            let formattedDate = '2026';
+            if (proj.start_date || proj.created_at) {
+                const d = new Date(proj.start_date || proj.created_at);
+                formattedDate = d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            }
+
             return {
                 id: proj.id,
                 type: proj.category || (proj.is_featured ? 'Featured' : (proj.ownership_type ? `${proj.ownership_type} Project` : 'Web Application')),
                 title: proj.name,
                 desc: proj.description || '',
+                date: formattedDate,
                 tags: Array.isArray(proj.tech_stack) && proj.tech_stack.length > 0 ? proj.tech_stack.slice(0, 3) : ['Laravel', 'MySQL', 'Tailwind CSS'],
                 img: resolvedImg,
                 link: proj.slug ? `/projects/${proj.slug}` : (proj.live_url || proj.github_repo_url || '/projects'),
@@ -575,34 +582,12 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                         <div className="hidden lg:block absolute top-[15px] left-0 right-0 h-[2px] bg-[#e0e7ff] z-0 pointer-events-none" />
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4.5 relative z-10">
-                            {[
-                                {
-                                    date: 'Sep 2026',
-                                    title: 'UI/UX Redesign',
-                                    desc: 'Improved interface and user experience for internal application.',
-                                },
-                                {
-                                    date: 'Aug 2026',
-                                    title: 'Feature Development',
-                                    desc: 'Built new module and fixed several issues.',
-                                },
-                                {
-                                    date: 'Jul 2026',
-                                    title: 'Data Verification System',
-                                    desc: 'Developed verval system with reporting features.',
-                                },
-                                {
-                                    date: 'Jun 2026',
-                                    title: 'System Maintenance',
-                                    desc: 'Bug fixes and performance improvements.',
-                                },
-                                {
-                                    date: 'May 2026',
-                                    title: 'API & Auth Architecture',
-                                    desc: 'Implemented secure authentication, role permissions, and REST API endpoints.',
-                                },
-                            ].map((item, idx) => (
-                                <div key={idx} className="flex flex-col group relative">
+                            {displayProjects.map((item, idx) => (
+                                <Link
+                                    key={item.id || idx}
+                                    href={item.link}
+                                    className="flex flex-col group relative text-left cursor-pointer"
+                                >
                                     {/* Desktop Milestone Node: Solid indigo dot + vertical connector stem to card */}
                                     <div className="hidden lg:block relative z-10 h-6">
                                         {/* Solid Indigo Dot centered on the card's left border axis (x=0) */}
@@ -612,24 +597,42 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                                     </div>
 
                                     {/* Experience Card: 12px radius, top-left connects seamlessly with the timeline stem */}
-                                    <div className="p-6 rounded-xl lg:rounded-tl-none bg-white border border-slate-200/80 shadow-xs group-hover:border-indigo-300 group-hover:shadow-md transition-all duration-300 flex-1 flex flex-col justify-between">
+                                    <div className="p-5 sm:p-6 rounded-xl lg:rounded-tl-none bg-white border border-slate-200/80 shadow-xs group-hover:border-indigo-300 group-hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex-1 flex flex-col justify-between">
                                         <div>
                                             <div className="flex items-center justify-between">
                                                 <span className="text-xs font-semibold text-slate-500">
-                                                    {item.date}
+                                                    {item.date || '2026'}
                                                 </span>
                                                 {/* Mobile-only dot indicator */}
                                                 <div className="lg:hidden w-2.5 h-2.5 rounded-full bg-[#4f46e5]" />
                                             </div>
-                                            <h3 className="font-extrabold text-sm sm:text-base text-slate-900 mt-2.5 group-hover:text-indigo-600 transition-colors">
+                                            <h3 className="font-extrabold text-sm sm:text-base text-slate-900 mt-2.5 group-hover:text-indigo-600 transition-colors truncate">
                                                 {item.title}
                                             </h3>
-                                            <p className="text-xs text-slate-500 leading-relaxed mt-2">
-                                                {item.desc}
-                                            </p>
+                                            {item.desc ? (
+                                                <p className="text-xs text-slate-500 leading-relaxed mt-2 line-clamp-3">
+                                                    {item.desc}
+                                                </p>
+                                            ) : (
+                                                <div className="flex flex-wrap gap-1.5 mt-2.5">
+                                                    {(item.tags || []).slice(0, 2).map((tag, tIdx) => (
+                                                        <span
+                                                            key={tIdx}
+                                                            className="text-[10px] font-semibold text-indigo-700 bg-indigo-50/80 px-2 py-0.5 rounded-md"
+                                                        >
+                                                            {tag}
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-[11px] font-semibold text-indigo-600 group-hover:text-indigo-700">
+                                            <span>Lihat Proyek</span>
+                                            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
                                         </div>
                                     </div>
-                                </div>
+                                </Link>
                             ))}
                         </div>
                     </div>
