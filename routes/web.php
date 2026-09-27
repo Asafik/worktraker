@@ -56,6 +56,42 @@ Route::get('/contact', function () use ($getWelcomeProps) {
     return Inertia::render('Welcome/Index', $getWelcomeProps('contact'));
 })->name('contact');
 
+Route::get('/all-projects', function () {
+    $hasPortfolio = Project::where('is_portfolio', true)->exists();
+    $query = $hasPortfolio ? Project::where('is_portfolio', true) : Project::query();
+
+    $projects = $query
+        ->orderByRaw('COALESCE(start_date, created_at) DESC')
+        ->get();
+
+    $user = User::first();
+    $userProfile = [
+        'fullName'   => $user?->name ?? 'Asafik Daroini',
+        'headline'   => $user?->role ?? 'Full Stack Developer',
+        'role'       => $user?->role ?? 'Full Stack Developer',
+        'bio'        => $user?->bio ?? 'I build modern web applications and turn ideas into reality. Focused on clean code, simple design, and meaningful impact.',
+        'aboutShort' => $user?->about_short ?: ($user?->bio ?? 'Web developer who enjoys solving problems, learning new technologies, and building things that are useful.'),
+        'location'   => $user?->location ?? 'Indonesia',
+        'email'      => $user?->email ?? 'asafik.dev@gmail.com',
+        'avatar'     => $user?->avatar ?: '/images/avatars/avatar_1789566043.png',
+        'socials'    => array_merge([
+            'github'    => 'https://github.com/asafik',
+            'linkedin'  => 'https://linkedin.com/in/asafik',
+            'website'   => 'https://asafik.dev',
+            'instagram' => '',
+        ], (array) ($user?->socials ?? [])),
+    ];
+
+    return Inertia::render('Projects/All', [
+        'projects'    => $projects,
+        'userProfile' => $userProfile,
+    ]);
+})->name('projects.all');
+
+Route::get('/projects/all', function () {
+    return redirect()->route('projects.all');
+});
+
 use App\Http\Controllers\AuthController;
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');

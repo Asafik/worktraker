@@ -996,7 +996,7 @@ export default function ProjectDetail({ slug = 'monitoring-dapur-mbg', dbProject
                             Related Projects
                         </h2>
                         <Link
-                            href="/#projects"
+                            href="/all-projects"
                             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors group"
                         >
                             <span>View All Projects</span>

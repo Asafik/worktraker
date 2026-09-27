@@ -465,7 +465,7 @@ export default function Welcome({ initialSection = 'home', portfolioProjects = [
                         </div>
 
                         <Link
-                            href="/projects"
+                            href="/all-projects"
                             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors group"
                         >
                             <span>View All Projects</span>
