@@ -385,14 +385,20 @@ class ProjectController extends Controller
                 if ($response->successful()) {
                     $commitsData = $response->json();
                     $recentCommits = array_map(function ($c) {
+                        $authorName = $c['commit']['author']['name'] 
+                            ?? ($c['author']['login'] 
+                            ?? ($c['commit']['committer']['name'] ?? 'Developer'));
+
                         return [
                             'sha'          => substr($c['sha'] ?? '', 0, 7),
                             'full_sha'     => $c['sha'] ?? '',
                             'message'      => $c['commit']['message'] ?? '',
-                            'author_name'  => $c['commit']['author']['name'] ?? ($c['author']['login'] ?? 'Developer'),
+                            'author'       => $authorName,
+                            'author_name'  => $authorName,
                             'author_login' => $c['author']['login'] ?? null,
-                            'author_avatar'=> $c['author']['avatar_url'] ?? null,
-                            'date'         => $c['commit']['author']['date'] ?? null,
+                            'author_avatar'=> $c['author']['avatar_url'] ?? ($c['committer']['avatar_url'] ?? null),
+                            'date'         => $c['commit']['author']['date'] ?? ($c['commit']['committer']['date'] ?? null),
+                            'url'          => $c['html_url'] ?? '',
                             'html_url'     => $c['html_url'] ?? '',
                         ];
                     }, $commitsData);
@@ -413,12 +419,15 @@ class ProjectController extends Controller
             ->limit(3)
             ->get()
             ->map(function ($p) {
+                $resolvedImg = $p->portfolio_cover ?: ((is_array($p->images) && count($p->images) > 0) ? $p->images[0] : ($p->cover_image_url ?: '/images/default_project_cover.jpg'));
+
                 return [
-                    'slug'  => $p->slug ?: (string)$p->id,
-                    'title' => $p->name,
-                    'desc'  => $p->description ?: 'Proyek dalam portofolio WorkTrack.',
-                    'tags'  => !empty($p->tech_stack) ? array_slice($p->tech_stack, 0, 3) : ['Web Application'],
-                    'img'   => $p->cover_image_url ?: '/images/default_project_cover.jpg',
+                    'slug'     => $p->slug ?: (string)$p->id,
+                    'title'    => $p->name,
+                    'category' => $p->category ?: 'Web Development',
+                    'desc'     => $p->description ?: 'Proyek dalam portofolio WorkTrack.',
+                    'tags'     => !empty($p->tech_stack) ? array_slice($p->tech_stack, 0, 3) : ['Laravel', 'Tailwind CSS'],
+                    'img'      => $resolvedImg,
                 ];
             });
 
